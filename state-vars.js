@@ -1,10 +1,10 @@
 const ozDiamondAddr = '0x7D1f13Dd05E6b0673DC3D0BFa14d40A74Cfa3EF2';
 const deployer2 = '0xe738696676571D9b74C81716E4aE797c2440d306';
 
-const opsL2_2 = {
-    gasLimit: ethers.BigNumber.from('5000000'),
-    gasPrice: ethers.BigNumber.from('5134698068')
-};
+// const opsL2_2 = {
+//     gasLimit: ethers.BigNumber.from('5000000'),
+//     gasPrice: ethers.BigNumber.from('5134698068')
+// };
     
 const diamondABI = [
     'function setTESTVAR2(uint256 num_, bytes32 position_) public',
@@ -49,20 +49,19 @@ const diamondABI = [
     'function getEnergyPrice() external view returns(uint256)'
 ];
 
-let network = 'arbitrum';
 
-switch(network) {
-case 'arbitrum':
-    
-    break;
-case 'mainnet':
-}
+/*///////////////////////////////////////////////////////////////
+                                v2
+//////////////////////////////////////////////////////////////*/
 
+const usdtAddr = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9';
+
+const registry = [usdtAddr];
 
 
 module.exports = {
     diamondABI,
     ozDiamondAddr,
     deployer2,
-    opsL2_2,
+    registry,
 };

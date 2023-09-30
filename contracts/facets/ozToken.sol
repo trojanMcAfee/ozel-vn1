@@ -2,8 +2,9 @@
 pragma solidity 0.8.21;
 
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import '@openzeppelin/contracts/access/AccessControl.sol';
 
-contract ozToken is ERC20 {
+contract ozToken is ERC20 { //add AccessControl here
 
     uint private constant _BASE = 1e18;
 
@@ -19,7 +20,7 @@ contract ozToken is ERC20 {
     }
 
     function convertToTokens(uint shares_) public view returns(uint) {
-        return (shares_ * rewardMultiplier) * BASE;
+        return (shares_ * rewardMultiplier) * _BASE;
     }
 
 
@@ -27,7 +28,7 @@ contract ozToken is ERC20 {
     /**
         Multiplier functions
      */
-    function addRewardMultiplier(uint256 _rewardMultiplierIncrement) external onlyRole(ORACLE_ROLE) {
+    function addRewardMultiplier(uint256 _rewardMultiplierIncrement) external { //onlyRole(ORACLE_ROLE)
         if (_rewardMultiplierIncrement == 0) {
             // revert USDMInvalidRewardMultiplier(_rewardMultiplierIncrement);
             revert();

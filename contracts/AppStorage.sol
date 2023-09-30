@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity 0.8.19;
+pragma solidity 0.8.21;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
+import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
 
 /**
@@ -98,6 +98,8 @@ struct AppStorage {
 
     // AggregatorV3Interface wtiFeed; 
     // AggregatorV3Interface volatilityFeed; //63
+
+    mapping(address erc20 => bool exists) ozTokenRegistry;
   
 }
 
