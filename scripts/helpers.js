@@ -1,5 +1,5 @@
 const { ethers } = require('ethers');
-const { parseEther } = hre.ethers;
+const { parseEther } = ethers.utils;
 
 async function sendETHOps(amount, receiver) {
     const [signer] = await hre.ethers.getSigners();

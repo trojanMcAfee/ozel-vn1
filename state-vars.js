@@ -46,7 +46,8 @@ const diamondABI = [
     'function getTokenDatabase() external view returns(address[] memory)',
     'function getLastPrice() external view returns(uint256)',
     'function facetFunctionSelectors(address _facet) external view returns (bytes4[] facetFunctionSelectors_)',
-    'function getEnergyPrice() external view returns(uint256)'
+    'function getEnergyPrice() external view returns(uint256)',
+    'function createOzToken(address erc20_, uint256 amount_) external view returns(address)'
 ];
 
 

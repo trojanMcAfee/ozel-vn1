@@ -40,22 +40,18 @@ async function main() {
   /**
    * Deploying and integrsting V2 to the DIAMOND
    */
-  console.log(1);
   const Init = await hre.ethers.getContractFactory("InitUpgradeV2");
-  console.log(2);
   const init = await Init.deploy(); 
-  await init.waitForDeployment();
-  console.log('Init deployed to: ', init.target);
-
-  return;
+  await init.deployed();
+  console.log('Init deployed to: ', init.address);
 
   const TokenFactory = await hre.ethers.getContractFactory("ozTokenFactory");
   const tokenFactory = await TokenFactory.deploy();
-  await tokenFactory.waitForDeployment();
-  console.log('ozTokenFactory deployed to: ', tokenFactory.target);
+  await tokenFactory.deployed();
+  console.log('ozTokenFactory deployed to: ', tokenFactory.address);
 
   //FacetCut
-  const createTokenSelector = tokenFactory.interface.getSigHash("createToken");
+  const createTokenSelector = tokenFactory.interface.getSighash("createOzToken");
   const facetCutArgs = [
     [tokenFactory.address, 0, [createTokenSelector]]
   ];
@@ -68,7 +64,7 @@ async function main() {
   const deployerSigner = await hre.ethers.provider.getSigner(deployer2);
   
   const ozDiamond = await hre.ethers.getContractAt(diamondABI, ozDiamondAddr);
-  let tx = ozDiamond.connect(deployerSigner).diamondCut(facetCutArgs, init.address, initData);
+  let tx = await ozDiamond.connect(deployerSigner).diamondCut(facetCutArgs, init.address, initData);
   let receipt = await tx.wait();
   console.log("Ozel upgraded to V2: ", receipt.transactionHash);
   await stopImpersonatingAccount(deployer2);
@@ -77,8 +73,9 @@ async function main() {
    * END
    */
 
-  const erc20 = await tokenFactory.createToken(registry[0]);
-  console.log("is: ", erc20 == registry[0]);
+  const erc20 = await ozDiamond.createOzToken(registry[0], 100);
+  console.log('erc20: ', erc20);
+  console.log('registtr[0]: ', registry[0]);
 
 
 }
