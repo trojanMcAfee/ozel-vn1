@@ -40,16 +40,20 @@ async function main() {
   /**
    * Deploying and integrsting V2 to the DIAMOND
    */
-  // const Init = await hre.ethers.getContractFactory("InitUpgradeV2");
-  // const init = await Init.deploy(registry);
-  // await init.deployed();
-
-  const init = await hre.ethers.deployContract("InitUpgradeV2", [registry]);
+  const Init = await hre.ethers.getContractFactory("InitUpgradeV2");
+  const init = await Init.deploy(); 
   await init.waitForDeployment();
   console.log('Init deployed to: ', init.address);
+  console.log('iit: ', init);
 
-  const tokenFactory = await hre.ethers.deployContract("ozTokenFactory");
-  await tokenFactory.waitForDeployment();
+  // const init = await hre.ethers.deployContract("InitUpgradeV2");
+
+  return;
+
+  // const tokenFactory = await hre.ethers.deployContract("ozTokenFactory");
+  // await tokenFactory.waitForDeployment();
+  const TokenFactory = await hre.ethers.getContractFactory("ozTokenFactory");
+  const tokenFactory = await TokenFactory.deploy();
   console.log('ozTokenFactory deployed to: ', tokenFactory.address);
 
   //FacetCut

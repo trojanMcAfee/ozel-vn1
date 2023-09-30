@@ -6,15 +6,15 @@ import {AppStorage} from "./AppStorage.sol";
 
 contract InitUpgradeV2 {
 
-    AppStorage internal s;
+    AppStorage internal s; 
 
     function init(
         address[] memory registry_
     ) external {
 
-        for (uint i=0; i < registry_.length; i++) {
-            s.ozTokenRegistry[registry_[i]] = true;
-        }
+        // for (uint i=0; i < registry_.length; i++) {
+        //     s.ozTokenRegistry[registry_[i]] = true;
+        // }
 
     }
 
