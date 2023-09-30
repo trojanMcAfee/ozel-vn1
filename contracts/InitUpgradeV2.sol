@@ -12,9 +12,9 @@ contract InitUpgradeV2 {
         address[] memory registry_
     ) external {
 
-        // for (uint i=0; i < registry_.length; i++) {
-        //     s.ozTokenRegistry[registry_[i]] = true;
-        // }
+        for (uint i=0; i < registry_.length; i++) {
+            s.ozTokenRegistry[registry_[i]] = true;
+        }
 
     }
 
