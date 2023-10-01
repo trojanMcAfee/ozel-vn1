@@ -99,8 +99,8 @@
       }
     },
     "contracts/InitUpgradeV2.sol": {
-      "lastModificationDate": 1696117354467,
-      "contentHash": "ca033b713906c2fea0d95a3f89d10953",
+      "lastModificationDate": 1696123304815,
+      "contentHash": "6ebf719977b26ef1e24eac4b48d0f0c9",
       "sourceName": "contracts/InitUpgradeV2.sol",
       "solcConfig": {
         "settings": {
@@ -133,10 +133,26 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
-        "node_modules/hardhat/console.sol"
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
       ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
@@ -364,6 +380,47 @@
       "artifacts": {
         "ozTokenFactory": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "ozTokenFactory.sol/ozTokenFactory.json"
+        }
+      }
+    },
+    "interfaces/ozIDiamond.sol": {
+      "lastModificationDate": 1696122575094,
+      "contentHash": "9dffe7ad99cd4f8ef2614e731afcc297",
+      "sourceName": "interfaces/ozIDiamond.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozIDiamond": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozIDiamond.sol/ozIDiamond.json"
         }
       }
     },
@@ -1711,50 +1768,9 @@
         }
       }
     },
-    "node_modules/hardhat/console.sol": {
-      "lastModificationDate": 1696097148020,
-      "contentHash": "896f68942c3a20e9ae3c3c5bfd3add54",
-      "sourceName": "node_modules/hardhat/console.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": ">=0.4.22, <0.9.0",
-      "artifacts": {
-        "console": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "console.sol/console.json"
-        }
-      }
-    },
     "test/foundry/Counter.t.sol": {
-      "lastModificationDate": 1695939538464,
-      "contentHash": "fd0e71228f84164e27dd7837eac778e3",
+      "lastModificationDate": 1696122891657,
+      "contentHash": "3b01d6ffd752e717d3f7c383f4ee5d21",
       "sourceName": "test/foundry/Counter.t.sol",
       "solcConfig": {
         "settings": {
@@ -1812,9 +1828,75 @@
         }
       }
     },
+    "test/foundry/Setup.sol": {
+      "lastModificationDate": 1696123193188,
+      "contentHash": "7fa3247360a608ef18c52436c6b98e48",
+      "sourceName": "test/foundry/Setup.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/InitUpgradeV2.sol",
+        "contracts/facets/ozTokenFactory.sol",
+        "interfaces/ozIDiamond.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "Setup": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "Setup.sol/Setup.json"
+        }
+      }
+    },
     "test/foundry/ozTokenFactory.t.sol": {
-      "lastModificationDate": 1696120363231,
-      "contentHash": "a1aa309e95d74c855e75044da959ddc3",
+      "lastModificationDate": 1696123228042,
+      "contentHash": "661faca4fad1c62a71504b0b7f285d72",
       "sourceName": "test/foundry/ozTokenFactory.t.sol",
       "solcConfig": {
         "settings": {
@@ -1847,7 +1929,9 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
+        "contracts/InitUpgradeV2.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "interfaces/ozIDiamond.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -1867,7 +1951,8 @@
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "test/foundry/Setup.sol"
       ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
