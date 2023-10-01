@@ -8,19 +8,11 @@ import {Setup} from "./Setup.sol";
 
 
 contract ozTokenFactoryTest is Setup {
-    // ozTokenFactory public factory;
-
-    // address internal usdt = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
-
-    // function setUp() public {
-    //     factory = new ozTokenFactory();
-
-    // }
+   
 
     function test_createOzToken() public {
         address x = ozl.createOzToken(usdt, 100);
         console2.log("x: ", x);
-        // console2_log("x: ", x);
     }
 
 }
