@@ -55,7 +55,7 @@ pragma solidity 0.8.21;
 
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metada.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 
@@ -74,20 +74,26 @@ contract ozToken is Context, IERC20, IERC20Metadata {
         TT
     }
 
-    mapping(address account => mapping(BalanceType => uint256 amount)) private _balances;
-    // mapping(address => uint256) private _balances;
+    mapping(Type balanceType  => mapping(address account => uint amount)) private _balances;
 
-    mapping(address => mapping(address => uint256)) private _allowances;
+    mapping(Type balanceType => mapping(address user => mapping(address spender => uint allowed))) private _allowances;
 
     uint256 private _totalSupply;
 
     string private _name;
     string private _symbol;
 
+    address private immutable _underlying;
+
   
-    constructor(string memory name_, string memory symbol_) {
+    constructor(
+        string memory name_, 
+        string memory symbol_,
+        address underlying_
+    ) {
         _name = name_;
         _symbol = symbol_;
+        _underlying = underlying_;
     }
 
    
@@ -110,12 +116,16 @@ contract ozToken is Context, IERC20, IERC20Metadata {
         return _totalSupply;
     }
 
+    //mine ***
+    function getUnderlying() public view returns(address) {
+        return _underlying;
+    }
+
     /**
      * Queries the PT balance of an user/account (principal)
      */
     function balanceOf(address account) public view returns(uint) {
         return _balances[Type.PT][account];
-        // return _balances[account];
     }
 
     /**
@@ -141,8 +151,8 @@ contract ozToken is Context, IERC20, IERC20Metadata {
 
     
     function allowance(address owner, address spender) public view virtual override returns (uint256) {
-        return _allowances[owner][spender];
-    }
+        return _allowances[Type.PT][owner][spender];
+    } //do allowanceYT()
 
     
     function approve(address spender, uint256 amount) public virtual override returns (bool) {
@@ -179,8 +189,8 @@ contract ozToken is Context, IERC20, IERC20Metadata {
     }
 
     //Mine *******
-    function _getRatioYT(address account_, uint amount_) private pure returns(uint) {
-        uint totalPT = _balances[Type.PT][account_];
+    function _calculateYT(address from_, uint amount_) private view returns(uint) {
+        uint totalPT = _balances[Type.PT][from_];
         uint ratioPT = amount_.fullMulDiv(100 * 1e18, totalPT);
         
         // totalPTbal --- 100%
@@ -188,11 +198,13 @@ contract ozToken is Context, IERC20, IERC20Metadata {
 
         // (amount_ * 100) / totalPTbal
 
-        uint totalYT = _balances[Type.YT][account_];
-        return ratioPT.fullMulDiv(totalYT, 100 1e18); 
+        uint totalYT = _balances[Type.YT][from_];
+        return ratioPT.fullMulDiv(totalYT, 100 * 1e18); 
 
         // totalYTbal --- 100%
-        //     x ------ ratioPTbal
+        //     x ------ ratioPTbal // x = amt of YT based on %
+
+        
     }
 
     function _calculateNewTT(address from_, address to_) private {
@@ -209,25 +221,16 @@ contract ozToken is Context, IERC20, IERC20Metadata {
 
         uint256 fromBalance = _balances[Type.PT][from];
         require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
-        unchecked {
-            if (fromBalance == amount) {
-                uint fromYT = _balances[Type.YT][from];
+        unchecked {                
+            _balances[Type.PT][from] = fromBalance - amount;
+            _balances[Type.PT][to] += amount;
 
-                _balances[Type.PT][from] = 0;
-                _balances[Type.YT][from] = 0;
+            uint toTransferYT = _calculateYT(from, amount);
 
-                _balances[Type.PT][to] += amount;
-                _balances[Type.YT][to] += fromYT;
+            _balances[Type.YT][from] -= toTransferYT;
+            _balances[Type.YT][from] += toTransferYT;
 
-                _calculateNewTT(from, to);
-            } else {
-                //do this block with the info from below
-            }
-
-            _balances[from] = fromBalance - amount;
-            // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
-            // decrementing then incrementing.
-            _balances[to] += amount;
+            _calculateNewTT(from, to);
         }
 
         emit Transfer(from, to, amount);
@@ -243,8 +246,7 @@ contract ozToken is Context, IERC20, IERC20Metadata {
 
         _totalSupply += amount;
         unchecked {
-            // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
-            _balances[account] += amount;
+            _balances[Type.PT][account] += amount;
         }
         emit Transfer(address(0), account, amount);
 
@@ -252,30 +254,30 @@ contract ozToken is Context, IERC20, IERC20Metadata {
     }
 
     
-    function _burn(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: burn from the zero address");
+    // function _burn(address account, uint256 amount) internal virtual {
+    //     require(account != address(0), "ERC20: burn from the zero address");
 
-        _beforeTokenTransfer(account, address(0), amount);
+    //     _beforeTokenTransfer(account, address(0), amount);
 
-        uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
-        unchecked {
-            _balances[account] = accountBalance - amount;
-            // Overflow not possible: amount <= accountBalance <= totalSupply.
-            _totalSupply -= amount;
-        }
+    //     uint256 accountBalance = _balances[account];
+    //     require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
+    //     unchecked {
+    //         _balances[account] = accountBalance - amount;
+    //         // Overflow not possible: amount <= accountBalance <= totalSupply.
+    //         _totalSupply -= amount;
+    //     }
 
-        emit Transfer(account, address(0), amount);
+    //     emit Transfer(account, address(0), amount);
 
-        _afterTokenTransfer(account, address(0), amount);
-    }
+    //     _afterTokenTransfer(account, address(0), amount);
+    // }
 
     
     function _approve(address owner, address spender, uint256 amount) internal virtual {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
-        _allowances[owner][spender] = amount;
+        _allowances[Type.PT][owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
 

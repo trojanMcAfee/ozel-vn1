@@ -2,26 +2,43 @@
 pragma solidity 0.8.21;
 
 
-// import {ozToken} from "./ozToken.sol";
+import {ozToken} from "./ozToken.sol";
 import {AppStorage} from "../AppStorage.sol";
+import {Helpers} from "../../libraries/Helpers.sol";
 
 // import "hardhat/console.sol";
 
 
-error TokenNotInRegistry(address erc20);
+error TokenAlreadyInRegistry(address erc20);
+error CantBeZeroAddress()
 
 contract ozTokenFactory {
+
+    using Helpers for address;
 
     AppStorage internal s;
 
     
-    //Wrapper function
-    function createOzToken(address erc20_, uint amount_) external view returns(address) { //returns address of ozToken
+    //Wrapper function - returns address of ozToken
+    function createOzToken(
+        address erc20_,
+        string memory name_,
+        string memory symbol_
+    ) external view returns(address) { //put an onlyOwner
 
-        if (!s.ozTokenRegistry[erc20_]) revert TokenNotInRegistry(erc20_);
+        if (s.ozTokenRegistry.indexOf(erc20_) != -1) revert TokenAlreadyInRegistry(erc20_);
+        if (erc20_ == address(0)) revert CantBeZeroAddress();
 
-        return erc20_;
+        ozToken newToken = new ozToken(name_, symbol_, erc20_);
+        s.ozTokenRegistry.push(erc20_);
+    }
 
+    function getOzTokenRegistry() external view returns(address[] memory) {
+        return s.ozTokenRegistry;
+    }
+
+    function isInRegistry(address erc20_) public view returns(bool) {
+        return s.ozTokenRegistry.indexOf(erc20_) != -1;
     }
 
 }

@@ -99,7 +99,7 @@ struct AppStorage {
     // AggregatorV3Interface wtiFeed; 
     // AggregatorV3Interface volatilityFeed; //63
 
-    mapping(address erc20 => bool exists) ozTokenRegistry;
+    address[] ozTokenRegistry;
   
 }
 

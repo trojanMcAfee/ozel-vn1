@@ -15,4 +15,8 @@ contract ozTokenFactoryTest is Setup {
         console2.log("x: ", x);
     }
 
+    //testing createOzToken here and see if it works for minting 
+    // a new PT with ozToken.
+    //If it works, try minting YT and TT
+
 }
