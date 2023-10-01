@@ -3,7 +3,6 @@ const { parseEther } = ethers.utils;
 
 async function sendETHOps(amount, receiver) {
     const [signer] = await hre.ethers.getSigners();
-    // let balance = await signer.getBalance();
     
     tx = await signer.sendTransaction({
         value: parseEther(amount.toString()),
@@ -13,7 +12,6 @@ async function sendETHOps(amount, receiver) {
     });
     await tx.wait();
 
-    // balance = await signer.getBalance();
 }
 
 module.exports = {
