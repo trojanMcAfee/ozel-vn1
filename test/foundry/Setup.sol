@@ -8,7 +8,6 @@ import {InitUpgradeV2} from "../../contracts/InitUpgradeV2.sol";
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "../../lib/forge-std/src/interfaces/IERC20.sol";
 import {ROImodule} from "../../contracts/facets/ROImodule.sol";
-import {ozLoupeFacetV2} from "../../contracts/facets/ozLoupeFacetV2.sol";
 
 import "forge-std/console.sol";
 
@@ -27,7 +26,6 @@ contract Setup is Test {
     InitUpgradeV2 internal initUpgrade;
     ozTokenFactory internal factory; 
     ROImodule internal roiMod; 
-    ozLoupeFacetV2 internal loupeV2;
 
 
     //------------------
@@ -45,7 +43,6 @@ contract Setup is Test {
         factory = new ozTokenFactory();
         initUpgrade = new InitUpgradeV2();
         roiMod = new ROImodule();
-        loupeV2 = new ozLoupeFacetV2();
 
         OZL = ozIDiamond(ozDiamond);
 
@@ -55,10 +52,9 @@ contract Setup is Test {
             ozDiamond
         );
 
-        FacetCut[] memory cuts = new FacetCut[](3);
+        FacetCut[] memory cuts = new FacetCut[](2);
         cuts[0] = _createCut(address(factory), 0);
         cuts[1] = _createCut(address(roiMod), 1);
-        cut[2] = _createCut(address(loupeV2), 2);
 
         vm.prank(deployer);
         OZL.diamondCut(cuts, address(initUpgrade), data);
@@ -75,7 +71,7 @@ contract Setup is Test {
         uint id_
     ) private view returns(FacetCut memory cut) {
         uint length;
-        if (id_ == 0 || id_ == 1 || id_ == 2) {
+        if (id_ == 0 || id_ == 1) {
             length = 1;
         }
 
@@ -85,9 +81,7 @@ contract Setup is Test {
             selectors[0] = factory.createOzToken.selector;
         } else if (id_ == 1) {
             selectors[0] = roiMod.useUnderlying.selector;
-        } else if (id_ == 2) {
-            selectors[0] = loupeV2.getDiamondAddr.selector;
-        }
+        } 
 
         cut = FacetCut({
             facetAddress: contractAddr_,
@@ -104,7 +98,6 @@ contract Setup is Test {
         vm.label(usdcAddr, "USDC");
         vm.label(usdtAddr, "USDT");
         vm.label(ozDiamond, "ozDiamond");
-        vm.label(address(loupeV2), "ozLoupeFacetV2");
     }
 
 
