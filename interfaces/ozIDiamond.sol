@@ -32,7 +32,7 @@ interface ozIDiamond {
     ) external returns(address);
 
     function useUnderlying(uint256 amount_) external;
-    function getDiamondAddr() public view returns(address);
+    function getDiamondAddr() external view returns(address);
 
 
 }

@@ -38,6 +38,7 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
     string private _symbol;
 
     address private immutable _underlying;
+    address private _ozDiamond;
 
     uint8 private _decimals;
 
@@ -46,12 +47,18 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         string memory name_, 
         string memory symbol_,
         address underlying_,
-        uint8 decimals_
+        uint8 decimals_,
+        address diamond_
     ) {
         _name = name_;
         _symbol = symbol_;
         _underlying = underlying_;
         _decimals = decimals_;
+        _ozDiamond = diamond_;
+    }
+
+    function getDiamond() public view returns(address) {
+        return _ozDiamond;
     }
 
    
@@ -203,7 +210,7 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
 
         // console.log('s: ', s.ozDiamond);
 
-        ozIDiamond(s.ozDiamond).useUnderlying(amount_);
+        ozIDiamond(_ozDiamond).useUnderlying(amount_);
 
 
     }
