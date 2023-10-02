@@ -49,7 +49,8 @@ contract Setup is Test {
         bytes memory data = abi.encodeWithSelector(
             initUpgrade.init.selector, 
             registry,
-            ozDiamond
+            ozDiamond,
+            address(roiMod)
         );
 
         FacetCut[] memory cuts = new FacetCut[](2);

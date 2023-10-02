@@ -13,7 +13,8 @@ contract InitUpgradeV2 {
 
     function init(
         address[] memory registry_,
-        address diamond_
+        address diamond_,
+        address roiMod_
     ) external {
 
         uint length = registry_.length;
@@ -22,6 +23,7 @@ contract InitUpgradeV2 {
         }
 
         s.ozDiamond = diamond_;
+        s.roiMod = roiMod_;
     }
 
 

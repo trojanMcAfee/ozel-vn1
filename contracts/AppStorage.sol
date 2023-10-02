@@ -101,6 +101,7 @@ struct AppStorage {
 
     address[] ozTokenRegistry;
     address ozDiamond;
+    address roiMod;
   
 }
 
