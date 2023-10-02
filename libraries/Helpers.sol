@@ -6,7 +6,7 @@ pragma solidity 0.8.21;
 library Helpers {
 
     function indexOf(
-        address memory array_, 
+        address[] memory array_, 
         address value_
     ) internal pure returns(int) 
     {

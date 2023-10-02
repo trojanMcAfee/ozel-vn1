@@ -2,17 +2,27 @@
 pragma solidity 0.8.21;
 
 
-import {console2} from "forge-std/Test.sol";
 import {ozTokenFactory} from "../../contracts/facets/ozTokenFactory.sol";
 import {Setup} from "./Setup.sol";
+import {ozIToken} from "../../interfaces/ozIToken.sol";
+
+import "forge-std/console.sol";
 
 
 contract ozTokenFactoryTest is Setup {
    
 
     function test_createOzToken() public {
-        address x = ozl.createOzToken(usdt, 100);
-        console2.log("x: ", x);
+        ozIToken ozUSDC = ozIToken(OZL.createOzToken(
+            usdcAddr, "Ozel Tether", "ozUSDC", USDC.decimals()
+        ));
+        assertTrue(address(ozUSDC) != address(0));
+
+        uint amount = 1000 * 10 ** ozUSDC.decimals();
+        vm.startPrank(alice);
+
+        USDC.approve(address(ozUSDC), amount);
+        ozUSDC.mint(amount);
     }
 
     //testing createOzToken here and see if it works for minting 

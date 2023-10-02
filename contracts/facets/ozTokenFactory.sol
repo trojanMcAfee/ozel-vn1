@@ -10,11 +10,11 @@ import {Helpers} from "../../libraries/Helpers.sol";
 
 
 error TokenAlreadyInRegistry(address erc20);
-error CantBeZeroAddress()
+error CantBeZeroAddress();
 
 contract ozTokenFactory {
 
-    using Helpers for address;
+    using Helpers for address[];
 
     AppStorage internal s;
 
@@ -23,14 +23,17 @@ contract ozTokenFactory {
     function createOzToken(
         address erc20_,
         string memory name_,
-        string memory symbol_
-    ) external view returns(address) { //put an onlyOwner
+        string memory symbol_,
+        uint8 decimals_
+    ) external returns(address) { //put an onlyOwner
 
         if (s.ozTokenRegistry.indexOf(erc20_) != -1) revert TokenAlreadyInRegistry(erc20_);
         if (erc20_ == address(0)) revert CantBeZeroAddress();
 
-        ozToken newToken = new ozToken(name_, symbol_, erc20_);
+        ozToken newToken = new ozToken(name_, symbol_, erc20_, decimals_);
         s.ozTokenRegistry.push(erc20_);
+
+        return address(newToken);
     }
 
     function getOzTokenRegistry() external view returns(address[] memory) {

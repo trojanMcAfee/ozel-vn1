@@ -1,66 +1,16 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.21;
 
-// import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-// import '@openzeppelin/contracts/access/AccessControl.sol';
-
-// contract ozToken2 is ERC20 { //add AccessControl here
-
-//     uint private constant _BASE = 1e18;
-
-//     uint public rewardMultiplier;
-
-//     bytes32 public constant ORACLE_ROLE = keccak256("ORACLE_ROLE");
-
-//     constructor(
-//         string memory name_, 
-//         string memory symbol_
-//     ) ERC20(name_, symbol_) {
-
-//     }
-
-//     function convertToTokens(uint shares_) public view returns(uint) {
-//         return (shares_ * rewardMultiplier) * _BASE;
-//     }
-
-
-    
-//     /**
-//         Multiplier functions
-//      */
-//     function addRewardMultiplier(uint256 _rewardMultiplierIncrement) external { //onlyRole(ORACLE_ROLE)
-//         if (_rewardMultiplierIncrement == 0) {
-//             // revert USDMInvalidRewardMultiplier(_rewardMultiplierIncrement);
-//             revert();
-//         }
-
-//         _setRewardMultiplier(rewardMultiplier + _rewardMultiplierIncrement);
-//     }
-
-
-//     function _setRewardMultiplier(uint256 _rewardMultiplier) private {
-//         if (_rewardMultiplier < _BASE) {
-//             // revert USDMInvalidRewardMultiplier(_rewardMultiplier);
-//             revert();
-//         }
-
-//         rewardMultiplier = _rewardMultiplier;
-
-//         // emit RewardMultiplier(rewardMultiplier);
-//     }
-
-
-// }
-
-
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 
+import "forge-std/console.sol";
 
-contract ozToken is Context, IERC20, IERC20Metadata {
+
+contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed here?
 
     using FixedPointMathLib for uint;
 
@@ -85,15 +35,19 @@ contract ozToken is Context, IERC20, IERC20Metadata {
 
     address private immutable _underlying;
 
+    uint8 private _decimals;
+
   
     constructor(
         string memory name_, 
         string memory symbol_,
-        address underlying_
+        address underlying_,
+        uint8 decimals_
     ) {
         _name = name_;
         _symbol = symbol_;
         _underlying = underlying_;
+        _decimals = decimals_;
     }
 
    
@@ -108,7 +62,7 @@ contract ozToken is Context, IERC20, IERC20Metadata {
 
   
     function decimals() public view virtual override returns (uint8) {
-        return 18;
+        return _decimals;
     }
 
  
@@ -117,7 +71,7 @@ contract ozToken is Context, IERC20, IERC20Metadata {
     }
 
     //mine ***
-    function getUnderlying() public view returns(address) {
+    function underlying() public view returns(address) {
         return _underlying;
     }
 
@@ -236,6 +190,35 @@ contract ozToken is Context, IERC20, IERC20Metadata {
         emit Transfer(from, to, amount);
 
         _afterTokenTransfer(from, to, amount);
+    }
+
+
+    function mint(uint amount_) external {
+        IERC20 token = IERC20(underlying());
+
+        console.log('balanceOf(sender): ', token.balanceOf(msg.sender));
+
+        
+        // bool isT = token.approve(address(this), type(uint).max); //do it with Permit2
+        // console.log('is t: ', isT);
+        
+        // bytes memory data = abi.encodeWithSelector(
+        //     token.approve.selector, 
+        //     address(this), type(uint).max
+        // );
+
+        // (bool success,) = address(token).delegatecall(data);
+        // require(success, 'ffff');
+
+        uint allow = token.allowance(msg.sender, address(this));
+        console.log('allow: ', allow);
+
+        // token.transferFrom(msg.sender, address(this), amount_);
+
+        // console.log("bal in ozToken - 1k: ", IERC20(underlying()).balanceOf(address(this)));
+
+
+
     }
 
    

@@ -24,7 +24,12 @@ interface ozIDiamond {
                                 v2
     //////////////////////////////////////////////////////////////*/
 
-    function createOzToken(address erc20_, uint amount_) external view returns(address);
+    function createOzToken(
+        address erc20_,
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) external returns(address);
 
 
 

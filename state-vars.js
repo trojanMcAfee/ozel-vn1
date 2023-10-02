@@ -47,7 +47,7 @@ const diamondABI = [
     'function getLastPrice() external view returns(uint256)',
     'function facetFunctionSelectors(address _facet) external view returns (bytes4[] facetFunctionSelectors_)',
     'function getEnergyPrice() external view returns(uint256)',
-    'function createOzToken(address erc20_, uint256 amount_) external view returns(address)'
+    'function createOzToken(address,string,string) external returns(address)'
 ];
 
 
@@ -56,8 +56,9 @@ const diamondABI = [
 //////////////////////////////////////////////////////////////*/
 
 const usdtAddr = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9';
+const usdcAddr = '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8';
 
-const registry = [usdtAddr];
+const registry = [usdcAddr];
 
 
 module.exports = {
