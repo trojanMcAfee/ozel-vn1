@@ -31,6 +31,8 @@ interface ozIDiamond {
         uint8 decimals_
     ) external returns(address);
 
+    function useUnderlying(uint256 amount_) external;
+    function getDiamondAddr() public view returns(address);
 
 
 }

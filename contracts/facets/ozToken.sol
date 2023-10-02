@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
+import {ozIDiamond} from "../../interfaces/ozIDiamond.sol";
+// import "../AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -13,6 +15,8 @@ import "forge-std/console.sol";
 contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed here?
 
     using FixedPointMathLib for uint;
+
+    // AppStorage private s;
 
     /**
         Types of balances:
@@ -195,28 +199,11 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
 
     function mint(uint amount_) external {
         IERC20 token = IERC20(underlying());
+        token.transferFrom(msg.sender, address(this), amount_);
 
-        console.log('balanceOf(sender): ', token.balanceOf(msg.sender));
+        // console.log('s: ', s.ozDiamond);
 
-        
-        // bool isT = token.approve(address(this), type(uint).max); //do it with Permit2
-        // console.log('is t: ', isT);
-        
-        // bytes memory data = abi.encodeWithSelector(
-        //     token.approve.selector, 
-        //     address(this), type(uint).max
-        // );
-
-        // (bool success,) = address(token).delegatecall(data);
-        // require(success, 'ffff');
-
-        uint allow = token.allowance(msg.sender, address(this));
-        console.log('allow: ', allow);
-
-        // token.transferFrom(msg.sender, address(this), amount_);
-
-        // console.log("bal in ozToken - 1k: ", IERC20(underlying()).balanceOf(address(this)));
-
+        ozIDiamond(s.ozDiamond).useUnderlying(amount_);
 
 
     }

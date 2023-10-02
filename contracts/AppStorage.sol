@@ -100,6 +100,7 @@ struct AppStorage {
     // AggregatorV3Interface volatilityFeed; //63
 
     address[] ozTokenRegistry;
+    address ozDiamond;
   
 }
 
