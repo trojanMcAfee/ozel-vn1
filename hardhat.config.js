@@ -4,7 +4,9 @@ require('dotenv').config();
 
 
 module.exports = {
-  solidity: "0.8.21",
+  solidity: {
+    version: "0.8.21",
+  },
   networks: {
     hardhat: {
       forking: {
@@ -12,5 +14,8 @@ module.exports = {
         blockNumber: 136177703
       }
     }
+  },
+  paths: {
+    sources: "./contracts"
   }
 };

@@ -5,7 +5,9 @@ const { deployDiamond } = require('../scripts/deploy.js')
 
 const { FacetCutAction } = require('../scripts/libraries/diamond.js')
 
-const { assert } = require('chai')
+const { assert } = require('chai');
+
+let Test1Facet;
 
 // The diamond example comes with 8 function selectors
 // [cut, loupe, loupe, loupe, loupe, erc165, transferOwnership, owner]
@@ -50,7 +52,7 @@ describe('Cache bug test', async () => {
     let diamondAddress = await deployDiamond()
     let diamondCutFacet = await ethers.getContractAt('DiamondCutFacet', diamondAddress)
     diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', diamondAddress)
-    const Test1Facet = await ethers.getContractFactory('Test1Facet')
+    Test1Facet = await ethers.getContractFactory('Test1Facet')
     test1Facet = await Test1Facet.deploy()
     await test1Facet.deployed()
 
