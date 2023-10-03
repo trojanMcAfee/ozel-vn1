@@ -50,7 +50,7 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         address underlying_,
         uint8 decimals_,
         address diamond_,
-        address roiMod_
+        address roiMod_ //group this in two structs (erc20 and diamond)
     ) {
         _name = name_;
         _symbol = symbol_;
