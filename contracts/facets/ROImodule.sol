@@ -21,28 +21,28 @@ contract ROImodule {
 
     function useUnderlying(uint amount_, address underlying_, address user_) external {
 
-        uint erc20Balance = IERC20(underlying_).balanceOf(address(this));
+        // uint erc20Balance = IERC20(underlying_).balanceOf(address(this));
 
-        //convert USDC to ETH/WETH - uniswap
+        // //convert USDC to ETH/WETH - uniswap
 
-        underlying_.safeApprove(address(s.swapRouter), amount_);
+        // underlying_.safeApprove(address(s.swapRouter), amount_);
 
-        ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({
-                tokenIn: underlying_,
-                tokenOut: s.WETH, 
-                fee: 500, //make this a programatic value
-                recipient: address(this),
-                deadline: block.timestamp,
-                amountIn: erc20Balance,
-                amountOutMinimum: _calculateMinOut(erc20Balance), 
-                sqrtPriceLimitX96: 0
-            });
+        // ISwapRouter.ExactInputSingleParams memory params =
+        //     ISwapRouter.ExactInputSingleParams({
+        //         tokenIn: underlying_,
+        //         tokenOut: s.WETH, 
+        //         fee: 500, //make this a programatic value
+        //         recipient: address(this),
+        //         deadline: block.timestamp,
+        //         amountIn: erc20Balance,
+        //         amountOutMinimum: _calculateMinOut(erc20Balance), 
+        //         sqrtPriceLimitX96: 0
+        //     });
 
-        s.swapRouter.exactInputSingle(params);
+        // s.swapRouter.exactInputSingle(params);
 
-        uint bal = IERC20(s.WETH).balanceOf(address(this));
-        console.log('WETH bal: ', bal);
+        // uint bal = IERC20(s.WETH).balanceOf(address(this));
+        // console.log('WETH bal: ', bal);
 
         //convert ETH/WETH to rETH - rocketPool
 
