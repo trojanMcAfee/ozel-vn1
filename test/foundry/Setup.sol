@@ -2,34 +2,54 @@
 pragma solidity 0.8.21;
 
 
-import {ozTokenFactory} from "../../contracts/facets/ozTokenFactory.sol";
-import {ozIDiamond, FacetCut, FacetCutAction} from "../../interfaces/ozIDiamond.sol";
-import {InitUpgradeV2} from "../../contracts/InitUpgradeV2.sol";
+import  "../../contracts/facets/ozTokenFactory.sol";
+import "../../interfaces/ozIDiamond.sol";
+import "../../contracts/upgradeInitializers/DiamondInit.sol";
 import {Test} from "forge-std/Test.sol";
-import {IERC20} from "../../lib/forge-std/src/interfaces/IERC20.sol";
-import {ROImodule} from "../../contracts/facets/ROImodule.sol";
+import "../../lib/forge-std/src/interfaces/IERC20.sol";
+import "../../contracts/facets/ROImodule.sol";
+
+import "../../contracts/facets/DiamondCutFacet.sol";
+import "../../contracts/facets/DiamondLoupeFacet.sol";
+import "../../contracts/facets/OwnershipFacet.sol";
+import "../../contracts/facets/MirrorExchange.sol";
+import "../../contracts/facets/ozTokenFactory.sol";
+import "../../contracts/facets/Pools.sol";
+import "../../contracts/facets/ROImodule.sol";
+import "../../contracts/Diamond.sol";
 
 import "forge-std/console.sol";
 
 
 contract Setup is Test {
 
-    address internal ozDiamond = 0x7D1f13Dd05E6b0673DC3D0BFa14d40A74Cfa3EF2;
+    // address internal ozDiamond = 0x7D1f13Dd05E6b0673DC3D0BFa14d40A74Cfa3EF2;
     address internal usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
     address internal usdcAddr = 0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8;
-    address internal deployer = 0xe738696676571D9b74C81716E4aE797c2440d306;
+    address internal wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
+    // address internal deployer = 0xe738696676571D9b74C81716E4aE797c2440d306;
     address internal alice;
 
     IERC20 internal USDC = IERC20(usdcAddr);
 
     ozIDiamond internal OZL;
-    InitUpgradeV2 internal initUpgrade;
+    DiamondInit internal initDiamond;
     ozTokenFactory internal factory; 
     ROImodule internal roiMod; 
+    //------
+
+    DiamondCutFacet internal cutFacet;
+    Diamond internal ozDiamond;
+    DiamondLoupeFacet internal loupe;
+    OwnershipFacet internal ownership;
+    MirrorExchange internal mirrorEx;  
+    ozTokenFactory internal factory;
+    Pools internal pools;
+    ROImodule internal roi;
 
 
-    //------------------
-
+    /** FUNCTIONS **/
+    
     function setUp() public {
         vm.createSelectFork(vm.rpcUrl("arbitrum"), 136177703);
         _runSetup();
@@ -37,19 +57,38 @@ contract Setup is Test {
 
 
     function _runSetup() internal {
+        alice = makeAddr("alice");
+
+        //Deploys diamond infra
+        cutFacet = new DiamondCutFacet();
+        ozDiamond = new Diamond(alice, address(cutFacet));
+        initDiamond = new DiamondInit();
+
+        //Deploys facets
+        loupe = new DiamondLoupeFacet();
+        ownership = new OwnershipFacet();
+        mirrorEx = new MirrorExchange();
+        factory = new ozTokenFactory();
+        pools = new Pools();
+        roi = new ROImodule();
+
+        FacetCut[] memory cuts = new FacetCut[]();
+        cuts[0] = _createCut(address(loupe), 0);
+        //deploying initially the diamond ***
+
+
+        //--------
         address[] memory registry = new address[](1);
         registry[0] = usdtAddr;
 
         factory = new ozTokenFactory();
-        initUpgrade = new InitUpgradeV2();
         roiMod = new ROImodule();
 
-        OZL = ozIDiamond(ozDiamond);
+        // OZL = ozIDiamond(ozDiamond);
 
         bytes memory data = abi.encodeWithSelector(
-            initUpgrade.init.selector, 
+            initDiamond.init.selector, 
             registry,
-            ozDiamond,
             address(roiMod)
         );
 
@@ -58,7 +97,7 @@ contract Setup is Test {
         cuts[1] = _createCut(address(roiMod), 1);
 
         vm.prank(deployer);
-        OZL.diamondCut(cuts, address(initUpgrade), data);
+        OZL.diamondCut(cuts, address(initDiamond), data);
 
         alice = makeAddr("alice");
         deal(usdcAddr, alice, 1500 * 1e6);
@@ -93,7 +132,7 @@ contract Setup is Test {
 
     function _setLabels() private {
         vm.label(address(factory), "ozTokenFactory");
-        vm.label(address(initUpgrade), "InitUpgradeV2");
+        vm.label(address(initDiamond), "DiamondInit");
         vm.label(address(roiMod), "ROImodule");
         vm.label(alice, "alice");
         vm.label(usdcAddr, "USDC");

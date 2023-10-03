@@ -14,8 +14,5 @@ module.exports = {
         blockNumber: 136177703
       }
     }
-  },
-  paths: {
-    sources: "./contracts"
   }
 };
