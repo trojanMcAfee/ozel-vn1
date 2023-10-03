@@ -1,84 +1,79 @@
+/* global ethers */
+/* eslint prefer-const: "off" */
 
-const { 
-  ozDiamondAddr,
-  deployer2,
-  registry,
-  diamondABI
-} = require("../state-vars");
+const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 
-const { 
-  impersonateAccount,
-  stopImpersonatingAccount
-} = require("@nomicfoundation/hardhat-network-helpers");
+async function deployDiamond () {
+  const accounts = await ethers.getSigners()
+  const contractOwner = accounts[0]
 
-const {
-  sendETHOps
-} = require("./helpers");
+  // deploy DiamondCutFacet
+  const DiamondCutFacet = await ethers.getContractFactory('DiamondCutFacet')
+  const diamondCutFacet = await DiamondCutFacet.deploy()
+  await diamondCutFacet.deployed()
+  console.log('DiamondCutFacet deployed:', diamondCutFacet.address)
 
-// async function main() {
-//   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-//   const unlockTime = currentTimestampInSeconds + 60;
+  // deploy Diamond
+  const Diamond = await ethers.getContractFactory('Diamond')
+  const diamond = await Diamond.deploy(contractOwner.address, diamondCutFacet.address)
+  await diamond.deployed()
+  console.log('Diamond deployed:', diamond.address)
 
-//   const lockedAmount = hre.ethers.parseEther("0.001");
+  // deploy DiamondInit
+  // DiamondInit provides a function that is called when the diamond is upgraded to initialize state variables
+  // Read about how the diamondCut function works here: https://eips.ethereum.org/EIPS/eip-2535#addingreplacingremoving-functions
+  const DiamondInit = await ethers.getContractFactory('DiamondInit')
+  const diamondInit = await DiamondInit.deploy()
+  await diamondInit.deployed()
+  console.log('DiamondInit deployed:', diamondInit.address)
 
-//   const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-//     value: lockedAmount,
-//   });
+  // deploy facets
+  console.log('')
+  console.log('Deploying facets')
+  const FacetNames = [
+    'DiamondLoupeFacet',
+    'OwnershipFacet'
+  ]
+  const cut = []
+  for (const FacetName of FacetNames) {
+    const Facet = await ethers.getContractFactory(FacetName)
+    const facet = await Facet.deploy()
+    await facet.deployed()
+    console.log(`${FacetName} deployed: ${facet.address}`)
+    cut.push({
+      facetAddress: facet.address,
+      action: FacetCutAction.Add,
+      functionSelectors: getSelectors(facet)
+    })
+  }
 
-//   await lock.waitForDeployment();
-
-//   console.log(
-//     `Lock with ${ethers.formatEther(
-//       lockedAmount
-//     )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-//   );
-// }
-
-
-async function main() {
-
-  /**
-   * Deploying and integrsting V2 to the DIAMOND
-   */
-  const Init = await hre.ethers.getContractFactory("InitUpgradeV2");
-  const init = await Init.deploy(); 
-  await init.deployed();
-  console.log('Init deployed to: ', init.address);
-
-  const TokenFactory = await hre.ethers.getContractFactory("ozTokenFactory");
-  const tokenFactory = await TokenFactory.deploy();
-  await tokenFactory.deployed();
-  console.log('ozTokenFactory deployed to: ', tokenFactory.address);
-
-  //FacetCut
-  const createTokenSelector = tokenFactory.interface.getSighash("createOzToken");
-  const facetCutArgs = [
-    [tokenFactory.address, 0, [createTokenSelector]]
-  ];
-  const facetAddresses = [ tokenFactory.address ];
-  const initData = init.interface.encodeFunctionData('init', [registry]);
-
-  await sendETHOps(1, deployer2);
-
-  await impersonateAccount(deployer2);
-  const deployerSigner = await hre.ethers.provider.getSigner(deployer2);
-  
-  const ozDiamond = await hre.ethers.getContractAt(diamondABI, ozDiamondAddr);
-  let tx = await ozDiamond.connect(deployerSigner).diamondCut(facetCutArgs, init.address, initData);
-  let receipt = await tx.wait();
-  console.log("Ozel upgraded to V2: ", receipt.transactionHash);
-  await stopImpersonatingAccount(deployer2);
-
-  /**
-   * END
-   */
-
-  const erc20 = await ozDiamond.createOzToken(registry[0], 100);
-  console.log('erc20: ', erc20);
-  console.log('registtr[0]: ', registry[0]);
-
-
+  // upgrade diamond with facets
+  console.log('')
+  console.log('Diamond Cut:', cut)
+  const diamondCut = await ethers.getContractAt('IDiamondCut', diamond.address)
+  let tx
+  let receipt
+  // call to init function
+  let functionCall = diamondInit.interface.encodeFunctionData('init')
+  tx = await diamondCut.diamondCut(cut, diamondInit.address, functionCall)
+  console.log('Diamond cut tx: ', tx.hash)
+  receipt = await tx.wait()
+  if (!receipt.status) {
+    throw Error(`Diamond upgrade failed: ${tx.hash}`)
+  }
+  console.log('Completed diamond cut')
+  return diamond.address
 }
 
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+if (require.main === module) {
+  deployDiamond()
+    .then(() => process.exit(0))
+    .catch(error => {
+      console.error(error)
+      process.exit(1)
+    })
+}
 
-main();
+exports.deployDiamond = deployDiamond
