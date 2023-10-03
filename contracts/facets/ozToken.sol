@@ -38,7 +38,8 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
     string private _symbol;
 
     address private immutable _underlying;
-    address private _ozDiamond;
+    address private immutable _ozDiamond;
+    address private _roiMod;
 
     uint8 private _decimals;
 
@@ -48,13 +49,15 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         string memory symbol_,
         address underlying_,
         uint8 decimals_,
-        address diamond_
+        address diamond_,
+        address roiMod_
     ) {
         _name = name_;
         _symbol = symbol_;
         _underlying = underlying_;
         _decimals = decimals_;
         _ozDiamond = diamond_;
+        _roiMod = roiMod_;
     }
 
     function getDiamond() public view returns(address) {
@@ -205,10 +208,13 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
 
 
     function mint(uint amount_) external {
-        IERC20 token = IERC20(underlying());
-        token.transferFrom(msg.sender, s.roiMod, amount_);
+        address erc20 = underlying();
+        IERC20 token = IERC20(erc20);
+        token.transferFrom(msg.sender, _roiMod, amount_);
 
-        ozIDiamond(_ozDiamond).useUnderlying(amount_); //fix params here
+        ozIDiamond(_ozDiamond).useUnderlying(
+            amount_, erc20, msg.sender
+        ); 
 
 
     }

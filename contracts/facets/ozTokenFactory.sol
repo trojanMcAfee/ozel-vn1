@@ -30,7 +30,7 @@ contract ozTokenFactory {
         if (s.ozTokenRegistry.indexOf(erc20_) != -1) revert TokenAlreadyInRegistry(erc20_);
         if (erc20_ == address(0)) revert CantBeZeroAddress();
 
-        ozToken newToken = new ozToken(name_, symbol_, erc20_, decimals_, s.ozDiamond);
+        ozToken newToken = new ozToken(name_, symbol_, erc20_, decimals_, s.ozDiamond, s.roiMod);
         s.ozTokenRegistry.push(erc20_);
 
         return address(newToken);
