@@ -21,30 +21,31 @@ contract ROImodule {
 
     function useUnderlying(uint amount_, address underlying_, address user_) external {
 
-        // uint erc20Balance = IERC20(underlying_).balanceOf(address(this));
+        uint erc20Balance = IERC20(underlying_).balanceOf(address(this));
+        console.log('erc20: ', erc20Balance); //error here ***
 
-        // //convert USDC to ETH/WETH - uniswap
+        //convert USDC to ETH/WETH - uniswap
 
-        // underlying_.safeApprove(address(s.swapRouter), amount_);
+        underlying_.safeApprove(s.swapRouterUni, amount_);
 
-        // ISwapRouter.ExactInputSingleParams memory params =
-        //     ISwapRouter.ExactInputSingleParams({
-        //         tokenIn: underlying_,
-        //         tokenOut: s.WETH, 
-        //         fee: 500, //make this a programatic value
-        //         recipient: address(this),
-        //         deadline: block.timestamp,
-        //         amountIn: erc20Balance,
-        //         amountOutMinimum: _calculateMinOut(erc20Balance), 
-        //         sqrtPriceLimitX96: 0
-        //     });
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({
+                tokenIn: underlying_,
+                tokenOut: s.WETH, 
+                fee: 500, //make this a programatic value
+                recipient: address(this),
+                deadline: block.timestamp,
+                amountIn: erc20Balance,
+                amountOutMinimum: 1, //_calculateMinOut(erc20Balance) 
+                sqrtPriceLimitX96: 0
+            });
 
-        // s.swapRouter.exactInputSingle(params);
+        ISwapRouter(s.swapRouterUni).exactInputSingle(params);
 
-        // uint bal = IERC20(s.WETH).balanceOf(address(this));
-        // console.log('WETH bal: ', bal);
+        uint bal = IERC20(s.WETH).balanceOf(address(this));
+        console.log('WETH bal: ', bal);
 
-        //convert ETH/WETH to rETH - rocketPool
+        // convert ETH/WETH to rETH - rocketPool
 
     }
 
@@ -55,12 +56,12 @@ contract ROImodule {
      * s.defaultSlippage is set to 100 (1%) atm
      * add a fallback oracle like uni's TWAP
      */
-    // function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
-    //     (,int price,,,) = s.priceFeed.latestRoundData();
-    //     uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-    //     uint minOutUnprocessed = 
-    //         expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
-    //     minOut = minOutUnprocessed.mulWad(10 ** 6);
-    // }
+    function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
+        (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+        uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+        uint minOutUnprocessed = 
+            expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
+        minOut = minOutUnprocessed.mulWad(10 ** 6);
+    }
 
 }

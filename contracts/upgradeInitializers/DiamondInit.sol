@@ -30,7 +30,11 @@ contract DiamondInit {
     function init(
         address[] memory registry_,
         address roiMod_,
-        address diamond_
+        address diamond_,
+        address swapRouter_,
+        address priceFeed_,
+        address wethAddr_,
+        uint defaultSlippage_
     ) external {
         // adding ERC165 data **** COMPLETE this with rest of funcs/interfaces
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
@@ -46,6 +50,10 @@ contract DiamondInit {
 
         s.ozDiamond = diamond_;
         s.roiMod = roiMod_;
+        s.swapRouterUni = swapRouter_;
+        s.ethUsdChainlink = priceFeed_;
+        s.WETH = wethAddr_;
+        s.defaultSlippage = defaultSlippage_;
     }
 
 

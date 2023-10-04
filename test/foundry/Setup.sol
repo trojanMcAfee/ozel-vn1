@@ -20,11 +20,20 @@ import "forge-std/console.sol";
 
 
 contract Setup is Test {
-
-    address internal usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
-    address internal usdcAddr = 0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8;
-    address internal wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
     address internal owner;
+
+    //ERC20s
+    address internal usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
+    address internal usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
+    address internal wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
+
+    //For debugging purposes
+    address private usdcAddrImpl = 0x0f4fb9474303d10905AB86aA8d5A65FE44b6E04A;
+    address private wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
+    
+    //Contracts
+    address internal swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
+    address internal ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
 
     IERC20 internal USDC = IERC20(usdcAddr);
 
@@ -43,6 +52,8 @@ contract Setup is Test {
     ROImodule internal roi;
 
     ozIDiamond internal OZ;
+
+    uint defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
 
     /** FUNCTIONS **/
     
@@ -87,7 +98,11 @@ contract Setup is Test {
             initDiamond.init.selector, 
             registry,
             address(roi),
-            address(ozDiamond)
+            address(ozDiamond),
+            swapRouterUni,
+            ethUsdChainlink,
+            wethAddr,
+            defaultSlippage
         );
 
         OZ = ozIDiamond(address(ozDiamond));
@@ -96,39 +111,8 @@ contract Setup is Test {
         vm.prank(owner);
         OZ.diamondCut(cuts, address(initDiamond), initData);
 
-
-
         //Sets labels
-        _setLabels();
-        
-
-
-        //--------
-        // address[] memory registry = new address[](1);
-        // registry[0] = usdtAddr;
-
-        // factory = new ozTokenFactory();
-        // roiMod = new ROImodule();
-
-        // // OZL = ozIDiamond(ozDiamond);
-
-        // bytes memory data = abi.encodeWithSelector(
-        //     initDiamond.init.selector, 
-        //     registry,
-        //     address(roiMod)
-        // );
-
-        // FacetCut[] memory cuts = new FacetCut[](2);
-        // cuts[0] = _createCut(address(factory), 0);
-        // cuts[1] = _createCut(address(roiMod), 1);
-
-        // vm.prank(deployer);
-        // OZL.diamondCut(cuts, address(initDiamond), data);
-
-        // owner = makeAddr("owner");
-        // deal(usdcAddr, owner, 1500 * 1e6);
-
-        // _setLabels();
+        _setLabels(); 
     }
 
 
@@ -182,7 +166,7 @@ contract Setup is Test {
         vm.label(address(initDiamond), "DiamondInit");
         vm.label(address(roiMod), "ROImodule");
         vm.label(owner, "owner");
-        vm.label(usdcAddr, "USDC");
+        vm.label(usdcAddr, "USDCproxy");
         vm.label(usdtAddr, "USDT");
         vm.label(address(ozDiamond), "ozDiamond");
         vm.label(address(initDiamond), "DiamondInit");
@@ -191,6 +175,11 @@ contract Setup is Test {
         vm.label(address(ownership), "OwnershipFacet");
         vm.label(address(mirrorEx), "MirrorExchange");
         vm.label(address(pools), "Pools");
+        vm.label(swapRouterUni, "SwapRouterUniswap");
+        vm.label(ethUsdChainlink, "ETHUSDfeedChainlink");
+        vm.label(wethAddr, "WETH");
+        vm.label(usdcAddrImpl, "USDCimpl");
+        vm.label(wethUsdPool, "WETHUSDpool");
     }
 
 
