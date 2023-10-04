@@ -83,10 +83,14 @@ contract Setup is Test {
         address[] memory registry = new address[](1);
         registry[0] = usdtAddr;
 
+        // console.log('roiMod in SETUP2: ', address(roi));
+        //problem is here. address(ROImod is 0)
+
         bytes memory initData = abi.encodeWithSelector(
             initDiamond.init.selector, 
             registry,
-            address(roiMod)
+            address(roi),
+            address(ozDiamond)
         );
 
         OZ = ozIDiamond(address(ozDiamond));

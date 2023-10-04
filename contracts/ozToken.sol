@@ -9,7 +9,7 @@ import "solady/src/utils/FixedPointMathLib.sol";
 import "./interfaces/ozIDiamond.sol";
 // import "../AppStorage.sol";
 
-// import "forge-std/console.sol";
+import "forge-std/console.sol";
 
 
 contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed here?
@@ -210,6 +210,7 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
     function mint(uint amount_) external {
         address erc20 = underlying();
         IERC20 token = IERC20(erc20);
+        console.log('roiMod in ozToken: ', _roiMod);
         token.transferFrom(msg.sender, _roiMod, amount_);
 
         ozIDiamond(_ozDiamond).useUnderlying(

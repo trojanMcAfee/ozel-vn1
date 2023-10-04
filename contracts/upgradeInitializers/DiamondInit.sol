@@ -15,6 +15,7 @@ import { IERC173 } from "../interfaces/IERC173.sol";
 import { IERC165 } from "../interfaces/IERC165.sol";
 
 import "../AppStorage.sol";
+import "forge-std/console.sol";
 
 // It is expected that this contract is customized if you want to deploy your diamond
 // with data from a deployment script. Use the init function to initialize state variables
@@ -28,7 +29,8 @@ contract DiamondInit {
     // data to set your own state variables
     function init(
         address[] memory registry_,
-        address roiMod_
+        address roiMod_,
+        address diamond_
     ) external {
         // adding ERC165 data **** COMPLETE this with rest of funcs/interfaces
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
@@ -42,7 +44,10 @@ contract DiamondInit {
             s.ozTokenRegistry.push(registry_[i]);
         }
 
+        s.ozDiamond = diamond_;
         s.roiMod = roiMod_;
+
+        console.log('roiMod in init: ', roiMod_);
     }
 
 
