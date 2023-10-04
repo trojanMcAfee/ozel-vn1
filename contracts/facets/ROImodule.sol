@@ -22,28 +22,30 @@ contract ROImodule {
     function useUnderlying(uint amount_, address underlying_, address user_) external {
 
         uint erc20Balance = IERC20(underlying_).balanceOf(address(this));
-        console.log('erc20: ', erc20Balance); //error here ***
+        console.log('erc20: ', erc20Balance); 
+        // console.log('address(this) - should be roi: ', address(this));
+        // console.log('ozDiamond: ', s.ozDiamond);
 
         //convert USDC to ETH/WETH - uniswap
 
-        underlying_.safeApprove(s.swapRouterUni, amount_);
+        // underlying_.safeApprove(s.swapRouterUni, amount_);
 
-        ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({
-                tokenIn: underlying_,
-                tokenOut: s.WETH, 
-                fee: 500, //make this a programatic value
-                recipient: address(this),
-                deadline: block.timestamp,
-                amountIn: erc20Balance,
-                amountOutMinimum: 1, //_calculateMinOut(erc20Balance) 
-                sqrtPriceLimitX96: 0
-            });
+        // ISwapRouter.ExactInputSingleParams memory params =
+        //     ISwapRouter.ExactInputSingleParams({
+        //         tokenIn: underlying_,
+        //         tokenOut: s.WETH, 
+        //         fee: 500, //make this a programatic value
+        //         recipient: address(this),
+        //         deadline: block.timestamp,
+        //         amountIn: erc20Balance,
+        //         amountOutMinimum: 1, //_calculateMinOut(erc20Balance) 
+        //         sqrtPriceLimitX96: 0
+        //     });
 
-        ISwapRouter(s.swapRouterUni).exactInputSingle(params);
+        // ISwapRouter(s.swapRouterUni).exactInputSingle(params);
 
-        uint bal = IERC20(s.WETH).balanceOf(address(this));
-        console.log('WETH bal: ', bal);
+        // uint bal = IERC20(s.WETH).balanceOf(address(this));
+        // console.log('WETH bal: ', bal);
 
         // convert ETH/WETH to rETH - rocketPool
 

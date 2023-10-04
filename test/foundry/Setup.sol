@@ -97,7 +97,6 @@ contract Setup is Test {
         bytes memory initData = abi.encodeWithSelector(
             initDiamond.init.selector, 
             registry,
-            address(roi),
             address(ozDiamond),
             swapRouterUni,
             ethUsdChainlink,

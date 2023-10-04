@@ -12,7 +12,6 @@ struct AppStorage {
 
     address[] ozTokenRegistry;
     address ozDiamond;
-    address roiMod;
     address WETH;
 
     address swapRouterUni;

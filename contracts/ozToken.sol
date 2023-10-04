@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import "./interfaces/ozIDiamond.sol";
-// import "../AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -15,8 +14,6 @@ import "forge-std/console.sol";
 contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed here?
 
     using FixedPointMathLib for uint;
-
-    // AppStorage private s;
 
     /**
         Types of balances:
@@ -39,7 +36,6 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
 
     address private immutable _underlying;
     address private immutable _ozDiamond;
-    address private _roiMod;
 
     uint8 private _decimals;
 
@@ -49,15 +45,13 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         string memory symbol_,
         address underlying_,
         uint8 decimals_,
-        address diamond_,
-        address roiMod_ //group this in two structs (erc20 and diamond)
+        address diamond_ //group this in two structs (erc20 and diamond)
     ) {
         _name = name_;
         _symbol = symbol_;
         _underlying = underlying_;
         _decimals = decimals_;
         _ozDiamond = diamond_;
-        _roiMod = roiMod_;
     }
 
     function getDiamond() public view returns(address) {
@@ -210,7 +204,8 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
     function mint(uint amount_) external {
         address erc20 = underlying();
         IERC20 token = IERC20(erc20);
-        token.transferFrom(msg.sender, _roiMod, amount_);
+        token.transferFrom(msg.sender, _ozDiamond, amount_);
+        // console.log('bal2: ', token.balanceOf(msg.sender));
 
         ozIDiamond(_ozDiamond).useUnderlying(
             amount_, erc20, msg.sender

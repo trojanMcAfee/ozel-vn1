@@ -29,7 +29,6 @@ contract DiamondInit {
     // data to set your own state variables
     function init(
         address[] memory registry_,
-        address roiMod_,
         address diamond_,
         address swapRouter_,
         address priceFeed_,
@@ -49,7 +48,6 @@ contract DiamondInit {
         }
 
         s.ozDiamond = diamond_;
-        s.roiMod = roiMod_;
         s.swapRouterUni = swapRouter_;
         s.ethUsdChainlink = priceFeed_;
         s.WETH = wethAddr_;
