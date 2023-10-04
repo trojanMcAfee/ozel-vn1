@@ -2,9 +2,9 @@
 pragma solidity 0.8.21;
 
 
-import {ozTokenFactory} from "../../contracts/facets/ozTokenFactory.sol";
-import {Setup} from "./Setup.sol";
-import {ozIToken} from "../../interfaces/ozIToken.sol";
+import "../../contracts/facets/ozTokenFactory.sol";
+import "./Setup.sol";
+import "../../contracts/interfaces/ozIToken.sol";
 
 import "forge-std/console.sol";
 
@@ -19,7 +19,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(address(ozUSDC) != address(0));
 
         uint amount = 1000 * 10 ** ozUSDC.decimals();
-        vm.startPrank(alice);
+        vm.startPrank(owner);
 
         USDC.approve(address(ozUSDC), amount);
         ozUSDC.mint(amount);

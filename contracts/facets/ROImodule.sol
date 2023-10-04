@@ -55,12 +55,12 @@ contract ROImodule {
      * s.defaultSlippage is set to 100 (1%) atm
      * add a fallback oracle like uni's TWAP
      */
-    function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
-        (,int price,,,) = s.priceFeed.latestRoundData();
-        uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-        uint minOutUnprocessed = 
-            expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
-        minOut = minOutUnprocessed.mulWad(10 ** 6);
-    }
+    // function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
+    //     (,int price,,,) = s.priceFeed.latestRoundData();
+    //     uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+    //     uint minOutUnprocessed = 
+    //         expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
+    //     minOut = minOutUnprocessed.mulWad(10 ** 6);
+    // }
 
 }
