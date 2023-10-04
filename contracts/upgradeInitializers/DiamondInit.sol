@@ -46,8 +46,6 @@ contract DiamondInit {
 
         s.ozDiamond = diamond_;
         s.roiMod = roiMod_;
-
-        console.log('roiMod in init: ', roiMod_);
     }
 
 
