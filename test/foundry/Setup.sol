@@ -42,7 +42,7 @@ contract Setup is Test {
     Pools internal pools;
     ROImodule internal roi;
 
-    ozIDiamond internal OZL; //check if it needs to be removed
+    ozIDiamond internal OZ;
 
     /** FUNCTIONS **/
     
@@ -89,9 +89,13 @@ contract Setup is Test {
             address(roiMod)
         );
 
+        OZ = ozIDiamond(address(ozDiamond));
+
         //Initialize diamond
         vm.prank(owner);
-        cutFacet.diamondCut(cuts, address(initDiamond), initData);
+        OZ.diamondCut(cuts, address(initDiamond), initData);
+
+
 
         //Sets labels
         _setLabels();
@@ -136,7 +140,7 @@ contract Setup is Test {
             length = 5;
         } else if (id_ == 1) {
             length = 2;
-        } else if (id_ == 2) {
+        } else if (id_ == 2 || id_ == 4 || id_ == 5) {
             length = 1;
         } else if (id_ == 3) {
             length = 3;

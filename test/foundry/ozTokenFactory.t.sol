@@ -13,7 +13,7 @@ contract ozTokenFactoryTest is Setup {
    
 
     function test_createOzToken() public {
-        ozIToken ozUSDC = ozIToken(OZL.createOzToken(
+        ozIToken ozUSDC = ozIToken(OZ.createOzToken(
             usdcAddr, "Ozel Tether", "ozUSDC", USDC.decimals()
         ));
         assertTrue(address(ozUSDC) != address(0));
