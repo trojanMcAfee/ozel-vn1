@@ -5,15 +5,16 @@ pragma solidity 0.8.21;
 import "../../contracts/interfaces/ozIDiamond.sol";
 import "../../contracts/upgradeInitializers/DiamondInit.sol";
 import {Test} from "forge-std/Test.sol";
-// import "../../lib/forge-std/src/interfaces/IERC20.sol";
-import "../../contracts/facets/ROImodule.sol";
+import "../../lib/forge-std/src/interfaces/IERC20.sol";
+import {ROImodule} from "../../contracts/facets/ROImodule.sol";
 import "../../contracts/facets/DiamondCutFacet.sol";
 import "../../contracts/facets/DiamondLoupeFacet.sol";
 import "../../contracts/facets/OwnershipFacet.sol";
 import "../../contracts/facets/MirrorExchange.sol";
-import "../../contracts/facets/ozTokenFactory.sol";
+import {ozTokenFactory} from "../../contracts/facets/ozTokenFactory.sol";
 import "../../contracts/facets/Pools.sol";
 import "../../contracts/Diamond.sol";
+import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol"; 
 
 import "forge-std/console.sol";
 
@@ -164,9 +165,9 @@ contract Setup is Test {
             selectors[0] = roi.useUnderlying.selector;
         }
 
-        cut = FacetCut({
+        cut = IDiamondCut.FacetCut({
             facetAddress: contractAddr_,
-            action: FacetCutAction.Add,
+            action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: selectors
         });
     }

@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import "../../contracts/facets/ozTokenFactory.sol";
-import "./Setup.sol";
+import {Setup} from "./Setup.sol";
 import "../../contracts/interfaces/ozIToken.sol";
 
 import "forge-std/console.sol";

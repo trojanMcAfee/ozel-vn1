@@ -13,8 +13,8 @@
   },
   "files": {
     "contracts/AppStorage.sol": {
-      "lastModificationDate": 1696282926087,
-      "contentHash": "94b2757d0de01ffafc613cc97eb37dde",
+      "lastModificationDate": 1696368327235,
+      "contentHash": "76805238f55c51b2d79de41a0e997bba",
       "sourceName": "contracts/AppStorage.sol",
       "solcConfig": {
         "settings": {
@@ -102,8 +102,8 @@
       }
     },
     "contracts/InitUpgradeV2.sol": {
-      "lastModificationDate": 1696282926088,
-      "contentHash": "228943a8da7642c8874d1f9b9d94c9ce",
+      "lastModificationDate": 1696363545612,
+      "contentHash": "1ab21a016b9a51c8b6488f6e6bec2019",
       "sourceName": "contracts/InitUpgradeV2.sol",
       "solcConfig": {
         "settings": {
@@ -136,7 +136,6 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
-        "lib/forge-std/src/console.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
         "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
@@ -239,8 +238,8 @@
       }
     },
     "contracts/facets/MirrorExchange.sol": {
-      "lastModificationDate": 1696119877498,
-      "contentHash": "460c225b04e3e6449ece295369643c98",
+      "lastModificationDate": 1696424620308,
+      "contentHash": "2da5e00baf5cb7a3ad29702071bcb461",
       "sourceName": "contracts/facets/MirrorExchange.sol",
       "solcConfig": {
         "settings": {
@@ -325,8 +324,8 @@
       }
     },
     "contracts/facets/Pools.sol": {
-      "lastModificationDate": 1696119882966,
-      "contentHash": "460c225b04e3e6449ece295369643c98",
+      "lastModificationDate": 1696424619923,
+      "contentHash": "4fa1881fdf760189be570906b5f54b8c",
       "sourceName": "contracts/facets/Pools.sol",
       "solcConfig": {
         "settings": {
@@ -366,8 +365,8 @@
       }
     },
     "contracts/facets/ROImodule.sol": {
-      "lastModificationDate": 1696360071263,
-      "contentHash": "5e3654437b97b886be4965575b73d0cb",
+      "lastModificationDate": 1696424702527,
+      "contentHash": "250679f817a8d13aa5549c1e58ee2c8a",
       "sourceName": "contracts/facets/ROImodule.sol",
       "solcConfig": {
         "settings": {
@@ -400,7 +399,6 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
-        "lib/forge-std/src/console.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
@@ -415,57 +413,9 @@
         }
       }
     },
-    "contracts/facets/ozToken.sol": {
-      "lastModificationDate": 1696343295606,
-      "contentHash": "df0f67130b8debfa8125a36cf51d097e",
-      "sourceName": "contracts/facets/ozToken.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "interfaces/ozIDiamond.sol",
-        "lib/forge-std/src/console.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
-        "node_modules/@openzeppelin/contracts/utils/Context.sol",
-        "node_modules/solady/src/utils/FixedPointMathLib.sol"
-      ],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "ozToken": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozToken.sol/ozToken.json"
-        }
-      }
-    },
     "contracts/facets/ozTokenFactory.sol": {
-      "lastModificationDate": 1696343211029,
-      "contentHash": "f0ac3198be6c1f9b0d6c664f91581800",
+      "lastModificationDate": 1696425346649,
+      "contentHash": "ac736730ce2c23d24e20fbb661ddf43c",
       "sourceName": "contracts/facets/ozTokenFactory.sol",
       "solcConfig": {
         "settings": {
@@ -498,10 +448,9 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
-        "contracts/facets/ozToken.sol",
-        "interfaces/ozIDiamond.sol",
-        "lib/forge-std/src/console.sol",
-        "libraries/Helpers.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/ozToken.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
@@ -681,6 +630,129 @@
         }
       }
     },
+    "contracts/interfaces/ozIDiamond.sol": {
+      "lastModificationDate": 1696342631769,
+      "contentHash": "25dccb4ff0fcfd77843d570e24cb6caf",
+      "sourceName": "contracts/interfaces/ozIDiamond.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozIDiamond": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozIDiamond.sol/ozIDiamond.json"
+        }
+      }
+    },
+    "contracts/interfaces/ozIToken.sol": {
+      "lastModificationDate": 1696250538478,
+      "contentHash": "574944a2870eb534e9ebfbf969402e6d",
+      "sourceName": "contracts/interfaces/ozIToken.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozIToken": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozIToken.sol/ozIToken.json"
+        }
+      }
+    },
+    "contracts/libraries/Helpers.sol": {
+      "lastModificationDate": 1696245832337,
+      "contentHash": "4fd982fdfb8a1b0ec332297c79f9c61d",
+      "sourceName": "contracts/libraries/Helpers.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "Helpers": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "Helpers.sol/Helpers.json"
+        }
+      }
+    },
     "contracts/libraries/LibDiamond.sol": {
       "lastModificationDate": 1696360342458,
       "contentHash": "ad99c555b443b1011aba93333e65bb3a",
@@ -724,9 +796,138 @@
         }
       }
     },
+    "contracts/ozToken.sol": {
+      "lastModificationDate": 1696425642057,
+      "contentHash": "6dab9de943c1beb07f73d752faacf4e3",
+      "sourceName": "contracts/ozToken.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/interfaces/ozIDiamond.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
+        "node_modules/solady/src/utils/FixedPointMathLib.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozToken": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozToken.sol/ozToken.json"
+        }
+      }
+    },
+    "contracts/tests-diamond/Test1Facet.sol": {
+      "lastModificationDate": 1696363959384,
+      "contentHash": "bce12b475d069cdeb952a3684c8e17ec",
+      "sourceName": "contracts/tests-diamond/Test1Facet.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "^0.8.0",
+      "artifacts": {
+        "Test1Facet": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "Test1Facet.sol/Test1Facet.json"
+        }
+      }
+    },
+    "contracts/tests-diamond/Test2Facet.sol": {
+      "lastModificationDate": 1696363959385,
+      "contentHash": "14c5b41044aee6c68426a928f3455d72",
+      "sourceName": "contracts/tests-diamond/Test2Facet.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "^0.8.0",
+      "artifacts": {
+        "Test2Facet": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "Test2Facet.sol/Test2Facet.json"
+        }
+      }
+    },
     "contracts/upgradeInitializers/DiamondInit.sol": {
-      "lastModificationDate": 1696360342458,
-      "contentHash": "a721ceb583ffa12ad799996378bcf846",
+      "lastModificationDate": 1696368327234,
+      "contentHash": "fc14b1a3b9c70f9b226fb1e3af5739cc",
       "sourceName": "contracts/upgradeInitializers/DiamondInit.sol",
       "solcConfig": {
         "settings": {
@@ -758,98 +959,20 @@
         }
       },
       "imports": [
+        "contracts/AppStorage.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
         "contracts/interfaces/IERC165.sol",
         "contracts/interfaces/IERC173.sol",
-        "contracts/libraries/LibDiamond.sol"
+        "contracts/libraries/LibDiamond.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
       ],
       "versionRequirement": "^0.8.0",
       "artifacts": {
         "DiamondInit": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "DiamondInit.sol/DiamondInit.json"
-        }
-      }
-    },
-    "interfaces/ozIDiamond.sol": {
-      "lastModificationDate": 1696342631769,
-      "contentHash": "25dccb4ff0fcfd77843d570e24cb6caf",
-      "sourceName": "interfaces/ozIDiamond.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "ozIDiamond": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozIDiamond.sol/ozIDiamond.json"
-        }
-      }
-    },
-    "interfaces/ozIToken.sol": {
-      "lastModificationDate": 1696250538478,
-      "contentHash": "574944a2870eb534e9ebfbf969402e6d",
-      "sourceName": "interfaces/ozIToken.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "ozIToken": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozIToken.sol/ozIToken.json"
         }
       }
     },
@@ -1643,47 +1766,6 @@
         }
       }
     },
-    "libraries/Helpers.sol": {
-      "lastModificationDate": 1696245832337,
-      "contentHash": "4fd982fdfb8a1b0ec332297c79f9c61d",
-      "sourceName": "libraries/Helpers.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "Helpers": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "Helpers.sol/Helpers.json"
-        }
-      }
-    },
     "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol": {
       "lastModificationDate": 1696097148213,
       "contentHash": "29c520cd24ad9a3f2c9cf285fee25f05",
@@ -2019,8 +2101,8 @@
       }
     },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1696335004770,
-      "contentHash": "e5e6beb1006cc8493892d62a9a79c638",
+      "lastModificationDate": 1696428527005,
+      "contentHash": "ec79a9435f194641b741116597766516",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -2053,11 +2135,23 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
-        "contracts/InitUpgradeV2.sol",
+        "contracts/Diamond.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
         "contracts/facets/ROImodule.sol",
-        "contracts/facets/ozToken.sol",
         "contracts/facets/ozTokenFactory.sol",
-        "interfaces/ozIDiamond.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/ozToken.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -2076,7 +2170,6 @@
         "lib/forge-std/src/console2.sol",
         "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
-        "libraries/Helpers.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
@@ -2094,8 +2187,8 @@
       }
     },
     "test/foundry/ozTokenFactory.t.sol": {
-      "lastModificationDate": 1696270401003,
-      "contentHash": "b4b169d91850aba99c06d70c347e2f62",
+      "lastModificationDate": 1696426477161,
+      "contentHash": "5affe8927c2583cf593a0b6c6feba3f7",
       "sourceName": "test/foundry/ozTokenFactory.t.sol",
       "solcConfig": {
         "settings": {
@@ -2128,12 +2221,24 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
-        "contracts/InitUpgradeV2.sol",
+        "contracts/Diamond.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
         "contracts/facets/ROImodule.sol",
-        "contracts/facets/ozToken.sol",
         "contracts/facets/ozTokenFactory.sol",
-        "interfaces/ozIDiamond.sol",
-        "interfaces/ozIToken.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/ozToken.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -2152,7 +2257,6 @@
         "lib/forge-std/src/console2.sol",
         "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
-        "libraries/Helpers.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
