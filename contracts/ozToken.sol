@@ -6,13 +6,15 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
-import "./interfaces/ozIDiamond.sol";
+import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
+import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 
 import "forge-std/console.sol";
 
 
 contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed here?
 
+    using TransferHelper for address;
     using FixedPointMathLib for uint;
 
     /**
@@ -202,15 +204,12 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
 
 
     function mint(uint amount_) external {
-        address erc20 = underlying();
-        IERC20 token = IERC20(erc20);
-        token.transferFrom(msg.sender, _ozDiamond, amount_);
+        address token = underlying();
+        token.safeTransferFrom(msg.sender, _ozDiamond, amount_);
 
         ozIDiamond(_ozDiamond).useUnderlying(
-            amount_, erc20, msg.sender
+            amount_, token, msg.sender
         ); 
-
-
     }
 
    
