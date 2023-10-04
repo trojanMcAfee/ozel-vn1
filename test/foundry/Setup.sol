@@ -33,7 +33,7 @@ contract Setup is Test {
     
     //Contracts
     address internal swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
-    address internal ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
+    address internal ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
 
     IERC20 internal USDC = IERC20(usdcAddr);
 

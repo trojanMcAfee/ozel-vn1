@@ -205,7 +205,6 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         address erc20 = underlying();
         IERC20 token = IERC20(erc20);
         token.transferFrom(msg.sender, _ozDiamond, amount_);
-        // console.log('bal2: ', token.balanceOf(msg.sender));
 
         ozIDiamond(_ozDiamond).useUnderlying(
             amount_, erc20, msg.sender
