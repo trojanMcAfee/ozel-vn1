@@ -5,9 +5,9 @@ pragma solidity 0.8.21;
 import "../../contracts/interfaces/ozIDiamond.sol";
 import "../../contracts/upgradeInitializers/DiamondInit.sol";
 import {Test} from "forge-std/Test.sol";
-import "../../lib/forge-std/src/interfaces/IERC20.sol";
+// import "../../lib/forge-std/src/interfaces/IERC20.sol";
 import "../../contracts/facets/ROImodule.sol";
-import "../../contracts/interfaces/IDiamondCut.sol";
+import "../../contracts/facets/DiamondCutFacet.sol";
 import "../../contracts/facets/DiamondLoupeFacet.sol";
 import "../../contracts/facets/OwnershipFacet.sol";
 import "../../contracts/facets/MirrorExchange.sol";
@@ -27,20 +27,21 @@ contract Setup is Test {
 
     IERC20 internal USDC = IERC20(usdcAddr);
 
-    ozIDiamond internal OZL;
+    //Default diamond contracts and facets
     DiamondInit internal initDiamond;
-    ozTokenFactory internal factory; 
-    ROImodule internal roiMod; 
-    //------
-
     DiamondCutFacet internal cutFacet;
-    Diamond internal ozDiamond;
     DiamondLoupeFacet internal loupe;
     OwnershipFacet internal ownership;
+    Diamond internal ozDiamond;
+
+    //Ozel custom facets
+    ozTokenFactory internal factory; 
+    ROImodule internal roiMod; 
     MirrorExchange internal mirrorEx;  
     Pools internal pools;
     ROImodule internal roi;
 
+    ozIDiamond internal OZL; //check if it needs to be removed
 
     /** FUNCTIONS **/
     
@@ -128,7 +129,7 @@ contract Setup is Test {
     function _createCut(
         address contractAddr_, 
         uint id_
-    ) private view returns(FacetCut memory cut) {
+    ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
         if (id_ == 0) {
             length = 5;
