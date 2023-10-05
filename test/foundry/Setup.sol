@@ -6,7 +6,7 @@ import "../../contracts/interfaces/ozIDiamond.sol";
 import "../../contracts/upgradeInitializers/DiamondInit.sol";
 import {Test} from "forge-std/Test.sol";
 import "../../lib/forge-std/src/interfaces/IERC20.sol";
-import {ROImodule} from "../../contracts/facets/ROImodule.sol";
+import {ROImoduleL2} from "../../contracts/facets/ROImoduleL2.sol";
 import "../../contracts/facets/DiamondCutFacet.sol";
 import "../../contracts/facets/DiamondLoupeFacet.sol";
 import "../../contracts/facets/OwnershipFacet.sol";
@@ -53,10 +53,9 @@ contract Setup is Test {
 
     //Ozel custom facets
     ozTokenFactory internal factory; 
-    ROImodule internal roiMod; 
     MirrorExchange internal mirrorEx;  
     Pools internal pools;
-    ROImodule internal roi;
+    ROImoduleL2 internal roiL2;
 
     ozIDiamond internal OZ;
 
@@ -115,7 +114,7 @@ contract Setup is Test {
         mirrorEx = new MirrorExchange();
         factory = new ozTokenFactory();
         pools = new Pools();
-        roi = new ROImodule();
+        roiL2 = new ROImoduleL2();
 
         //Create initial FacetCuts
         IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](6);
@@ -124,7 +123,7 @@ contract Setup is Test {
         cuts[2] = _createCut(address(mirrorEx), 2);
         cuts[3] = _createCut(address(factory), 3);
         cuts[4] = _createCut(address(pools), 4);
-        cuts[5] = _createCut(address(roi), 5);
+        cuts[5] = _createCut(address(roiL2), 5);
 
         //Create ERC20 registry
         address[] memory registry = new address[](1);
@@ -186,7 +185,7 @@ contract Setup is Test {
         } else if (id_ == 4) { //Pools
             selectors[0] = 0xe9e05c43;
         } else if (id_ == 5) {
-            selectors[0] = roi.useUnderlying.selector;
+            selectors[0] = roiL2.useUnderlying.selector;
         }
 
         cut = IDiamondCut.FacetCut({
@@ -199,7 +198,7 @@ contract Setup is Test {
     function _setLabels() private {
         vm.label(address(factory), "ozTokenFactory");
         vm.label(address(initDiamond), "DiamondInit");
-        vm.label(address(roiMod), "ROImodule");
+        vm.label(address(roiL2), "ROImoduleL2");
         vm.label(owner, "owner");
         vm.label(usdcAddr, "USDCproxy");
         vm.label(usdtAddr, "USDT");
