@@ -9,12 +9,11 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {AppStorage} from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
+import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
 
 import "forge-std/console.sol";
 
-interface IRouter {
-    function refundETH() external payable;
-}
+
 
 
 contract ROImodule {
@@ -24,12 +23,9 @@ contract ROImodule {
 
     AppStorage internal s;
 
-    function useUnderlying(uint amount_, address underlying_, address user_) external 
-    {
+    function useUnderlying(uint amount_, address underlying_, address user_) external {
+        //Convert underlying to ETH
         uint erc20Balance = IERC20(underlying_).balanceOf(address(this));
-
-        //convert USDC to ETH/WETH - uniswap
-
         underlying_.safeApprove(s.swapRouterUni, amount_);
 
         ISwapRouter.ExactInputSingleParams memory params =
@@ -45,12 +41,9 @@ contract ROImodule {
             });
 
         ISwapRouter(s.swapRouterUni).exactInputSingle(params);
-
         IWETH(s.WETH).withdraw(IERC20(s.WETH).balanceOf(address(this)));
 
-
-        // uint bal = IERC20(s.WETH).balanceOf(address(this));
-        console.log('ETH bal: ', address(this).balance);
+        //Stake ETH in RocketPool
 
         // convert ETH/WETH to rETH - rocketPool
 
