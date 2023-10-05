@@ -21,22 +21,28 @@ import "forge-std/console.sol";
 
 contract Setup is Test {
     address internal owner;
+   
+    enum Network {
+        ARBITRUM,
+        ETHEREUM
+    }
+
 
     //ERC20s
-    address internal usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
-    address internal usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
-    address internal wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
+    address internal usdtAddr;
+    address internal usdcAddr;
+    address internal wethAddr;
 
     //For debugging purposes
-    address private usdcAddrImpl = 0x0f4fb9474303d10905AB86aA8d5A65FE44b6E04A;
-    address private wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
+    address private usdcAddrImpl;
+    address private wethUsdPool;
     
     //Contracts
-    address internal swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
-    address internal ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
+    address internal swapRouterUni;
+    address internal ethUsdChainlink;
     // address internal rocketStorage = 
 
-    IERC20 internal USDC = IERC20(usdcAddr);
+    IERC20 internal USDC;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -59,8 +65,37 @@ contract Setup is Test {
     /** FUNCTIONS **/
     
     function setUp() public {
-        vm.createSelectFork(vm.rpcUrl("arbitrum"), 136177703);
+        (string memory network, uint blockNumber) = _chooseNetwork(Network.ARBITRUM);
+        vm.createSelectFork(vm.rpcUrl(network), blockNumber);
         _runSetup();
+    }
+
+    function _chooseNetwork(Network chain_) private returns(string memory network, uint blockNumber) {
+        if (chain_ == Network.ARBITRUM) {
+            usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
+            usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
+            wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
+            usdcAddrImpl = 0x0f4fb9474303d10905AB86aA8d5A65FE44b6E04A;
+            wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
+            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
+            ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
+
+            USDC = IERC20(usdcAddr);
+            network = "arbitrum";
+            blockNumber = 136177703;
+        } else if (chain_ == Network.ETHEREUM) {
+            usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
+            usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+            wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+            usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
+            wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0; //put the same as arb for the moment. Fix this
+            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
+            ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
+
+            USDC = IERC20(usdcAddr);
+            network = "ethereum";
+            blockNumber = 18284413;
+        }
     }
 
 
