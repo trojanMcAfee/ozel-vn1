@@ -51,15 +51,7 @@ contract ROImoduleL2 {
         ISwapRouter(s.swapRouterUni).exactInputSingle(params);
 
         //Swaps WETH to rETH 
-        // IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-        //     poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
-        //     kind: IVault.GIVEN_IN,
-        //     assetIn: IAsset(s.WETH),
-        //     assetOut: IAsset(s.rETH),
-        //     amount: IWETH(s.WETH).balanceOf(address(this)),
-        //     userData: new bytes(0)
-        // });
-        IPool(s.rEthWethPoolBalancer)
+        IVault.SingleSwap memory singleSwap = IPool(s.rEthWethPoolBalancer)
             .getPoolId()
             .createSingleSwap(
                 IVault.GIVEN_IN,
@@ -68,17 +60,10 @@ contract ROImoduleL2 {
                 IWETH(s.WETH).balanceOf(address(this))
             );
 
-        // IVault.FundManagement memory fundMgm = IVault.FundManagement({
-        //     sender: address(this),
-        //     fromInternalBalance: false,
-        //     recipient: address(this),
-        //     toInternalBalance: false
-        // });
-
-        address(this).createFundMngmt(address(this));
+        IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(address(this));
 
         IVault(s.vaultBalancer).swap(singleSwap, fundMgm, ...);
-        //put here the missing params: limit and deadline
+        //put here the missing params: limit and deadline ****
 
 
         // convert ETH/WETH to rETH - rocketPool (for L1)
