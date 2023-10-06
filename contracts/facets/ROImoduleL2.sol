@@ -10,6 +10,7 @@ import {AppStorage} from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
 import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
+import {IBalancerVault, SingleSwap, SwapKind} from "../interfaces/IBalancerVault.sol";
 
 import "forge-std/console.sol";
 
@@ -24,7 +25,7 @@ contract ROImoduleL2 {
     AppStorage internal s;
 
     function useUnderlying(uint amount_, address underlying_, address user_) external {
-        //Convert underlying to ETH
+        //Swaps underlying to WETH in Uniswap
         uint erc20Balance = IERC20(underlying_).balanceOf(address(this));
         underlying_.safeApprove(s.swapRouterUni, amount_);
 
@@ -41,9 +42,8 @@ contract ROImoduleL2 {
             });
 
         ISwapRouter(s.swapRouterUni).exactInputSingle(params);
-        IWETH(s.WETH).withdraw(IERC20(s.WETH).balanceOf(address(this)));
 
-        //Stake ETH in RocketPool
+        //Swaps WETH to rETH 
 
         // convert ETH/WETH to rETH - rocketPool
 
