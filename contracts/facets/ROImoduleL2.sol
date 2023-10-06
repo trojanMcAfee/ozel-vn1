@@ -47,7 +47,7 @@ contract ROImoduleL2 {
         ISwapRouter(s.swapRouterUni).exactInputSingle(params);
 
         //Swaps WETH to rETH 
-        console.log("x: ", IWETH(s.WETH).balanceOf(address(this)));
+        
 
 
 
@@ -62,13 +62,13 @@ contract ROImoduleL2 {
      * add a fallback oracle like uni's TWAP
      **** handle the possibility with Chainlink of Sequencer being down (https://docs.chain.link/data-feeds/l2-sequencer-feeds)
      */
-    // function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
-    //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-    //     uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-    //     uint minOutUnprocessed = 
-    //         expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
-    //     minOut = minOutUnprocessed.mulWad(10 ** 6);
-    // }
+    function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
+        (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+        uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+        uint minOutUnprocessed = 
+            expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
+        minOut = minOutUnprocessed.mulWad(10 ** 6);
+    }
 
     // function changeETHUSDfeed() external {}
 

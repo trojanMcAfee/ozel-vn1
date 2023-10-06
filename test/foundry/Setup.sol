@@ -41,6 +41,7 @@ contract Setup is Test {
     address internal swapRouterUni;
     address internal ethUsdChainlink;
     address internal vaultBalancer; 
+    address internal queriesBalancer;
 
     IERC20 internal USDC;
 
@@ -78,7 +79,8 @@ contract Setup is Test {
             wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
             ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
-            // vaultBalancer = 
+            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
+            queriesBalancer = 0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5;
 
             USDC = IERC20(usdcAddr);
             network = "arbitrum";
@@ -91,6 +93,8 @@ contract Setup is Test {
             wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0; //put the same as arb for the moment. Fix this
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
             ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
+            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
+            queriesBalancer = 0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5; //same as arb
 
             USDC = IERC20(usdcAddr);
             network = "ethereum";
@@ -137,7 +141,8 @@ contract Setup is Test {
             swapRouterUni,
             ethUsdChainlink,
             wethAddr,
-            defaultSlippage
+            defaultSlippage,
+            vaultBalancer
         );
 
         OZ = ozIDiamond(address(ozDiamond));
