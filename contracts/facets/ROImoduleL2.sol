@@ -77,8 +77,6 @@ contract ROImoduleL2 {
         uint bal = IWETH(s.rETH).balanceOf(address(this));
         console.log('bal rETH: ', bal);
 
-        // convert ETH/WETH to rETH - rocketPool (for L1)
-
     }
 
 
@@ -88,15 +86,7 @@ contract ROImoduleL2 {
      * add a fallback oracle like uni's TWAP
      **** handle the possibility with Chainlink of Sequencer being down (https://docs.chain.link/data-feeds/l2-sequencer-feeds)
      */
-    // function _calculateMinOut2(uint erc20Balance_) private view returns(uint minOut) {
-    //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-    //     uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-    //     uint minOutUnprocessed = 
-    //         expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
-    //     minOut = minOutUnprocessed.mulWad(10 ** 6);
-    // }
-
-    // function _calculateMinOut2(uint erc20Balance_) private view returns(uint minOut) {
+    // function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
     //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
     //     uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
     //     uint minOutUnprocessed = 

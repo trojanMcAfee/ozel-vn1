@@ -59,7 +59,7 @@ contract ozTokenFactoryTest is Setup {
         IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(payable(address(this)));  
 
         //Queries for minAmountOut for rETH
-        // uint minRethOut = IQueries(queriesBalancer).querySwap(singleSwap, fundMngmt); error here <-----
+        uint minRethOut = IQueries(queriesBalancer).querySwap(singleSwap, fundMngmt); //error here <-----
         uint minRethOut = 0;
 
         return (minWethOut, minRethOut);
