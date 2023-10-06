@@ -34,7 +34,9 @@ contract DiamondInit {
         address priceFeed_,
         address wethAddr_,
         uint defaultSlippage_,
-        address vaultBalancer_
+        address vaultBalancer_,
+        address queriesBalancer_,
+        address rEthAddr_
     ) external {
         // adding ERC165 data **** COMPLETE this with rest of funcs/interfaces
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
@@ -54,6 +56,8 @@ contract DiamondInit {
         s.WETH = wethAddr_;
         s.defaultSlippage = defaultSlippage_;
         s.vaultBalancer = vaultBalancer_;
+        s.queriesBalancer = queriesBalancer_;
+        s.rETH = rEthAddr_;
     }
 
 

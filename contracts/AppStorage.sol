@@ -18,6 +18,10 @@ struct AppStorage {
     address ethUsdChainlink; //consider removing this since minOut is calculated in the FE
 
     uint defaultSlippage;
+    address vaultBalancer;
+    address queriesBalancer; //seems like this is not used since minOut is not calculated for a Balancer swap
+
+    address rETH;
 
     
   

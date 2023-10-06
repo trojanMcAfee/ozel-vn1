@@ -6,26 +6,25 @@ interface IAsset {
     // solhint-disable-previous-line no-empty-blocks
 }
 
-enum SwapKind { GIVEN_IN, GIVEN_OUT }
+interface IVault {
+    struct SingleSwap {
+        bytes32 poolId;
+        SwapKind kind;
+        IAsset assetIn;
+        IAsset assetOut;
+        uint256 amount;
+        bytes userData;
+    }
 
-struct SingleSwap {
-    bytes32 poolId;
-    SwapKind kind;
-    IAsset assetIn;
-    IAsset assetOut;
-    uint256 amount;
-    bytes userData;
-}
+    enum SwapKind { GIVEN_IN, GIVEN_OUT }
 
-struct FundManagement {
-    address sender;
-    bool fromInternalBalance;
-    address payable recipient;
-    bool toInternalBalance;
-}
+    struct FundManagement {
+        address sender;
+        bool fromInternalBalance;
+        address payable recipient;
+        bool toInternalBalance;
+    }
 
-
-interface IBalancerVault {
     function swap(
         SingleSwap memory singleSwap,
         FundManagement memory funds,

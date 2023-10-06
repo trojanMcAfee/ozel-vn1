@@ -32,6 +32,7 @@ contract Setup is Test {
     address internal usdtAddr;
     address internal usdcAddr;
     address internal wethAddr;
+    address internal rEthAddr;
 
     //For debugging purposes
     address private usdcAddrImpl;
@@ -81,6 +82,7 @@ contract Setup is Test {
             ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
             queriesBalancer = 0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5;
+            rEthAddr = 0xec70dcb4a1efa46b8f2d97c310c9c4790ba5ffa8;
 
             USDC = IERC20(usdcAddr);
             network = "arbitrum";
@@ -95,6 +97,7 @@ contract Setup is Test {
             ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
             queriesBalancer = 0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5; //same as arb
+            rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
 
             USDC = IERC20(usdcAddr);
             network = "ethereum";
@@ -142,7 +145,9 @@ contract Setup is Test {
             ethUsdChainlink,
             wethAddr,
             defaultSlippage,
-            vaultBalancer
+            vaultBalancer,
+            queriesBalancer,
+            rEthAddr
         );
 
         OZ = ozIDiamond(address(ozDiamond));
