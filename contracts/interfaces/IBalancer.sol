@@ -36,3 +36,9 @@ interface IVault {
 interface IPool {
     function getPoolId() external view returns(bytes32);
 }
+
+interface IQueries {
+    function querySwap(IVault.SingleSwap memory singleSwap, IVault.FundManagement memory funds)
+        external
+        returns (uint256);
+}

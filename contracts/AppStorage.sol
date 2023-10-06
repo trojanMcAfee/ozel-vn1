@@ -23,8 +23,6 @@ struct AppStorage {
 
     address rETH;
     address rEthWethPoolBalancer;
-
-    
   
 }
 

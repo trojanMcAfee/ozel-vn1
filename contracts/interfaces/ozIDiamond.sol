@@ -17,7 +17,7 @@ interface ozIDiamond {
         uint8 decimals_
     ) external returns(address);
 
-    function useUnderlying(uint amount_, address underlying_, address user_) external;
+    function useUnderlying(address underlying_, address user_, uint minWethOut_, uint minRethOut_) external;
     function getDiamondAddr() external view returns(address);
 
 

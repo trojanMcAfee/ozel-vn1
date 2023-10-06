@@ -11,7 +11,7 @@ import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
 import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
 // import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
-import {IPool} from "../interfaces/IBalancer.sol";
+import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import "../libraries/Helpers.sol";
 
 import "forge-std/console.sol";
@@ -28,9 +28,10 @@ contract ROImoduleL2 {
     AppStorage internal s;
 
     function useUnderlying( 
-        uint minAmountOut_,
         address underlying_, 
-        address user_
+        address user_,
+        uint minWethOut_,
+        uint minRethOutOffchain_
     ) external {
         //Swaps underlying to WETH in Uniswap
         uint amountIn = IERC20(underlying_).balanceOf(address(this));
@@ -44,7 +45,7 @@ contract ROImoduleL2 {
                 recipient: address(this),
                 deadline: block.timestamp,
                 amountIn: amountIn,
-                amountOutMinimum: minAmountOut_, 
+                amountOutMinimum: minWethOut_, 
                 sqrtPriceLimitX96: 0
             });
 
@@ -54,17 +55,21 @@ contract ROImoduleL2 {
         IVault.SingleSwap memory singleSwap = IPool(s.rEthWethPoolBalancer)
             .getPoolId()
             .createSingleSwap(
-                IVault.GIVEN_IN,
+                IVault.SwapKind.GIVEN_IN,
                 IAsset(s.WETH),
                 IAsset(s.rETH),
                 IWETH(s.WETH).balanceOf(address(this))
             );
 
-        IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(address(this));
+        IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(payable(address(this)));
+        uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, fundMngmt);
 
-        IVault(s.vaultBalancer).swap(singleSwap, fundMgm, ...);
-        //put here the missing params: limit and deadline ****
+        uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
 
+        IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
+
+        uint bal = IWETH(s.rETH).balanceOf(address(this));
+        console.log('bal rETH: ', bal);
 
         // convert ETH/WETH to rETH - rocketPool (for L1)
 
@@ -77,21 +82,21 @@ contract ROImoduleL2 {
      * add a fallback oracle like uni's TWAP
      **** handle the possibility with Chainlink of Sequencer being down (https://docs.chain.link/data-feeds/l2-sequencer-feeds)
      */
-    function _calculateMinOut2(uint erc20Balance_) private view returns(uint minOut) {
-        (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-        uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-        uint minOutUnprocessed = 
-            expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
-        minOut = minOutUnprocessed.mulWad(10 ** 6);
-    }
+    // function _calculateMinOut2(uint erc20Balance_) private view returns(uint minOut) {
+    //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+    //     uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+    //     uint minOutUnprocessed = 
+    //         expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
+    //     minOut = minOutUnprocessed.mulWad(10 ** 6);
+    // }
 
-    function _calculateMinOut2(uint erc20Balance_) private view returns(uint minOut) {
-        (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-        uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-        uint minOutUnprocessed = 
-            expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
-        minOut = minOutUnprocessed.mulWad(10 ** 6);
-    }
+    // function _calculateMinOut2(uint erc20Balance_) private view returns(uint minOut) {
+    //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+    //     uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+    //     uint minOutUnprocessed = 
+    //         expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
+    //     minOut = minOutUnprocessed.mulWad(10 ** 6);
+    // }
 
     // function changeETHUSDfeed() external {}
 
