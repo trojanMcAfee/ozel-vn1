@@ -15,7 +15,7 @@ struct AppStorage {
     address WETH;
 
     address swapRouterUni;
-    address ethUsdChainlink;
+    address ethUsdChainlink; //consider removing this since minOut is calculated in the FE
 
     uint defaultSlippage;
 

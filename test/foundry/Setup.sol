@@ -78,7 +78,7 @@ contract Setup is Test {
             wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
             ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
-            vaultBalancer = 
+            // vaultBalancer = 
 
             USDC = IERC20(usdcAddr);
             network = "arbitrum";

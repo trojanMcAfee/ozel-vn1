@@ -17,6 +17,13 @@ struct SingleSwap {
     bytes userData;
 }
 
+struct FundManagement {
+    address sender;
+    bool fromInternalBalance;
+    address payable recipient;
+    bool toInternalBalance;
+}
+
 
 interface IBalancerVault {
     function swap(
