@@ -19,9 +19,10 @@ struct AppStorage {
 
     uint defaultSlippage;
     address vaultBalancer;
-    address queriesBalancer; //seems like this is not used since minOut is not calculated for a Balancer swap
+    address queriesBalancer;
 
     address rETH;
+    address rEthWethPoolBalancer;
 
     
   

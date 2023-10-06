@@ -10,8 +10,9 @@ import {AppStorage} from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
 import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
-import {IBalancerVault, SingleSwap, SwapKind, FundManagement} from "../interfaces/IBalancerVault.sol";
-import {IVault, IAsset} from "../interfaces/IBalancerVault.sol";
+// import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
+import {IPool} from "../interfaces/IBalancer.sol";
+import "../libraries/Helpers.sol";
 
 import "forge-std/console.sol";
 
@@ -21,6 +22,8 @@ import "forge-std/console.sol";
 contract ROImoduleL2 {
 
     using TransferHelper for address;
+    using Helpers for bytes32;
+    using Helpers for address;
 
     AppStorage internal s;
 
@@ -48,24 +51,34 @@ contract ROImoduleL2 {
         ISwapRouter(s.swapRouterUni).exactInputSingle(params);
 
         //Swaps WETH to rETH 
-        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: ,
-            kind: IVault.GIVEN_IN,
-            assetIn: IAsset(s.WETH),
-            assetOut: IAsset(s.rETH),
-            amount: IWETH(s.WETH).balanceOf(address(this)),
-            userData: new bytes(0)
-        });
+        // IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+        //     poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
+        //     kind: IVault.GIVEN_IN,
+        //     assetIn: IAsset(s.WETH),
+        //     assetOut: IAsset(s.rETH),
+        //     amount: IWETH(s.WETH).balanceOf(address(this)),
+        //     userData: new bytes(0)
+        // });
+        IPool(s.rEthWethPoolBalancer)
+            .getPoolId()
+            .createSingleSwap(
+                IVault.GIVEN_IN,
+                IAsset(s.WETH),
+                IAsset(s.rETH),
+                IWETH(s.WETH).balanceOf(address(this))
+            );
 
-        IVault.FundManagement memory fundMgm = IVault.FundManagement({
-            sender: address(this),
-            fromInternalBalance: false,
-            recipient: address(this),
-            toInternalBalance: false
-        });
+        // IVault.FundManagement memory fundMgm = IVault.FundManagement({
+        //     sender: address(this),
+        //     fromInternalBalance: false,
+        //     recipient: address(this),
+        //     toInternalBalance: false
+        // });
 
-        IVault(s.vaultBalancer).swap(singleSwap, fundMgm);
+        address(this).createFundMngmt(address(this));
 
+        IVault(s.vaultBalancer).swap(singleSwap, fundMgm, ...);
+        //put here the missing params: limit and deadline
 
 
         // convert ETH/WETH to rETH - rocketPool (for L1)

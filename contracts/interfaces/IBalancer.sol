@@ -32,3 +32,7 @@ interface IVault {
         uint256 deadline
     ) external payable returns (uint256 amountCalculated);
 }
+
+interface IPool {
+    function getPoolId() external view returns(bytes32);
+}

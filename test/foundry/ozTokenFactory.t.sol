@@ -14,6 +14,11 @@ import "forge-std/console.sol";
 contract ozTokenFactoryTest is Setup {
 
     using FixedPointMathLib for uint;
+
+    enum MinOut {
+        UNISWAP,
+        BALANCER
+    }
    
 
     function test_createOzToken() public {
@@ -34,12 +39,16 @@ contract ozTokenFactoryTest is Setup {
     // a new PT with ozToken.
     //If it works, try minting YT and TT
 
-    function _calculateMinOut(uint amountIn_) private view returns(uint minAmountOut_) {
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        uint expectedOut = amountIn_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-        uint minOutUnprocessed = 
-            expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
-        minAmountOut_ = minOutUnprocessed.mulWad(10 ** 6);
+    function _calculateMinOut(uint amountIn_, MinOut protocol_) private view returns(uint minAmountOut_) {
+        if (protocol_ == MinOut.UNISWAP) {
+            (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+            uint expectedOut = amountIn_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+            uint minOutUnprocessed = 
+                expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
+            minAmountOut_ = minOutUnprocessed.mulWad(10 ** 6);
+        } else if (protocol_ == MinOUT == BALANCER) {
+            IQueries(queriesBalancer).blabla
+        }
     }
 
 }

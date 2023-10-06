@@ -36,13 +36,14 @@ contract Setup is Test {
 
     //For debugging purposes
     address private usdcAddrImpl;
-    address private wethUsdPool;
+    address private wethUsdPoolUni;
     
     //Contracts
     address internal swapRouterUni;
     address internal ethUsdChainlink;
     address internal vaultBalancer; 
     address internal queriesBalancer;
+    address internal rEthWethPoolBalancer;
 
     IERC20 internal USDC;
 
@@ -77,12 +78,13 @@ contract Setup is Test {
             usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
             wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
             usdcAddrImpl = 0x0f4fb9474303d10905AB86aA8d5A65FE44b6E04A;
-            wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
+            wethUsdPoolUni = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
             ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
             queriesBalancer = 0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5;
             rEthAddr = 0xec70dcb4a1efa46b8f2d97c310c9c4790ba5ffa8;
+            rEthWethPoolBalancer = 0xadE4A71BB62bEc25154CFc7e6ff49A513B491E81;
 
             USDC = IERC20(usdcAddr);
             network = "arbitrum";
@@ -92,12 +94,13 @@ contract Setup is Test {
             usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
             wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
-            wethUsdPool = 0xC6962004f452bE9203591991D15f6b388e09E8D0; //put the same as arb for the moment. Fix this
+            wethUsdPoolUni = 0xC6962004f452bE9203591991D15f6b388e09E8D0; //put the same as arb for the moment. Fix this
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
             ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
             queriesBalancer = 0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5; //same as arb
             rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+            rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
 
             USDC = IERC20(usdcAddr);
             network = "ethereum";
@@ -147,7 +150,8 @@ contract Setup is Test {
             defaultSlippage,
             vaultBalancer,
             queriesBalancer,
-            rEthAddr
+            rEthAddr,
+            rEthWethPoolBalancer
         );
 
         OZ = ozIDiamond(address(ozDiamond));
@@ -224,7 +228,7 @@ contract Setup is Test {
         vm.label(ethUsdChainlink, "ETHUSDfeedChainlink");
         vm.label(wethAddr, "WETH");
         vm.label(usdcAddrImpl, "USDCimpl");
-        vm.label(wethUsdPool, "WETHUSDpool");
+        vm.label(wethUsdPoolUni, "wethUsdPoolUni");
     }
 
 
