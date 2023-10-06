@@ -47,8 +47,11 @@ contract ROImoduleL2 {
         ISwapRouter(s.swapRouterUni).exactInputSingle(params);
 
         //Swaps WETH to rETH 
+        console.log("x: ", IWETH(s.WETH).balanceOf(address(this)));
 
-        // convert ETH/WETH to rETH - rocketPool
+
+
+        // convert ETH/WETH to rETH - rocketPool (for L1)
 
     }
 
