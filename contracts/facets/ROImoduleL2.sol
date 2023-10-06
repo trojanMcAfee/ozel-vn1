@@ -13,6 +13,8 @@ import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
 // import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
 import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import "../libraries/Helpers.sol";
+import {console2} from "forge-std/console2.sol";
+
 
 import "forge-std/console.sol";
 
@@ -24,6 +26,7 @@ contract ROImoduleL2 {
     using TransferHelper for address;
     using Helpers for bytes32;
     using Helpers for address;
+    using console2 for IVault.SingleSwap;
 
     AppStorage internal s;
 
@@ -66,6 +69,9 @@ contract ROImoduleL2 {
 
         uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
 
+        // ('singleSwap: ').log(singleSwap);
+
+        s.WETH.safeApprove(s.vaultBalancer, IWETH(s.WETH).balanceOf(address(this))); //singleSwap.amountIn
         IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
 
         uint bal = IWETH(s.rETH).balanceOf(address(this));
