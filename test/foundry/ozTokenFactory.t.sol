@@ -27,9 +27,11 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(address(ozUSDC) != address(0));
 
         uint amountIn = 1000 * 10 ** ozUSDC.decimals();
-        (uint minWethOut, uint minRethOut) = _calculateMinAmountsOut(amountIn);
-        vm.startPrank(owner);
+        uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], amountIn);
+        uint minWethOut = minsOut[0];
+        uint minRethOut = minsOut[1];
 
+        vm.startPrank(owner);
         USDC.approve(address(ozUSDC), amountIn);
         ozUSDC.mint(amountIn, minWethOut, minRethOut);
     }
@@ -38,31 +40,19 @@ contract ozTokenFactoryTest is Setup {
     // a new PT with ozToken.
     //If it works, try minting YT and TT
 
-    function _calculateMinAmountsOut(uint amountIn_) private returns(uint, uint) {
-        //Conversion from USDC to WETH
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        uint expectedOut = amountIn_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-        uint minOutUnprocessed = 
-            expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
-        uint minWethOut = minOutUnprocessed.mulWad(10 ** 6);
-    
-        //Conversion from WETH to rETH
-        IVault.SingleSwap memory singleSwap = IPool(rEthWethPoolBalancer)
-            .getPoolId()
-            .createSingleSwap(
-                IVault.SwapKind.GIVEN_IN,
-                IAsset(wethAddr),
-                IAsset(rEthAddr),
-                minWethOut
-            );
+    function _calculateMinAmountsOut(
+        address[2] memory feeds_, 
+        uint amountIn_
+    ) private view returns(uint[] memory minAmountsOut) {
+        minAmountsOut = new uint[](2);
 
-        IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(payable(address(this)));  
-
-        //Queries for minAmountOut for rETH
-        uint minRethOut = IQueries(queriesBalancer).querySwap(singleSwap, fundMngmt); //error here <-----
-        uint minRethOut = 0;
-
-        return (minWethOut, minRethOut);
+        for (uint i=0; i < feeds_.length; i++) {
+            (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
+            uint expectedOut = (i == 0 ? amountIn_ : minAmountsOut[0]).fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+            uint minOutUnprocessed = 
+                expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
+            minAmountsOut[i] = minOutUnprocessed.mulWad(10 ** 6);
+        }
     }
 
 }

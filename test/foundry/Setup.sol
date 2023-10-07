@@ -46,6 +46,7 @@ contract Setup is Test {
     address internal vaultBalancer; 
     address internal queriesBalancer;
     address internal rEthWethPoolBalancer;
+    address internal rEthEthChainlink;
 
     IERC20 internal USDC;
 
@@ -89,6 +90,7 @@ contract Setup is Test {
             rEthWethPoolBalancer = 0xadE4A71BB62bEc25154CFc7e6ff49A513B491E81;
             accessControlledOffchainAggregator = 0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7;
             aeWETH = 0x8b194bEae1d3e0788A1a35173978001ACDFba668;
+            rEthEthChainlink = 0xD6aB2298946840262FcC278fF31516D39fF611eF;
 
             USDC = IERC20(usdcAddr);
             network = "arbitrum";
@@ -107,6 +109,7 @@ contract Setup is Test {
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
             aeWETH = address(0);
+            rEthEthChainlink = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
 
             USDC = IERC20(usdcAddr);
             network = "ethereum";

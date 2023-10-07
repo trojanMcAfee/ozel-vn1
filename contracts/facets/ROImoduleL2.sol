@@ -71,7 +71,7 @@ contract ROImoduleL2 {
 
         // ('singleSwap: ').log(singleSwap);
 
-        s.WETH.safeApprove(s.vaultBalancer, IWETH(s.WETH).balanceOf(address(this))); //singleSwap.amountIn
+        s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount); //singleSwap.amountIn
         IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
 
         uint bal = IWETH(s.rETH).balanceOf(address(this));
