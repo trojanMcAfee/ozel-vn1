@@ -54,7 +54,12 @@ contract ROImoduleL2 {
 
         ISwapRouter(s.swapRouterUni).exactInputSingle(params);
 
-        //Swaps WETH to rETH 
+        //Swaps WETH to rETH in Balancer
+        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
+        if (!paused) {
+            //do something else or throw error and return
+        }
+
         IVault.SingleSwap memory singleSwap = IPool(s.rEthWethPoolBalancer)
             .getPoolId()
             .createSingleSwap(
@@ -69,10 +74,10 @@ contract ROImoduleL2 {
 
         uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
 
-        // ('singleSwap: ').log(singleSwap);
-
-        s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount); //singleSwap.amountIn
+        s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
         IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
+
+        //Deposits rETH in rETH-ETH Balancer pool as LP
 
         uint bal = IWETH(s.rETH).balanceOf(address(this));
         console.log('bal rETH: ', bal);
