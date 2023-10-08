@@ -48,4 +48,9 @@ library Helpers {
         });
     }
 
+    function remove(uint[] storage arr, uint index) internal { //not used so far
+        arr[index] = arr[arr.length - 1];
+        arr.pop();
+    }
+
 }

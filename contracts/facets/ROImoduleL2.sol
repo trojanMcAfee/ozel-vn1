@@ -13,7 +13,6 @@ import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
 // import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
 import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import "../libraries/Helpers.sol";
-import {console2} from "forge-std/console2.sol";
 
 
 import "forge-std/console.sol";
@@ -26,7 +25,7 @@ contract ROImoduleL2 {
     using TransferHelper for address;
     using Helpers for bytes32;
     using Helpers for address;
-    using console2 for IVault.SingleSwap;
+    // using Helpers for uint[];
 
     AppStorage internal s;
 
@@ -80,9 +79,6 @@ contract ROImoduleL2 {
         //Deposits rETH in rETH-ETH Balancer pool as LP
         s.rETH.safeApprove(s.vaultBalancer, IWETH(s.rETH).balanceOf(address(this)));
 
-        uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
-        console.log('bal BPT pre: ', bal);
-
         address[] memory assets = new address[](3);
         assets[0] = s.WETH;
         assets[1] = s.rEthWethPoolBalancer;
@@ -93,19 +89,16 @@ contract ROImoduleL2 {
         maxAmountsIn[1] = 0;
         maxAmountsIn[2] = IWETH(s.rETH).balanceOf(address(this));
 
-        // IQueries(s.queriesBalancer).queryJoin(
-        //     IPool(s.rEthWethPoolBalancer).getPoolId(),
-        //     address(this),
-        //     address(this)
-        // );
-
         uint[] memory amountsIn = new uint[](2);
         amountsIn[0] = 0;
         amountsIn[1] = IWETH(s.rETH).balanceOf(address(this));
 
+        uint minAmountBptOut = 0; //0
+
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-            amountsIn
+            amountsIn,
+            minAmountBptOut
         );
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
@@ -115,6 +108,12 @@ contract ROImoduleL2 {
             fromInternalBalance: false
         });
 
+        // (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
+        //     IPool(s.rEthWethPoolBalancer).getPoolId(),
+        //     address(this),
+        //     address(this)
+        // );
+
         IVault(s.vaultBalancer).joinPool(
             IPool(s.rEthWethPoolBalancer).getPoolId(),
             address(this),
@@ -122,13 +121,21 @@ contract ROImoduleL2 {
             request
         );
 
-        bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
+        uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
         console.log('bal BPT post: ', bal);
 
     }
 
 
     //**** HELPERS */
+
+    // function _calculateUserData(uint minBptOut_) private returns(bytes memory) {
+    //     return abi.encode( 
+    //         IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+    //         amountsIn,
+    //         minBptOut_
+    //     );
+    // }
 
     /**
      * add a fallback oracle like uni's TWAP
