@@ -31,6 +31,48 @@ contract ozTokenFactoryTest is Setup {
         uint minWethOut = minsOut[0];
         uint minRethOut = minsOut[1];
 
+        //------------
+
+        address[] memory assets = new address[](3);
+        assets[0] = wethAddr;
+        assets[1] = rEthWethPoolBalancer;
+        assets[2] = rEthAddr;
+
+        uint[] memory maxAmountsIn = new uint[](3);
+        maxAmountsIn[0] = 0;
+        maxAmountsIn[1] = 0;
+        maxAmountsIn[2] = minRethOut;
+
+        uint[] memory amountsIn = new uint[](2);
+        amountsIn[0] = 0;
+        amountsIn[1] = minRethOut;
+
+        bytes memory userData = abi.encode( 
+            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+            amountsIn,
+            0
+        );
+
+        IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
+            assets: assets,
+            maxAmountsIn: maxAmountsIn,
+            userData: userData,
+            fromInternalBalance: false
+        });
+
+        console.log('hiiii ****');
+
+        (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
+            IPool(rEthWethPoolBalancer).getPoolId(),
+            address(ozDiamond),
+            address(ozDiamond),
+            request
+        );
+
+        console.log('bptOut: ', bptOut);
+
+        //---------
+
         vm.startPrank(owner);
         USDC.approve(address(ozUSDC), amountIn);
         ozUSDC.mint(amountIn, minWethOut, minRethOut);

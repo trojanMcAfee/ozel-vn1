@@ -57,11 +57,7 @@ interface IVault {
 
 interface IPool {
     function getPoolId() external view returns(bytes32);
-
-    function getPausedState()
-    external
-    view
-    returns (
+    function getPausedState() external view returns (
         bool paused,
         uint256 pauseWindowEndTime,
         uint256 bufferPeriodEndTime
