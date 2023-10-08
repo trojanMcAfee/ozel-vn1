@@ -7,6 +7,15 @@ interface IAsset {
 }
 
 interface IVault {
+    enum SwapKind { GIVEN_IN, GIVEN_OUT }
+
+    enum JoinKind {
+        INIT,
+        EXACT_TOKENS_IN_FOR_BPT_OUT,
+        TOKEN_IN_FOR_EXACT_BPT_OUT,
+        ALL_TOKENS_IN_FOR_EXACT_BPT_OUT
+    }
+
     struct SingleSwap {
         bytes32 poolId;
         SwapKind kind;
@@ -16,7 +25,6 @@ interface IVault {
         bytes userData;
     }
 
-    enum SwapKind { GIVEN_IN, GIVEN_OUT }
 
     struct FundManagement {
         address sender;
@@ -25,12 +33,26 @@ interface IVault {
         bool toInternalBalance;
     }
 
+    struct JoinPoolRequest {
+        address[] assets,
+        uint256[] maxAmountsIn,
+        bytes userData,
+        bool fromInternalBalance
+    }
+
     function swap(
         SingleSwap memory singleSwap,
         FundManagement memory funds,
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint256 amountCalculated);
+
+    function joinPool(
+        bytes32 poolId,
+        address sender,
+        address recipient,
+        JoinPoolRequest request
+    ) external payable;
 }
 
 interface IPool {

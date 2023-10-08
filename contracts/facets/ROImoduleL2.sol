@@ -56,7 +56,7 @@ contract ROImoduleL2 {
 
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
-        if (!paused) {
+        if (paused) {
             //do something else or throw error and return
         }
 
@@ -78,9 +78,38 @@ contract ROImoduleL2 {
         IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
+        address[] memory assets = new address[](3);
+        assets[0] = s.WETH;
+        assets[1] = s.rEthWethPoolBalancer;
+        assets[2] = s.rETH;
 
-        uint bal = IWETH(s.rETH).balanceOf(address(this));
-        console.log('bal rETH: ', bal);
+        uint[] memory amountsIn = new uint[](3);
+        amountsIn[0] = 0;
+        amountsIn[1] = 0;
+        amountsIn[2] = IWETH(s.rETH).balanceOf(address(this));
+
+        bytes memory userData = abi.encode(
+            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+            amountsIn,
+            minimumBPT
+        );
+
+        IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
+            assets: assets,
+            maxAmountsIn: amountsIn,
+            userData: new bytes(0),
+            fromInternalBalance: false
+        });
+
+        IVault(s.vaultBalancer).joinPool(
+            IPool(s.rEthWethPoolBalancer).getPoolId(),
+            address(this),
+            address(this),
+            request: request
+        );
+
+        // uint bal = IWETH(s.rETH).balanceOf(address(this));
+        // console.log('bal rETH: ', bal);
 
     }
 
