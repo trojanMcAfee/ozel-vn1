@@ -34,10 +34,10 @@ interface IVault {
     }
 
     struct JoinPoolRequest {
-        address[] assets,
-        uint256[] maxAmountsIn,
-        bytes userData,
-        bool fromInternalBalance
+        address[] assets;
+        uint256[] maxAmountsIn;
+        bytes userData;
+        bool fromInternalBalance;
     }
 
     function swap(
@@ -51,7 +51,7 @@ interface IVault {
         bytes32 poolId,
         address sender,
         address recipient,
-        JoinPoolRequest request
+        JoinPoolRequest memory request
     ) external payable;
 }
 
@@ -69,7 +69,15 @@ interface IPool {
 }
 
 interface IQueries {
-    function querySwap(IVault.SingleSwap memory singleSwap, IVault.FundManagement memory funds)
-        external
-        returns (uint256);
+    function querySwap(
+        IVault.SingleSwap memory singleSwap, 
+        IVault.FundManagement memory funds
+    ) external returns (uint256);
+
+    function queryJoin(
+        bytes32 poolId,
+        address sender,
+        address recipient,
+        IVault.JoinPoolRequest memory request
+    ) external returns (uint256 bptOut, uint256[] memory amountsIn);
 }

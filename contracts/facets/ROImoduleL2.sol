@@ -83,21 +83,27 @@ contract ROImoduleL2 {
         assets[1] = s.rEthWethPoolBalancer;
         assets[2] = s.rETH;
 
-        uint[] memory amountsIn = new uint[](3);
-        amountsIn[0] = 0;
-        amountsIn[1] = 0;
-        amountsIn[2] = IWETH(s.rETH).balanceOf(address(this));
+        uint[] memory maxAmountsIn = new uint[](3);
+        maxAmountsIn[0] = 0;
+        maxAmountsIn[1] = 0;
+        maxAmountsIn[2] = IWETH(s.rETH).balanceOf(address(this));
+
+        // IQueries(s.queriesBalancer).queryJoin(
+        //     IPool(s.rEthWethPoolBalancer).getPoolId(),
+        //     address(this),
+        //     address(this)
+        // );
 
         bytes memory userData = abi.encode(
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-            amountsIn,
-            minimumBPT
+            maxAmountsIn,
+            uint(0)
         );
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
             assets: assets,
-            maxAmountsIn: amountsIn,
-            userData: new bytes(0),
+            maxAmountsIn: maxAmountsIn,
+            userData: userData,
             fromInternalBalance: false
         });
 
@@ -105,7 +111,7 @@ contract ROImoduleL2 {
             IPool(s.rEthWethPoolBalancer).getPoolId(),
             address(this),
             address(this),
-            request: request
+            request
         );
 
         // uint bal = IWETH(s.rETH).balanceOf(address(this));

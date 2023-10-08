@@ -39,6 +39,8 @@ contract Setup is Test {
     address private wethUsdPoolUni;
     address private accessControlledOffchainAggregator; //0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7
     address private aeWETH;
+    address private rEthImpl;
+    address private feesCollectorBalancer;
 
     //Contracts
     address internal swapRouterUni;
@@ -91,6 +93,8 @@ contract Setup is Test {
             accessControlledOffchainAggregator = 0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7;
             aeWETH = 0x8b194bEae1d3e0788A1a35173978001ACDFba668;
             rEthEthChainlink = 0xD6aB2298946840262FcC278fF31516D39fF611eF;
+            rEthImpl = 0x3f770Ac673856F105b586bb393d122721265aD46;
+            feesCollectorBalancer = 0xce88686553686DA562CE7Cea497CE749DA109f9F;
 
             USDC = IERC20(usdcAddr);
             network = "arbitrum";
@@ -110,6 +114,8 @@ contract Setup is Test {
             accessControlledOffchainAggregator = address(0);
             aeWETH = address(0);
             rEthEthChainlink = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
+            rEthImpl = address(0);
+            feesCollectorBalancer = address(0);
 
             USDC = IERC20(usdcAddr);
             network = "ethereum";
@@ -243,6 +249,9 @@ contract Setup is Test {
         vm.label(queriesBalancer, "BalancerQueries");
         vm.label(accessControlledOffchainAggregator, "AccessControlledOffchainAggregator");
         vm.label(aeWETH, "aeWETH");
+        vm.label(rEthAddr, "rETH");
+        vm.label(rEthImpl, "rETHimpl");
+        vm.label(feesCollectorBalancer, "FeesCollectorBalancer");
     }
 
 
