@@ -78,6 +78,11 @@ contract ROImoduleL2 {
         IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
+        s.rETH.safeApprove(s.vaultBalancer, IWETH(s.rETH).balanceOf(address(this)));
+
+        uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
+        console.log('bal BPT pre: ', bal);
+
         address[] memory assets = new address[](3);
         assets[0] = s.WETH;
         assets[1] = s.rEthWethPoolBalancer;
@@ -94,10 +99,13 @@ contract ROImoduleL2 {
         //     address(this)
         // );
 
-        bytes memory userData = abi.encode(
+        uint[] memory amountsIn = new uint[](2);
+        amountsIn[0] = 0;
+        amountsIn[1] = IWETH(s.rETH).balanceOf(address(this));
+
+        bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-            maxAmountsIn,
-            uint(0)
+            amountsIn
         );
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
@@ -114,8 +122,8 @@ contract ROImoduleL2 {
             request
         );
 
-        // uint bal = IWETH(s.rETH).balanceOf(address(this));
-        // console.log('bal rETH: ', bal);
+        bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
+        console.log('bal BPT post: ', bal);
 
     }
 
