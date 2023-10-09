@@ -37,7 +37,7 @@ contract ozTokenFactoryTest is Setup {
         uint amountIn = 1000 * 10 ** ozUSDC.decimals();
         console.log('amountIn: ', amountIn);
 
-        uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], amountIn);
+        // uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], amountIn);
 
         //***** */
     
@@ -46,7 +46,10 @@ contract ozTokenFactoryTest is Setup {
         minsOut2[0] = MinOut({ feedAddr: ethUsdChainlink, decimals: ozUSDC.decimals() });
         minsOut2[1] = MinOut({ feedAddr: rEthEthChainlink, decimals: ozIToken(rEthAddr).decimals() });
 
-        _calculateMinOut2(2000, minsOut2);
+        // _calculateMinOut2(2000, minsOut2);
+
+        uint[] memory minsOut = _calculateMinAmountsOut(1000 , minsOut2);
+        // console.log('length: ', minsOut.length);
 
         //***** */
         
@@ -76,7 +79,7 @@ contract ozTokenFactoryTest is Setup {
         // amountsIn[1] = 0;
         // amountsIn[2] = minRethOut;
 
-        uint minAmountBptOut = 0; 
+        // uint minAmountBptOut = 0; 
 
         // console.log('...INIT test');
         // for (uint i=0; i<amountsIn.length; i++) {
@@ -90,7 +93,7 @@ contract ozTokenFactoryTest is Setup {
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
             amountsIn,
-            minAmountBptOut
+            0
         );
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
@@ -101,16 +104,16 @@ contract ozTokenFactoryTest is Setup {
         });
 
 
-        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+        // bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
 
         console.logBytes(request.userData);
         console.log('userData in test ^^^:');
 
-        bytes memory data = hex'00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000079b5ff58f0fd89b';
-        request.userData = data; //problem here ***
+        // bytes memory data = hex'00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000079b5ff58f0fd89b';
+        // request.userData = data; //problem here ***
         
         (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
-            poolId,
+            IPool(rEthWethPoolBalancer).getPoolId(),
             owner,
             address(ozDiamond),
             request
@@ -129,20 +132,20 @@ contract ozTokenFactoryTest is Setup {
     // a new PT with ozToken.
     //If it works, try minting YT and TT
 
-    function _calculateMinAmountsOut(
-        address[2] memory feeds_, 
-        uint amountIn_
-    ) private view returns(uint[] memory minAmountsOut) { 
-        minAmountsOut = new uint[](2);
+    // function _calculateMinAmountsOut(
+    //     address[2] memory feeds_, 
+    //     uint amountIn_
+    // ) private view returns(uint[] memory minAmountsOut) { 
+    //     minAmountsOut = new uint[](2);
 
-        for (uint i=0; i < feeds_.length; i++) {
-            (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
-            uint expectedOut = (i == 0 ? amountIn_ : minAmountsOut[0]).fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-            uint minOutUnprocessed = 
-                expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
-            minAmountsOut[i] = minOutUnprocessed.mulWad(10 ** 6);
-        }
-    }
+    //     for (uint i=0; i < feeds_.length; i++) {
+    //         (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
+    //         uint expectedOut = (i == 0 ? amountIn_ : minAmountsOut[0]).fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+    //         uint minOutUnprocessed = 
+    //             expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
+    //         minAmountsOut[i] = minOutUnprocessed.mulWad(10 ** 6);
+    //     }
+    // }
 
     // function _calculateMinOut(uint amountIn_) private view returns(uint minAmountOut_) {
     //     (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
@@ -153,21 +156,33 @@ contract ozTokenFactoryTest is Setup {
     //     console.log('minOut: ****', minAmountOut_);
     // }
 
-    function _calculateMinOut2(
+    function _calculateMinAmountsOut(
         uint amountIn_, 
         MinOut[] memory minsOut_
-    ) private returns(uint[] memory minAmountsOut) 
+    ) private returns(uint[] memory) 
     {
+        uint[] memory minAmountsOut = new uint[](minsOut_.length);
+
         for (uint i=0; i < minsOut_.length; i++) {
+            console.log('hi: ', i);
             AggregatorV3Interface feed = AggregatorV3Interface(minsOut_[i].feedAddr);
             uint feedDecimals = feed.decimals();
+            console.log(1);
+            uint amountIn = i == 0 ? amountIn_ : minAmountsOut[i - 1];
+            console.log(2);
+            uint decimals = minsOut_[i].decimals == 18 ? 18 : _getDecimals(minsOut_[i].decimals);
+            console.log(3);
 
             (,int price,,,) = feed.latestRoundData();
             uint expectedOut = 
-                ( i == 0 ? amountIn_ : minAmountsOut[i - 1] * 10 ** (minsOut_[i].decimals == 18 ? 18 : _getDecimals(minsOut_[i].decimals) )
-                .fullMulDiv(1 ether, feedDecimals == 18 ? uint(price) : uint(price) * 10 ** _getDecimals(feedDecimals)));
+                ( amountIn * 10 ** decimals )
+                .fullMulDiv(1 ether, feedDecimals == 18 ? uint(price) : uint(price) * 10 ** _getDecimals(feedDecimals));
+            console.log(4);
             minAmountsOut[i] = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+            console.log(5);
         }
+
+        return minAmountsOut;
     }
 
 
