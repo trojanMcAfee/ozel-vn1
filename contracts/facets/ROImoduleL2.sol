@@ -26,7 +26,6 @@ contract ROImoduleL2 {
     using TransferHelper for address;
     using Helpers for bytes32;
     using Helpers for address;
-    // using Helpers for uint[];
     using FixedPointMathLib for uint;
 
     AppStorage internal s;
@@ -102,7 +101,7 @@ contract ROImoduleL2 {
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
             amountsIn,
-            0
+            minBptOutOffchain_
         );
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
