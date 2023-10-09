@@ -9,6 +9,7 @@ import "solady/src/utils/FixedPointMathLib.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {IQueries, IPool, IAsset, IVault} from "../../contracts/interfaces/IBalancer.sol";
 import "../../contracts/libraries/Helpers.sol";
+import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 
 import "forge-std/console.sol";
 
@@ -18,6 +19,7 @@ contract ozTokenFactoryTest is Setup {
     using FixedPointMathLib for uint;
     using Helpers for bytes32;
     using Helpers for address;
+    using TransferHelper for address;
    
 
     function test_createOzToken() public {
@@ -47,10 +49,17 @@ contract ozTokenFactoryTest is Setup {
         amountsIn[0] = 0;
         amountsIn[1] = minRethOut;
 
+        // uint[] memory amountsIn = new uint[](3); //*** */
+        // amountsIn[0] = 0;
+        // amountsIn[1] = 0;
+        // amountsIn[2] = minRethOut;
+
+        uint minAmountBptOut = 0; //0
+
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
             amountsIn,
-            0
+            minAmountBptOut
         );
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
@@ -62,14 +71,29 @@ contract ozTokenFactoryTest is Setup {
 
         console.log('hiiii ****');
 
+        deal(rEthAddr, owner, 100 * 1 ether);
+
+        // rEthAddr.safeApprove(vaultBalancer, minRethOut);
+
+        console.log('rETHbal owner: ', IERC20(rEthAddr).balanceOf(owner));
+        console.logBytes32(IPool(rEthWethPoolBalancer).getPoolId());
+        console.log('poolId ^');
+        console.log('owner: ', owner);
+        console.log('diamond: ', address(ozDiamond));
+
+        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+
+        bytes memory data = hex'00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000079b5ff58f0fd89b';
+        request.userData = data;
+        
         (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
-            IPool(rEthWethPoolBalancer).getPoolId(),
-            address(ozDiamond),
+            poolId,
+            owner,
             address(ozDiamond),
             request
         );
 
-        console.log('bptOut: ', bptOut);
+        console.log('bptOut: ', bptOut); 
 
         //---------
 

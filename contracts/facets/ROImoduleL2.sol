@@ -114,6 +114,19 @@ contract ROImoduleL2 {
         //     address(this)
         // );
 
+        console.log('.');
+        console.log('sender: ', address(this));
+        console.log('receiver: ', address(this));
+        console.logBytes(request.userData);
+        for (uint i=0; i<assets.length; i++) {
+            console.log('assets', i, assets[i]);
+        }
+        console.log('.');
+
+        for (uint i=0; i<maxAmountsIn.length; i++) {
+            console.log('maxAmountsIn', i, maxAmountsIn[i]);
+        }
+
         IVault(s.vaultBalancer).joinPool(
             IPool(s.rEthWethPoolBalancer).getPoolId(),
             address(this),
