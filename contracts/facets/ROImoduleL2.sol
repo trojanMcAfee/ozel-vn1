@@ -95,16 +95,6 @@ contract ROImoduleL2 {
 
         uint minAmountBptOut = 0; //0
 
-
-        // console.log('...INIT roi');
-        // for (uint i=0; i<amountsIn.length; i++) {
-        //     console.log('amountsIn', i, amountsIn[i]);
-        // }
-        // console.log(uint(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT));
-        // console.log('joinKind^^^');
-        // console.log('minAmountBptOut: ', minAmountBptOut);
-        // console.log('...END');
-
         
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
@@ -124,9 +114,6 @@ contract ROImoduleL2 {
         //     address(this),
         //     address(this)
         // );
-
-        console.logBytes(request.userData);
-        console.log('userData in roiL2 ^^^:');
 
        
 

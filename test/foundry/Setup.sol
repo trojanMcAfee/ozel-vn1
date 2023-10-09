@@ -69,6 +69,8 @@ contract Setup is Test {
 
     uint defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
 
+    uint internal constant _BASE = 18;
+
     /** FUNCTIONS **/
     
     function setUp() public {
