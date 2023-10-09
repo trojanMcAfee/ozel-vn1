@@ -31,8 +31,9 @@ contract ozTokenFactoryTest is Setup {
         uint amountIn = 1000 * 10 ** ozUSDC.decimals();
         console.log('amountIn: ', amountIn);
 
-        uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], amountIn);
-        _calculateMinOut2(2000, ozUSDC.decimals());
+        // uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], amountIn);
+        uint[] memory minsOut = _calculateMinAmountsOut(1000, ozUSDC.decimals());
+        // _calculateMinOut2(2000, ozUSDC.decimals());
         
         uint minWethOut = minsOut[0];
         uint minRethOut = minsOut[1];
@@ -87,11 +88,11 @@ contract ozTokenFactoryTest is Setup {
 
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
 
-        console.logBytes(request.userData);
-        console.log('userData in test ^^^:');
+        // console.logBytes(request.userData);
+        // console.log('userData in test ^^^:');
 
-        bytes memory data = hex'00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000079b5ff58f0fd89b';
-        request.userData = data; //problem here ***
+        // bytes memory data = hex'00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000079b5ff58f0fd89b';
+        // request.userData = data; //problem here ***
         
         (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
             poolId,
@@ -113,7 +114,7 @@ contract ozTokenFactoryTest is Setup {
     // a new PT with ozToken.
     //If it works, try minting YT and TT
 
-    function _calculateMinAmountsOut(
+    function _calculateMinAmountsOut2(
         address[2] memory feeds_, 
         uint amountIn_
     ) private view returns(uint[] memory minAmountsOut) { 
@@ -137,18 +138,27 @@ contract ozTokenFactoryTest is Setup {
         console.log('minOut: ****', minAmountOut_);
     }
 
-    function _calculateMinOut2(uint amountIn_, uint decimals_) private view returns(uint minAmountOut) {
+    function _calculateMinAmountsOut(uint amountIn_, uint decimals_) private view returns(uint[] memory) {
+        uint[] memory minAmountsOut = new uint[](2);
+
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
 
         // 1 * 1e18 ---- uint(price) * 1e10
         //     x ------- amountIn * 10 ** (decimals == 18 ? 18 : (18 - decimals) + decimals)
 
         uint expectedOut = ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : (18 - decimals_) + decimals_) ).fullMulDiv(1 ether, uint(price) * 1e10);
-        console.log('expectedOut2: ', expectedOut);
-        minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
-        console.log('minOut2: ', minAmountOut);
+        uint minAmountOut2 = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+        minAmountsOut[0] = minAmountOut2;
+        console.log('minOut - eth: ', minAmountOut2);
 
-       
+
+        (,price,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
+        expectedOut = minAmountOut2 .fullMulDiv(1 ether, uint(price));
+        uint minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+        console.log('minOut - rETH: ', minAmountOut);
+        minAmountsOut[1] = minAmountOut;
+
+       return minAmountsOut;
     }
 
 
