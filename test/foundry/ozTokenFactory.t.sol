@@ -10,6 +10,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {IQueries, IPool, IAsset, IVault} from "../../contracts/interfaces/IBalancer.sol";
 import "../../contracts/libraries/Helpers.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
+import "../../lib/forge-std/src/interfaces/IERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -32,7 +33,20 @@ contract ozTokenFactoryTest is Setup {
         console.log('amountIn: ', amountIn);
 
         uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], amountIn);
-        _calculateMinOut2(2000, ozUSDC.decimals());
+
+        //***** */
+        struct MinOut {
+            address feed;
+            uint decimals;
+        }
+
+        MinOut[] memory minsOut = new MinOut[](2);
+        minsOut[0] = MinOut({ feed: ethUsdChainlink, decimals: ozUSDC.decimals() });
+        minsOut[1] = MinOut({ feed: rEthEthChainlink, decimals: IERC20(rEthAddr).decimals() });
+
+        _calculateMinOut2(2000, minsOut_);
+
+        //***** */
         
         uint minWethOut = minsOut[0];
         uint minRethOut = minsOut[1];
@@ -137,18 +151,16 @@ contract ozTokenFactoryTest is Setup {
         console.log('minOut: ****', minAmountOut_);
     }
 
-    function _calculateMinOut2(uint amountIn_, uint decimals_) private view returns(uint minAmountOut) {
+    function _calculateMinOut2(
+        uint amountIn_, 
+        MinOut[] memory minsOut_
+    ) private view returns(uint[] minAmountsOut) 
+    {
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-
-        // 1 * 1e18 ---- uint(price) * 1e10
-        //     x ------- amountIn * 10 ** (decimals == 18 ? 18 : (18 - decimals) + decimals)
-
-        uint expectedOut = ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : (18 - decimals_) + decimals_) ).fullMulDiv(1 ether, uint(price) * 1e10);
-        console.log('expectedOut2: ', expectedOut);
+        uint expectedOut = 
+            ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : (18 - decimals_) + decimals_) )
+            .fullMulDiv(1 ether, uint(price) * 1e10);
         minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
-        console.log('minOut2: ', minAmountOut);
-
-       
     }
 
 
