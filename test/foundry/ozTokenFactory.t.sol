@@ -10,7 +10,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {IQueries, IPool, IAsset, IVault} from "../../contracts/interfaces/IBalancer.sol";
 import "../../contracts/libraries/Helpers.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
-import "../../lib/forge-std/src/interfaces/IERC20.sol";
+// import "../../lib/forge-std/src/interfaces/IERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -21,6 +21,11 @@ contract ozTokenFactoryTest is Setup {
     using Helpers for bytes32;
     using Helpers for address;
     using TransferHelper for address;
+
+    struct MinOut {
+        address feedAddr;
+        uint decimals;
+    }
    
 
     function test_createOzToken() public {
@@ -35,16 +40,13 @@ contract ozTokenFactoryTest is Setup {
         uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], amountIn);
 
         //***** */
-        struct MinOut {
-            address feedAddr;
-            uint decimals;
-        }
+    
 
-        MinOut[] memory minsOut = new MinOut[](2);
-        minsOut[0] = MinOut({ feedAddr: ethUsdChainlink, decimals: ozUSDC.decimals() });
-        minsOut[1] = MinOut({ feedAddr: rEthEthChainlink, decimals: IERC20(rEthAddr).decimals() });
+        MinOut[] memory minsOut2 = new MinOut[](2);
+        minsOut2[0] = MinOut({ feedAddr: ethUsdChainlink, decimals: ozUSDC.decimals() });
+        minsOut2[1] = MinOut({ feedAddr: rEthEthChainlink, decimals: ozIToken(rEthAddr).decimals() });
 
-        _calculateMinOut2(2000, minsOut_);
+        _calculateMinOut2(2000, minsOut2);
 
         //***** */
         
@@ -142,29 +144,29 @@ contract ozTokenFactoryTest is Setup {
         }
     }
 
-    function _calculateMinOut(uint amountIn_) private view returns(uint minAmountOut_) {
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        uint expectedOut = amountIn_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
-        uint minOutUnprocessed = 
-            expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
-        minAmountOut_ = minOutUnprocessed.mulWad(10 ** 6);
-        console.log('minOut: ****', minAmountOut_);
-    }
+    // function _calculateMinOut(uint amountIn_) private view returns(uint minAmountOut_) {
+    //     (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+    //     uint expectedOut = amountIn_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+    //     uint minOutUnprocessed = 
+    //         expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
+    //     minAmountOut_ = minOutUnprocessed.mulWad(10 ** 6);
+    //     console.log('minOut: ****', minAmountOut_);
+    // }
 
     function _calculateMinOut2(
         uint amountIn_, 
         MinOut[] memory minsOut_
-    ) private view returns(uint[] minAmountsOut) 
+    ) private returns(uint[] memory minAmountsOut) 
     {
         for (uint i=0; i < minsOut_.length; i++) {
-            AggregatorV3Interface feed = AggregatorV3Interface(minsOut_[i].feedAdrr);
+            AggregatorV3Interface feed = AggregatorV3Interface(minsOut_[i].feedAddr);
             uint feedDecimals = feed.decimals();
 
             (,int price,,,) = feed.latestRoundData();
             uint expectedOut = 
-                ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : _getDecimals(decimals_) )
+                ( i == 0 ? amountIn_ : minAmountsOut[i - 1] * 10 ** (minsOut_[i].decimals == 18 ? 18 : _getDecimals(minsOut_[i].decimals) )
                 .fullMulDiv(1 ether, feedDecimals == 18 ? uint(price) : uint(price) * 10 ** _getDecimals(feedDecimals)));
-            minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+            minAmountsOut[i] = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
         }
     }
 
