@@ -36,13 +36,13 @@ contract ozTokenFactoryTest is Setup {
 
         //***** */
         struct MinOut {
-            address feed;
+            address feedAddr;
             uint decimals;
         }
 
         MinOut[] memory minsOut = new MinOut[](2);
-        minsOut[0] = MinOut({ feed: ethUsdChainlink, decimals: ozUSDC.decimals() });
-        minsOut[1] = MinOut({ feed: rEthEthChainlink, decimals: IERC20(rEthAddr).decimals() });
+        minsOut[0] = MinOut({ feedAddr: ethUsdChainlink, decimals: ozUSDC.decimals() });
+        minsOut[1] = MinOut({ feedAddr: rEthEthChainlink, decimals: IERC20(rEthAddr).decimals() });
 
         _calculateMinOut2(2000, minsOut_);
 
@@ -156,11 +156,22 @@ contract ozTokenFactoryTest is Setup {
         MinOut[] memory minsOut_
     ) private view returns(uint[] minAmountsOut) 
     {
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        uint expectedOut = 
-            ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : (18 - decimals_) + decimals_) )
-            .fullMulDiv(1 ether, uint(price) * 1e10);
-        minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+        for (uint i=0; i < minsOut_.length; i++) {
+            AggregatorV3Interface feed = AggregatorV3Interface(minsOut_[i].feedAdrr);
+            uint feedDecimals = feed.decimals();
+
+            (,int price,,,) = feed.latestRoundData();
+            uint expectedOut = 
+                ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : _getDecimals(decimals_) )
+                .fullMulDiv(1 ether, feedDecimals == 18 ? uint(price) : uint(price) * 10 ** _getDecimals(feedDecimals)));
+            minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+        }
+    }
+
+
+
+    function _getDecimals(uint decimals_) private returns(uint) {
+        return (18 - decimals_) + decimals_;
     }
 
 
