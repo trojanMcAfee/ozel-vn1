@@ -34,9 +34,12 @@ contract ozTokenFactoryTest is Setup {
         ));
         assertTrue(address(ozUSDC) != address(0));
 
-        uint amountIn = 1000 * 10 ** ozUSDC.decimals();
+        uint rawAmount = 1000;
+        uint amountIn = rawAmount * 10 ** ozUSDC.decimals();
 
-        uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], 1000, ozUSDC.decimals());
+        uint[] memory minsOut = _calculateMinAmountsOut(
+            [ethUsdChainlink, rEthEthChainlink], rawAmount, ozUSDC.decimals()
+        );
         
         uint minWethOut = minsOut[0];
         uint minRethOut = minsOut[1];
