@@ -60,9 +60,6 @@ contract ozTokenFactoryTest is Setup {
         amountsIn[0] = 0;
         amountsIn[1] = minRethOut;
 
-
-        // uint minAmountBptOut = 0; 
-
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
             amountsIn,
@@ -84,6 +81,8 @@ contract ozTokenFactoryTest is Setup {
         );
 
         console.log('bptOut: ', bptOut); 
+        uint minBptOut = _calculateMinAmountsOut(bptOut);
+        console.log('minBpt: ', minBptOut);
 
         //---------
 
@@ -119,6 +118,12 @@ contract ozTokenFactoryTest is Setup {
         return minAmountsOut;
     }
 
+
+    function _calculateMinAmountsOut(
+        uint256 amount_
+    ) private view returns(uint256 minAmountOut) {
+        minAmountOut = amount_ - amount_.fullMulDiv(defaultSlippage, 10000);
+    }
 
 
 
