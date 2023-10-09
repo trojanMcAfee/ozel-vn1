@@ -80,15 +80,13 @@ contract ozTokenFactoryTest is Setup {
             request
         );
 
-        console.log('bptOut: ', bptOut); 
         uint minBptOut = _calculateMinAmountsOut(bptOut);
-        console.log('minBpt: ', minBptOut);
 
         //---------
 
         vm.startPrank(owner);
         USDC.approve(address(ozUSDC), amountIn);
-        ozUSDC.mint(amountIn, minWethOut, minRethOut);
+        ozUSDC.mint(amountIn, minWethOut, minRethOut, minBptOut);
     }
 
     //testing createOzToken here and see if it works for minting 

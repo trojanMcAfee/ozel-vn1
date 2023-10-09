@@ -203,11 +203,16 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
     }
 
 
-    function mint(uint amountIn_, uint minWethOut, uint minRethOutOffchain) external {
+    function mint(
+        uint amountIn_, 
+        uint minWethOut_, 
+        uint minRethOut_, 
+        uint minBptOut_
+    ) external {
         address token = underlying();
         token.safeTransferFrom(msg.sender, _ozDiamond, amountIn_);
         ozIDiamond(_ozDiamond).useUnderlying(
-            token, msg.sender, minWethOut, minRethOutOffchain
+            token, msg.sender, minWethOut_, minRethOut_, minBptOut_
         ); 
     }
 

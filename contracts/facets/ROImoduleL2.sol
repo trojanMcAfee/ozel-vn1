@@ -13,6 +13,7 @@ import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
 // import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
 import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import "../libraries/Helpers.sol";
+import "solady/src/utils/FixedPointMathLib.sol";
 
 
 import "forge-std/console.sol";
@@ -26,6 +27,7 @@ contract ROImoduleL2 {
     using Helpers for bytes32;
     using Helpers for address;
     // using Helpers for uint[];
+    using FixedPointMathLib for uint;
 
     AppStorage internal s;
 
@@ -33,7 +35,8 @@ contract ROImoduleL2 {
         address underlying_, 
         address user_,
         uint minWethOut_,
-        uint minRethOutOffchain_
+        uint minRethOutOffchain_,
+        uint minBptOutOffchain_
     ) external {
         //Swaps underlying to WETH in Uniswap
         uint amountIn = IERC20(underlying_).balanceOf(address(this));
@@ -93,13 +96,13 @@ contract ROImoduleL2 {
         amountsIn[0] = 0;
         amountsIn[1] = IWETH(s.rETH).balanceOf(address(this));
 
-        uint minAmountBptOut = 0; //0
+        // uint minAmountBptOut = minBptOutOffchain_; //0
 
         
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
             amountsIn,
-            minAmountBptOut
+            0
         );
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
@@ -109,13 +112,30 @@ contract ROImoduleL2 {
             fromInternalBalance: false
         });
 
-        // (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
-        //     IPool(s.rEthWethPoolBalancer).getPoolId(),
-        //     address(this),
-        //     address(this)
-        // );
+        (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
+            IPool(s.rEthWethPoolBalancer).getPoolId(),
+            address(this),
+            address(this),
+            request
+        );
 
-       
+        //Re-do request with actual bptOut
+        uint minBptOut = _calculateMinAmountOut(
+            bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
+        );
+
+        userData = abi.encode( 
+            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+            amountsIn,
+            minBptOut
+        );
+
+        request = IVault.JoinPoolRequest({
+            assets: assets,
+            maxAmountsIn: maxAmountsIn,
+            userData: userData,
+            fromInternalBalance: false
+        });
 
         IVault(s.vaultBalancer).joinPool(
             IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -125,12 +145,18 @@ contract ROImoduleL2 {
         );
 
         uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
-        // console.log('bal BPT post: ', bal);
+        console.log('bal BPT post: ', bal);
 
     }
 
 
     //**** HELPERS */
+
+    function _calculateMinAmountOut(
+        uint256 amount_
+    ) private view returns(uint256 minAmountOut) {
+        minAmountOut = amount_ - amount_.fullMulDiv(s.defaultSlippage, 10000);
+    }
 
     // function _calculateUserData(uint minBptOut_) private returns(bytes memory) {
     //     return abi.encode( 
