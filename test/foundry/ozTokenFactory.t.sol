@@ -29,9 +29,15 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(address(ozUSDC) != address(0));
 
         uint amountIn = 1000 * 10 ** ozUSDC.decimals();
+        console.log('amountIn: ', amountIn);
+
         uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], amountIn);
+        _calculateMinOut2(2000, ozUSDC.decimals());
+        
         uint minWethOut = minsOut[0];
         uint minRethOut = minsOut[1];
+        console.log('minWethOut ***: ', minWethOut);
+        console.log('minRethOut: ', minRethOut);
 
         //------------
 
@@ -54,7 +60,16 @@ contract ozTokenFactoryTest is Setup {
         // amountsIn[1] = 0;
         // amountsIn[2] = minRethOut;
 
-        uint minAmountBptOut = 0; //0
+        uint minAmountBptOut = 0; 
+
+        // console.log('...INIT test');
+        // for (uint i=0; i<amountsIn.length; i++) {
+        //     console.log('amountsIn', i, amountsIn[i]);
+        // }
+        // console.log(uint(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT));
+        // console.log('joinKind^^^');
+        // console.log('minAmountBptOut: ', minAmountBptOut);
+        // console.log('...END');
 
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
@@ -69,22 +84,14 @@ contract ozTokenFactoryTest is Setup {
             fromInternalBalance: false
         });
 
-        console.log('hiiii ****');
-
-        deal(rEthAddr, owner, 100 * 1 ether);
-
-        // rEthAddr.safeApprove(vaultBalancer, minRethOut);
-
-        console.log('rETHbal owner: ', IERC20(rEthAddr).balanceOf(owner));
-        console.logBytes32(IPool(rEthWethPoolBalancer).getPoolId());
-        console.log('poolId ^');
-        console.log('owner: ', owner);
-        console.log('diamond: ', address(ozDiamond));
 
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
 
+        console.logBytes(request.userData);
+        console.log('userData in test ^^^:');
+
         bytes memory data = hex'00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000079b5ff58f0fd89b';
-        request.userData = data;
+        request.userData = data; //problem here ***
         
         (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
             poolId,
@@ -109,7 +116,7 @@ contract ozTokenFactoryTest is Setup {
     function _calculateMinAmountsOut(
         address[2] memory feeds_, 
         uint amountIn_
-    ) private view returns(uint[] memory minAmountsOut) {
+    ) private view returns(uint[] memory minAmountsOut) { 
         minAmountsOut = new uint[](2);
 
         for (uint i=0; i < feeds_.length; i++) {
@@ -120,5 +127,37 @@ contract ozTokenFactoryTest is Setup {
             minAmountsOut[i] = minOutUnprocessed.mulWad(10 ** 6);
         }
     }
+
+    function _calculateMinOut(uint amountIn_) private view returns(uint minAmountOut_) {
+        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        uint expectedOut = amountIn_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+        uint minOutUnprocessed = 
+            expectedOut - expectedOut.fullMulDiv(defaultSlippage * 100, 1000000); 
+        minAmountOut_ = minOutUnprocessed.mulWad(10 ** 6);
+        console.log('minOut: ****', minAmountOut_);
+    }
+
+    function _calculateMinOut2(uint amountIn_, uint decimals_) private view returns(uint minAmountOut) {
+        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+
+        // 1 * 1e18 ---- uint(price) * 1e10
+        //     x ------- amountIn * 10 ** (decimals == 18 ? 18 : (18 - decimals) + decimals)
+
+        uint expectedOut = ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : (18 - decimals_) + decimals_) ).fullMulDiv(1 ether, uint(price) * 1e10);
+        console.log('expectedOut2: ', expectedOut);
+        minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+        console.log('minOut2: ', minAmountOut);
+
+       
+    }
+
+
+
+    // function calculateSlippage(
+    //     uint256 amount_, 
+    //     uint256 basisPoint_
+    // ) internal pure returns(uint256 minAmountOut) {
+        // minAmountOut = amount_ - amount_.mulDivDown(basisPoint_, 10000);
+    // }
 
 }

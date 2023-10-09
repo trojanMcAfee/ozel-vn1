@@ -95,6 +95,17 @@ contract ROImoduleL2 {
 
         uint minAmountBptOut = 0; //0
 
+
+        // console.log('...INIT roi');
+        // for (uint i=0; i<amountsIn.length; i++) {
+        //     console.log('amountsIn', i, amountsIn[i]);
+        // }
+        // console.log(uint(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT));
+        // console.log('joinKind^^^');
+        // console.log('minAmountBptOut: ', minAmountBptOut);
+        // console.log('...END');
+
+        
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
             amountsIn,
@@ -114,18 +125,10 @@ contract ROImoduleL2 {
         //     address(this)
         // );
 
-        console.log('.');
-        console.log('sender: ', address(this));
-        console.log('receiver: ', address(this));
         console.logBytes(request.userData);
-        for (uint i=0; i<assets.length; i++) {
-            console.log('assets', i, assets[i]);
-        }
-        console.log('.');
+        console.log('userData in roiL2 ^^^:');
 
-        for (uint i=0; i<maxAmountsIn.length; i++) {
-            console.log('maxAmountsIn', i, maxAmountsIn[i]);
-        }
+       
 
         IVault(s.vaultBalancer).joinPool(
             IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -135,7 +138,7 @@ contract ROImoduleL2 {
         );
 
         uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
-        console.log('bal BPT post: ', bal);
+        // console.log('bal BPT post: ', bal);
 
     }
 
