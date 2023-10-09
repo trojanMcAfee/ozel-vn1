@@ -5,7 +5,9 @@ pragma solidity 0.8.21;
 import "../../contracts/interfaces/ozIDiamond.sol";
 import "../../contracts/upgradeInitializers/DiamondInit.sol";
 import {Test} from "forge-std/Test.sol";
-import "../../lib/forge-std/src/interfaces/IERC20.sol";
+// import "../../lib/forge-std/src/interfaces/IERC20.sol";
+// import "../../contracts/interfaces/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import {ROImoduleL2} from "../../contracts/facets/ROImoduleL2.sol";
 import "../../contracts/facets/DiamondCutFacet.sol";
 import "../../contracts/facets/DiamondLoupeFacet.sol";
@@ -20,6 +22,7 @@ import "forge-std/console.sol";
 
 
 contract Setup is Test {
+    uint OWNER_PK = 123;
     address internal owner;
    
     enum Network {
@@ -50,7 +53,7 @@ contract Setup is Test {
     address internal rEthWethPoolBalancer;
     address internal rEthEthChainlink;
 
-    IERC20 internal USDC;
+    IERC20Permit internal USDC;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -98,7 +101,7 @@ contract Setup is Test {
             rEthImpl = 0x3f770Ac673856F105b586bb393d122721265aD46;
             feesCollectorBalancer = 0xce88686553686DA562CE7Cea497CE749DA109f9F;
 
-            USDC = IERC20(usdcAddr);
+            USDC = IERC20Permit(usdcAddr);
             network = "arbitrum";
             blockNumber = 136177703;
         } else if (chain_ == Network.ETHEREUM) {
@@ -119,7 +122,7 @@ contract Setup is Test {
             rEthImpl = address(0);
             feesCollectorBalancer = address(0);
 
-            USDC = IERC20(usdcAddr);
+            USDC = IERC20Permit(usdcAddr);
             network = "ethereum";
             blockNumber = 18284413;
         }
@@ -128,7 +131,7 @@ contract Setup is Test {
 
     function _runSetup() internal {
         //Initial owner config
-        owner = makeAddr("owner");
+        owner = vm.addr(OWNER_PK);
         deal(usdcAddr, owner, 1500 * 1e6);
 
         //Deploys diamond infra

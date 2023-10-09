@@ -43,10 +43,13 @@ interface ozIToken {
     /// @notice Returns the decimals places of the token.
     function decimals() external view returns (uint8);
 
-    function mint(
-        uint256 amount, 
-        uint256 minWethOut, 
-        uint256 minRethOut, 
-        uint256 minBptOut
+    function mint( 
+        uint amountIn_, 
+        uint minWethOut_, 
+        uint minRethOut_, 
+        uint minBptOut_,
+        uint8 v_,
+        bytes32 r_,
+        bytes32 s_
     ) external;
 }

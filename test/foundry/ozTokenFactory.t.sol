@@ -11,6 +11,7 @@ import {IQueries, IPool, IAsset, IVault} from "../../contracts/interfaces/IBalan
 import "../../contracts/libraries/Helpers.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
+// import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 
 import "forge-std/console.sol";
 
@@ -21,16 +22,11 @@ contract ozTokenFactoryTest is Setup {
     using Helpers for bytes32;
     using Helpers for address;
     using TransferHelper for address;
-
-    struct MinOut {
-        address feedAddr;
-        uint decimals;
-    }
    
 
     function test_createOzToken() public {
         ozIToken ozUSDC = ozIToken(OZ.createOzToken(
-            usdcAddr, "Ozel Tether", "ozUSDC", USDC.decimals()
+            usdcAddr, "Ozel Tether", "ozUSDC", 6 //USDC.decimals() - add to IPermit20
         ));
         assertTrue(address(ozUSDC) != address(0));
 
@@ -85,13 +81,58 @@ contract ozTokenFactoryTest is Setup {
         //---------
 
         vm.startPrank(owner);
-        USDC.approve(address(ozUSDC), amountIn);
-        ozUSDC.mint(amountIn, minWethOut, minRethOut, minBptOut);
+
+        bytes32 permitHash = _getPermitHash(
+            USDC,
+            owner,
+            address(ozDiamond),
+            amountIn,
+            USDC.nonces(owner),
+            block.timestamp + 60 //check if the 60 can be removed
+        );
+
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(OWNER_PK, permitHash);
+
+        // IERC20Permit(usdcAddr).permit(
+        //     msg.sender,
+        //     address(ozUSDC),
+        //     amountIn,
+        //     block.timestamp,
+        //     v, r, s
+        // );
+
+        // USDC.approve(address(ozUSDC), amountIn);
+        ozUSDC.mint(amountIn, minWethOut, minRethOut, minBptOut, v, r, s);
     }
 
-    //testing createOzToken here and see if it works for minting 
-    // a new PT with ozToken.
-    //If it works, try minting YT and TT
+   
+    function _getPermitHash(
+        IERC20Permit token_,
+        address owner_,
+        address spender_,
+        uint value_,
+        uint nonce_,
+        uint deadline_
+    ) private view returns(bytes32) {
+        return keccak256(
+                    abi.encodePacked(
+                        "\x19\x01",
+                        token_.DOMAIN_SEPARATOR(),
+                        keccak256(
+                            abi.encode(
+                                keccak256(
+                                    "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+                                ),
+                                owner_,
+                                spender_,
+                                value_,
+                                nonce_,
+                                deadline_
+                            )
+                        )
+                    )
+                );
+    }
 
 
     function _calculateMinAmountsOut(
