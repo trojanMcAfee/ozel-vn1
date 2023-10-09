@@ -30,7 +30,7 @@ contract ozTokenFactoryTest is Setup {
 
         uint amountIn = 1000 * 10 ** ozUSDC.decimals();
 
-        uint[] memory minsOut = _calculateMinAmountsOut(1000, ozUSDC.decimals());
+        uint[] memory minsOut = _calculateMinAmountsOut([ethUsdChainlink, rEthEthChainlink], 1000, ozUSDC.decimals());
         
         uint minWethOut = minsOut[0];
         uint minRethOut = minsOut[1];
@@ -88,24 +88,40 @@ contract ozTokenFactoryTest is Setup {
     //If it works, try minting YT and TT
 
 
-    function _calculateMinAmountsOut(uint amountIn_, uint decimals_) private view returns(uint[] memory) {
+    function _calculateMinAmountsOut(address[2] memory feeds_, uint amountIn_, uint decimals_) private view returns(uint[] memory) {
         uint[] memory minAmountsOut = new uint[](2);
 
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        //---------
 
-        uint expectedOut = ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : (18 - decimals_) + decimals_) ).fullMulDiv(1 ether, uint(price) * 1e10);
-        uint minAmountOut2 = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
-        minAmountsOut[0] = minAmountOut2;
-        console.log('minOut - eth: ', minAmountOut2);
+    //     (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+
+    //     uint expectedOut = ( amountIn_ * 10 ** (decimals_ == 18 ? 18 : (18 - decimals_) + decimals_) ).fullMulDiv(1 ether, uint(price) * 1e10);
+    //     uint minAmountOut2 = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+    //     minAmountsOut[0] = minAmountOut2;
+    //     console.log('minOut - eth: ', minAmountOut2);
 
 
-        (,price,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
-        expectedOut = minAmountOut2 .fullMulDiv(1 ether, uint(price));
-        uint minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
-        console.log('minOut - rETH: ', minAmountOut);
-        minAmountsOut[1] = minAmountOut;
+    //     (,price,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
+    //     expectedOut = minAmountOut2 .fullMulDiv(1 ether, uint(price));
+    //     uint minAmountOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+    //     console.log('minOut - rETH: ', minAmountOut);
+    //     minAmountsOut[1] = minAmountOut;
 
-       return minAmountsOut;
+    //    return minAmountsOut;
+
+       //--------
+        for (uint i=0; i < feeds_.length; i++) {
+            (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
+            uint expectedOut = 
+                ( i == 0 ? amountIn_ * 10 ** (decimals_ == 18 ? 18 : (18 - decimals_) + decimals_) : minAmountsOut[i - 1] )
+                .fullMulDiv(1 ether, i == 0 ? uint(price) * 1e10 : uint(price));
+
+            uint minOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
+            minAmountsOut[i] = minOut;
+            console.log('minOut : ', i, minAmountsOut[i]);
+        }
+
+        return minAmountsOut;
     }
 
 
