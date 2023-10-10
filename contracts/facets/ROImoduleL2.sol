@@ -37,6 +37,8 @@ contract ROImoduleL2 {
         uint minRethOutOffchain_,
         uint minBptOutOffchain_
     ) external {
+        // MyIERC20Permit(token).transferFrom(msg.sender, address(this), amountIn_);
+
         //Swaps underlying to WETH in Uniswap
         uint amountIn = IERC20(underlying_).balanceOf(address(this));
         underlying_.safeApprove(s.swapRouterUni, amountIn);
