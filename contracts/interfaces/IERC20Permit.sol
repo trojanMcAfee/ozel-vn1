@@ -3,7 +3,7 @@ pragma solidity >=0.6.2;
 
 /// @dev Interface of the ERC20 standard as defined in the EIP.
 /// @dev This includes the optional name, symbol, and decimals metadata.
-interface IERC20 {
+interface IERC20Permit {
     /// @dev Emitted when `value` tokens are moved from one account (`from`) to another (`to`).
     event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -42,4 +42,16 @@ interface IERC20 {
     function decimals() external view returns (uint8);
 
     function DOMAIN_SEPARATOR() external view returns (bytes32);
+
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external;
+
+    function nonces(address owner) external view returns (uint256);
 }

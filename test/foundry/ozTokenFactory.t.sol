@@ -26,7 +26,7 @@ contract ozTokenFactoryTest is Setup {
 
     function test_createOzToken() public {
         ozIToken ozUSDC = ozIToken(OZ.createOzToken(
-            usdcAddr, "Ozel Tether", "ozUSDC", 6 //USDC.decimals() - add to IPermit20
+            usdcAddr, "Ozel Tether", "ozUSDC", USDC.decimals()
         ));
         assertTrue(address(ozUSDC) != address(0));
 
@@ -83,7 +83,7 @@ contract ozTokenFactoryTest is Setup {
         vm.startPrank(owner);
 
         bytes32 permitHash = _getPermitHash(
-            USDC,
+            usdcAddr,
             owner,
             address(ozDiamond),
             amountIn,
@@ -96,9 +96,13 @@ contract ozTokenFactoryTest is Setup {
         ozUSDC.mint(amountIn, minWethOut, minRethOut, minBptOut, v, r, s);
     }
 
+
+    /**
+     * Helpers 
+     */
    
     function _getPermitHash(
-        IERC20Permit token_,
+        address token_,
         address owner_,
         address spender_,
         uint value_,
@@ -108,7 +112,7 @@ contract ozTokenFactoryTest is Setup {
         return keccak256(
                     abi.encodePacked(
                         "\x19\x01",
-                        token_.DOMAIN_SEPARATOR(),
+                        IERC20Permit(token_).DOMAIN_SEPARATOR(),
                         keccak256(
                             abi.encode(
                                 keccak256(
