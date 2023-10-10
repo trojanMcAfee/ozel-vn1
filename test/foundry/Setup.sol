@@ -6,7 +6,7 @@ import "../../contracts/interfaces/ozIDiamond.sol";
 import "../../contracts/upgradeInitializers/DiamondInit.sol";
 import {Test} from "forge-std/Test.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import "../../contracts/interfaces/IERC20Permit.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import {ROImoduleL2} from "../../contracts/facets/ROImoduleL2.sol";
 import "../../contracts/facets/DiamondCutFacet.sol";

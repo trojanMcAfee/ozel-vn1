@@ -14,14 +14,9 @@ import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
 import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import "../libraries/Helpers.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
-
+import "../../contracts/interfaces/IERC20Permit.sol";
 
 import "forge-std/console.sol";
-
-
-interface MyIERC20Permit {
-    function transferFrom(address sender, address receiver, uint256 amount) external;
-}
 
 
 
@@ -42,7 +37,7 @@ contract ROImoduleL2 {
         uint minBptOutOffchain_,
         uint amountIn_
     ) external {
-        MyIERC20Permit(underlying_).transferFrom(user_, address(this), amountIn_);
+        IERC20Permit(underlying_).transferFrom(user_, address(this), amountIn_);
 
         //Swaps underlying to WETH in Uniswap
         uint amountIn = IERC20(underlying_).balanceOf(address(this));
