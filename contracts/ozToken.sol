@@ -236,10 +236,6 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         );
 
         ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
-
-        // ozIDiamond(_ozDiamond).useUnderlying(
-        //     token, msg.sender, minWethOut_, minRethOut_, minBptOut_, amountIn_
-        // ); 
     }
 
    

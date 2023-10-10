@@ -42,22 +42,7 @@ contract ROImoduleL2 {
         IERC20Permit(underlying_).transferFrom(user_, address(this), amountIn);
 
         //Swaps underlying to WETH in Uniswap
-        // uint amountIn = IERC20(underlying_).balanceOf(address(this));
-        underlying_.safeApprove(s.swapRouterUni, amountIn);
-
-        ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({
-                tokenIn: underlying_,
-                tokenOut: s.WETH, 
-                fee: 500, //make this a programatic value
-                recipient: address(this),
-                deadline: block.timestamp,
-                amountIn: amountIn,
-                amountOutMinimum: minWethOut, 
-                sqrtPriceLimitX96: 0
-            });
-
-        ISwapRouter(s.swapRouterUni).exactInputSingle(params);
+        _performUniSwap(amountIn, minWethOut, underlying_);
 
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
@@ -157,6 +142,30 @@ contract ROImoduleL2 {
     ) private view returns(uint256 minAmountOut) {
         minAmountOut = amount_ - amount_.fullMulDiv(s.defaultSlippage, 10000);
     }
+
+
+    function _performUniSwap(
+        uint amountIn_, 
+        uint minWethOut_, 
+        address underlying_
+    ) private {
+        underlying_.safeApprove(s.swapRouterUni, amountIn_);
+
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({
+                tokenIn: underlying_,
+                tokenOut: s.WETH, 
+                fee: 500, //make this a programatic value
+                recipient: address(this),
+                deadline: block.timestamp,
+                amountIn: amountIn_,
+                amountOutMinimum: minWethOut_, 
+                sqrtPriceLimitX96: 0
+            });
+
+        ISwapRouter(s.swapRouterUni).exactInputSingle(params);
+    }
+
 
 
     /**
