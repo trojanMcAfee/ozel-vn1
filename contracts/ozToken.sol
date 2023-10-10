@@ -219,70 +219,16 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
     ) external {
         address token = underlying();
 
-        uint bal = IERC20(token).balanceOf(msg.sender);
-        console.log('bal USDC sender pre - not same: ', bal);
-
-        console.log('sender: ', msg.sender);
-
-        console.log('----- PERMIT in ozToken ------');
-        console.log('owner: ', msg.sender);
-        console.log('token usdc: ', token);
-        console.log('owner USDC bal pre: ', IERC20(token).balanceOf(msg.sender));
-        console.log('address(ozDiamond): ', _ozDiamond);
-        console.log('amountIn: ', amountIn_);
-        console.log('deadline: ', block.timestamp + 60);
-        console.log('v: ', uint(v_));
-        console.logBytes32(r_);
-        console.log('r ^');
-        console.logBytes32(s_);
-        console.log('s ^');
-        console.log('---------------------------');
-
         IERC20Permit(token).permit(
             msg.sender,
             _ozDiamond,
             amountIn_,
-            block.timestamp + 60,
+            block.timestamp,
             v_, r_, s_
         );
 
-        uint x = IERC20(token).allowance(msg.sender, _ozDiamond);
-        console.log('allowance ****: ', x);
-
-        // (bool success,) = token.delegatecall(
-        //     abi.encodeWithSelector(
-        //         IERC20Permit(token).permit.selector, 
-        //         msg.sender,
-        //         _ozDiamond,
-        //         amountIn_,
-        //         block.timestamp + 60,
-        //         v_, r_, s_
-        //     )
-        // );
-        // require(success, "fff");
-
-        // MyIERC20Permit(token).transferFrom(msg.sender, _ozDiamond, amountIn_);
-        // (success,) = token.delegatecall(
-        //     abi.encodeWithSelector(
-        //         MyIERC20Permit(token).transferFrom.selector, 
-        //         msg.sender, _ozDiamond, amountIn_
-        //     )
-        // );
-        // require(success, "ff");
-
-        bal = IERC20(token).balanceOf(_ozDiamond);
-        console.log('bal USDC diamond - not 0: ', bal);
-
-        bal = IERC20(token).balanceOf(msg.sender);
-        console.log('bal USDC sender post - not 150: ', bal);
-
-        bal = IERC20(token).balanceOf(address(this));
-        console.log('address(this) in ozToken: ', address(this));
-        console.log('bal USDC ozToken post - should 0: ', bal);
-
-        // token.safeTransferFrom(msg.sender, _ozDiamond, amountIn_);
         ozIDiamond(_ozDiamond).useUnderlying(
-            token, msg.sender, minWethOut_, minRethOut_, minBptOut_
+            token, msg.sender, minWethOut_, minRethOut_, minBptOut_, amountIn_
         ); 
     }
 

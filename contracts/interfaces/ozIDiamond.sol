@@ -22,7 +22,8 @@ interface ozIDiamond {
         address user_, 
         uint minWethOut_, 
         uint minRethOut_, 
-        uint minBptOut_
+        uint minBptOut_,
+        uint amountIn_
     ) external;
 
     function getDiamondAddr() external view returns(address);

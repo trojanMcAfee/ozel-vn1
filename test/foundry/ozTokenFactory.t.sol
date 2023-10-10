@@ -81,13 +81,6 @@ contract ozTokenFactoryTest is Setup {
         //---------
 
         vm.startPrank(owner);
-        console.log('----- PERMIT in test ------');
-        console.log('owner: ', owner);
-        console.log('owner USDC bal pre: ', IERC20(usdcAddr).balanceOf(owner));
-        console.log('address(ozDiamond): ', address(ozDiamond));
-        console.log('amountIn: ', amountIn);
-        console.log('nonces: ', USDC.nonces(owner));
-        console.log('deadline: ', block.timestamp + 60);
 
         bytes32 permitHash = _getPermitHash(
             USDC,
@@ -95,30 +88,11 @@ contract ozTokenFactoryTest is Setup {
             address(ozDiamond),
             amountIn,
             USDC.nonces(owner),
-            block.timestamp + 60 //check if the 60 can be removed
+            block.timestamp
         );
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(OWNER_PK, permitHash);
 
-        console.log('v: ', uint(v));
-        // console.log('v ^');
-        console.logBytes32(r);
-        console.log('r ^');
-        console.logBytes32(s);
-        console.log('s ^');
-        console.log('---------------------------');
-
-        console.log('owner - should be sender: ', owner);
-
-        // IERC20Permit(usdcAddr).permit(
-        //     owner,
-        //     address(ozDiamond),
-        //     amountIn,
-        //     block.timestamp + 60,
-        //     v, r, s
-        // );
-
-        // USDC.approve(address(ozUSDC), amountIn);
         ozUSDC.mint(amountIn, minWethOut, minRethOut, minBptOut, v, r, s);
     }
 

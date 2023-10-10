@@ -39,10 +39,10 @@ contract ROImoduleL2 {
         address user_,
         uint minWethOut_,
         uint minRethOutOffchain_,
-        uint minBptOutOffchain_
+        uint minBptOutOffchain_,
+        uint amountIn_
     ) external {
-        MyIERC20Permit(underlying_).transferFrom(user_, address(this), 1000 * 1e6);
-        // console.log('sender in userUnder: ', msg.sender);
+        MyIERC20Permit(underlying_).transferFrom(user_, address(this), amountIn_);
 
         //Swaps underlying to WETH in Uniswap
         uint amountIn = IERC20(underlying_).balanceOf(address(this));
@@ -101,9 +101,6 @@ contract ROImoduleL2 {
         uint[] memory amountsIn = new uint[](2);
         amountsIn[0] = 0;
         amountsIn[1] = IWETH(s.rETH).balanceOf(address(this));
-
-        // uint minAmountBptOut = minBptOutOffchain_; //0
-
         
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
