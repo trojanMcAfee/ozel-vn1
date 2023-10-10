@@ -55,28 +55,11 @@ contract ROImoduleL2 {
             IVault.SwapKind.GIVEN_IN,
             IAsset(s.WETH),
             IAsset(s.rETH),
-            IWETH(s.WETH).balanceOf(address(this)),
             address(this),
             payable(address(this)),
-            minRethOutOffchain
+            minRethOutOffchain,
+            IWETH(s.WETH).balanceOf(address(this))
         );
-
-        // IVault.SingleSwap memory singleSwap = IPool(s.rEthWethPoolBalancer)
-        //     .getPoolId()
-        //     .createSingleSwap(
-        //         IVault.SwapKind.GIVEN_IN,
-        //         IAsset(s.WETH),
-        //         IAsset(s.rETH),
-        //         IWETH(s.WETH).balanceOf(address(this))
-        //     );
-
-        // IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(payable(address(this)));
-        // uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, fundMngmt);
-
-        // uint minRethOut = minRethOutOffchain > minRethOutOnchain ? minRethOutOffchain : minRethOutOnchain;
-
-        // s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
-        // IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
         s.rETH.safeApprove(s.vaultBalancer, IWETH(s.rETH).balanceOf(address(this)));
@@ -179,17 +162,14 @@ contract ROImoduleL2 {
 
 
     function _swapBalancer(
-        //---- single swap struct
         bytes32 poolId_,
         IVault.SwapKind kind_,
         IAsset assetIn_,
         IAsset assetOut_,
-        uint amountIn_,
-        //------ funds struct
         address sender_,
         address payable recipient_,
-        //---- other args
-        uint minRethOutOffchain_
+        uint minRethOutOffchain_,
+        uint amountIn_
     ) private {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: poolId_,
