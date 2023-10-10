@@ -50,8 +50,10 @@ contract ROImoduleL2 {
             //do something else or throw error and return
         }
 
+        bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
+
         _swapBalancer(
-            IPool(s.rEthWethPoolBalancer).getPoolId(),
+            poolId,
             IVault.SwapKind.GIVEN_IN,
             IAsset(s.WETH),
             IAsset(s.rETH),
@@ -62,66 +64,69 @@ contract ROImoduleL2 {
         );
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
-        s.rETH.safeApprove(s.vaultBalancer, IWETH(s.rETH).balanceOf(address(this)));
+        _addLiquidityBalancer(minBptOutOffchain, poolId);
 
-        address[] memory assets = new address[](3);
-        assets[0] = s.WETH;
-        assets[1] = s.rEthWethPoolBalancer;
-        assets[2] = s.rETH;
+        // amountIn = IERC20Permit(s.rETH).balanceOf(address(this));
+        // s.rETH.safeApprove(s.vaultBalancer, amountIn);
 
-        uint[] memory maxAmountsIn = new uint[](3);
-        maxAmountsIn[0] = 0;
-        maxAmountsIn[1] = 0;
-        maxAmountsIn[2] = IWETH(s.rETH).balanceOf(address(this));
+        // address[] memory assets = new address[](3);
+        // assets[0] = s.WETH;
+        // assets[1] = s.rEthWethPoolBalancer;
+        // assets[2] = s.rETH;
 
-        uint[] memory amountsIn = new uint[](2);
-        amountsIn[0] = 0;
-        amountsIn[1] = IWETH(s.rETH).balanceOf(address(this));
+        // uint[] memory maxAmountsIn = new uint[](3);
+        // maxAmountsIn[0] = 0;
+        // maxAmountsIn[1] = 0;
+        // maxAmountsIn[2] = IWETH(s.rETH).balanceOf(address(this));
+
+        // uint[] memory amountsIn = new uint[](2);
+        // amountsIn[0] = 0;
+        // amountsIn[1] = IWETH(s.rETH).balanceOf(address(this));
         
-        bytes memory userData = abi.encode( 
-            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-            amountsIn,
-            minBptOutOffchain
-        );
+        // bytes memory userData = abi.encode( 
+        //     IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+        //     amountsIn,
+        //     minBptOutOffchain
+        // );
 
-        IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
-            assets: assets,
-            maxAmountsIn: maxAmountsIn,
-            userData: userData,
-            fromInternalBalance: false
-        });
+        // IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
+        //     assets: assets,
+        //     maxAmountsIn: maxAmountsIn,
+        //     userData: userData,
+        //     fromInternalBalance: false
+        // });
 
-        (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
-            IPool(s.rEthWethPoolBalancer).getPoolId(),
-            address(this),
-            address(this),
-            request
-        );
+        // (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
+        //     IPool(s.rEthWethPoolBalancer).getPoolId(),
+        //     address(this),
+        //     address(this),
+        //     request
+        // );
 
         //Re-do request with actual bptOut
-        uint minBptOut = _calculateMinAmountOut(
-            bptOut > minBptOutOffchain ? bptOut : minBptOutOffchain
-        );
+        // uint minBptOut = _calculateMinAmountOut(
+        //     bptOut > minBptOutOffchain ? bptOut : minBptOutOffchain
+        // );
 
-        userData = abi.encode( 
-            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-            amountsIn,
-            minBptOut
-        );
+        // userData = abi.encode( 
+        //     IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+        //     amountsIn,
+        //     minBptOut
+        // );
 
-        request = IVault.JoinPoolRequest({
-            assets: assets,
-            maxAmountsIn: maxAmountsIn,
-            userData: userData,
-            fromInternalBalance: false
-        });
+        // request = IVault.JoinPoolRequest({
+        //     assets: assets,
+        //     maxAmountsIn: maxAmountsIn,
+        //     userData: userData,
+        //     fromInternalBalance: false
+        // });
 
-        IVault(s.vaultBalancer).joinPool(
-            IPool(s.rEthWethPoolBalancer).getPoolId(),
-            address(this),
-            address(this),
-            request
-        );
+        // IVault(s.vaultBalancer).joinPool(
+        //     IPool(s.rEthWethPoolBalancer).getPoolId(),
+        //     address(this),
+        //     address(this),
+        //     request
+        // );
 
         uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
         console.log('bal BPT post: ', bal);
@@ -192,6 +197,71 @@ contract ROImoduleL2 {
 
         s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
         IVault(s.vaultBalancer).swap(singleSwap, funds, minRethOut, block.timestamp);
+    }
+
+
+    function _addLiquidityBalancer(uint minBptOutOffchain_, bytes32 poolId_) private {
+        uint amountIn = IERC20Permit(s.rETH).balanceOf(address(this));
+        s.rETH.safeApprove(s.vaultBalancer, amountIn);
+
+        address[] memory assets = new address[](3);
+        assets[0] = s.WETH;
+        assets[1] = s.rEthWethPoolBalancer;
+        assets[2] = s.rETH;
+
+        uint[] memory maxAmountsIn = new uint[](3);
+        maxAmountsIn[0] = 0;
+        maxAmountsIn[1] = 0;
+        maxAmountsIn[2] = amountIn;
+
+        uint[] memory amountsIn = new uint[](2);
+        amountsIn[0] = 0;
+        amountsIn[1] = amountIn;
+
+        bytes memory userData = abi.encode( 
+            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+            amountsIn,
+            minBptOutOffchain_
+        );
+
+        IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
+            assets: assets,
+            maxAmountsIn: maxAmountsIn,
+            userData: userData,
+            fromInternalBalance: false
+        });
+
+        (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
+            poolId_,
+            address(this),
+            address(this),
+            request
+        );
+
+        //Re-do request with actual bptOut
+        uint minBptOut = _calculateMinAmountOut(
+            bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
+        );
+
+        userData = abi.encode( 
+            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+            amountsIn,
+            minBptOut
+        );
+
+        request = IVault.JoinPoolRequest({
+            assets: assets,
+            maxAmountsIn: maxAmountsIn,
+            userData: userData,
+            fromInternalBalance: false
+        });
+
+        IVault(s.vaultBalancer).joinPool(
+            IPool(s.rEthWethPoolBalancer).getPoolId(),
+            address(this),
+            address(this),
+            request
+        );
     }
 
 
