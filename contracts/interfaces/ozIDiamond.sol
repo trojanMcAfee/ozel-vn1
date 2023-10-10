@@ -3,6 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {IDiamondCut} from "./IDiamondCut.sol";
+import {TradeAmounts} from "../AppStorage.sol";
 
 
 interface ozIDiamond {
@@ -20,10 +21,7 @@ interface ozIDiamond {
     function useUnderlying(
         address underlying_, 
         address user_, 
-        uint minWethOut_, 
-        uint minRethOut_, 
-        uint minBptOut_,
-        uint amountIn_
+        TradeAmounts memory amounts_
     ) external;
 
     function getDiamondAddr() external view returns(address);

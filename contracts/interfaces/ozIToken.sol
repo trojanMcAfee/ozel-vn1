@@ -2,6 +2,8 @@
 pragma solidity 0.8.21;
 
 
+import {TradeAmounts} from "../AppStorage.sol";
+
 
 /// @dev Interface of the ERC20 standard as defined in the EIP.
 /// @dev This includes the optional name, symbol, and decimals metadata.
@@ -44,10 +46,7 @@ interface ozIToken {
     function decimals() external view returns (uint8);
 
     function mint( 
-        uint amountIn_, 
-        uint minWethOut_, 
-        uint minRethOut_, 
-        uint minBptOut_,
+        TradeAmounts memory amounts_,
         uint8 v_,
         bytes32 r_,
         bytes32 s_

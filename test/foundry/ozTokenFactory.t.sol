@@ -12,6 +12,7 @@ import "../../contracts/libraries/Helpers.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
+import {TradeAmounts} from "../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -93,7 +94,14 @@ contract ozTokenFactoryTest is Setup {
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(OWNER_PK, permitHash);
 
-        ozUSDC.mint(amountIn, minWethOut, minRethOut, minBptOut, v, r, s);
+        TradeAmounts memory amounts = TradeAmounts({
+            amountIn: amountIn,
+            minWethOut: minWethOut,
+            minRethOut: minRethOut,
+            minBptOut: minBptOut
+        });
+
+        ozUSDC.mint(amounts, v, r, s);
     }
 
 

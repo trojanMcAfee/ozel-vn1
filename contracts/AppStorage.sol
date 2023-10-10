@@ -26,6 +26,13 @@ struct AppStorage {
   
 }
 
+struct TradeAmounts {
+    uint amountIn;
+    uint minWethOut;
+    uint minRethOut;
+    uint minBptOut;
+}
+
 
 
 

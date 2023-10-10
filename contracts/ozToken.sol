@@ -9,12 +9,10 @@ import "solady/src/utils/FixedPointMathLib.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
+import {TradeAmounts} from "./AppStorage.sol";
 
 import "forge-std/console.sol";
 
-interface MyIERC20Permit {
-    function transferFrom(address sender, address receiver, uint256 amount) external;
-}
 
 
 contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed here?
@@ -207,12 +205,22 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         _afterTokenTransfer(from, to, amount);
     }
 
+    
+    // struct TradeAmounts {
+    //     uint amountIn;
+    //     uint minWethOut;
+    //     uint minRethOut;
+    //     uint minBptOut;
+    // }
+
+    // struct Signature {
+    //     uint8 v;
+    //     bytes32 r;
+    //     bytes32 s;
+    // }
 
     function mint( 
-        uint amountIn_, 
-        uint minWethOut_, 
-        uint minRethOut_, 
-        uint minBptOut_,
+        TradeAmounts memory amounts_,
         uint8 v_,
         bytes32 r_,
         bytes32 s_
@@ -222,14 +230,16 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         IERC20Permit(token).permit(
             msg.sender,
             _ozDiamond,
-            amountIn_,
+            amounts_.amountIn,
             block.timestamp,
             v_, r_, s_
         );
 
-        ozIDiamond(_ozDiamond).useUnderlying(
-            token, msg.sender, minWethOut_, minRethOut_, minBptOut_, amountIn_
-        ); 
+        ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
+
+        // ozIDiamond(_ozDiamond).useUnderlying(
+        //     token, msg.sender, minWethOut_, minRethOut_, minBptOut_, amountIn_
+        // ); 
     }
 
    

@@ -6,7 +6,7 @@ pragma solidity 0.8.21;
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage} from "../AppStorage.sol";
+import {AppStorage, TradeAmounts} from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
 import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
@@ -32,15 +32,17 @@ contract ROImoduleL2 {
     function useUnderlying( 
         address underlying_, 
         address user_,
-        uint minWethOut_,
-        uint minRethOutOffchain_,
-        uint minBptOutOffchain_,
-        uint amountIn_
+        TradeAmounts memory amounts_
     ) external {
-        IERC20Permit(underlying_).transferFrom(user_, address(this), amountIn_);
+        uint amountIn = amounts_.amountIn;
+        uint minWethOut = amounts_.minWethOut;
+        uint minRethOutOffchain = amounts_.minRethOut;
+        uint minBptOutOffchain = amounts_.minBptOut;
+
+        IERC20Permit(underlying_).transferFrom(user_, address(this), amountIn);
 
         //Swaps underlying to WETH in Uniswap
-        uint amountIn = IERC20(underlying_).balanceOf(address(this));
+        // uint amountIn = IERC20(underlying_).balanceOf(address(this));
         underlying_.safeApprove(s.swapRouterUni, amountIn);
 
         ISwapRouter.ExactInputSingleParams memory params =
@@ -51,7 +53,7 @@ contract ROImoduleL2 {
                 recipient: address(this),
                 deadline: block.timestamp,
                 amountIn: amountIn,
-                amountOutMinimum: minWethOut_, 
+                amountOutMinimum: minWethOut, 
                 sqrtPriceLimitX96: 0
             });
 
@@ -75,7 +77,7 @@ contract ROImoduleL2 {
         IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(payable(address(this)));
         uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, fundMngmt);
 
-        uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
+        uint minRethOut = minRethOutOffchain > minRethOutOnchain ? minRethOutOffchain : minRethOutOnchain;
 
         s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
         IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
@@ -100,7 +102,7 @@ contract ROImoduleL2 {
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
             amountsIn,
-            minBptOutOffchain_
+            minBptOutOffchain
         );
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
@@ -119,7 +121,7 @@ contract ROImoduleL2 {
 
         //Re-do request with actual bptOut
         uint minBptOut = _calculateMinAmountOut(
-            bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
+            bptOut > minBptOutOffchain ? bptOut : minBptOutOffchain
         );
 
         userData = abi.encode( 
