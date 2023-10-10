@@ -19,6 +19,10 @@ import "solady/src/utils/FixedPointMathLib.sol";
 import "forge-std/console.sol";
 
 
+interface MyIERC20Permit {
+    function transferFrom(address sender, address receiver, uint256 amount) external;
+}
+
 
 
 contract ROImoduleL2 {
@@ -37,7 +41,8 @@ contract ROImoduleL2 {
         uint minRethOutOffchain_,
         uint minBptOutOffchain_
     ) external {
-        // MyIERC20Permit(token).transferFrom(msg.sender, address(this), amountIn_);
+        MyIERC20Permit(underlying_).transferFrom(user_, address(this), 1000 * 1e6);
+        // console.log('sender in userUnder: ', msg.sender);
 
         //Swaps underlying to WETH in Uniswap
         uint amountIn = IERC20(underlying_).balanceOf(address(this));
