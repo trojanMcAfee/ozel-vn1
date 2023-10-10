@@ -161,13 +161,6 @@ contract ROImoduleL2 {
         minAmountOut = amount_ - amount_.fullMulDiv(s.defaultSlippage, 10000);
     }
 
-    // function _calculateUserData(uint minBptOut_) private returns(bytes memory) {
-    //     return abi.encode( 
-    //         IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-    //         amountsIn,
-    //         minBptOut_
-    //     );
-    // }
 
     /**
      * add a fallback oracle like uni's TWAP
