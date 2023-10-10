@@ -42,7 +42,7 @@ contract ROImoduleL2 {
         IERC20Permit(underlying_).transferFrom(user_, address(this), amountIn);
 
         //Swaps underlying to WETH in Uniswap
-        _performUniSwap(amountIn, minWethOut, underlying_);
+        _swapUni(amountIn, minWethOut, underlying_);
 
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
@@ -50,22 +50,33 @@ contract ROImoduleL2 {
             //do something else or throw error and return
         }
 
-        IVault.SingleSwap memory singleSwap = IPool(s.rEthWethPoolBalancer)
-            .getPoolId()
-            .createSingleSwap(
-                IVault.SwapKind.GIVEN_IN,
-                IAsset(s.WETH),
-                IAsset(s.rETH),
-                IWETH(s.WETH).balanceOf(address(this))
-            );
+        _swapBalancer(
+            IPool(s.rEthWethPoolBalancer).getPoolId(),
+            IVault.SwapKind.GIVEN_IN,
+            IAsset(s.WETH),
+            IAsset(s.rETH),
+            IWETH(s.WETH).balanceOf(address(this)),
+            address(this),
+            payable(address(this)),
+            minRethOutOffchain
+        );
 
-        IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(payable(address(this)));
-        uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, fundMngmt);
+        // IVault.SingleSwap memory singleSwap = IPool(s.rEthWethPoolBalancer)
+        //     .getPoolId()
+        //     .createSingleSwap(
+        //         IVault.SwapKind.GIVEN_IN,
+        //         IAsset(s.WETH),
+        //         IAsset(s.rETH),
+        //         IWETH(s.WETH).balanceOf(address(this))
+        //     );
 
-        uint minRethOut = minRethOutOffchain > minRethOutOnchain ? minRethOutOffchain : minRethOutOnchain;
+        // IVault.FundManagement memory fundMngmt = address(this).createFundMngmt(payable(address(this)));
+        // uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, fundMngmt);
 
-        s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
-        IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
+        // uint minRethOut = minRethOutOffchain > minRethOutOnchain ? minRethOutOffchain : minRethOutOnchain;
+
+        // s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
+        // IVault(s.vaultBalancer).swap(singleSwap, fundMngmt, minRethOut, block.timestamp);
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
         s.rETH.safeApprove(s.vaultBalancer, IWETH(s.rETH).balanceOf(address(this)));
@@ -144,7 +155,7 @@ contract ROImoduleL2 {
     }
 
 
-    function _performUniSwap(
+    function _swapUni(
         uint amountIn_, 
         uint minWethOut_, 
         address underlying_
@@ -164,6 +175,43 @@ contract ROImoduleL2 {
             });
 
         ISwapRouter(s.swapRouterUni).exactInputSingle(params);
+    }
+
+
+    function _swapBalancer(
+        //---- single swap struct
+        bytes32 poolId_,
+        IVault.SwapKind kind_,
+        IAsset assetIn_,
+        IAsset assetOut_,
+        uint amountIn_,
+        //------ funds struct
+        address sender_,
+        address payable recipient_,
+        //---- other args
+        uint minRethOutOffchain_
+    ) private {
+        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+            poolId: poolId_,
+            kind: kind_,
+            assetIn: assetIn_,
+            assetOut: assetOut_,
+            amount: amountIn_,
+            userData: new bytes(0)
+        });
+
+        IVault.FundManagement memory funds = IVault.FundManagement({
+            sender: sender_,
+            fromInternalBalance: false,
+            recipient: recipient_,
+            toInternalBalance: false
+        });
+
+        uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds);
+        uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
+
+        s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
+        IVault(s.vaultBalancer).swap(singleSwap, funds, minRethOut, block.timestamp);
     }
 
 
