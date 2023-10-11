@@ -18,6 +18,7 @@ import "../../contracts/interfaces/IERC20Permit.sol";
 
 import "forge-std/console.sol";
 
+// error LengthMismatch(uint length, AddrLength);
 
 
 contract ROImoduleL2 {
@@ -26,6 +27,9 @@ contract ROImoduleL2 {
     using Helpers for bytes32;
     using Helpers for address;
     using FixedPointMathLib for uint;
+    using Helpers for address[3];
+    using Helpers for uint[3];
+    using Helpers for uint[2];
 
     AppStorage internal s;
 
@@ -124,19 +128,20 @@ contract ROImoduleL2 {
         uint amountIn = IERC20Permit(s.rETH).balanceOf(address(this));
         s.rETH.safeApprove(s.vaultBalancer, amountIn);
 
-        address[] memory assets = new address[](3);
-        assets[0] = s.WETH;
-        assets[1] = s.rEthWethPoolBalancer;
-        assets[2] = s.rETH;
+        address[] memory assets = [s.WETH, s.rEthWethPoolBalancer, s.rETH].convertToDynamic();
 
-        uint[] memory maxAmountsIn = new uint[](3);
-        maxAmountsIn[0] = 0;
-        maxAmountsIn[1] = 0;
-        maxAmountsIn[2] = amountIn;
+        // uint[] memory maxAmountsIn = new uint[](3);
+        // maxAmountsIn[0] = 0;
+        // maxAmountsIn[1] = 0;
+        // maxAmountsIn[2] = amountIn;
 
-        uint[] memory amountsIn = new uint[](2);
-        amountsIn[0] = 0;
-        amountsIn[1] = amountIn;
+        uint[] memory maxAmountsIn = [0, 0, amountIn].convertToDynamic();
+
+        // uint[] memory amountsIn = new uint[](2);
+        // amountsIn[0] = 0;
+        // amountsIn[1] = amountIn;
+
+        uint[] memory amountsIn = [0, amountIn].convertToDynamic();
 
         IVault.JoinPoolRequest memory request = _createRequest(
             assets, maxAmountsIn, _createUserData(amountsIn, minBptOutOffchain_)
@@ -166,7 +171,7 @@ contract ROImoduleL2 {
         );
     }
 
-    // function _createArray(uint length_, )
+    // function _createArray() private pure returns(uint[])
 
     function _createUserData(
         uint[] memory amountsIn_, 
