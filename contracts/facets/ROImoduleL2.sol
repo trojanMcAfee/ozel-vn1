@@ -54,13 +54,13 @@ contract ROImoduleL2 {
 
         _swapBalancer(
             poolId,
-            IVault.SwapKind.GIVEN_IN,
-            IAsset(s.WETH),
-            IAsset(s.rETH),
-            address(this),
-            payable(address(this)),
-            minRethOutOffchain,
-            IWETH(s.WETH).balanceOf(address(this))
+            // IVault.SwapKind.GIVEN_IN,
+            // IAsset(s.WETH),
+            // IAsset(s.rETH),
+            // address(this),
+            // payable(address(this)),
+            minRethOutOffchain
+            // IWETH(s.WETH).balanceOf(address(this))
         );
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
@@ -106,27 +106,27 @@ contract ROImoduleL2 {
 
     function _swapBalancer(
         bytes32 poolId_,
-        IVault.SwapKind kind_,
-        IAsset assetIn_,
-        IAsset assetOut_,
-        address sender_,
-        address payable recipient_,
-        uint minRethOutOffchain_,
-        uint amountIn_
+        // IVault.SwapKind kind_,
+        // IAsset assetIn_,
+        // IAsset assetOut_,
+        // address sender_,
+        // address payable recipient_,
+        uint minRethOutOffchain_
+        // uint amountIn_
     ) private {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: poolId_,
-            kind: kind_,
-            assetIn: assetIn_,
-            assetOut: assetOut_,
-            amount: amountIn_,
+            kind: IVault.SwapKind.GIVEN_IN,
+            assetIn: IAsset(s.WETH),
+            assetOut: IAsset(s.rETH),
+            amount: IWETH(s.WETH).balanceOf(address(this)),
             userData: new bytes(0)
         });
 
         IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: sender_,
+            sender: address(this),
             fromInternalBalance: false,
-            recipient: recipient_,
+            recipient: payable(address(this)),
             toInternalBalance: false
         });
 
@@ -156,15 +156,6 @@ contract ROImoduleL2 {
         amountsIn[0] = 0;
         amountsIn[1] = amountIn;
 
-        // bytes memory userData = _createUserData(amountsIn, minBptOutOffchain_);
-
-        // IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
-        //     assets: assets,
-        //     maxAmountsIn: maxAmountsIn,
-        //     userData: userData,
-        //     fromInternalBalance: false
-        // });
-
         IVault.JoinPoolRequest memory request = _createRequest(
             assets, maxAmountsIn, _createUserData(amountsIn, minBptOutOffchain_)
         );
@@ -180,15 +171,6 @@ contract ROImoduleL2 {
         uint minBptOut = _calculateMinAmountOut(
             bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
         );
-
-        // userData = _createUserData(amountsIn, minBptOut);
-
-        // request = IVault.JoinPoolRequest({
-        //     assets: assets,
-        //     maxAmountsIn: maxAmountsIn,
-        //     userData: userData,
-        //     fromInternalBalance: false
-        // });
 
         request = _createRequest(
             assets, maxAmountsIn, _createUserData(amountsIn, minBptOut)
