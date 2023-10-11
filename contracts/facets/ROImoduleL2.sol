@@ -24,15 +24,15 @@ import "forge-std/console.sol";
 contract ROImoduleL2 {
 
     using TransferHelper for address;
-    using Helpers for bytes32;
-    using Helpers for address;
+    // using Helpers for bytes32;
+    // using Helpers for address;
     using FixedPointMathLib for uint;
-    using Helpers for address[3];
-    using Helpers for uint[3];
-    using Helpers for uint[2];
-    using Helpers for uint;
-    using Helpers for IVault.JoinKind;
-    using Helpers for address[];
+    // using Helpers for address[3];
+    // using Helpers for uint[3];
+    // using Helpers for uint[2];
+    // using Helpers for uint;
+    // using Helpers for IVault.JoinKind;
+    // using Helpers for address[];
 
     AppStorage internal s;
 
@@ -41,7 +41,7 @@ contract ROImoduleL2 {
         address user_,
         TradeAmounts memory amounts_
     ) external {
-        IERC20Permit(underlying_).transferFrom(user_, address(this), amounts_.amountIn);
+        underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
 
         //Swaps underlying to WETH in Uniswap
         _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
@@ -118,12 +118,14 @@ contract ROImoduleL2 {
         uint amountIn = IERC20Permit(s.rETH).balanceOf(address(this));
         s.rETH.safeApprove(s.vaultBalancer, amountIn);
 
-        address[] memory assets = [s.WETH, s.rEthWethPoolBalancer, s.rETH].convertToDynamic();
-        uint[] memory maxAmountsIn = [0, 0, amountIn].convertToDynamic();
-        uint[] memory amountsIn = [0, amountIn].convertToDynamic();
+        address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
+        uint[] memory maxAmountsIn = Helpers.convertToDynamic([0, 0, amountIn]);
+        uint[] memory amountsIn = Helpers.convertToDynamic([0, amountIn]);
 
-        IVault.JoinPoolRequest memory request = assets.createRequest(
-            maxAmountsIn, IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT.createUserData(amountsIn, minBptOutOffchain_)
+        IVault.JoinPoolRequest memory request = Helpers.createRequest(
+            assets, maxAmountsIn, Helpers.createUserData(
+                IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, minBptOutOffchain_
+            )
         );
 
         (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
@@ -134,11 +136,15 @@ contract ROImoduleL2 {
         );
 
         //Re-do request with actual bptOut
-        uint minBptOut = (bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_)
-            .calculateMinAmountOut(s.defaultSlippage);
+        uint minBptOut = Helpers.calculateMinAmountOut(
+            bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_, 
+            s.defaultSlippage
+        );
 
-        request = assets.createRequest(
-            maxAmountsIn, IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT.createUserData(amountsIn, minBptOut)
+        request = Helpers.createRequest(
+            assets, maxAmountsIn, Helpers.createUserData(
+                IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, minBptOut
+            )
         );
 
         IVault(s.vaultBalancer).joinPool(
@@ -148,31 +154,6 @@ contract ROImoduleL2 {
             request
         );
     }
-
-
-    // function _createUserData(
-    //     uint[] memory amountsIn_, 
-    //     uint minBptOut_
-    // ) private pure returns(bytes memory) {
-    //     return abi.encode( 
-            // IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-    //         amountsIn_,
-    //         minBptOut_
-    //     );
-    // }
-
-    // function _createRequest(
-    //     address[] memory assets_,
-    //     uint[] memory maxAmountsIn_,
-    //     bytes memory userData_
-    // ) private pure returns(IVault.JoinPoolRequest memory) {
-    //     return IVault.JoinPoolRequest({
-    //         assets: assets_,
-    //         maxAmountsIn: maxAmountsIn_,
-    //         userData: userData_,
-    //         fromInternalBalance: false
-    //     });
-    // }
 
 
 

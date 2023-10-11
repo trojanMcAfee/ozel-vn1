@@ -20,22 +20,6 @@ import "forge-std/console.sol";
 
 contract ozTokenFactoryTest is Setup {
 
-    // using FixedPointMathLib for uint;
-    // using Helpers for bytes32;
-    // using Helpers for address;
-    // using TransferHelper for address;
-    //----
-    // using Helpers for address[3];
-    // using Helpers for uint[3];
-    // using Helpers for uint[2];
-    // using Helpers for IVault.JoinKind;
-    // using Helpers for address[];
-    //-----
-    // using HelpersTests for address;
-    // using HelpersTests for address[2];
-    // using HelpersTests for uint;
-   
-
     function test_createOzToken() public {
         ozIToken ozUSDC = ozIToken(OZ.createOzToken(
             usdcAddr, "Ozel Tether", "ozUSDC", USDC.decimals()
@@ -49,9 +33,6 @@ contract ozTokenFactoryTest is Setup {
             [ethUsdChainlink, rEthEthChainlink], rawAmount, ozUSDC.decimals(), defaultSlippage
         );
         
-        // uint minWethOut = minsOut[0];
-        // uint minRethOut = minsOut[1];
-
         //------------
 
         address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
@@ -69,7 +50,6 @@ contract ozTokenFactoryTest is Setup {
             request
         );
 
-        // uint minBptOut = HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage);
 
         //---------
 
