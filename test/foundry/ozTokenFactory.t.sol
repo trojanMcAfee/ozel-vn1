@@ -20,20 +20,20 @@ import "forge-std/console.sol";
 
 contract ozTokenFactoryTest is Setup {
 
-    using FixedPointMathLib for uint;
-    using Helpers for bytes32;
-    using Helpers for address;
-    using TransferHelper for address;
+    // using FixedPointMathLib for uint;
+    // using Helpers for bytes32;
+    // using Helpers for address;
+    // using TransferHelper for address;
     //----
-    using Helpers for address[3];
-    using Helpers for uint[3];
-    using Helpers for uint[2];
-    using Helpers for IVault.JoinKind;
-    using Helpers for address[];
+    // using Helpers for address[3];
+    // using Helpers for uint[3];
+    // using Helpers for uint[2];
+    // using Helpers for IVault.JoinKind;
+    // using Helpers for address[];
     //-----
-    using HelpersTests for address;
-    using HelpersTests for address[2];
-    using HelpersTests for uint;
+    // using HelpersTests for address;
+    // using HelpersTests for address[2];
+    // using HelpersTests for uint;
    
 
     function test_createOzToken() public {
@@ -45,21 +45,21 @@ contract ozTokenFactoryTest is Setup {
         uint rawAmount = 1000;
         uint amountIn = rawAmount * 10 ** ozUSDC.decimals();
 
-        uint[] memory minsOut = [ethUsdChainlink, rEthEthChainlink].calculateMinAmountsOut(
-            rawAmount, ozUSDC.decimals(), defaultSlippage
+        uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
+            [ethUsdChainlink, rEthEthChainlink], rawAmount, ozUSDC.decimals(), defaultSlippage
         );
         
-        uint minWethOut = minsOut[0];
-        uint minRethOut = minsOut[1];
+        // uint minWethOut = minsOut[0];
+        // uint minRethOut = minsOut[1];
 
         //------------
 
-        address[] memory assets = [wethAddr, rEthWethPoolBalancer, rEthAddr].convertToDynamic();
-        uint[] memory maxAmountsIn = [0, 0, minRethOut].convertToDynamic();
-        uint[] memory amountsIn = [0, minRethOut].convertToDynamic();
+        address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
+        uint[] memory maxAmountsIn = Helpers.convertToDynamic([0, 0, minsOut[1]]);
+        uint[] memory amountsIn = Helpers.convertToDynamic([0, minsOut[1]]);
 
-        IVault.JoinPoolRequest memory request = assets.createRequest(
-            maxAmountsIn, IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT.createUserData(amountsIn, 0)
+        IVault.JoinPoolRequest memory request = Helpers.createRequest(
+            assets, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
         );
         
         (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
@@ -69,13 +69,14 @@ contract ozTokenFactoryTest is Setup {
             request
         );
 
-        uint minBptOut = bptOut.calculateMinAmountsOut(defaultSlippage);
+        // uint minBptOut = HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage);
 
         //---------
 
         vm.startPrank(owner);
 
-        bytes32 permitHash = usdcAddr.getPermitHash(
+        bytes32 permitHash = HelpersTests.getPermitHash(
+            usdcAddr,
             owner,
             address(ozDiamond),
             amountIn,
@@ -87,9 +88,9 @@ contract ozTokenFactoryTest is Setup {
 
         TradeAmounts memory amounts = TradeAmounts({
             amountIn: amountIn,
-            minWethOut: minWethOut,
-            minRethOut: minRethOut,
-            minBptOut: minBptOut
+            minWethOut: minsOut[0],
+            minRethOut: minsOut[1],
+            minBptOut: HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage)
         });
 
         ozUSDC.mint(amounts, v, r, s);
