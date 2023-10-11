@@ -39,15 +39,10 @@ contract ROImoduleL2 {
         address user_,
         TradeAmounts memory amounts_
     ) external {
-        uint amountIn = amounts_.amountIn;
-        uint minWethOut = amounts_.minWethOut;
-        uint minRethOutOffchain = amounts_.minRethOut;
-        uint minBptOutOffchain = amounts_.minBptOut;
-
-        IERC20Permit(underlying_).transferFrom(user_, address(this), amountIn);
+        IERC20Permit(underlying_).transferFrom(user_, address(this), amounts_.amountIn);
 
         //Swaps underlying to WETH in Uniswap
-        _swapUni(amountIn, minWethOut, underlying_);
+        _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
 
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
@@ -57,10 +52,10 @@ contract ROImoduleL2 {
 
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
 
-        _swapBalancer(poolId, minRethOutOffchain);
+        _swapBalancer(poolId, amounts_.minRethOut);
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
-        _addLiquidityBalancer(minBptOutOffchain, poolId);
+        _addLiquidityBalancer(amounts_.minBptOut, poolId);
 
         uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
         console.log('bal BPT post: ', bal);
@@ -69,14 +64,6 @@ contract ROImoduleL2 {
 
 
     //**** HELPERS */
-
-    // function _calculateMinAmountOut(
-    //     uint256 amount_
-    // ) private view returns(uint256 minAmountOut) {
-    //     minAmountOut = amount_ - amount_.fullMulDiv(s.defaultSlippage, 10000);
-    // }
-
-
     function _swapUni(
         uint amountIn_, 
         uint minWethOut_, 
@@ -145,10 +132,6 @@ contract ROImoduleL2 {
         );
 
         //Re-do request with actual bptOut
-        // uint minBptOut = _calculateMinAmountOut(
-        //     bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
-        // );
-
         uint minBptOut = (bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_)
             .calculateMinAmountOut(s.defaultSlippage);
 

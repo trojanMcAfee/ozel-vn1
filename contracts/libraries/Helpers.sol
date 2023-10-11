@@ -30,7 +30,7 @@ library Helpers {
     function calculateMinAmountOut(
         uint256 amount_,
         uint slippage_
-    ) internal view returns(uint256) {
+    ) internal pure returns(uint256) {
         return amount_ - amount_.fullMulDiv(slippage_, 10000);
     }
 
