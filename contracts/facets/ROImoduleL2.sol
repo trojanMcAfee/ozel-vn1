@@ -156,11 +156,7 @@ contract ROImoduleL2 {
         amountsIn[0] = 0;
         amountsIn[1] = amountIn;
 
-        bytes memory userData = abi.encode( 
-            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-            amountsIn,
-            minBptOutOffchain_
-        );
+        bytes memory userData = _createUserData(amountsIn, minBptOutOffchain_);
 
         IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
             assets: assets,
@@ -181,11 +177,7 @@ contract ROImoduleL2 {
             bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
         );
 
-        userData = abi.encode( 
-            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-            amountsIn,
-            minBptOut
-        );
+        userData = _createUserData(amountsIn, minBptOut);
 
         request = IVault.JoinPoolRequest({
             assets: assets,
@@ -199,6 +191,19 @@ contract ROImoduleL2 {
             address(this),
             address(this),
             request
+        );
+    }
+
+    // function _createArray(uint length_, )
+
+    function _createUserData(
+        uint[] memory amountsIn_, 
+        uint minBptOut_
+    ) private pure returns(bytes memory) {
+        return abi.encode( 
+            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+            amountsIn_,
+            minBptOut_
         );
     }
 
