@@ -30,6 +30,7 @@ contract ROImoduleL2 {
     using Helpers for address[3];
     using Helpers for uint[3];
     using Helpers for uint[2];
+    using Helpers for uint;
 
     AppStorage internal s;
 
@@ -69,11 +70,11 @@ contract ROImoduleL2 {
 
     //**** HELPERS */
 
-    function _calculateMinAmountOut(
-        uint256 amount_
-    ) private view returns(uint256 minAmountOut) {
-        minAmountOut = amount_ - amount_.fullMulDiv(s.defaultSlippage, 10000);
-    }
+    // function _calculateMinAmountOut(
+    //     uint256 amount_
+    // ) private view returns(uint256 minAmountOut) {
+    //     minAmountOut = amount_ - amount_.fullMulDiv(s.defaultSlippage, 10000);
+    // }
 
 
     function _swapUni(
@@ -129,18 +130,7 @@ contract ROImoduleL2 {
         s.rETH.safeApprove(s.vaultBalancer, amountIn);
 
         address[] memory assets = [s.WETH, s.rEthWethPoolBalancer, s.rETH].convertToDynamic();
-
-        // uint[] memory maxAmountsIn = new uint[](3);
-        // maxAmountsIn[0] = 0;
-        // maxAmountsIn[1] = 0;
-        // maxAmountsIn[2] = amountIn;
-
         uint[] memory maxAmountsIn = [0, 0, amountIn].convertToDynamic();
-
-        // uint[] memory amountsIn = new uint[](2);
-        // amountsIn[0] = 0;
-        // amountsIn[1] = amountIn;
-
         uint[] memory amountsIn = [0, amountIn].convertToDynamic();
 
         IVault.JoinPoolRequest memory request = _createRequest(
@@ -155,9 +145,12 @@ contract ROImoduleL2 {
         );
 
         //Re-do request with actual bptOut
-        uint minBptOut = _calculateMinAmountOut(
-            bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
-        );
+        // uint minBptOut = _calculateMinAmountOut(
+        //     bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
+        // );
+
+        uint minBptOut = (bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_)
+            .calculateMinAmountOut(s.defaultSlippage);
 
         request = _createRequest(
             assets, maxAmountsIn, _createUserData(amountsIn, minBptOut)
@@ -171,7 +164,6 @@ contract ROImoduleL2 {
         );
     }
 
-    // function _createArray() private pure returns(uint[])
 
     function _createUserData(
         uint[] memory amountsIn_, 

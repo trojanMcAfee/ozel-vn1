@@ -3,9 +3,12 @@ pragma solidity 0.8.21;
 
 
 import {IVault, IAsset} from "../interfaces/IBalancer.sol";
+import "solady/src/utils/FixedPointMathLib.sol";
 
 
 library Helpers {
+
+    using FixedPointMathLib for uint;
 
     function indexOf(
         address[] memory array_, 
@@ -23,6 +26,14 @@ library Helpers {
         arr[index] = arr[arr.length - 1];
         arr.pop();
     }
+
+    function calculateMinAmountOut(
+        uint256 amount_,
+        uint slippage_
+    ) internal view returns(uint256) {
+        return amount_ - amount_.fullMulDiv(slippage_, 10000);
+    }
+
 
     function convertToDynamic(address[3] memory addr_) internal pure returns(address[] memory array) {
         uint length = addr_.length;
