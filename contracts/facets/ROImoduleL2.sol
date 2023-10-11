@@ -9,7 +9,7 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import {AppStorage, TradeAmounts} from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
-import {IRocketStorage} from "../interfaces/IRocketStorage.sol";
+import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
 import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import {Helpers} from "../libraries/Helpers.sol";
@@ -32,6 +32,7 @@ contract ROImoduleL2 {
         address user_,
         TradeAmounts memory amounts_
     ) external {
+        bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
 
         //Swaps underlying to WETH in Uniswap
@@ -43,8 +44,6 @@ contract ROImoduleL2 {
             //do something else or throw error and return
         }
 
-        bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
-
         _swapBalancer(poolId, amounts_.minRethOut);
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
@@ -52,6 +51,11 @@ contract ROImoduleL2 {
 
         uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
         console.log('bal BPT post: ', bal);
+
+
+        //----- Calculate ozTokens to sender
+        uint x = IRocketTokenRETH(s.rETH).getExchangeRate();
+        console.log('x: ', x);
 
     }
 

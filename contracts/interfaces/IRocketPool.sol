@@ -49,3 +49,8 @@ interface IRocketStorage {
     function setWithdrawalAddress(address _nodeAddress, address _newWithdrawalAddress, bool _confirm) external;
     function confirmWithdrawalAddress(address _nodeAddress) external;
 }
+
+
+interface IRocketTokenRETH {
+    function getExchangeRate() external view returns (uint256);
+}

@@ -206,18 +206,6 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
     }
 
     
-    // struct TradeAmounts {
-    //     uint amountIn;
-    //     uint minWethOut;
-    //     uint minRethOut;
-    //     uint minBptOut;
-    // }
-
-    // struct Signature {
-    //     uint8 v;
-    //     bytes32 r;
-    //     bytes32 s;
-    // }
 
     function mint( 
         TradeAmounts memory amounts_,
