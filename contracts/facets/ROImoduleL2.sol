@@ -31,6 +31,8 @@ contract ROImoduleL2 {
     using Helpers for uint[3];
     using Helpers for uint[2];
     using Helpers for uint;
+    using Helpers for IVault.JoinKind;
+    using Helpers for address[];
 
     AppStorage internal s;
 
@@ -120,8 +122,8 @@ contract ROImoduleL2 {
         uint[] memory maxAmountsIn = [0, 0, amountIn].convertToDynamic();
         uint[] memory amountsIn = [0, amountIn].convertToDynamic();
 
-        IVault.JoinPoolRequest memory request = _createRequest(
-            assets, maxAmountsIn, _createUserData(amountsIn, minBptOutOffchain_)
+        IVault.JoinPoolRequest memory request = assets.createRequest(
+            maxAmountsIn, IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT.createUserData(amountsIn, minBptOutOffchain_)
         );
 
         (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
@@ -135,8 +137,8 @@ contract ROImoduleL2 {
         uint minBptOut = (bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_)
             .calculateMinAmountOut(s.defaultSlippage);
 
-        request = _createRequest(
-            assets, maxAmountsIn, _createUserData(amountsIn, minBptOut)
+        request = assets.createRequest(
+            maxAmountsIn, IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT.createUserData(amountsIn, minBptOut)
         );
 
         IVault(s.vaultBalancer).joinPool(
@@ -148,29 +150,29 @@ contract ROImoduleL2 {
     }
 
 
-    function _createUserData(
-        uint[] memory amountsIn_, 
-        uint minBptOut_
-    ) private pure returns(bytes memory) {
-        return abi.encode( 
-            IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
-            amountsIn_,
-            minBptOut_
-        );
-    }
+    // function _createUserData(
+    //     uint[] memory amountsIn_, 
+    //     uint minBptOut_
+    // ) private pure returns(bytes memory) {
+    //     return abi.encode( 
+            // IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
+    //         amountsIn_,
+    //         minBptOut_
+    //     );
+    // }
 
-    function _createRequest(
-        address[] memory assets_,
-        uint[] memory maxAmountsIn_,
-        bytes memory userData_
-    ) private pure returns(IVault.JoinPoolRequest memory) {
-        return IVault.JoinPoolRequest({
-            assets: assets_,
-            maxAmountsIn: maxAmountsIn_,
-            userData: userData_,
-            fromInternalBalance: false
-        });
-    }
+    // function _createRequest(
+    //     address[] memory assets_,
+    //     uint[] memory maxAmountsIn_,
+    //     bytes memory userData_
+    // ) private pure returns(IVault.JoinPoolRequest memory) {
+    //     return IVault.JoinPoolRequest({
+    //         assets: assets_,
+    //         maxAmountsIn: maxAmountsIn_,
+    //         userData: userData_,
+    //         fromInternalBalance: false
+    //     });
+    // }
 
 
 

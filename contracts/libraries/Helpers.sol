@@ -62,4 +62,29 @@ library Helpers {
         }
     }
 
+    function createUserData(
+        IVault.JoinKind kind_,
+        uint[] memory amountsIn_, 
+        uint minBptOut_
+    ) internal pure returns(bytes memory) {
+        return abi.encode( 
+            kind_,
+            amountsIn_,
+            minBptOut_
+        );
+    }
+
+    function createRequest(
+        address[] memory assets_,
+        uint[] memory maxAmountsIn_,
+        bytes memory userData_
+    ) internal pure returns(IVault.JoinPoolRequest memory) {
+        return IVault.JoinPoolRequest({
+            assets: assets_,
+            maxAmountsIn: maxAmountsIn_,
+            userData: userData_,
+            fromInternalBalance: false
+        });
+    }
+
 }

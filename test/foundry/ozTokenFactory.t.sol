@@ -23,6 +23,10 @@ contract ozTokenFactoryTest is Setup {
     using Helpers for bytes32;
     using Helpers for address;
     using TransferHelper for address;
+    //----
+    using Helpers for address[3];
+    using Helpers for uint[3];
+    using Helpers for uint[2];
    
 
     function test_createOzToken() public {
@@ -43,19 +47,22 @@ contract ozTokenFactoryTest is Setup {
 
         //------------
 
-        address[] memory assets = new address[](3);
-        assets[0] = wethAddr;
-        assets[1] = rEthWethPoolBalancer;
-        assets[2] = rEthAddr;
+        // address[] memory assets = new address[](3);
+        // assets[0] = wethAddr;
+        // assets[1] = rEthWethPoolBalancer;
+        // assets[2] = rEthAddr;
+        address[] memory assets = [wethAddr, rEthWethPoolBalancer, rEthAddr].convertToDynamic();
 
-        uint[] memory maxAmountsIn = new uint[](3);
-        maxAmountsIn[0] = 0;
-        maxAmountsIn[1] = 0;
-        maxAmountsIn[2] = minRethOut;
+        // uint[] memory maxAmountsIn = new uint[](3);
+        // maxAmountsIn[0] = 0;
+        // maxAmountsIn[1] = 0;
+        // maxAmountsIn[2] = minRethOut;
+        uint[] memory maxAmountsIn = [0, 0, minRethOut].convertToDynamic();
 
-        uint[] memory amountsIn = new uint[](2);
-        amountsIn[0] = 0;
-        amountsIn[1] = minRethOut;
+        // uint[] memory amountsIn = new uint[](2);
+        // amountsIn[0] = 0;
+        // amountsIn[1] = minRethOut;
+        uint[] memory amountsIn = [0, minRethOut].convertToDynamic();
 
         bytes memory userData = abi.encode( 
             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT,
