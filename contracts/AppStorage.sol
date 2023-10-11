@@ -23,6 +23,7 @@ struct AppStorage {
 
     address rETH;
     address rEthWethPoolBalancer;
+    address rEthEthChainlink;
   
 }
 

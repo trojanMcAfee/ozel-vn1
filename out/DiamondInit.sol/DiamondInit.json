@@ -51,6 +51,11 @@
           "internalType": "address",
           "name": "rEthWethPoolBalancer_",
           "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "rEthEthChainlink_",
+          "type": "address"
         }
       ],
       "name": "init",
@@ -60,19 +65,19 @@
     }
   ],
   "bytecode": {
-    "object": "0x608060405234801561001057600080fd5b5061044e806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063547769fd14610030575b600080fd5b61004361003e36600461027c565b610045565b005b7fc8fcad8db84d3cc18b4c41d551ea0ee66dd599cde068d998e57d5e09332c131f6020527f699d9daa71b280d05a152715774afa0a81a312594b2d731d6b0b2552b7d6f69f8054600160ff1991821681179092557ff97e938d8af42f52387bb74b8b526fda8f184cc2aa534340a8d75a88fbecc77580548216831790557f65d510a5d8f7ef134ec444f7f34ee808c8eeb5177cdfd16be0c40fe1ab43369580548216831790556307f5828d60e41b60009081527f5622121b47b8cd0120c4efe45dd5483242f54a3d49bd7679be565d47694918c3805490921690921790558a517fc8fcad8db84d3cc18b4c41d551ea0ee66dd599cde068d998e57d5e09332c131c915b818110156101b357600080018d8281518110610166576101666103db565b60209081029190910181015182546001810184556000938452919092200180546001600160a01b0319166001600160a01b03909216919091179055806101ab816103f1565b915050610148565b5050600180546001600160a01b03199081166001600160a01b039c8d16179091556003805482169a8c169a909a1790995550600480548916978a16979097179096556002805488169589169590951790945560059290925560068054861691871691909117905560078054851691861691909117905560088054841691851691909117905560098054909216921691909117905550565b634e487b7160e01b600052604160045260246000fd5b80356001600160a01b038116811461027757600080fd5b919050565b6000806000806000806000806000806101408b8d03121561029c57600080fd5b67ffffffffffffffff808c3511156102b357600080fd5b8b358c018d601f8201126102c657600080fd5b8035828111156102d8576102d861024a565b604051601f19603f8360051b0116810181811085821117156102fc576102fc61024a565b6040528181526020808201945060059290921b8301909101908f82111561032257600080fd5b6020830192505b8183101561034d5761033a83610260565b8452602084019350602083019250610329565b9c5061035f9250505060208c01610260565b985061036d60408c01610260565b975061037b60608c01610260565b965061038960808c01610260565b955060a08b0135945061039e60c08c01610260565b93506103ac60e08c01610260565b92506103bb6101008c01610260565b91506103ca6101208c01610260565b90509295989b9194979a5092959850565b634e487b7160e01b600052603260045260246000fd5b60006001820161041157634e487b7160e01b600052601160045260246000fd5b506001019056fea264697066735822122037cdf0756872cd867e52947ae091c844c69ba7301b863f271730264b669c2d5164736f6c63430008150033",
-    "sourceMap": "995:1450:25:-:0;;;;;;;;;;;;;;;;;;;",
+    "object": "0x608060405234801561001057600080fd5b50610482806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c806376bc26ac14610030575b600080fd5b61004361003e36600461028c565b610045565b005b7fc8fcad8db84d3cc18b4c41d551ea0ee66dd599cde068d998e57d5e09332c131f6020527f699d9daa71b280d05a152715774afa0a81a312594b2d731d6b0b2552b7d6f69f8054600160ff1991821681179092557ff97e938d8af42f52387bb74b8b526fda8f184cc2aa534340a8d75a88fbecc77580548216831790557f65d510a5d8f7ef134ec444f7f34ee808c8eeb5177cdfd16be0c40fe1ab43369580548216831790556307f5828d60e41b60009081527f5622121b47b8cd0120c4efe45dd5483242f54a3d49bd7679be565d47694918c3805490921690921790558b517fc8fcad8db84d3cc18b4c41d551ea0ee66dd599cde068d998e57d5e09332c131c915b818110156101b357600080018e82815181106101665761016661040f565b60209081029190910181015182546001810184556000938452919092200180546001600160a01b0319166001600160a01b03909216919091179055806101ab81610425565b915050610148565b5050600180546001600160a01b03199081166001600160a01b039d8e16179091556003805482169b8d169b909b17909a5550600480548a16988b1698909817909755600280548916968a169690961790955560059390935560068054871692881692909217909155600780548616918716919091179055600880548516918616919091179055600980548416918516919091179055600a8054909216921691909117905550565b634e487b7160e01b600052604160045260246000fd5b80356001600160a01b038116811461028757600080fd5b919050565b60008060008060008060008060008060006101608c8e0312156102ae57600080fd5b67ffffffffffffffff8c3511156102c457600080fd5b8b358c018d601f8201126102d757600080fd5b67ffffffffffffffff813511156102f0576102f061025a565b604051813560051b603f01601f1916810167ffffffffffffffff8111828210171561031d5761031d61025a565b806040525080823582526020820190508f6020843560051b850101111561034357600080fd5b602083015b6020843560051b8501018110156103705761036281610270565b825260209182019101610348565b5050809c50505061038360208d01610270565b995061039160408d01610270565b985061039f60608d01610270565b97506103ad60808d01610270565b965060a08c013595506103c260c08d01610270565b94506103d060e08d01610270565b93506103df6101008d01610270565b92506103ee6101208d01610270565b91506103fd6101408d01610270565b90509295989b509295989b9093969950565b634e487b7160e01b600052603260045260246000fd5b60006001820161044557634e487b7160e01b600052601160045260246000fd5b506001019056fea26469706673582212205820e27a972b74d927c6c48294c2e96ced06bdb9a2dd87ded2c0cd793b58c29e64736f6c63430008150033",
+    "sourceMap": "995:1533:23:-:0;;;;;;;;;;;;;;;;;;;",
     "linkReferences": {}
   },
   "deployedBytecode": {
-    "object": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063547769fd14610030575b600080fd5b61004361003e36600461027c565b610045565b005b7fc8fcad8db84d3cc18b4c41d551ea0ee66dd599cde068d998e57d5e09332c131f6020527f699d9daa71b280d05a152715774afa0a81a312594b2d731d6b0b2552b7d6f69f8054600160ff1991821681179092557ff97e938d8af42f52387bb74b8b526fda8f184cc2aa534340a8d75a88fbecc77580548216831790557f65d510a5d8f7ef134ec444f7f34ee808c8eeb5177cdfd16be0c40fe1ab43369580548216831790556307f5828d60e41b60009081527f5622121b47b8cd0120c4efe45dd5483242f54a3d49bd7679be565d47694918c3805490921690921790558a517fc8fcad8db84d3cc18b4c41d551ea0ee66dd599cde068d998e57d5e09332c131c915b818110156101b357600080018d8281518110610166576101666103db565b60209081029190910181015182546001810184556000938452919092200180546001600160a01b0319166001600160a01b03909216919091179055806101ab816103f1565b915050610148565b5050600180546001600160a01b03199081166001600160a01b039c8d16179091556003805482169a8c169a909a1790995550600480548916978a16979097179096556002805488169589169590951790945560059290925560068054861691871691909117905560078054851691861691909117905560088054841691851691909117905560098054909216921691909117905550565b634e487b7160e01b600052604160045260246000fd5b80356001600160a01b038116811461027757600080fd5b919050565b6000806000806000806000806000806101408b8d03121561029c57600080fd5b67ffffffffffffffff808c3511156102b357600080fd5b8b358c018d601f8201126102c657600080fd5b8035828111156102d8576102d861024a565b604051601f19603f8360051b0116810181811085821117156102fc576102fc61024a565b6040528181526020808201945060059290921b8301909101908f82111561032257600080fd5b6020830192505b8183101561034d5761033a83610260565b8452602084019350602083019250610329565b9c5061035f9250505060208c01610260565b985061036d60408c01610260565b975061037b60608c01610260565b965061038960808c01610260565b955060a08b0135945061039e60c08c01610260565b93506103ac60e08c01610260565b92506103bb6101008c01610260565b91506103ca6101208c01610260565b90509295989b9194979a5092959850565b634e487b7160e01b600052603260045260246000fd5b60006001820161041157634e487b7160e01b600052601160045260246000fd5b506001019056fea264697066735822122037cdf0756872cd867e52947ae091c844c69ba7301b863f271730264b669c2d5164736f6c63430008150033",
-    "sourceMap": "995:1450:25:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1166:1275;;;;;;:::i;:::-;;:::i;:::-;;;1669:22;:49;;;:56;;1721:4;-1:-1:-1;;1669:56:25;;;;;;;;1735:53;:60;;;;;;;;1805:55;:62;;;;;;;;-1:-1:-1;;;;1877:49:25;;;;:56;;;;;;;;;;1958:16;;736:45:21;;1984:93:25;2003:6;1999:1;:10;1984:93;;;2030:1;:17;;2053:9;2063:1;2053:12;;;;;;;;:::i;:::-;;;;;;;;;;;;2030:36;;;;;;;-1:-1:-1;2030:36:25;;;;;;;;;;-1:-1:-1;;;;;;2030:36:25;-1:-1:-1;;;;;2030:36:25;;;;;;;;;2011:3;;;;:::i;:::-;;;;1984:93;;;-1:-1:-1;;2087:11:25;:22;;-1:-1:-1;;;;;;2087:22:25;;;-1:-1:-1;;;;;2087:22:25;;;;;;;2119:15;:29;;;;;;;;;;;;;;-1:-1:-1;2158:17:25;:30;;;;;;;;;;;;;;2198:6;:18;;;;;;;;;;;;;;2226:17;:36;;;;2272:15;:32;;;;;;;;;;;;;2314:17;:36;;;;;;;;;;;;;2360:6;:18;;;;;;;;;;;;;2388:22;:46;;;;;;;;;;;;;-1:-1:-1;1166:1275:25:o;14:127:55:-;75:10;70:3;66:20;63:1;56:31;106:4;103:1;96:15;130:4;127:1;120:15;146:173;214:20;;-1:-1:-1;;;;;263:31:55;;253:42;;243:70;;309:1;306;299:12;243:70;146:173;;;:::o;324:1754::-;489:6;497;505;513;521;529;537;545;553;561;614:3;602:9;593:7;589:23;585:33;582:53;;;631:1;628;621:12;582:53;654:18;712:2;700:9;687:23;684:31;681:51;;;728:1;725;718:12;681:51;779:9;766:23;755:9;751:39;828:7;821:4;817:2;813:13;809:27;799:55;;850:1;847;840:12;799:55;886:2;873:16;908:2;904;901:10;898:36;;;914:18;;:::i;:::-;963:2;957:9;1034:2;1030:7;1025:2;1020;1017:1;1013:10;1009:19;1005:33;997:6;993:46;1089:6;1077:10;1074:22;1069:2;1057:10;1054:18;1051:46;1048:72;;;1100:18;;:::i;:::-;1136:2;1129:22;1186:18;;;1232:4;1220:17;;;;-1:-1:-1;1276:1:55;1272:10;;;;1264:19;;1260:30;;;;1302:19;;;1299:39;;;1334:1;1331;1324:12;1299:39;1366:4;1362:2;1358:13;1347:24;;1380:152;1396:6;1391:3;1388:15;1380:152;;;1464:23;1483:3;1464:23;:::i;:::-;1459:3;1452:36;1517:4;1512:3;1508:14;1501:21;;1422:4;1417:3;1413:14;1406:21;;1380:152;;;1551:6;-1:-1:-1;1576:40:55;;-1:-1:-1;;;1610:4:55;1595:20;;1576:40;:::i;:::-;1566:50;;1635:38;1669:2;1658:9;1654:18;1635:38;:::i;:::-;1625:48;;1692:38;1726:2;1715:9;1711:18;1692:38;:::i;:::-;1682:48;;1749:39;1783:3;1772:9;1768:19;1749:39;:::i;:::-;1739:49;;1835:3;1824:9;1820:19;1807:33;1797:43;;1859:39;1893:3;1882:9;1878:19;1859:39;:::i;:::-;1849:49;;1917:39;1951:3;1940:9;1936:19;1917:39;:::i;:::-;1907:49;;1975:39;2009:3;1998:9;1994:19;1975:39;:::i;:::-;1965:49;;2033:39;2067:3;2056:9;2052:19;2033:39;:::i;:::-;2023:49;;324:1754;;;;;;;;;;;;;:::o;2083:127::-;2144:10;2139:3;2135:20;2132:1;2125:31;2175:4;2172:1;2165:15;2199:4;2196:1;2189:15;2215:232;2254:3;2275:17;;;2272:140;;2334:10;2329:3;2325:20;2322:1;2315:31;2369:4;2366:1;2359:15;2397:4;2394:1;2387:15;2272:140;-1:-1:-1;2439:1:55;2428:13;;2215:232::o",
+    "object": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c806376bc26ac14610030575b600080fd5b61004361003e36600461028c565b610045565b005b7fc8fcad8db84d3cc18b4c41d551ea0ee66dd599cde068d998e57d5e09332c131f6020527f699d9daa71b280d05a152715774afa0a81a312594b2d731d6b0b2552b7d6f69f8054600160ff1991821681179092557ff97e938d8af42f52387bb74b8b526fda8f184cc2aa534340a8d75a88fbecc77580548216831790557f65d510a5d8f7ef134ec444f7f34ee808c8eeb5177cdfd16be0c40fe1ab43369580548216831790556307f5828d60e41b60009081527f5622121b47b8cd0120c4efe45dd5483242f54a3d49bd7679be565d47694918c3805490921690921790558b517fc8fcad8db84d3cc18b4c41d551ea0ee66dd599cde068d998e57d5e09332c131c915b818110156101b357600080018e82815181106101665761016661040f565b60209081029190910181015182546001810184556000938452919092200180546001600160a01b0319166001600160a01b03909216919091179055806101ab81610425565b915050610148565b5050600180546001600160a01b03199081166001600160a01b039d8e16179091556003805482169b8d169b909b17909a5550600480548a16988b1698909817909755600280548916968a169690961790955560059390935560068054871692881692909217909155600780548616918716919091179055600880548516918616919091179055600980548416918516919091179055600a8054909216921691909117905550565b634e487b7160e01b600052604160045260246000fd5b80356001600160a01b038116811461028757600080fd5b919050565b60008060008060008060008060008060006101608c8e0312156102ae57600080fd5b67ffffffffffffffff8c3511156102c457600080fd5b8b358c018d601f8201126102d757600080fd5b67ffffffffffffffff813511156102f0576102f061025a565b604051813560051b603f01601f1916810167ffffffffffffffff8111828210171561031d5761031d61025a565b806040525080823582526020820190508f6020843560051b850101111561034357600080fd5b602083015b6020843560051b8501018110156103705761036281610270565b825260209182019101610348565b5050809c50505061038360208d01610270565b995061039160408d01610270565b985061039f60608d01610270565b97506103ad60808d01610270565b965060a08c013595506103c260c08d01610270565b94506103d060e08d01610270565b93506103df6101008d01610270565b92506103ee6101208d01610270565b91506103fd6101408d01610270565b90509295989b509295989b9093969950565b634e487b7160e01b600052603260045260246000fd5b60006001820161044557634e487b7160e01b600052601160045260246000fd5b506001019056fea26469706673582212205820e27a972b74d927c6c48294c2e96ced06bdb9a2dd87ded2c0cd793b58c29e64736f6c63430008150033",
+    "sourceMap": "995:1533:23:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1166:1358;;;;;;:::i;:::-;;:::i;:::-;;;1704:22;:49;;;:56;;1756:4;-1:-1:-1;;1704:56:23;;;;;;;;1770:53;:60;;;;;;;;1840:55;:62;;;;;;;;-1:-1:-1;;;;1912:49:23;;;;:56;;;;;;;;;;1993:16;;736:45:21;;2019:93:23;2038:6;2034:1;:10;2019:93;;;2065:1;:17;;2088:9;2098:1;2088:12;;;;;;;;:::i;:::-;;;;;;;;;;;;2065:36;;;;;;;-1:-1:-1;2065:36:23;;;;;;;;;;-1:-1:-1;;;;;;2065:36:23;-1:-1:-1;;;;;2065:36:23;;;;;;;;;2046:3;;;;:::i;:::-;;;;2019:93;;;-1:-1:-1;;2122:11:23;:22;;-1:-1:-1;;;;;;2122:22:23;;;-1:-1:-1;;;;;2122:22:23;;;;;;;2154:15;:29;;;;;;;;;;;;;;-1:-1:-1;2193:17:23;:30;;;;;;;;;;;;;;2233:6;:18;;;;;;;;;;;;;;2261:17;:36;;;;2307:15;:32;;;;;;;;;;;;;;2349:17;:36;;;;;;;;;;;;;2395:6;:18;;;;;;;;;;;;;2423:22;:46;;;;;;;;;;;;;2479:18;:38;;;;;;;;;;;;;-1:-1:-1;1166:1358:23:o;14:127:53:-;75:10;70:3;66:20;63:1;56:31;106:4;103:1;96:15;130:4;127:1;120:15;146:173;214:20;;-1:-1:-1;;;;;263:31:53;;253:42;;243:70;;309:1;306;299:12;243:70;146:173;;;:::o;324:1888::-;498:6;506;514;522;530;538;546;554;562;570;578:7;632:3;620:9;611:7;607:23;603:33;600:53;;;649:1;646;639:12;600:53;693:18;681:9;668:23;665:47;662:67;;;725:1;722;715:12;662:67;776:9;763:23;752:9;748:39;825:7;818:4;814:2;810:13;806:27;796:55;;847:1;844;837:12;796:55;884:18;879:2;866:16;863:40;860:66;;;906:18;;:::i;:::-;955:2;949:9;1012:16;;1009:1;1005:24;1031:2;1001:33;-1:-1:-1;;997:47:53;985:60;;1075:18;1060:34;;1096:22;;;1057:62;1054:88;;;1122:18;;:::i;:::-;1162:10;1158:2;1151:22;;1193:6;1236:2;1223:16;1215:6;1208:32;1268:4;1260:6;1256:17;1249:24;;1334:7;1327:4;1320:2;1307:16;1304:1;1300:24;1296:2;1292:33;1288:44;1285:57;1282:77;;;1355:1;1352;1345:12;1282:77;1387:4;1383:2;1379:13;1401:206;1464:4;1457:2;1444:16;1441:1;1437:24;1433:2;1429:33;1425:44;1420:3;1417:53;1401:206;;;1539:23;1558:3;1539:23;:::i;:::-;1527:36;;1592:4;1583:14;;;;1488;1401:206;;;1405:3;;1626:6;1616:16;;;;1651:40;1685:4;1674:9;1670:20;1651:40;:::i;:::-;1641:50;;1710:38;1744:2;1733:9;1729:18;1710:38;:::i;:::-;1700:48;;1767:38;1801:2;1790:9;1786:18;1767:38;:::i;:::-;1757:48;;1824:39;1858:3;1847:9;1843:19;1824:39;:::i;:::-;1814:49;;1910:3;1899:9;1895:19;1882:33;1872:43;;1934:39;1968:3;1957:9;1953:19;1934:39;:::i;:::-;1924:49;;1992:39;2026:3;2015:9;2011:19;1992:39;:::i;:::-;1982:49;;2050:39;2084:3;2073:9;2069:19;2050:39;:::i;:::-;2040:49;;2108:39;2142:3;2131:9;2127:19;2108:39;:::i;:::-;2098:49;;2167:39;2201:3;2190:9;2186:19;2167:39;:::i;:::-;2156:50;;324:1888;;;;;;;;;;;;;;:::o;2217:127::-;2278:10;2273:3;2269:20;2266:1;2259:31;2309:4;2306:1;2299:15;2333:4;2330:1;2323:15;2349:232;2388:3;2409:17;;;2406:140;;2468:10;2463:3;2459:20;2456:1;2449:31;2503:4;2500:1;2493:15;2531:4;2528:1;2521:15;2406:140;-1:-1:-1;2573:1:53;2562:13;;2349:232::o",
     "linkReferences": {}
   },
   "methodIdentifiers": {
-    "init(address[],address,address,address,address,uint256,address,address,address,address)": "547769fd"
+    "init(address[],address,address,address,address,uint256,address,address,address,address,address)": "76bc26ac"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.21+commit.d9974bed\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"registry_\",\"type\":\"address[]\"},{\"internalType\":\"address\",\"name\":\"diamond_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"swapRouter_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"priceFeed_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"wethAddr_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"defaultSlippage_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"vaultBalancer_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"queriesBalancer_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"rEthAddr_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"rEthWethPoolBalancer_\",\"type\":\"address\"}],\"name\":\"init\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/upgradeInitializers/DiamondInit.sol\":\"DiamondInit\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@chainlink/=node_modules/@chainlink/\",\":@ensdomains/=node_modules/@ensdomains/\",\":@eth-optimism/=node_modules/@eth-optimism/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":@prb/test/=lib/unchecked-counter/lib/prb-test/src/\",\":@uniswap/=node_modules/@uniswap/\",\":base64-sol/=node_modules/base64-sol/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\",\":prb-test/=lib/unchecked-counter/lib/prb-test/src/\",\":solady/=node_modules/solady/\",\":src/=lib/unchecked-counter/src/\",\":unchecked-counter/=lib/unchecked-counter/src/\"]},\"sources\":{\"contracts/AppStorage.sol\":{\"keccak256\":\"0x8a8d0dfc4d6b0be8459547713b46fe82d452caad27f890b82e1ed8287bc3277d\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://cde1342805cc48c600e25a05a5e85a056388c89ba3cd26699dd9e97e0a389e98\",\"dweb:/ipfs/QmQhCcHKSxrmEXXcPPPC8zz2rs2v226yQ3t9E6H5UjkiDB\"]},\"contracts/interfaces/IDiamondCut.sol\":{\"keccak256\":\"0xc00c16bfa30a3fa5f3dc684f7f8ba62c259962b25f647d9588739458989717fc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://119d9a5acd99b9462a8341c9b95ddd468648799eefa47038f81521431743c1ae\",\"dweb:/ipfs/QmTF7WNyPWTUtUzNcpq5rf5v2uw5TwzqsSg9D53pfQufcu\"]},\"contracts/interfaces/IDiamondLoupe.sol\":{\"keccak256\":\"0x10884024af2c0f7deca0fac4ddf84e76da5dba35b6e02fabeac8ea54c1a5c6f7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://df3404a4aed3bbda2f5e441d7035b354237d8c9d7c27b149ccf66d13a1d81d45\",\"dweb:/ipfs/QmZvHWgRCge8tLJ3x3Lf3JQkbNTgAN6LzwCGBabbgk8tew\"]},\"contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0x7541f7408d0f74162bc4664d5e012427f2ceaab2abadca0353269ef15ee03d8b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a8e7a34b3ea39f4c0dfa6f5ace5d9415e4d0c90cb3f4264e6946b808f2d4011c\",\"dweb:/ipfs/QmWdcRF4krMMb1ua3hmV8avdHKYa4XXt1iw7sxx1ntsEJa\"]},\"contracts/interfaces/IERC173.sol\":{\"keccak256\":\"0x001e07b0fbc894300b939d496ffb005abe398b5bc609802d319b8cdeafe5d36b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8e59f66879ef993892410cbe834b1d2dd34891f47066b7be601ff825b0748361\",\"dweb:/ipfs/QmZedQ668we8ohPPZF5tPP5gKpJ5n22h3FDFkoFT5VXpEu\"]},\"contracts/libraries/LibDiamond.sol\":{\"keccak256\":\"0x32804b629ea56692e6458dcaf1a4998c62ef289b071fe2690be171b25926f495\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f0e39294f81c203fbf433ad126c3fddaaedd98df9561cf3155057bd4d8519727\",\"dweb:/ipfs/QmTh5bxtsnWEq3YshbU428zifKdWwiaWvJW19DRNmAnweb\"]},\"contracts/upgradeInitializers/DiamondInit.sol\":{\"keccak256\":\"0xe01bd13dbde6b2303b62fe7a429ee421f1977b67e379b16e3386c7ff38d16196\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3d5fb233ab9fb8cb2ca3747c05059e3ff16a63108c9ebaa11ceb9f97063bdab3\",\"dweb:/ipfs/QmPgR4YtXjWesm8W3SYMxSnCJy2tsFybLd81tZp4HA8NuW\"]},\"lib/forge-std/src/console.sol\":{\"keccak256\":\"0x91d5413c2434ca58fd278b6e1e79fd98d10c83931cc2596a6038eee4daeb34ba\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://91ccea707361e48b9b7a161fe81f496b9932bc471e9c4e4e1e9c283f2453cc70\",\"dweb:/ipfs/QmcB66sZhQ6Kz7MUHcLE78YXRUZxoZnnxZjN6yATsbB2ec\"]},\"node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol\":{\"keccak256\":\"0xfe4e8bb4861bb3860ba890ab91a3b818ec66e5a8f544fb608cfcb73f433472cd\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://644cff84052e1e82b5bb502b2a46e8f142a62b0db4cd9b38200798ba8373c6f7\",\"dweb:/ipfs/QmTa99QHrJBn3SXDizquPBUiTxVCNKQrHgaWJhuds5Sce2\"]},\"node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol\":{\"keccak256\":\"0x3f485fb1a44e8fbeadefb5da07d66edab3cfe809f0ac4074b1e54e3eb3c4cf69\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://095ce0626b41318c772b3ebf19d548282607f6a8f3d6c41c13edfbd5370c8652\",\"dweb:/ipfs/QmVDZfJJ89UUCE1hMyzqpkZAtQ8jUsBgZNE5AMRG7RzRFS\"]},\"node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol\":{\"keccak256\":\"0x9bfaf1feb32814623e627ab70f2409760b15d95f1f9b058e2b3399a8bb732975\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://a8a2c3e55965b61bcd91993d8e1d5d34b8b8a63e0fdfce87a85f6af92526fd53\",\"dweb:/ipfs/QmQj2CSCSwqDSU4KMNWxGsN2336Cy64WgpV1X1EHXNZWxM\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.21+commit.d9974bed\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"registry_\",\"type\":\"address[]\"},{\"internalType\":\"address\",\"name\":\"diamond_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"swapRouter_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"priceFeed_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"wethAddr_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"defaultSlippage_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"vaultBalancer_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"queriesBalancer_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"rEthAddr_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"rEthWethPoolBalancer_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"rEthEthChainlink_\",\"type\":\"address\"}],\"name\":\"init\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/upgradeInitializers/DiamondInit.sol\":\"DiamondInit\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@chainlink/=node_modules/@chainlink/\",\":@ensdomains/=node_modules/@ensdomains/\",\":@eth-optimism/=node_modules/@eth-optimism/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":@prb/test/=lib/unchecked-counter/lib/prb-test/src/\",\":@uniswap/=node_modules/@uniswap/\",\":base64-sol/=node_modules/base64-sol/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\",\":prb-test/=lib/unchecked-counter/lib/prb-test/src/\",\":solady/=node_modules/solady/\",\":src/=lib/unchecked-counter/src/\",\":unchecked-counter/=lib/unchecked-counter/src/\"]},\"sources\":{\"contracts/AppStorage.sol\":{\"keccak256\":\"0x1ff1308b6a65124e1aac0df4dbc77703be6cd0bae167b572fa68457750bd590f\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://7d3e80b71a2d130001326af7dde36c4cde3b43550a8a1724ffadf81d59ac4a3b\",\"dweb:/ipfs/QmVuu4dBtWG6CBf1yXq8XJbQefbMktyNWCmx7LQ9FmtCEM\"]},\"contracts/interfaces/IDiamondCut.sol\":{\"keccak256\":\"0xc00c16bfa30a3fa5f3dc684f7f8ba62c259962b25f647d9588739458989717fc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://119d9a5acd99b9462a8341c9b95ddd468648799eefa47038f81521431743c1ae\",\"dweb:/ipfs/QmTF7WNyPWTUtUzNcpq5rf5v2uw5TwzqsSg9D53pfQufcu\"]},\"contracts/interfaces/IDiamondLoupe.sol\":{\"keccak256\":\"0x10884024af2c0f7deca0fac4ddf84e76da5dba35b6e02fabeac8ea54c1a5c6f7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://df3404a4aed3bbda2f5e441d7035b354237d8c9d7c27b149ccf66d13a1d81d45\",\"dweb:/ipfs/QmZvHWgRCge8tLJ3x3Lf3JQkbNTgAN6LzwCGBabbgk8tew\"]},\"contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0x7541f7408d0f74162bc4664d5e012427f2ceaab2abadca0353269ef15ee03d8b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a8e7a34b3ea39f4c0dfa6f5ace5d9415e4d0c90cb3f4264e6946b808f2d4011c\",\"dweb:/ipfs/QmWdcRF4krMMb1ua3hmV8avdHKYa4XXt1iw7sxx1ntsEJa\"]},\"contracts/interfaces/IERC173.sol\":{\"keccak256\":\"0x001e07b0fbc894300b939d496ffb005abe398b5bc609802d319b8cdeafe5d36b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8e59f66879ef993892410cbe834b1d2dd34891f47066b7be601ff825b0748361\",\"dweb:/ipfs/QmZedQ668we8ohPPZF5tPP5gKpJ5n22h3FDFkoFT5VXpEu\"]},\"contracts/libraries/LibDiamond.sol\":{\"keccak256\":\"0x32804b629ea56692e6458dcaf1a4998c62ef289b071fe2690be171b25926f495\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f0e39294f81c203fbf433ad126c3fddaaedd98df9561cf3155057bd4d8519727\",\"dweb:/ipfs/QmTh5bxtsnWEq3YshbU428zifKdWwiaWvJW19DRNmAnweb\"]},\"contracts/upgradeInitializers/DiamondInit.sol\":{\"keccak256\":\"0xe51942a5f60e3c8fd5954756049319e59141386138de14ac4b97277a5005e561\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://68684fe1a2833723215fb2760293c632c3640aedab3a1f9361a45405b59584df\",\"dweb:/ipfs/QmTFCz8uXBduR4na7y3mptr9K6xZkaz2TAdbkqoUHNYZGN\"]},\"lib/forge-std/src/console.sol\":{\"keccak256\":\"0x91d5413c2434ca58fd278b6e1e79fd98d10c83931cc2596a6038eee4daeb34ba\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://91ccea707361e48b9b7a161fe81f496b9932bc471e9c4e4e1e9c283f2453cc70\",\"dweb:/ipfs/QmcB66sZhQ6Kz7MUHcLE78YXRUZxoZnnxZjN6yATsbB2ec\"]},\"node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol\":{\"keccak256\":\"0xfe4e8bb4861bb3860ba890ab91a3b818ec66e5a8f544fb608cfcb73f433472cd\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://644cff84052e1e82b5bb502b2a46e8f142a62b0db4cd9b38200798ba8373c6f7\",\"dweb:/ipfs/QmTa99QHrJBn3SXDizquPBUiTxVCNKQrHgaWJhuds5Sce2\"]},\"node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol\":{\"keccak256\":\"0x3f485fb1a44e8fbeadefb5da07d66edab3cfe809f0ac4074b1e54e3eb3c4cf69\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://095ce0626b41318c772b3ebf19d548282607f6a8f3d6c41c13edfbd5370c8652\",\"dweb:/ipfs/QmVDZfJJ89UUCE1hMyzqpkZAtQ8jUsBgZNE5AMRG7RzRFS\"]},\"node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol\":{\"keccak256\":\"0x9bfaf1feb32814623e627ab70f2409760b15d95f1f9b058e2b3399a8bb732975\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://a8a2c3e55965b61bcd91993d8e1d5d34b8b8a63e0fdfce87a85f6af92526fd53\",\"dweb:/ipfs/QmQj2CSCSwqDSU4KMNWxGsN2336Cy64WgpV1X1EHXNZWxM\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.21+commit.d9974bed"
@@ -131,6 +136,11 @@
               "internalType": "address",
               "name": "rEthWethPoolBalancer_",
               "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "rEthEthChainlink_",
+              "type": "address"
             }
           ],
           "stateMutability": "nonpayable",
@@ -180,10 +190,10 @@
     },
     "sources": {
       "contracts/AppStorage.sol": {
-        "keccak256": "0x8a8d0dfc4d6b0be8459547713b46fe82d452caad27f890b82e1ed8287bc3277d",
+        "keccak256": "0x1ff1308b6a65124e1aac0df4dbc77703be6cd0bae167b572fa68457750bd590f",
         "urls": [
-          "bzz-raw://cde1342805cc48c600e25a05a5e85a056388c89ba3cd26699dd9e97e0a389e98",
-          "dweb:/ipfs/QmQhCcHKSxrmEXXcPPPC8zz2rs2v226yQ3t9E6H5UjkiDB"
+          "bzz-raw://7d3e80b71a2d130001326af7dde36c4cde3b43550a8a1724ffadf81d59ac4a3b",
+          "dweb:/ipfs/QmVuu4dBtWG6CBf1yXq8XJbQefbMktyNWCmx7LQ9FmtCEM"
         ],
         "license": "GPL-2.0-or-later"
       },
@@ -228,10 +238,10 @@
         "license": "MIT"
       },
       "contracts/upgradeInitializers/DiamondInit.sol": {
-        "keccak256": "0xe01bd13dbde6b2303b62fe7a429ee421f1977b67e379b16e3386c7ff38d16196",
+        "keccak256": "0xe51942a5f60e3c8fd5954756049319e59141386138de14ac4b97277a5005e561",
         "urls": [
-          "bzz-raw://3d5fb233ab9fb8cb2ca3747c05059e3ff16a63108c9ebaa11ceb9f97063bdab3",
-          "dweb:/ipfs/QmPgR4YtXjWesm8W3SYMxSnCJy2tsFybLd81tZp4HA8NuW"
+          "bzz-raw://68684fe1a2833723215fb2760293c632c3640aedab3a1f9361a45405b59584df",
+          "dweb:/ipfs/QmTFCz8uXBduR4na7y3mptr9K6xZkaz2TAdbkqoUHNYZGN"
         ],
         "license": "MIT"
       },
@@ -272,52 +282,52 @@
   },
   "ast": {
     "absolutePath": "contracts/upgradeInitializers/DiamondInit.sol",
-    "id": 3981,
+    "id": 3824,
     "exportedSymbols": {
       "AggregatorV3Interface": [
-        32387
+        32230
       ],
       "AppStorage": [
-        26
+        28
       ],
       "DiamondInit": [
-        3980
+        3823
       ],
       "IDiamondCut": [
-        1137
+        1155
       ],
       "IDiamondLoupe": [
-        1179
+        1197
       ],
       "IERC165": [
-        1190
+        1208
       ],
       "IERC173": [
-        1213
+        1231
       ],
       "ISwapRouter": [
-        32662
+        32505
       ],
       "IUniswapV3SwapCallback": [
-        32562
+        32405
       ],
       "LibDiamond": [
-        2841
+        2854
       ],
       "TradeAmounts": [
-        35
+        37
       ],
       "console": [
-        24082
+        23925
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "32:2414:25",
+    "src": "32:2497:23",
     "nodes": [
       {
-        "id": 3805,
+        "id": 3640,
         "nodeType": "PragmaDirective",
-        "src": "32:23:25",
+        "src": "32:23:23",
         "nodes": [],
         "literals": [
           "solidity",
@@ -327,24 +337,24 @@
         ]
       },
       {
-        "id": 3807,
+        "id": 3642,
         "nodeType": "ImportDirective",
-        "src": "395:55:25",
+        "src": "395:55:23",
         "nodes": [],
         "absolutePath": "contracts/libraries/LibDiamond.sol",
         "file": "../libraries/LibDiamond.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 3981,
-        "sourceUnit": 2842,
+        "scope": 3824,
+        "sourceUnit": 2855,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 3806,
+              "id": 3641,
               "name": "LibDiamond",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 2841,
-              "src": "403:10:25",
+              "referencedDeclaration": 2854,
+              "src": "403:10:23",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -353,24 +363,24 @@
         "unitAlias": ""
       },
       {
-        "id": 3809,
+        "id": 3644,
         "nodeType": "ImportDirective",
-        "src": "451:64:25",
+        "src": "451:64:23",
         "nodes": [],
         "absolutePath": "contracts/interfaces/IDiamondLoupe.sol",
         "file": "../interfaces/IDiamondLoupe.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 3981,
-        "sourceUnit": 1180,
+        "scope": 3824,
+        "sourceUnit": 1198,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 3808,
+              "id": 3643,
               "name": "IDiamondLoupe",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 1179,
-              "src": "460:13:25",
+              "referencedDeclaration": 1197,
+              "src": "460:13:23",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -379,24 +389,24 @@
         "unitAlias": ""
       },
       {
-        "id": 3811,
+        "id": 3646,
         "nodeType": "ImportDirective",
-        "src": "516:60:25",
+        "src": "516:60:23",
         "nodes": [],
         "absolutePath": "contracts/interfaces/IDiamondCut.sol",
         "file": "../interfaces/IDiamondCut.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 3981,
-        "sourceUnit": 1138,
+        "scope": 3824,
+        "sourceUnit": 1156,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 3810,
+              "id": 3645,
               "name": "IDiamondCut",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 1137,
-              "src": "525:11:25",
+              "referencedDeclaration": 1155,
+              "src": "525:11:23",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -405,24 +415,24 @@
         "unitAlias": ""
       },
       {
-        "id": 3813,
+        "id": 3648,
         "nodeType": "ImportDirective",
-        "src": "577:52:25",
+        "src": "577:52:23",
         "nodes": [],
         "absolutePath": "contracts/interfaces/IERC173.sol",
         "file": "../interfaces/IERC173.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 3981,
-        "sourceUnit": 1214,
+        "scope": 3824,
+        "sourceUnit": 1232,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 3812,
+              "id": 3647,
               "name": "IERC173",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 1213,
-              "src": "586:7:25",
+              "referencedDeclaration": 1231,
+              "src": "586:7:23",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -431,24 +441,24 @@
         "unitAlias": ""
       },
       {
-        "id": 3815,
+        "id": 3650,
         "nodeType": "ImportDirective",
-        "src": "630:52:25",
+        "src": "630:52:23",
         "nodes": [],
         "absolutePath": "contracts/interfaces/IERC165.sol",
         "file": "../interfaces/IERC165.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 3981,
-        "sourceUnit": 1191,
+        "scope": 3824,
+        "sourceUnit": 1209,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 3814,
+              "id": 3649,
               "name": "IERC165",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 1190,
-              "src": "639:7:25",
+              "referencedDeclaration": 1208,
+              "src": "639:7:23",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -457,162 +467,162 @@
         "unitAlias": ""
       },
       {
-        "id": 3816,
+        "id": 3651,
         "nodeType": "ImportDirective",
-        "src": "684:27:25",
+        "src": "684:27:23",
         "nodes": [],
         "absolutePath": "contracts/AppStorage.sol",
         "file": "../AppStorage.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 3981,
-        "sourceUnit": 36,
+        "scope": 3824,
+        "sourceUnit": 38,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 3817,
+        "id": 3652,
         "nodeType": "ImportDirective",
-        "src": "712:31:25",
+        "src": "712:31:23",
         "nodes": [],
         "absolutePath": "lib/forge-std/src/console.sol",
         "file": "forge-std/console.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 3981,
-        "sourceUnit": 24083,
+        "scope": 3824,
+        "sourceUnit": 23926,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 3980,
+        "id": 3823,
         "nodeType": "ContractDefinition",
-        "src": "995:1450:25",
+        "src": "995:1533:23",
         "nodes": [
           {
-            "id": 3820,
+            "id": 3655,
             "nodeType": "VariableDeclaration",
-            "src": "1027:20:25",
+            "src": "1027:20:23",
             "nodes": [],
             "constant": false,
             "mutability": "mutable",
             "name": "s",
-            "nameLocation": "1046:1:25",
-            "scope": 3980,
+            "nameLocation": "1046:1:23",
+            "scope": 3823,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+              "typeIdentifier": "t_struct$_AppStorage_$28_storage",
               "typeString": "struct AppStorage"
             },
             "typeName": {
-              "id": 3819,
+              "id": 3654,
               "nodeType": "UserDefinedTypeName",
               "pathNode": {
-                "id": 3818,
+                "id": 3653,
                 "name": "AppStorage",
                 "nameLocations": [
-                  "1027:10:25"
+                  "1027:10:23"
                 ],
                 "nodeType": "IdentifierPath",
-                "referencedDeclaration": 26,
-                "src": "1027:10:25"
+                "referencedDeclaration": 28,
+                "src": "1027:10:23"
               },
-              "referencedDeclaration": 26,
-              "src": "1027:10:25",
+              "referencedDeclaration": 28,
+              "src": "1027:10:23",
               "typeDescriptions": {
-                "typeIdentifier": "t_struct$_AppStorage_$26_storage_ptr",
+                "typeIdentifier": "t_struct$_AppStorage_$28_storage_ptr",
                 "typeString": "struct AppStorage"
               }
             },
             "visibility": "private"
           },
           {
-            "id": 3979,
+            "id": 3822,
             "nodeType": "FunctionDefinition",
-            "src": "1166:1275:25",
+            "src": "1166:1358:23",
             "nodes": [],
             "body": {
-              "id": 3978,
+              "id": 3821,
               "nodeType": "Block",
-              "src": "1504:937:25",
+              "src": "1539:985:23",
               "nodes": [],
               "statements": [
                 {
                   "assignments": [
-                    3848
+                    3685
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 3848,
+                      "id": 3685,
                       "mutability": "mutable",
                       "name": "ds",
-                      "nameLocation": "1627:2:25",
+                      "nameLocation": "1662:2:23",
                       "nodeType": "VariableDeclaration",
-                      "scope": 3978,
-                      "src": "1593:36:25",
+                      "scope": 3821,
+                      "src": "1628:36:23",
                       "stateVariable": false,
                       "storageLocation": "storage",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_DiamondStorage_$2076_storage_ptr",
+                        "typeIdentifier": "t_struct$_DiamondStorage_$2089_storage_ptr",
                         "typeString": "struct LibDiamond.DiamondStorage"
                       },
                       "typeName": {
-                        "id": 3847,
+                        "id": 3684,
                         "nodeType": "UserDefinedTypeName",
                         "pathNode": {
-                          "id": 3846,
+                          "id": 3683,
                           "name": "LibDiamond.DiamondStorage",
                           "nameLocations": [
-                            "1593:10:25",
-                            "1604:14:25"
+                            "1628:10:23",
+                            "1639:14:23"
                           ],
                           "nodeType": "IdentifierPath",
-                          "referencedDeclaration": 2076,
-                          "src": "1593:25:25"
+                          "referencedDeclaration": 2089,
+                          "src": "1628:25:23"
                         },
-                        "referencedDeclaration": 2076,
-                        "src": "1593:25:25",
+                        "referencedDeclaration": 2089,
+                        "src": "1628:25:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_DiamondStorage_$2076_storage_ptr",
+                          "typeIdentifier": "t_struct$_DiamondStorage_$2089_storage_ptr",
                           "typeString": "struct LibDiamond.DiamondStorage"
                         }
                       },
                       "visibility": "internal"
                     }
                   ],
-                  "id": 3852,
+                  "id": 3689,
                   "initialValue": {
                     "arguments": [],
                     "expression": {
                       "argumentTypes": [],
                       "expression": {
-                        "id": 3849,
+                        "id": 3686,
                         "name": "LibDiamond",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2841,
-                        "src": "1632:10:25",
+                        "referencedDeclaration": 2854,
+                        "src": "1667:10:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_LibDiamond_$2841_$",
+                          "typeIdentifier": "t_type$_t_contract$_LibDiamond_$2854_$",
                           "typeString": "type(library LibDiamond)"
                         }
                       },
-                      "id": 3850,
+                      "id": 3687,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
-                      "memberLocation": "1643:14:25",
+                      "memberLocation": "1678:14:23",
                       "memberName": "diamondStorage",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2088,
-                      "src": "1632:25:25",
+                      "referencedDeclaration": 2101,
+                      "src": "1667:25:23",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_pure$__$returns$_t_struct$_DiamondStorage_$2076_storage_ptr_$",
+                        "typeIdentifier": "t_function_internal_pure$__$returns$_t_struct$_DiamondStorage_$2089_storage_ptr_$",
                         "typeString": "function () pure returns (struct LibDiamond.DiamondStorage storage pointer)"
                       }
                     },
-                    "id": 3851,
+                    "id": 3688,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -621,19 +631,19 @@
                     "nameLocations": [],
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "1632:27:25",
+                    "src": "1667:27:23",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_DiamondStorage_$2076_storage_ptr",
+                      "typeIdentifier": "t_struct$_DiamondStorage_$2089_storage_ptr",
                       "typeString": "struct LibDiamond.DiamondStorage storage pointer"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "1593:66:25"
+                  "src": "1628:66:23"
                 },
                 {
                   "expression": {
-                    "id": 3862,
+                    "id": 3699,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -641,45 +651,45 @@
                     "leftHandSide": {
                       "baseExpression": {
                         "expression": {
-                          "id": 3853,
+                          "id": 3690,
                           "name": "ds",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3848,
-                          "src": "1669:2:25",
+                          "referencedDeclaration": 3685,
+                          "src": "1704:2:23",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DiamondStorage_$2076_storage_ptr",
+                            "typeIdentifier": "t_struct$_DiamondStorage_$2089_storage_ptr",
                             "typeString": "struct LibDiamond.DiamondStorage storage pointer"
                           }
                         },
-                        "id": 3859,
+                        "id": 3696,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
-                        "memberLocation": "1672:19:25",
+                        "memberLocation": "1707:19:23",
                         "memberName": "supportedInterfaces",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 2073,
-                        "src": "1669:22:25",
+                        "referencedDeclaration": 2086,
+                        "src": "1704:22:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_bytes4_$_t_bool_$",
                           "typeString": "mapping(bytes4 => bool)"
                         }
                       },
-                      "id": 3860,
+                      "id": 3697,
                       "indexExpression": {
                         "expression": {
                           "arguments": [
                             {
-                              "id": 3856,
+                              "id": 3693,
                               "name": "IERC165",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1190,
-                              "src": "1697:7:25",
+                              "referencedDeclaration": 1208,
+                              "src": "1732:7:23",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_IERC165_$1190_$",
+                                "typeIdentifier": "t_type$_t_contract$_IERC165_$1208_$",
                                 "typeString": "type(contract IERC165)"
                               }
                             }
@@ -687,22 +697,22 @@
                           "expression": {
                             "argumentTypes": [
                               {
-                                "typeIdentifier": "t_type$_t_contract$_IERC165_$1190_$",
+                                "typeIdentifier": "t_type$_t_contract$_IERC165_$1208_$",
                                 "typeString": "type(contract IERC165)"
                               }
                             ],
-                            "id": 3855,
+                            "id": 3692,
                             "name": "type",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": -27,
-                            "src": "1692:4:25",
+                            "src": "1727:4:23",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_metatype_pure$__$returns$__$",
                               "typeString": "function () pure"
                             }
                           },
-                          "id": 3857,
+                          "id": 3694,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -711,22 +721,22 @@
                           "nameLocations": [],
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "1692:13:25",
+                          "src": "1727:13:23",
                           "tryCall": false,
                           "typeDescriptions": {
-                            "typeIdentifier": "t_magic_meta_type_t_contract$_IERC165_$1190",
+                            "typeIdentifier": "t_magic_meta_type_t_contract$_IERC165_$1208",
                             "typeString": "type(contract IERC165)"
                           }
                         },
-                        "id": 3858,
+                        "id": 3695,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "lValueRequested": false,
-                        "memberLocation": "1706:11:25",
+                        "memberLocation": "1741:11:23",
                         "memberName": "interfaceId",
                         "nodeType": "MemberAccess",
-                        "src": "1692:25:25",
+                        "src": "1727:25:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes4",
                           "typeString": "bytes4"
@@ -737,7 +747,7 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "IndexAccess",
-                      "src": "1669:49:25",
+                      "src": "1704:49:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
@@ -747,33 +757,33 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "74727565",
-                      "id": 3861,
+                      "id": 3698,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "bool",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "1721:4:25",
+                      "src": "1756:4:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
                       },
                       "value": "true"
                     },
-                    "src": "1669:56:25",
+                    "src": "1704:56:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "id": 3863,
+                  "id": 3700,
                   "nodeType": "ExpressionStatement",
-                  "src": "1669:56:25"
+                  "src": "1704:56:23"
                 },
                 {
                   "expression": {
-                    "id": 3873,
+                    "id": 3710,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -781,45 +791,45 @@
                     "leftHandSide": {
                       "baseExpression": {
                         "expression": {
-                          "id": 3864,
+                          "id": 3701,
                           "name": "ds",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3848,
-                          "src": "1735:2:25",
+                          "referencedDeclaration": 3685,
+                          "src": "1770:2:23",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DiamondStorage_$2076_storage_ptr",
+                            "typeIdentifier": "t_struct$_DiamondStorage_$2089_storage_ptr",
                             "typeString": "struct LibDiamond.DiamondStorage storage pointer"
                           }
                         },
-                        "id": 3870,
+                        "id": 3707,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
-                        "memberLocation": "1738:19:25",
+                        "memberLocation": "1773:19:23",
                         "memberName": "supportedInterfaces",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 2073,
-                        "src": "1735:22:25",
+                        "referencedDeclaration": 2086,
+                        "src": "1770:22:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_bytes4_$_t_bool_$",
                           "typeString": "mapping(bytes4 => bool)"
                         }
                       },
-                      "id": 3871,
+                      "id": 3708,
                       "indexExpression": {
                         "expression": {
                           "arguments": [
                             {
-                              "id": 3867,
+                              "id": 3704,
                               "name": "IDiamondCut",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1137,
-                              "src": "1763:11:25",
+                              "referencedDeclaration": 1155,
+                              "src": "1798:11:23",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_IDiamondCut_$1137_$",
+                                "typeIdentifier": "t_type$_t_contract$_IDiamondCut_$1155_$",
                                 "typeString": "type(contract IDiamondCut)"
                               }
                             }
@@ -827,22 +837,22 @@
                           "expression": {
                             "argumentTypes": [
                               {
-                                "typeIdentifier": "t_type$_t_contract$_IDiamondCut_$1137_$",
+                                "typeIdentifier": "t_type$_t_contract$_IDiamondCut_$1155_$",
                                 "typeString": "type(contract IDiamondCut)"
                               }
                             ],
-                            "id": 3866,
+                            "id": 3703,
                             "name": "type",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": -27,
-                            "src": "1758:4:25",
+                            "src": "1793:4:23",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_metatype_pure$__$returns$__$",
                               "typeString": "function () pure"
                             }
                           },
-                          "id": 3868,
+                          "id": 3705,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -851,22 +861,22 @@
                           "nameLocations": [],
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "1758:17:25",
+                          "src": "1793:17:23",
                           "tryCall": false,
                           "typeDescriptions": {
-                            "typeIdentifier": "t_magic_meta_type_t_contract$_IDiamondCut_$1137",
+                            "typeIdentifier": "t_magic_meta_type_t_contract$_IDiamondCut_$1155",
                             "typeString": "type(contract IDiamondCut)"
                           }
                         },
-                        "id": 3869,
+                        "id": 3706,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "lValueRequested": false,
-                        "memberLocation": "1776:11:25",
+                        "memberLocation": "1811:11:23",
                         "memberName": "interfaceId",
                         "nodeType": "MemberAccess",
-                        "src": "1758:29:25",
+                        "src": "1793:29:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes4",
                           "typeString": "bytes4"
@@ -877,7 +887,7 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "IndexAccess",
-                      "src": "1735:53:25",
+                      "src": "1770:53:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
@@ -887,33 +897,33 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "74727565",
-                      "id": 3872,
+                      "id": 3709,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "bool",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "1791:4:25",
+                      "src": "1826:4:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
                       },
                       "value": "true"
                     },
-                    "src": "1735:60:25",
+                    "src": "1770:60:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "id": 3874,
+                  "id": 3711,
                   "nodeType": "ExpressionStatement",
-                  "src": "1735:60:25"
+                  "src": "1770:60:23"
                 },
                 {
                   "expression": {
-                    "id": 3884,
+                    "id": 3721,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -921,45 +931,45 @@
                     "leftHandSide": {
                       "baseExpression": {
                         "expression": {
-                          "id": 3875,
+                          "id": 3712,
                           "name": "ds",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3848,
-                          "src": "1805:2:25",
+                          "referencedDeclaration": 3685,
+                          "src": "1840:2:23",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DiamondStorage_$2076_storage_ptr",
+                            "typeIdentifier": "t_struct$_DiamondStorage_$2089_storage_ptr",
                             "typeString": "struct LibDiamond.DiamondStorage storage pointer"
                           }
                         },
-                        "id": 3881,
+                        "id": 3718,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
-                        "memberLocation": "1808:19:25",
+                        "memberLocation": "1843:19:23",
                         "memberName": "supportedInterfaces",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 2073,
-                        "src": "1805:22:25",
+                        "referencedDeclaration": 2086,
+                        "src": "1840:22:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_bytes4_$_t_bool_$",
                           "typeString": "mapping(bytes4 => bool)"
                         }
                       },
-                      "id": 3882,
+                      "id": 3719,
                       "indexExpression": {
                         "expression": {
                           "arguments": [
                             {
-                              "id": 3878,
+                              "id": 3715,
                               "name": "IDiamondLoupe",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1179,
-                              "src": "1833:13:25",
+                              "referencedDeclaration": 1197,
+                              "src": "1868:13:23",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_IDiamondLoupe_$1179_$",
+                                "typeIdentifier": "t_type$_t_contract$_IDiamondLoupe_$1197_$",
                                 "typeString": "type(contract IDiamondLoupe)"
                               }
                             }
@@ -967,22 +977,22 @@
                           "expression": {
                             "argumentTypes": [
                               {
-                                "typeIdentifier": "t_type$_t_contract$_IDiamondLoupe_$1179_$",
+                                "typeIdentifier": "t_type$_t_contract$_IDiamondLoupe_$1197_$",
                                 "typeString": "type(contract IDiamondLoupe)"
                               }
                             ],
-                            "id": 3877,
+                            "id": 3714,
                             "name": "type",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": -27,
-                            "src": "1828:4:25",
+                            "src": "1863:4:23",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_metatype_pure$__$returns$__$",
                               "typeString": "function () pure"
                             }
                           },
-                          "id": 3879,
+                          "id": 3716,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -991,22 +1001,22 @@
                           "nameLocations": [],
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "1828:19:25",
+                          "src": "1863:19:23",
                           "tryCall": false,
                           "typeDescriptions": {
-                            "typeIdentifier": "t_magic_meta_type_t_contract$_IDiamondLoupe_$1179",
+                            "typeIdentifier": "t_magic_meta_type_t_contract$_IDiamondLoupe_$1197",
                             "typeString": "type(contract IDiamondLoupe)"
                           }
                         },
-                        "id": 3880,
+                        "id": 3717,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "lValueRequested": false,
-                        "memberLocation": "1848:11:25",
+                        "memberLocation": "1883:11:23",
                         "memberName": "interfaceId",
                         "nodeType": "MemberAccess",
-                        "src": "1828:31:25",
+                        "src": "1863:31:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes4",
                           "typeString": "bytes4"
@@ -1017,7 +1027,7 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "IndexAccess",
-                      "src": "1805:55:25",
+                      "src": "1840:55:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
@@ -1027,33 +1037,33 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "74727565",
-                      "id": 3883,
+                      "id": 3720,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "bool",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "1863:4:25",
+                      "src": "1898:4:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
                       },
                       "value": "true"
                     },
-                    "src": "1805:62:25",
+                    "src": "1840:62:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "id": 3885,
+                  "id": 3722,
                   "nodeType": "ExpressionStatement",
-                  "src": "1805:62:25"
+                  "src": "1840:62:23"
                 },
                 {
                   "expression": {
-                    "id": 3895,
+                    "id": 3732,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1061,45 +1071,45 @@
                     "leftHandSide": {
                       "baseExpression": {
                         "expression": {
-                          "id": 3886,
+                          "id": 3723,
                           "name": "ds",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3848,
-                          "src": "1877:2:25",
+                          "referencedDeclaration": 3685,
+                          "src": "1912:2:23",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_DiamondStorage_$2076_storage_ptr",
+                            "typeIdentifier": "t_struct$_DiamondStorage_$2089_storage_ptr",
                             "typeString": "struct LibDiamond.DiamondStorage storage pointer"
                           }
                         },
-                        "id": 3892,
+                        "id": 3729,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
-                        "memberLocation": "1880:19:25",
+                        "memberLocation": "1915:19:23",
                         "memberName": "supportedInterfaces",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 2073,
-                        "src": "1877:22:25",
+                        "referencedDeclaration": 2086,
+                        "src": "1912:22:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_bytes4_$_t_bool_$",
                           "typeString": "mapping(bytes4 => bool)"
                         }
                       },
-                      "id": 3893,
+                      "id": 3730,
                       "indexExpression": {
                         "expression": {
                           "arguments": [
                             {
-                              "id": 3889,
+                              "id": 3726,
                               "name": "IERC173",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1213,
-                              "src": "1905:7:25",
+                              "referencedDeclaration": 1231,
+                              "src": "1940:7:23",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_contract$_IERC173_$1213_$",
+                                "typeIdentifier": "t_type$_t_contract$_IERC173_$1231_$",
                                 "typeString": "type(contract IERC173)"
                               }
                             }
@@ -1107,22 +1117,22 @@
                           "expression": {
                             "argumentTypes": [
                               {
-                                "typeIdentifier": "t_type$_t_contract$_IERC173_$1213_$",
+                                "typeIdentifier": "t_type$_t_contract$_IERC173_$1231_$",
                                 "typeString": "type(contract IERC173)"
                               }
                             ],
-                            "id": 3888,
+                            "id": 3725,
                             "name": "type",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": -27,
-                            "src": "1900:4:25",
+                            "src": "1935:4:23",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_metatype_pure$__$returns$__$",
                               "typeString": "function () pure"
                             }
                           },
-                          "id": 3890,
+                          "id": 3727,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -1131,22 +1141,22 @@
                           "nameLocations": [],
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "1900:13:25",
+                          "src": "1935:13:23",
                           "tryCall": false,
                           "typeDescriptions": {
-                            "typeIdentifier": "t_magic_meta_type_t_contract$_IERC173_$1213",
+                            "typeIdentifier": "t_magic_meta_type_t_contract$_IERC173_$1231",
                             "typeString": "type(contract IERC173)"
                           }
                         },
-                        "id": 3891,
+                        "id": 3728,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "lValueRequested": false,
-                        "memberLocation": "1914:11:25",
+                        "memberLocation": "1949:11:23",
                         "memberName": "interfaceId",
                         "nodeType": "MemberAccess",
-                        "src": "1900:25:25",
+                        "src": "1935:25:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes4",
                           "typeString": "bytes4"
@@ -1157,7 +1167,7 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "IndexAccess",
-                      "src": "1877:49:25",
+                      "src": "1912:49:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
@@ -1167,44 +1177,44 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "74727565",
-                      "id": 3894,
+                      "id": 3731,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "bool",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "1929:4:25",
+                      "src": "1964:4:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
                       },
                       "value": "true"
                     },
-                    "src": "1877:56:25",
+                    "src": "1912:56:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "id": 3896,
+                  "id": 3733,
                   "nodeType": "ExpressionStatement",
-                  "src": "1877:56:25"
+                  "src": "1912:56:23"
                 },
                 {
                   "assignments": [
-                    3898
+                    3735
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 3898,
+                      "id": 3735,
                       "mutability": "mutable",
                       "name": "length",
-                      "nameLocation": "1949:6:25",
+                      "nameLocation": "1984:6:23",
                       "nodeType": "VariableDeclaration",
-                      "scope": 3978,
-                      "src": "1944:11:25",
+                      "scope": 3821,
+                      "src": "1979:11:23",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -1212,10 +1222,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 3897,
+                        "id": 3734,
                         "name": "uint",
                         "nodeType": "ElementaryTypeName",
-                        "src": "1944:4:25",
+                        "src": "1979:4:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -1224,67 +1234,67 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 3901,
+                  "id": 3738,
                   "initialValue": {
                     "expression": {
-                      "id": 3899,
+                      "id": 3736,
                       "name": "registry_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3823,
-                      "src": "1958:9:25",
+                      "referencedDeclaration": 3658,
+                      "src": "1993:9:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
                         "typeString": "address[] memory"
                       }
                     },
-                    "id": 3900,
+                    "id": 3737,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
-                    "memberLocation": "1968:6:25",
+                    "memberLocation": "2003:6:23",
                     "memberName": "length",
                     "nodeType": "MemberAccess",
-                    "src": "1958:16:25",
+                    "src": "1993:16:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "1944:30:25"
+                  "src": "1979:30:23"
                 },
                 {
                   "body": {
-                    "id": 3922,
+                    "id": 3759,
                     "nodeType": "Block",
-                    "src": "2016:61:25",
+                    "src": "2051:61:23",
                     "statements": [
                       {
                         "expression": {
                           "arguments": [
                             {
                               "baseExpression": {
-                                "id": 3917,
+                                "id": 3754,
                                 "name": "registry_",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3823,
-                                "src": "2053:9:25",
+                                "referencedDeclaration": 3658,
+                                "src": "2088:9:23",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
                                   "typeString": "address[] memory"
                                 }
                               },
-                              "id": 3919,
+                              "id": 3756,
                               "indexExpression": {
-                                "id": 3918,
+                                "id": 3755,
                                 "name": "i",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3903,
-                                "src": "2063:1:25",
+                                "referencedDeclaration": 3740,
+                                "src": "2098:1:23",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
@@ -1295,7 +1305,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "nodeType": "IndexAccess",
-                              "src": "2053:12:25",
+                              "src": "2088:12:23",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_address",
                                 "typeString": "address"
@@ -1311,47 +1321,47 @@
                             ],
                             "expression": {
                               "expression": {
-                                "id": 3912,
+                                "id": 3749,
                                 "name": "s",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3820,
-                                "src": "2030:1:25",
+                                "referencedDeclaration": 3655,
+                                "src": "2065:1:23",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                                  "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                                   "typeString": "struct AppStorage storage ref"
                                 }
                               },
-                              "id": 3915,
+                              "id": 3752,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
-                              "memberLocation": "2032:15:25",
+                              "memberLocation": "2067:15:23",
                               "memberName": "ozTokenRegistry",
                               "nodeType": "MemberAccess",
                               "referencedDeclaration": 7,
-                              "src": "2030:17:25",
+                              "src": "2065:17:23",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_array$_t_address_$dyn_storage",
                                 "typeString": "address[] storage ref"
                               }
                             },
-                            "id": 3916,
+                            "id": 3753,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
-                            "memberLocation": "2048:4:25",
+                            "memberLocation": "2083:4:23",
                             "memberName": "push",
                             "nodeType": "MemberAccess",
-                            "src": "2030:22:25",
+                            "src": "2065:22:23",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_arraypush_nonpayable$_t_array$_t_address_$dyn_storage_ptr_$_t_address_$returns$__$attached_to$_t_array$_t_address_$dyn_storage_ptr_$",
                               "typeString": "function (address[] storage pointer,address)"
                             }
                           },
-                          "id": 3920,
+                          "id": 3757,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1360,16 +1370,16 @@
                           "nameLocations": [],
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "2030:36:25",
+                          "src": "2065:36:23",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_tuple$__$",
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 3921,
+                        "id": 3758,
                         "nodeType": "ExpressionStatement",
-                        "src": "2030:36:25"
+                        "src": "2065:36:23"
                       }
                     ]
                   },
@@ -1378,18 +1388,18 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 3908,
+                    "id": 3745,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
-                      "id": 3906,
+                      "id": 3743,
                       "name": "i",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3903,
-                      "src": "1999:1:25",
+                      "referencedDeclaration": 3740,
+                      "src": "2034:1:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -1398,38 +1408,38 @@
                     "nodeType": "BinaryOperation",
                     "operator": "<",
                     "rightExpression": {
-                      "id": 3907,
+                      "id": 3744,
                       "name": "length",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3898,
-                      "src": "2003:6:25",
+                      "referencedDeclaration": 3735,
+                      "src": "2038:6:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "1999:10:25",
+                    "src": "2034:10:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "id": 3923,
+                  "id": 3760,
                   "initializationExpression": {
                     "assignments": [
-                      3903
+                      3740
                     ],
                     "declarations": [
                       {
                         "constant": false,
-                        "id": 3903,
+                        "id": 3740,
                         "mutability": "mutable",
                         "name": "i",
-                        "nameLocation": "1994:1:25",
+                        "nameLocation": "2029:1:23",
                         "nodeType": "VariableDeclaration",
-                        "scope": 3923,
-                        "src": "1989:6:25",
+                        "scope": 3760,
+                        "src": "2024:6:23",
                         "stateVariable": false,
                         "storageLocation": "default",
                         "typeDescriptions": {
@@ -1437,10 +1447,10 @@
                           "typeString": "uint256"
                         },
                         "typeName": {
-                          "id": 3902,
+                          "id": 3739,
                           "name": "uint",
                           "nodeType": "ElementaryTypeName",
-                          "src": "1989:4:25",
+                          "src": "2024:4:23",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -1449,17 +1459,17 @@
                         "visibility": "internal"
                       }
                     ],
-                    "id": 3905,
+                    "id": 3742,
                     "initialValue": {
                       "hexValue": "30",
-                      "id": 3904,
+                      "id": 3741,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "1996:1:25",
+                      "src": "2031:1:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_0_by_1",
                         "typeString": "int_const 0"
@@ -1467,11 +1477,11 @@
                       "value": "0"
                     },
                     "nodeType": "VariableDeclarationStatement",
-                    "src": "1989:8:25"
+                    "src": "2024:8:23"
                   },
                   "loopExpression": {
                     "expression": {
-                      "id": 3910,
+                      "id": 3747,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1479,14 +1489,14 @@
                       "nodeType": "UnaryOperation",
                       "operator": "++",
                       "prefix": false,
-                      "src": "2011:3:25",
+                      "src": "2046:3:23",
                       "subExpression": {
-                        "id": 3909,
+                        "id": 3746,
                         "name": "i",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3903,
-                        "src": "2011:1:25",
+                        "referencedDeclaration": 3740,
+                        "src": "2046:1:23",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -1497,43 +1507,43 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 3911,
+                    "id": 3748,
                     "nodeType": "ExpressionStatement",
-                    "src": "2011:3:25"
+                    "src": "2046:3:23"
                   },
                   "nodeType": "ForStatement",
-                  "src": "1984:93:25"
+                  "src": "2019:93:23"
                 },
                 {
                   "expression": {
-                    "id": 3928,
+                    "id": 3765,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3924,
+                        "id": 3761,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2087:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2122:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3926,
+                      "id": 3763,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2089:9:25",
+                      "memberLocation": "2124:9:23",
                       "memberName": "ozDiamond",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 9,
-                      "src": "2087:11:25",
+                      "src": "2122:11:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1542,57 +1552,57 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3927,
+                      "id": 3764,
                       "name": "diamond_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3825,
-                      "src": "2101:8:25",
+                      "referencedDeclaration": 3660,
+                      "src": "2136:8:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2087:22:25",
+                    "src": "2122:22:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 3929,
+                  "id": 3766,
                   "nodeType": "ExpressionStatement",
-                  "src": "2087:22:25"
+                  "src": "2122:22:23"
                 },
                 {
                   "expression": {
-                    "id": 3934,
+                    "id": 3771,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3930,
+                        "id": 3767,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2119:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2154:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3932,
+                      "id": 3769,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2121:13:25",
+                      "memberLocation": "2156:13:23",
                       "memberName": "swapRouterUni",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 13,
-                      "src": "2119:15:25",
+                      "src": "2154:15:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1601,57 +1611,57 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3933,
+                      "id": 3770,
                       "name": "swapRouter_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3827,
-                      "src": "2137:11:25",
+                      "referencedDeclaration": 3662,
+                      "src": "2172:11:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2119:29:25",
+                    "src": "2154:29:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 3935,
+                  "id": 3772,
                   "nodeType": "ExpressionStatement",
-                  "src": "2119:29:25"
+                  "src": "2154:29:23"
                 },
                 {
                   "expression": {
-                    "id": 3940,
+                    "id": 3777,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3936,
+                        "id": 3773,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2158:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2193:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3938,
+                      "id": 3775,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2160:15:25",
+                      "memberLocation": "2195:15:23",
                       "memberName": "ethUsdChainlink",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 15,
-                      "src": "2158:17:25",
+                      "src": "2193:17:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1660,57 +1670,57 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3939,
+                      "id": 3776,
                       "name": "priceFeed_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3829,
-                      "src": "2178:10:25",
+                      "referencedDeclaration": 3664,
+                      "src": "2213:10:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2158:30:25",
+                    "src": "2193:30:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 3941,
+                  "id": 3778,
                   "nodeType": "ExpressionStatement",
-                  "src": "2158:30:25"
+                  "src": "2193:30:23"
                 },
                 {
                   "expression": {
-                    "id": 3946,
+                    "id": 3783,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3942,
+                        "id": 3779,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2198:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2233:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3944,
+                      "id": 3781,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2200:4:25",
+                      "memberLocation": "2235:4:23",
                       "memberName": "WETH",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 11,
-                      "src": "2198:6:25",
+                      "src": "2233:6:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1719,57 +1729,57 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3945,
+                      "id": 3782,
                       "name": "wethAddr_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3831,
-                      "src": "2207:9:25",
+                      "referencedDeclaration": 3666,
+                      "src": "2242:9:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2198:18:25",
+                    "src": "2233:18:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 3947,
+                  "id": 3784,
                   "nodeType": "ExpressionStatement",
-                  "src": "2198:18:25"
+                  "src": "2233:18:23"
                 },
                 {
                   "expression": {
-                    "id": 3952,
+                    "id": 3789,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3948,
+                        "id": 3785,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2226:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2261:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3950,
+                      "id": 3787,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2228:15:25",
+                      "memberLocation": "2263:15:23",
                       "memberName": "defaultSlippage",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 17,
-                      "src": "2226:17:25",
+                      "src": "2261:17:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -1778,57 +1788,57 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3951,
+                      "id": 3788,
                       "name": "defaultSlippage_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3833,
-                      "src": "2246:16:25",
+                      "referencedDeclaration": 3668,
+                      "src": "2281:16:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "2226:36:25",
+                    "src": "2261:36:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "id": 3953,
+                  "id": 3790,
                   "nodeType": "ExpressionStatement",
-                  "src": "2226:36:25"
+                  "src": "2261:36:23"
                 },
                 {
                   "expression": {
-                    "id": 3958,
+                    "id": 3795,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3954,
+                        "id": 3791,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2272:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2307:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3956,
+                      "id": 3793,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2274:13:25",
+                      "memberLocation": "2309:13:23",
                       "memberName": "vaultBalancer",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 19,
-                      "src": "2272:15:25",
+                      "src": "2307:15:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1837,57 +1847,57 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3957,
+                      "id": 3794,
                       "name": "vaultBalancer_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3835,
-                      "src": "2290:14:25",
+                      "referencedDeclaration": 3670,
+                      "src": "2325:14:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2272:32:25",
+                    "src": "2307:32:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 3959,
+                  "id": 3796,
                   "nodeType": "ExpressionStatement",
-                  "src": "2272:32:25"
+                  "src": "2307:32:23"
                 },
                 {
                   "expression": {
-                    "id": 3964,
+                    "id": 3801,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3960,
+                        "id": 3797,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2314:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2349:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3962,
+                      "id": 3799,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2316:15:25",
+                      "memberLocation": "2351:15:23",
                       "memberName": "queriesBalancer",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 21,
-                      "src": "2314:17:25",
+                      "src": "2349:17:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1896,57 +1906,57 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3963,
+                      "id": 3800,
                       "name": "queriesBalancer_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3837,
-                      "src": "2334:16:25",
+                      "referencedDeclaration": 3672,
+                      "src": "2369:16:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2314:36:25",
+                    "src": "2349:36:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 3965,
+                  "id": 3802,
                   "nodeType": "ExpressionStatement",
-                  "src": "2314:36:25"
+                  "src": "2349:36:23"
                 },
                 {
                   "expression": {
-                    "id": 3970,
+                    "id": 3807,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3966,
+                        "id": 3803,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2360:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2395:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3968,
+                      "id": 3805,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2362:4:25",
+                      "memberLocation": "2397:4:23",
                       "memberName": "rETH",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 23,
-                      "src": "2360:6:25",
+                      "src": "2395:6:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1955,57 +1965,57 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3969,
+                      "id": 3806,
                       "name": "rEthAddr_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3839,
-                      "src": "2369:9:25",
+                      "referencedDeclaration": 3674,
+                      "src": "2404:9:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2360:18:25",
+                    "src": "2395:18:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 3971,
+                  "id": 3808,
                   "nodeType": "ExpressionStatement",
-                  "src": "2360:18:25"
+                  "src": "2395:18:23"
                 },
                 {
                   "expression": {
-                    "id": 3976,
+                    "id": 3813,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "expression": {
-                        "id": 3972,
+                        "id": 3809,
                         "name": "s",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3820,
-                        "src": "2388:1:25",
+                        "referencedDeclaration": 3655,
+                        "src": "2423:1:23",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_AppStorage_$26_storage",
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
                           "typeString": "struct AppStorage storage ref"
                         }
                       },
-                      "id": 3974,
+                      "id": 3811,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": true,
-                      "memberLocation": "2390:20:25",
+                      "memberLocation": "2425:20:23",
                       "memberName": "rEthWethPoolBalancer",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 25,
-                      "src": "2388:22:25",
+                      "src": "2423:22:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -2014,48 +2024,107 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 3975,
+                      "id": 3812,
                       "name": "rEthWethPoolBalancer_",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 3841,
-                      "src": "2413:21:25",
+                      "referencedDeclaration": 3676,
+                      "src": "2448:21:23",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2388:46:25",
+                    "src": "2423:46:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 3977,
+                  "id": 3814,
                   "nodeType": "ExpressionStatement",
-                  "src": "2388:46:25"
+                  "src": "2423:46:23"
+                },
+                {
+                  "expression": {
+                    "id": 3819,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "expression": {
+                        "id": 3815,
+                        "name": "s",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3655,
+                        "src": "2479:1:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_AppStorage_$28_storage",
+                          "typeString": "struct AppStorage storage ref"
+                        }
+                      },
+                      "id": 3817,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberLocation": "2481:16:23",
+                      "memberName": "rEthEthChainlink",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 27,
+                      "src": "2479:18:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 3818,
+                      "name": "rEthEthChainlink_",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3678,
+                      "src": "2500:17:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "2479:38:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 3820,
+                  "nodeType": "ExpressionStatement",
+                  "src": "2479:38:23"
                 }
               ]
             },
-            "functionSelector": "547769fd",
+            "functionSelector": "76bc26ac",
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "init",
-            "nameLocation": "1175:4:25",
+            "nameLocation": "1175:4:23",
             "parameters": {
-              "id": 3842,
+              "id": 3679,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3823,
+                  "id": 3658,
                   "mutability": "mutable",
                   "name": "registry_",
-                  "nameLocation": "1206:9:25",
+                  "nameLocation": "1206:9:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1189:26:25",
+                  "scope": 3822,
+                  "src": "1189:26:23",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2064,19 +2133,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 3821,
+                      "id": 3656,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "1189:7:25",
+                      "src": "1189:7:23",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "id": 3822,
+                    "id": 3657,
                     "nodeType": "ArrayTypeName",
-                    "src": "1189:9:25",
+                    "src": "1189:9:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -2086,13 +2155,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3825,
+                  "id": 3660,
                   "mutability": "mutable",
                   "name": "diamond_",
-                  "nameLocation": "1233:8:25",
+                  "nameLocation": "1233:8:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1225:16:25",
+                  "scope": 3822,
+                  "src": "1225:16:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2100,10 +2169,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3824,
+                    "id": 3659,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1225:7:25",
+                    "src": "1225:7:23",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2114,13 +2183,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3827,
+                  "id": 3662,
                   "mutability": "mutable",
                   "name": "swapRouter_",
-                  "nameLocation": "1259:11:25",
+                  "nameLocation": "1259:11:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1251:19:25",
+                  "scope": 3822,
+                  "src": "1251:19:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2128,10 +2197,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3826,
+                    "id": 3661,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1251:7:25",
+                    "src": "1251:7:23",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2142,13 +2211,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3829,
+                  "id": 3664,
                   "mutability": "mutable",
                   "name": "priceFeed_",
-                  "nameLocation": "1288:10:25",
+                  "nameLocation": "1288:10:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1280:18:25",
+                  "scope": 3822,
+                  "src": "1280:18:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2156,10 +2225,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3828,
+                    "id": 3663,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1280:7:25",
+                    "src": "1280:7:23",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2170,13 +2239,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3831,
+                  "id": 3666,
                   "mutability": "mutable",
                   "name": "wethAddr_",
-                  "nameLocation": "1316:9:25",
+                  "nameLocation": "1316:9:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1308:17:25",
+                  "scope": 3822,
+                  "src": "1308:17:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2184,10 +2253,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3830,
+                    "id": 3665,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1308:7:25",
+                    "src": "1308:7:23",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2198,13 +2267,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3833,
+                  "id": 3668,
                   "mutability": "mutable",
                   "name": "defaultSlippage_",
-                  "nameLocation": "1340:16:25",
+                  "nameLocation": "1340:16:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1335:21:25",
+                  "scope": 3822,
+                  "src": "1335:21:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2212,10 +2281,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3832,
+                    "id": 3667,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1335:4:25",
+                    "src": "1335:4:23",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2225,13 +2294,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3835,
+                  "id": 3670,
                   "mutability": "mutable",
                   "name": "vaultBalancer_",
-                  "nameLocation": "1374:14:25",
+                  "nameLocation": "1374:14:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1366:22:25",
+                  "scope": 3822,
+                  "src": "1366:22:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2239,10 +2308,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3834,
+                    "id": 3669,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1366:7:25",
+                    "src": "1366:7:23",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2253,13 +2322,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3837,
+                  "id": 3672,
                   "mutability": "mutable",
                   "name": "queriesBalancer_",
-                  "nameLocation": "1406:16:25",
+                  "nameLocation": "1406:16:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1398:24:25",
+                  "scope": 3822,
+                  "src": "1398:24:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2267,10 +2336,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3836,
+                    "id": 3671,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1398:7:25",
+                    "src": "1398:7:23",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2281,13 +2350,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3839,
+                  "id": 3674,
                   "mutability": "mutable",
                   "name": "rEthAddr_",
-                  "nameLocation": "1440:9:25",
+                  "nameLocation": "1440:9:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1432:17:25",
+                  "scope": 3822,
+                  "src": "1432:17:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2295,10 +2364,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3838,
+                    "id": 3673,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1432:7:25",
+                    "src": "1432:7:23",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2309,13 +2378,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3841,
+                  "id": 3676,
                   "mutability": "mutable",
                   "name": "rEthWethPoolBalancer_",
-                  "nameLocation": "1467:21:25",
+                  "nameLocation": "1467:21:23",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3979,
-                  "src": "1459:29:25",
+                  "scope": 3822,
+                  "src": "1459:29:23",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2323,10 +2392,38 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3840,
+                    "id": 3675,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1459:7:25",
+                    "src": "1459:7:23",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3678,
+                  "mutability": "mutable",
+                  "name": "rEthEthChainlink_",
+                  "nameLocation": "1506:17:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3822,
+                  "src": "1498:25:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3677,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1498:7:23",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2336,15 +2433,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1179:315:25"
+              "src": "1179:350:23"
             },
             "returnParameters": {
-              "id": 3843,
+              "id": 3680,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1504:0:25"
+              "src": "1539:0:23"
             },
-            "scope": 3980,
+            "scope": 3823,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -2357,16 +2454,16 @@
         "contractKind": "contract",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          3980
+          3823
         ],
         "name": "DiamondInit",
-        "nameLocation": "1004:11:25",
-        "scope": 3981,
+        "nameLocation": "1004:11:23",
+        "scope": 3824,
         "usedErrors": [],
         "usedEvents": []
       }
     ],
     "license": "MIT"
   },
-  "id": 25
+  "id": 23
 }

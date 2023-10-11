@@ -13,8 +13,8 @@
   },
   "files": {
     "contracts/AppStorage.sol": {
-      "lastModificationDate": 1696973679869,
-      "contentHash": "b23d0f19857e4e1e39ba0d27fa01ef88",
+      "lastModificationDate": 1697045250936,
+      "contentHash": "27ee7e844158f8dfd5162cbfb9ea2ebf",
       "sourceName": "contracts/AppStorage.sol",
       "solcConfig": {
         "settings": {
@@ -319,8 +319,8 @@
       }
     },
     "contracts/facets/ROImoduleL2.sol": {
-      "lastModificationDate": 1697033970214,
-      "contentHash": "7876bb765248e02a9e3fd93c26c3c74c",
+      "lastModificationDate": 1697045712164,
+      "contentHash": "dc36b4e11907b7210f57b7526cb6758a",
       "sourceName": "contracts/facets/ROImoduleL2.sol",
       "solcConfig": {
         "settings": {
@@ -354,9 +354,10 @@
       "imports": [
         "contracts/AppStorage.sol",
         "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IERC20Permit.sol",
-        "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
         "contracts/libraries/Helpers.sol",
         "lib/forge-std/src/console.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
@@ -370,6 +371,52 @@
       "artifacts": {
         "ROImoduleL2": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "ROImoduleL2.sol/ROImoduleL2.json"
+        }
+      }
+    },
+    "contracts/facets/ozOracles.sol": {
+      "lastModificationDate": 1697045487011,
+      "contentHash": "3e756cdc0b745c5229e46dcd280e26b8",
+      "sourceName": "contracts/facets/ozOracles.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozOracles": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozOracles.sol/ozOracles.json"
         }
       }
     },
@@ -730,8 +777,8 @@
       }
     },
     "contracts/interfaces/IRocketPool.sol": {
-      "lastModificationDate": 1697033872485,
-      "contentHash": "08b48260cfb27eaf12421b2e6fdfa475",
+      "lastModificationDate": 1697033982739,
+      "contentHash": "c16f68ccf5156b1b0ee5371dda2469a0",
       "sourceName": "contracts/interfaces/IRocketPool.sol",
       "solcConfig": {
         "settings": {
@@ -815,8 +862,8 @@
       }
     },
     "contracts/interfaces/ozIDiamond.sol": {
-      "lastModificationDate": 1696973806300,
-      "contentHash": "bae3c180f65bd22bfa9e29bf99a7bf73",
+      "lastModificationDate": 1697045344413,
+      "contentHash": "60046f622d86181e5f426d996f0b3b92",
       "sourceName": "contracts/interfaces/ozIDiamond.sol",
       "solcConfig": {
         "settings": {
@@ -1132,8 +1179,8 @@
       }
     },
     "contracts/upgradeInitializers/DiamondInit.sol": {
-      "lastModificationDate": 1696604923505,
-      "contentHash": "41ed9984941864f518d4883fc50a8304",
+      "lastModificationDate": 1697045283056,
+      "contentHash": "48341826faea54e8b65a37d7a16ba6b3",
       "sourceName": "contracts/upgradeInitializers/DiamondInit.sol",
       "solcConfig": {
         "settings": {
@@ -2353,8 +2400,8 @@
       }
     },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1696972948361,
-      "contentHash": "485ddbcde6292b0feb337193e4d090c5",
+      "lastModificationDate": 1697045283056,
+      "contentHash": "b84edfd7d23f81dd990d9b253f154b79",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -2394,6 +2441,7 @@
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ROImoduleL2.sol",
+        "contracts/facets/ozOracles.sol",
         "contracts/facets/ozTokenFactory.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
@@ -2401,7 +2449,6 @@
         "contracts/interfaces/IERC165.sol",
         "contracts/interfaces/IERC173.sol",
         "contracts/interfaces/IERC20Permit.sol",
-        "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/libraries/Helpers.sol",
@@ -2484,6 +2531,7 @@
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ROImoduleL2.sol",
+        "contracts/facets/ozOracles.sol",
         "contracts/facets/ozTokenFactory.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
@@ -2491,7 +2539,6 @@
         "contracts/interfaces/IERC165.sol",
         "contracts/interfaces/IERC173.sol",
         "contracts/interfaces/IERC20Permit.sol",
-        "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",

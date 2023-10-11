@@ -16,7 +16,8 @@ import "../../contracts/facets/MirrorExchange.sol";
 import {ozTokenFactory} from "../../contracts/facets/ozTokenFactory.sol";
 import "../../contracts/facets/Pools.sol";
 import "../../contracts/Diamond.sol";
-import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol"; 
+import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
+import {ozOracles} from "../../contracts/facets/ozOracles.sol"; 
 
 import "forge-std/console.sol";
 
@@ -67,6 +68,7 @@ contract Setup is Test {
     MirrorExchange internal mirrorEx;  
     Pools internal pools;
     ROImoduleL2 internal roiL2;
+    ozOracles internal oracles;
 
     ozIDiamond internal OZ;
 
@@ -146,15 +148,17 @@ contract Setup is Test {
         factory = new ozTokenFactory();
         pools = new Pools();
         roiL2 = new ROImoduleL2();
+        oracles = new ozOracles();
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](6);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](7);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
         cuts[2] = _createCut(address(mirrorEx), 2);
         cuts[3] = _createCut(address(factory), 3);
         cuts[4] = _createCut(address(pools), 4);
         cuts[5] = _createCut(address(roiL2), 5);
+        cuts[6] = _createCut(address(oracles), 6);
 
         //Create ERC20 registry
         address[] memory registry = new address[](1);
@@ -171,7 +175,8 @@ contract Setup is Test {
             vaultBalancer,
             queriesBalancer,
             rEthAddr,
-            rEthWethPoolBalancer
+            rEthWethPoolBalancer,
+            rEthEthChainlink
         );
 
         OZ = ozIDiamond(address(ozDiamond));
@@ -194,7 +199,7 @@ contract Setup is Test {
             length = 5;
         } else if (id_ == 1) {
             length = 2;
-        } else if (id_ == 2 || id_ == 4 || id_ == 5) {
+        } else if (id_ == 2 || id_ == 4 || id_ == 5 || id_ == 6) {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
@@ -221,6 +226,8 @@ contract Setup is Test {
             selectors[0] = 0xe9e05c43;
         } else if (id_ == 5) {
             selectors[0] = roiL2.useUnderlying.selector;
+        } else if (id_ == 6) {
+            selectors[0] = oracles.rETH_ETH.selector;
         }
 
         cut = IDiamondCut.FacetCut({
@@ -257,6 +264,7 @@ contract Setup is Test {
         vm.label(rEthAddr, "rETH");
         vm.label(rEthImpl, "rETHimpl");
         vm.label(feesCollectorBalancer, "FeesCollectorBalancer");
+        vm.label(address(oracles), "ozOracles");
     }
 
 

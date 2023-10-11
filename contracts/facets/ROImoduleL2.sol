@@ -9,11 +9,12 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import {AppStorage, TradeAmounts} from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
-import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
+// import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
 import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import {Helpers} from "../libraries/Helpers.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 
 import "forge-std/console.sol";
 
@@ -54,7 +55,11 @@ contract ROImoduleL2 {
 
 
         //----- Calculate ozTokens to sender
-        uint x = IRocketTokenRETH(s.rETH).getExchangeRate();
+        // uint x = IRocketTokenRETH(s.rETH).getExchangeRate();
+        // console.log('x: ', x);
+
+        // uint x = this.rETH_ETH();
+        uint x = ozIDiamond(address(this)).rETH_ETH();
         console.log('x: ', x);
 
     }
