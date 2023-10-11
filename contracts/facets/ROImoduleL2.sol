@@ -156,14 +156,18 @@ contract ROImoduleL2 {
         amountsIn[0] = 0;
         amountsIn[1] = amountIn;
 
-        bytes memory userData = _createUserData(amountsIn, minBptOutOffchain_);
+        // bytes memory userData = _createUserData(amountsIn, minBptOutOffchain_);
 
-        IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
-            assets: assets,
-            maxAmountsIn: maxAmountsIn,
-            userData: userData,
-            fromInternalBalance: false
-        });
+        // IVault.JoinPoolRequest memory request = IVault.JoinPoolRequest({
+        //     assets: assets,
+        //     maxAmountsIn: maxAmountsIn,
+        //     userData: userData,
+        //     fromInternalBalance: false
+        // });
+
+        IVault.JoinPoolRequest memory request = _createRequest(
+            assets, maxAmountsIn, _createUserData(amountsIn, minBptOutOffchain_)
+        );
 
         (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
             poolId_,
@@ -177,14 +181,18 @@ contract ROImoduleL2 {
             bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_
         );
 
-        userData = _createUserData(amountsIn, minBptOut);
+        // userData = _createUserData(amountsIn, minBptOut);
 
-        request = IVault.JoinPoolRequest({
-            assets: assets,
-            maxAmountsIn: maxAmountsIn,
-            userData: userData,
-            fromInternalBalance: false
-        });
+        // request = IVault.JoinPoolRequest({
+        //     assets: assets,
+        //     maxAmountsIn: maxAmountsIn,
+        //     userData: userData,
+        //     fromInternalBalance: false
+        // });
+
+        request = _createRequest(
+            assets, maxAmountsIn, _createUserData(amountsIn, minBptOut)
+        );
 
         IVault(s.vaultBalancer).joinPool(
             IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -205,6 +213,19 @@ contract ROImoduleL2 {
             amountsIn_,
             minBptOut_
         );
+    }
+
+    function _createRequest(
+        address[] memory assets_,
+        uint[] memory maxAmountsIn_,
+        bytes memory userData_
+    ) private pure returns(IVault.JoinPoolRequest memory) {
+        return IVault.JoinPoolRequest({
+            assets: assets_,
+            maxAmountsIn: maxAmountsIn_,
+            userData: userData_,
+            fromInternalBalance: false
+        });
     }
 
 
