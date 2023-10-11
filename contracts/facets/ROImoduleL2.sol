@@ -52,16 +52,7 @@ contract ROImoduleL2 {
 
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
 
-        _swapBalancer(
-            poolId,
-            // IVault.SwapKind.GIVEN_IN,
-            // IAsset(s.WETH),
-            // IAsset(s.rETH),
-            // address(this),
-            // payable(address(this)),
-            minRethOutOffchain
-            // IWETH(s.WETH).balanceOf(address(this))
-        );
+        _swapBalancer(poolId, minRethOutOffchain);
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
         _addLiquidityBalancer(minBptOutOffchain, poolId);
@@ -104,16 +95,7 @@ contract ROImoduleL2 {
     }
 
 
-    function _swapBalancer(
-        bytes32 poolId_,
-        // IVault.SwapKind kind_,
-        // IAsset assetIn_,
-        // IAsset assetOut_,
-        // address sender_,
-        // address payable recipient_,
-        uint minRethOutOffchain_
-        // uint amountIn_
-    ) private {
+    function _swapBalancer(bytes32 poolId_, uint minRethOutOffchain_) private {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: poolId_,
             kind: IVault.SwapKind.GIVEN_IN,
@@ -177,7 +159,7 @@ contract ROImoduleL2 {
         );
 
         IVault(s.vaultBalancer).joinPool(
-            IPool(s.rEthWethPoolBalancer).getPoolId(),
+            poolId_,
             address(this),
             address(this),
             request
