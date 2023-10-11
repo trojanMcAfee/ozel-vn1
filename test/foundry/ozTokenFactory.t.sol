@@ -4,11 +4,11 @@ pragma solidity 0.8.21;
 
 import "../../contracts/facets/ozTokenFactory.sol";
 import {Setup} from "./Setup.sol";
-import "../../contracts/interfaces/ozIToken.sol";
+import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 // import "solady/src/utils/FixedPointMathLib.sol";
 // import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {IQueries, IPool, IAsset, IVault} from "../../contracts/interfaces/IBalancer.sol";
-import "../../contracts/libraries/Helpers.sol";
+import {Helpers} from "../../contracts/libraries/Helpers.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
@@ -96,67 +96,8 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    /**
-     * Helpers 
-     */
-   
-    // function _getPermitHash(
-    //     address token_,
-    //     address owner_,
-    //     address spender_,
-    //     uint value_,
-    //     uint nonce_,
-    //     uint deadline_
-    // ) private view returns(bytes32) {
-    //     return keccak256(
-    //                 abi.encodePacked(
-    //                     "\x19\x01",
-    //                     IERC20Permit(token_).DOMAIN_SEPARATOR(),
-    //                     keccak256(
-    //                         abi.encode(
-    //                             keccak256(
-    //                                 "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
-    //                             ),
-    //                             owner_,
-    //                             spender_,
-    //                             value_,
-    //                             nonce_,
-    //                             deadline_
-    //                         )
-    //                     )
-    //                 )
-    //             );
-    // }
+    
 
-
-    // function _calculateMinAmountsOut(
-    //     address[2] memory feeds_, 
-    //     uint amountIn_, 
-    //     uint decimals_
-    // ) private view returns(uint[] memory) {
-    //     uint[] memory minAmountsOut = new uint[](2);
-
-    //     for (uint i=0; i < feeds_.length; i++) {
-    //         uint decimals = decimals_ == _BASE ? _BASE : (_BASE - decimals_) + decimals_;
-            
-    //         (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
-    //         uint expectedOut = 
-    //             ( i == 0 ? amountIn_ * 10 ** (decimals) : minAmountsOut[i - 1] )
-    //             .fullMulDiv(1 ether, i == 0 ? uint(price) * 1e10 : uint(price));
-
-    //         uint minOut = expectedOut - expectedOut.fullMulDiv(defaultSlippage, 10000);
-    //         minAmountsOut[i] = minOut;
-    //     }
-
-    //     return minAmountsOut;
-    // }
-
-
-    // function _calculateMinAmountsOut(
-    //     uint256 amount_
-    // ) private view returns(uint256 minAmountOut) {
-    //     minAmountOut = amount_ - amount_.fullMulDiv(defaultSlippage, 10000);
-    // }
 
 
 
