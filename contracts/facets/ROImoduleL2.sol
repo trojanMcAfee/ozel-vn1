@@ -32,7 +32,7 @@ contract ROImoduleL2 {
         address underlying_, 
         address user_,
         TradeAmounts memory amounts_
-    ) external {
+    ) external returns(bool) {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
 
@@ -50,8 +50,10 @@ contract ROImoduleL2 {
         //Deposits rETH in rETH-ETH Balancer pool as LP
         _addLiquidityBalancer(amounts_.minBptOut, poolId);
 
-        uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
-        console.log('bal BPT post: ', bal);
+        return true;
+
+        // uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
+        // console.log('bal BPT post: ', bal);
 
 
         //----- Calculate ozTokens to sender
@@ -59,8 +61,10 @@ contract ROImoduleL2 {
         // console.log('x: ', x);
 
         // uint x = this.rETH_ETH();
-        uint x = ozIDiamond(address(this)).rETH_ETH();
-        console.log('x: ', x);
+        // uint x = ozIDiamond(address(this)).rETH_ETH();
+        // console.log('x: ', x);
+
+        //call getRate() from BPT ****
 
     }
 
