@@ -212,7 +212,7 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
         uint8 v_,
         bytes32 r_,
         bytes32 s_
-    ) external returns(bool) {
+    ) external {
         address token = underlying();
 
         IERC20Permit(token).permit(
@@ -223,7 +223,7 @@ contract ozToken is Context, IERC20, IERC20Metadata { //is AccessControl needed 
             v_, r_, s_
         );
 
-        return ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
+        ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
     }
 
    

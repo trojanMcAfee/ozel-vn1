@@ -32,7 +32,7 @@ contract ROImoduleL2 {
         address underlying_, 
         address user_,
         TradeAmounts memory amounts_
-    ) external returns(bool) {
+    ) external {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
 
@@ -50,7 +50,6 @@ contract ROImoduleL2 {
         //Deposits rETH in rETH-ETH Balancer pool as LP
         _addLiquidityBalancer(amounts_.minBptOut, poolId);
 
-        return true;
 
         // uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
         // console.log('bal BPT post: ', bal);
