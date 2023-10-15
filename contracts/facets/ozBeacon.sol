@@ -2,15 +2,11 @@
 pragma solidity 0.8.21;
 
 
-import "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
+import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 
 
 contract ozBeacon is UpgradeableBeacon {
-
-
     constructor(
         address ozTokenContract_
     ) UpgradeableBeacon(ozTokenContract_) {}
-
-
 }

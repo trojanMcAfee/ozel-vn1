@@ -18,7 +18,8 @@ import "../../contracts/facets/Pools.sol";
 import "../../contracts/Diamond.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 import {ozOracles} from "../../contracts/facets/ozOracles.sol"; 
-// import {ozBeacon} from "../../contracts/facets/ozBeacon.sol";
+import {ozBeacon} from "../../contracts/facets/ozBeacon.sol";
+import {ozToken} from "../../contracts/ozToken.sol";
 
 import "forge-std/console.sol";
 
@@ -63,6 +64,8 @@ contract Setup is Test {
     DiamondLoupeFacet internal loupe;
     OwnershipFacet internal ownership;
     Diamond internal ozDiamond;
+    ozBeacon internal beacon;
+    ozToken internal tokenOz;
 
     //Ozel custom facets
     ozTokenFactory internal factory; 
@@ -142,6 +145,9 @@ contract Setup is Test {
         ozDiamond = new Diamond(owner, address(cutFacet));
         initDiamond = new DiamondInit();
 
+        //Deploys ozToken implementation contract for ozBeacon
+        tokenOz = new ozToken();
+
         //Deploys facets
         loupe = new DiamondLoupeFacet();
         ownership = new OwnershipFacet();
@@ -150,9 +156,10 @@ contract Setup is Test {
         pools = new Pools();
         roiL2 = new ROImoduleL2();
         oracles = new ozOracles();
+        beacon = new ozBeacon(address(tokenOz));
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](7);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](8);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
         cuts[2] = _createCut(address(mirrorEx), 2);
@@ -160,6 +167,7 @@ contract Setup is Test {
         cuts[4] = _createCut(address(pools), 4);
         cuts[5] = _createCut(address(roiL2), 5);
         cuts[6] = _createCut(address(oracles), 6);
+        cuts[7] = _createCut(address(beacon), 7);
 
         //Create ERC20 registry
         address[] memory registry = new address[](1);
@@ -196,7 +204,7 @@ contract Setup is Test {
         uint id_
     ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
-        if (id_ == 0) {
+        if (id_ == 0 || id_ == 7) {
             length = 5;
         } else if (id_ == 1) {
             length = 2;
@@ -229,6 +237,12 @@ contract Setup is Test {
             selectors[0] = roiL2.useUnderlying.selector;
         } else if (id_ == 6) {
             selectors[0] = oracles.rETH_ETH.selector;
+        } else if (id_ == 7) {
+            selectors[0] = beacon.implementation.selector;
+            selectors[1] = beacon.upgradeTo.selector;
+            selectors[2] = beacon.owner.selector;
+            selectors[3] = beacon.renounceOwnership.selector;
+            selectors[4] = beacon.transferOwnership.selector;
         }
 
         cut = IDiamondCut.FacetCut({
@@ -266,6 +280,8 @@ contract Setup is Test {
         vm.label(rEthImpl, "rETHimpl");
         vm.label(feesCollectorBalancer, "FeesCollectorBalancer");
         vm.label(address(oracles), "ozOracles");
+        vm.label(address(beacon), "ozBeacon");
+        vm.label(address(tokenOz), "ozTokenImplementation");
     }
 
 

@@ -4,9 +4,10 @@ pragma solidity 0.8.21;
 
 // import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol";
 import {ERC4626, IERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
+import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 
-contract ozToken is ERC4626 {
+contract ozToken is ERC4626, Initializable {
 
     address private immutable _ozDiamond;
 
@@ -18,6 +19,10 @@ contract ozToken is ERC4626 {
     ) ERC4626(IERC20(underlying_)) ERC20(name_, symbol_) {
         _ozDiamond = diamond_;
     }
+
+    // constructor() {
+    //     _disableInitializers();
+    // }
 
 
 }
