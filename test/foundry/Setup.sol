@@ -185,7 +185,8 @@ contract Setup is Test {
             queriesBalancer,
             rEthAddr,
             rEthWethPoolBalancer,
-            rEthEthChainlink
+            rEthEthChainlink,
+            address(beacon)
         );
 
         OZ = ozIDiamond(address(ozDiamond));

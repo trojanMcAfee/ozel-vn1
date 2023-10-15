@@ -2,9 +2,10 @@
 pragma solidity 0.8.21;
 
 
-import "../ozToken.sol";
-import "../AppStorage.sol";
-import "../libraries/Helpers.sol";
+// import {ozToken} from "../ozToken.sol";
+import {AppStorage} from "../AppStorage.sol";
+import {Helpers} from "../libraries/Helpers.sol";
+import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
 // import "hardhat/console.sol";
 
@@ -17,21 +18,29 @@ contract ozTokenFactory {
     using Helpers for address[];
 
     AppStorage internal s;
-
     
     //Wrapper function - returns address of ozToken
     function createOzToken(
-        address erc20_,
+        address underlying_,
         string memory name_,
         string memory symbol_,
         uint8 decimals_
     ) external returns(address) { //put an onlyOwner
 
-        if (s.ozTokenRegistry.indexOf(erc20_) != -1) revert TokenAlreadyInRegistry(erc20_);
-        if (erc20_ == address(0)) revert CantBeZeroAddress();
+        if (s.ozTokenRegistry.indexOf(underlying_) != -1) revert TokenAlreadyInRegistry(underlying_);
+        if (underlying_ == address(0)) revert CantBeZeroAddress();
 
-        ozToken newToken = new ozToken(name_, symbol_, erc20_, decimals_, s.ozDiamond);
-        s.ozTokenRegistry.push(erc20_);
+        //------
+        bytes memory data = abi.encodeWithSignature( //use encodeCall here on you have the interface for ozToken
+            "function initialize(address,address,string,string,uint8)", 
+            underlying_, s.ozDiamond, name_, symbol_, decimals_
+        );
+
+        BeaconProxy newToken = new BeaconProxy(s.ozBeacon, data);
+        //------
+
+        // ozToken newToken = new ozToken(name_, symbol_, underlying_, decimals_, s.ozDiamond);
+        s.ozTokenRegistry.push(underlying_);
 
         return address(newToken);
     }
@@ -40,8 +49,8 @@ contract ozTokenFactory {
         return s.ozTokenRegistry;
     }
 
-    function isInRegistry(address erc20_) public view returns(bool) {
-        return s.ozTokenRegistry.indexOf(erc20_) != -1;
+    function isInRegistry(address underlying_) public view returns(bool) {
+        return s.ozTokenRegistry.indexOf(underlying_) != -1;
     }
 
 }

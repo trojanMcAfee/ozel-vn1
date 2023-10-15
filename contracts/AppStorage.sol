@@ -28,6 +28,8 @@ struct AppStorage {
     mapping(address underlying => address token) ozTokens;
     address[] ozTokensArr;
     uint rewardMultiplier;
+
+    address ozBeacon;
   
 }
 

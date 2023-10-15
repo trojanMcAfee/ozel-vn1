@@ -22,7 +22,7 @@ contract ozTokenFactoryTest is Setup {
 
     function test_createOzToken() public {
         ozIToken ozUSDC = ozIToken(OZ.createOzToken(
-            usdcAddr, "Ozel Tether", "ozUSDC", USDC.decimals()
+            usdcAddr, "Ozel-USDC", "ozUSDC", USDC.decimals()
         ));
         assertTrue(address(ozUSDC) != address(0));
 
@@ -74,6 +74,19 @@ contract ozTokenFactoryTest is Setup {
         });
 
         ozUSDC.mint(amounts, v, r, s);
+    }
+
+
+    function test_createOzToken2() public {
+        ozIToken ozUSDC = ozIToken(OZ.createOzToken(
+            usdcAddr, "Ozel-USDC", "ozUSDC", USDC.decimals()
+        ));
+        assertTrue(address(ozUSDC) != address(0));
+
+        uint decimals = ozUSDC.decimals();
+        console.log('decimals: ', decimals);
+
+
     }
 
 
