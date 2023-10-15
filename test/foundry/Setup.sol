@@ -224,8 +224,8 @@ contract Setup is Test {
             selectors[3] = loupe.facetAddress.selector;
             selectors[4] = loupe.supportsInterface.selector;
         } else if (id_ == 1) {
-            selectors[0] = ownership.transferOwnership.selector;
-            selectors[1] = ownership.owner.selector;
+            selectors[0] = ownership.transferOwnershipDiamond.selector;
+            selectors[1] = ownership.ownerDiamond.selector;
         } else if (id_ == 2) { //MirrorEx
             selectors[0] = 0xe9e05c42;
         } else if (id_ == 3) {
