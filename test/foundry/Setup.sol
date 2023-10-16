@@ -19,7 +19,7 @@ import "../../contracts/Diamond.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 import {ozOracles} from "../../contracts/facets/ozOracles.sol"; 
 import {ozBeacon} from "../../contracts/facets/ozBeacon.sol";
-import {ozLoupe} from "../../contracts/facets/ozBeacon.sol";
+import {ozLoupe} from "../../contracts/facets/ozLoupe.sol";
 import {ozToken} from "../../contracts/ozToken.sol";
 
 import "forge-std/console.sol";

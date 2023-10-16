@@ -10,18 +10,41 @@ import {
     ERC4626Upgradeable, 
     IERC20MetadataUpgradeable, 
     ERC20Upgradeable,
-    MathUpgradeable
+    MathUpgradeable,
+    IERC20Upgradeable
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
+import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
+import {AppStorage} from "./AppStorage.sol";
 
 import "forge-std/console.sol";
 
 
 error ozTokenInvalidMintReceiver(address account);
 
+error ERC20InsufficientBalance(address sender, uint256 shares, uint256 sharesNeeded);
+error ERC20InvalidSender(address sender);
+error ERC20InvalidReceiver(address receiver);
+error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed);
+error ERC20InvalidApprover(address approver);
+error ERC20InvalidSpender(address spender);
+// ERC2612 Errors
+error ERC2612ExpiredDeadline(uint256 deadline, uint256 blockTimestamp);
+error ERC2612InvalidSignature(address owner, address spender);
+// USDM Errors
+error USDMInvalidMintReceiver(address receiver);
+error USDMInvalidBurnSender(address sender);
+error USDMInsufficientBurnBalance(address sender, uint256 shares, uint256 sharesNeeded);
+error USDMInvalidRewardMultiplier(uint256 rewardMultiplier);
+error USDMBlockedSender(address sender);
+error USDMInvalidBlockedAccount(address account);
+error USDMPausedTransfers();
+
 
 contract ozToken is ERC4626Upgradeable {
     
     using MathUpgradeable for uint;
+
+    AppStorage internal s;
 
     address private _ozDiamond;
 
@@ -32,7 +55,7 @@ contract ozToken is ERC4626Upgradeable {
 
     mapping(address user => uint256 shares) private _shares;
 
-    event Transfer(address from, address to, uint amount);
+    event RewardMultiplier(uint256 indexed value);
 
 
     constructor() {
@@ -77,7 +100,7 @@ contract ozToken is ERC4626Upgradeable {
         return _totalShares;
     }
 
-    function totalSupply() external view override returns(uint) {
+    function totalSupply() public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
         return convertToAssets(_totalShares);
     }
 
@@ -85,7 +108,7 @@ contract ozToken is ERC4626Upgradeable {
         _shares[account_];
     }
 
-    function balanceOf(address account_) external view override returns(uint) {
+    function balanceOf(address account_) public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
         return convertToAssets(sharesOf(account_));
     }
 
@@ -104,7 +127,7 @@ contract ozToken is ERC4626Upgradeable {
         // emit Transfer(address(0), to_, shares_);
     }
 
-    function _deposit(
+    function _deposit( //test this function with deposit
         address caller_,
         address receiver_,
         uint256 assets_,
@@ -117,17 +140,13 @@ contract ozToken is ERC4626Upgradeable {
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
-        uint shares = previewDeposit(amount_);
+        uint shares = previewDeposit(assets_);
         _deposit(_msgSender(), receiver_, assets_, shares);
     }
 
     function _burn(address account, uint256 amount) internal override {
-        if (account == address(0)) { //working on this function ****
-            revert USDMInvalidBurnSender(account);
-        }
-
-        _beforeTokenTransfer(account, address(0), amount);
-
+        if (account == address(0)) revert ozTokenInvalidMintReceiver(account); //change the error here
+    
         uint256 shares = convertToShares(amount);
         uint256 accountShares = sharesOf(account);
 
@@ -142,6 +161,68 @@ contract ozToken is ERC4626Upgradeable {
         }
 
         _afterTokenTransfer(account, address(0), amount);
+    }
+
+    function _withdraw(
+        address caller,
+        address receiver,
+        address owner,
+        uint256 assets,
+        uint256 shares
+    ) internal override {
+        //do this function comparing with _withdraw()
+    }
+
+    function _transfer(address from, address to, uint256 amount) internal override {
+        if (from == address(0)) {
+            revert ERC20InvalidSender(from);
+        }
+        if (to == address(0)) {
+            revert ERC20InvalidReceiver(to);
+        }
+
+        _beforeTokenTransfer(from, to, amount);
+
+        uint256 shares = convertToShares(amount); //put there one of the previes...
+        uint256 fromShares = _shares[from];
+
+        if (fromShares < shares) {
+            revert ERC20InsufficientBalance(from, fromShares, shares);
+        }
+
+        unchecked {
+            _shares[from] = fromShares - shares;
+            // Overflow not possible: the sum of all shares is capped by totalShares, and the sum is preserved by
+            // decrementing then incrementing.
+            _shares[to] += shares;
+        }
+
+        _afterTokenTransfer(from, to, amount);
+    }
+
+    /**
+     * Multiplier stuff
+     */
+     function _setRewardMultiplier(uint256 _rewardMultiplier) private {
+        if (_rewardMultiplier < _BASE) {
+            revert USDMInvalidRewardMultiplier(_rewardMultiplier);
+        }
+
+        s.rewardMultiplier = _rewardMultiplier;
+
+        emit RewardMultiplier(s.rewardMultiplier);
+    }
+
+    function setRewardMultiplier(uint256 _rewardMultiplier) external { //protect this funciton
+        _setRewardMultiplier(_rewardMultiplier);
+    }
+
+    function addRewardMultiplier(uint256 _rewardMultiplierIncrement) external {
+        if (_rewardMultiplierIncrement == 0) {
+            revert USDMInvalidRewardMultiplier(_rewardMultiplierIncrement);
+        }
+
+        _setRewardMultiplier(s.rewardMultiplier + _rewardMultiplierIncrement);
     }
 
 
