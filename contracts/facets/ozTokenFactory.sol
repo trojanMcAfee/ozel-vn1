@@ -8,6 +8,7 @@ import {Helpers} from "../libraries/Helpers.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
 // import "hardhat/console.sol";
+import "forge-std/console.sol";
 
 
 error TokenAlreadyInRegistry(address erc20);
@@ -32,7 +33,7 @@ contract ozTokenFactory {
 
         //------
         bytes memory data = abi.encodeWithSignature( //use encodeCall here on you have the interface for ozToken
-            "function initialize(address,address,string,string,uint8)", 
+            "initialize(address,address,string,string,uint8)", 
             underlying_, s.ozDiamond, name_, symbol_, decimals_
         );
 

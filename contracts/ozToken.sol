@@ -40,7 +40,6 @@ contract ozToken is ERC4626Upgradeable {
         string memory symbol_,
         uint8 decimals_
     ) external initializer {
-        console.log(1);
         __ERC20_init(name_, symbol_);
         __ERC4626_init(IERC20MetadataUpgradeable(underlying_));
         _ozDiamond = diamond_;
