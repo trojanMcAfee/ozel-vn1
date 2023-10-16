@@ -19,15 +19,7 @@ contract ozToken is ERC4626Upgradeable {
     address private _ozDiamond;
 
     uint8 private _decimals;
-
-    // constructor(
-    //     address underlying_,
-    //     address diamond_,
-    //     string memory name_,
-    //     string memory symbol_
-    // ) ERC4626(IERC20(underlying_)) ERC20(name_, symbol_) {
-    //     _ozDiamond = diamond_;
-    // }
+    
 
     constructor() {
         _disableInitializers();
