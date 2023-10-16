@@ -19,7 +19,9 @@ contract ozToken is ERC4626Upgradeable {
     address private _ozDiamond;
 
     uint8 private _decimals;
-    
+
+    uint256 private constant _BASE = 1e18;
+
 
     constructor() {
         _disableInitializers();
