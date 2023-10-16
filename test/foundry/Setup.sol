@@ -19,6 +19,7 @@ import "../../contracts/Diamond.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 import {ozOracles} from "../../contracts/facets/ozOracles.sol"; 
 import {ozBeacon} from "../../contracts/facets/ozBeacon.sol";
+import {ozLoupe} from "../../contracts/facets/ozBeacon.sol";
 import {ozToken} from "../../contracts/ozToken.sol";
 
 import "forge-std/console.sol";
@@ -63,7 +64,7 @@ contract Setup is Test {
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
     DiamondCutFacet internal cutFacet;
-    DiamondLoupeFacet internal loupe;
+    // DiamondLoupeFacet internal loupe;
     OwnershipFacet internal ownership;
     Diamond internal ozDiamond;
     ozBeacon internal beacon;
@@ -75,6 +76,7 @@ contract Setup is Test {
     Pools internal pools;
     ROImoduleL2 internal roiL2;
     ozOracles internal oracles;
+    ozLoupe internal loupe;
 
     ozIDiamond internal OZ;
 
@@ -155,7 +157,8 @@ contract Setup is Test {
         tokenOz = new ozToken();
 
         //Deploys facets
-        loupe = new DiamondLoupeFacet();
+        // loupe = new DiamondLoupeFacet();
+        loupe = new ozLoupe();
         ownership = new OwnershipFacet();
         mirrorEx = new MirrorExchange();
         factory = new ozTokenFactory();
@@ -211,14 +214,16 @@ contract Setup is Test {
         uint id_
     ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
-        if (id_ == 0 || id_ == 7) {
-            length = 5;
+        if (id_ == 0) {
+            length = 6;
         } else if (id_ == 1) {
             length = 2;
         } else if (id_ == 2 || id_ == 4 || id_ == 5 || id_ == 6) {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
+        } else if (id_ == 7) {
+            length = 5;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -229,6 +234,7 @@ contract Setup is Test {
             selectors[2] = loupe.facetAddresses.selector;
             selectors[3] = loupe.facetAddress.selector;
             selectors[4] = loupe.supportsInterface.selector;
+            selectors[5] = loupe.getRewardMultiplier.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -269,7 +275,7 @@ contract Setup is Test {
         vm.label(address(ozDiamond), "ozDiamond");
         vm.label(address(initDiamond), "DiamondInit");
         vm.label(address(cutFacet), "DiamondCutFacet");
-        vm.label(address(loupe), "DiamondLoupeFacet");
+        vm.label(address(loupe), "ozLoupe");
         vm.label(address(ownership), "OwnershipFacet");
         vm.label(address(mirrorEx), "MirrorExchange");
         vm.label(address(pools), "Pools");
