@@ -39,6 +39,7 @@ contract Setup is Test {
     address internal usdcAddr;
     address internal wethAddr;
     address internal rEthAddr;
+    address internal fraxAddr;
 
     //For debugging purposes
     address private usdcAddrImpl;
@@ -57,6 +58,7 @@ contract Setup is Test {
     address internal rEthEthChainlink;
 
     IERC20Permit internal USDC;
+    IERC20Permit internal FRAX;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -106,8 +108,10 @@ contract Setup is Test {
             rEthEthChainlink = 0xD6aB2298946840262FcC278fF31516D39fF611eF;
             rEthImpl = 0x3f770Ac673856F105b586bb393d122721265aD46;
             feesCollectorBalancer = 0xce88686553686DA562CE7Cea497CE749DA109f9F;
+            fraxAddr = 0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F;
 
             USDC = IERC20Permit(usdcAddr);
+            FRAX = IERC20Permit(fraxAddr);
             network = "arbitrum";
             blockNumber = 136177703;
         } else if (chain_ == Network.ETHEREUM) {
@@ -127,8 +131,10 @@ contract Setup is Test {
             rEthEthChainlink = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
             rEthImpl = address(0);
             feesCollectorBalancer = address(0);
+            fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
 
             USDC = IERC20Permit(usdcAddr);
+            FRAX = IERC20Permit(fraxAddr);
             network = "ethereum";
             blockNumber = 18284413;
         }

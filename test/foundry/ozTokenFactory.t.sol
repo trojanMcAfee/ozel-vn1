@@ -78,12 +78,12 @@ contract ozTokenFactoryTest is Setup {
 
 
     function test_createOzToken2() public {
-        ozIToken ozUSDC = ozIToken(OZ.createOzToken(
-            usdcAddr, "Ozel-USDC", "ozUSDC", USDC.decimals()
+        ozIToken ozFRAX = ozIToken(OZ.createOzToken(
+            fraxAddr, "Ozel-FRAX", "ozFRAX", FRAX.decimals()
         ));
-        assertTrue(address(ozUSDC) != address(0));
+        assertTrue(address(ozFRAX) != address(0));
 
-        uint decimals = ozUSDC.decimals();
+        uint decimals = ozFRAX.decimals();
         console.log('decimals: ', decimals);
 
 
