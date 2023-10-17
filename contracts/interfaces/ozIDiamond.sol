@@ -21,7 +21,6 @@ interface ozIDiamond {
     function useUnderlying(
         address underlying_, 
         address user_, 
-        address receiver_,
         TradeAmounts memory amounts_
     ) external;
 

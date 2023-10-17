@@ -58,6 +58,8 @@ contract Setup is Test {
     address internal rEthWethPoolBalancer;
     address internal rEthEthChainlink;
 
+    address internal testToken;
+
     IERC20Permit internal USDC;
     IERC20Permit internal FRAX;
 
@@ -144,9 +146,12 @@ contract Setup is Test {
 
 
     function _runSetup() internal {
+        testToken = fraxAddr;
+
         //Initial owner config
         owner = vm.addr(OWNER_PK);
-        deal(usdcAddr, owner, 1500 * 1e6);
+        // uint decimals = testToken == fraxAddr ? 1e18 : 1e6;
+        deal(testToken, owner, 1500 * (10 ** IERC20Permit(testToken).decimals()));
 
         //Deploys diamond infra
         cutFacet = new DiamondCutFacet();
@@ -295,6 +300,7 @@ contract Setup is Test {
         vm.label(address(oracles), "ozOracles");
         vm.label(address(beacon), "ozBeacon");
         vm.label(address(tokenOz), "ozTokenImplementation");
+        vm.label(fraxAddr, "FRAX");
     }
 
 

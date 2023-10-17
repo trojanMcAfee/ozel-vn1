@@ -13,6 +13,7 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import {TradeAmounts} from "../../contracts/AppStorage.sol";
+import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
 
 import "forge-std/console.sol";
@@ -20,17 +21,17 @@ import "forge-std/console.sol";
 
 contract ozTokenFactoryTest is Setup {
 
-    function test_createOzToken() internal {
-        ozIToken ozFRAX = ozIToken(OZ.createOzToken(
-            fraxAddr, "Ozel-FRAX", "ozFRAX", FRAX.decimals()
+    function test_createOzToken() public {
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
         ));
-        assertTrue(address(ozFRAX) != address(0));
+        assertTrue(address(ozERC20) != address(0));
 
         uint rawAmount = 1000;
-        uint amountIn = rawAmount * 10 ** ozFRAX.decimals();
+        uint amountIn = rawAmount * 10 ** ozERC20.decimals();
 
         uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
-            [ethUsdChainlink, rEthEthChainlink], rawAmount, ozFRAX.decimals(), defaultSlippage
+            [ethUsdChainlink, rEthEthChainlink], rawAmount, ozERC20.decimals(), defaultSlippage
         );
         
         //------------
@@ -56,11 +57,11 @@ contract ozTokenFactoryTest is Setup {
         vm.startPrank(owner);
 
         bytes32 permitHash = HelpersTests.getPermitHash(
-            usdcAddr,
+            testToken,
             owner,
             address(ozDiamond),
             amountIn,
-            USDC.nonces(owner),
+            IERC20Permit(testToken).nonces(owner),
             block.timestamp
         );
 
@@ -73,12 +74,12 @@ contract ozTokenFactoryTest is Setup {
             minBptOut: HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage)
         });
 
-        uint shares = ozFRAX.mint(amounts, msg.sender, v, r, s);
+        uint shares = ozERC20.mint(amounts, msg.sender, v, r, s);
         console.log('shares: ', shares);
     }
 
 
-    function test_createOzToken2() public {
+    function test_createOzToken2() internal {
         ozIToken ozFRAX = ozIToken(OZ.createOzToken(
             fraxAddr, "Ozel-FRAX", "ozFRAX", FRAX.decimals()
         ));

@@ -37,7 +37,10 @@ contract ROImoduleL2 {
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
 
         //Swaps underlying to WETH in Uniswap
+        console.log(1); //error is with minWethOut ****
         _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
+        console.log(2);
+        return;
 
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();

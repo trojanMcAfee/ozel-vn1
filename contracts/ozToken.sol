@@ -155,7 +155,7 @@ contract ozToken is ERC4626Upgradeable {
 
         _totalAssets += amounts_.amountIn;
 
-        ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
+        ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
 
         uint shares = deposit(amounts_.amountIn, receiver_);
 
