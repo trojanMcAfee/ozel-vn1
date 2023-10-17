@@ -14,7 +14,8 @@ import {
     IERC20Upgradeable
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
-import {AppStorage} from "./AppStorage.sol";
+import {AppStorage, TradeAmounts} from "./AppStorage.sol";
+import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 
 import "forge-std/console.sol";
 
@@ -52,6 +53,7 @@ contract ozToken is ERC4626Upgradeable {
 
     uint private constant _BASE = 1e18;
     uint private _totalShares;
+    uint private _totalAssets;
 
     mapping(address user => uint256 shares) private _shares;
 
@@ -84,19 +86,22 @@ contract ozToken is ERC4626Upgradeable {
         return _decimals;
     }
 
-    function totalAssets() public view override returns(uint) {
-        //do this (from ERC4626, not USDM)
-    }
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
-        return assets_.mulDiv(_BASE, getMult(), rounding_);
+        // return assets_.mulDiv(_BASE, getMult(), rounding_);
+
+        return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
     }
 
-    function _convertToAssets(uint shares_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
-        return shares_.mulDiv(getMult(), _BASE, rounding_);
+    function totalAssets() public view override returns(uint) {
+        return _totalAssets;
     }
 
-    function totalShares() external view returns(uint) { //from USDM
+    // function _convertToAssets(uint shares_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
+    //     return shares_.mulDiv(getMult(), _BASE, rounding_);
+    // }
+
+    function totalShares() public view returns(uint) { //from USDM
         return _totalShares;
     }
 
@@ -105,18 +110,19 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function sharesOf(address account_) public view returns(uint) {
-        _shares[account_];
+        return _shares[account_];
     }
 
     function balanceOf(address account_) public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
         return convertToAssets(sharesOf(account_));
     }
 
+    // function _mintShares(address to_, uint shares, uint amount_)
+
     function _mint(address to_, uint shares_) internal override { //check this against my ozToken version
         if (to_ == address(0)) revert ozTokenInvalidMintReceiver(to_);
 
-        ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
-        //^^^ have to return the amount of Shares to to_
+        // ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
 
         // uint256 shares = previewDeposit(amount_);
         _totalShares += shares_;
@@ -136,8 +142,8 @@ contract ozToken is ERC4626Upgradeable {
         uint8 v_,
         bytes32 r_,
         bytes32 s_
-    ) external {
-        address token = underlying();
+    ) external returns(uint) {
+        address token = asset();
 
         IERC20Permit(token).permit(
             msg.sender,
@@ -147,7 +153,13 @@ contract ozToken is ERC4626Upgradeable {
             v_, r_, s_
         );
 
-        deposit(amounts_.amountIn, receiver);
+        _totalAssets += amounts_.amountIn;
+
+        ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
+
+        uint shares = deposit(amounts_.amountIn, receiver_);
+
+        return shares;
 
         // ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
     }
@@ -162,11 +174,14 @@ contract ozToken is ERC4626Upgradeable {
         emit Deposit(caller_, receiver_, assets_, shares_);
     }
 
+
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
         uint shares = previewDeposit(assets_);
         _deposit(_msgSender(), receiver_, assets_, shares);
+
+        return shares;
     }
 
 
@@ -197,6 +212,10 @@ contract ozToken is ERC4626Upgradeable {
         uint256 shares
     ) internal override {
         //do this function comparing with _withdraw()
+    }
+
+    function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
+        return shares_.mulDiv(totalAssets(), totalShares(), rounding_);
     }
 
     function _transfer(address from, address to, uint256 amount) internal override {
