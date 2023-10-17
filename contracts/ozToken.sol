@@ -115,6 +115,9 @@ contract ozToken is ERC4626Upgradeable {
     function _mint(address to_, uint shares_) internal override { //check this against my ozToken version
         if (to_ == address(0)) revert ozTokenInvalidMintReceiver(to_);
 
+        ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
+        //^^^ have to return the amount of Shares to to_
+
         // uint256 shares = previewDeposit(amount_);
         _totalShares += shares_;
 
@@ -125,6 +128,28 @@ contract ozToken is ERC4626Upgradeable {
         }
 
         // emit Transfer(address(0), to_, shares_);
+    }
+
+    function mint( 
+        TradeAmounts memory amounts_,
+        address receiver_,
+        uint8 v_,
+        bytes32 r_,
+        bytes32 s_
+    ) external {
+        address token = underlying();
+
+        IERC20Permit(token).permit(
+            msg.sender,
+            _ozDiamond,
+            amounts_.amountIn,
+            block.timestamp,
+            v_, r_, s_
+        );
+
+        deposit(amounts_.amountIn, receiver);
+
+        // ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
     }
 
     function _deposit( //test this function with deposit
@@ -143,6 +168,7 @@ contract ozToken is ERC4626Upgradeable {
         uint shares = previewDeposit(assets_);
         _deposit(_msgSender(), receiver_, assets_, shares);
     }
+
 
     function _burn(address account, uint256 amount) internal override {
         if (account == address(0)) revert ozTokenInvalidMintReceiver(account); //change the error here
