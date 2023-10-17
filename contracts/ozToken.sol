@@ -15,7 +15,7 @@ import {
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {AppStorage, TradeAmounts} from "./AppStorage.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 
 import "forge-std/console.sol";
 
