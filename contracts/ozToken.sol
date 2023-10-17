@@ -164,7 +164,7 @@ contract ozToken is ERC4626Upgradeable {
         // ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
     }
 
-    function _deposit( //test this function with deposit
+    function _deposit( //test mint/deposit ****
         address caller_,
         address receiver_,
         uint256 assets_,

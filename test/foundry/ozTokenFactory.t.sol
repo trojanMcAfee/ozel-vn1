@@ -20,17 +20,17 @@ import "forge-std/console.sol";
 
 contract ozTokenFactoryTest is Setup {
 
-    function test_createOzToken() public {
-        ozIToken ozUSDC = ozIToken(OZ.createOzToken(
-            usdcAddr, "Ozel-USDC", "ozUSDC", USDC.decimals()
+    function test_createOzToken() internal {
+        ozIToken ozFRAX = ozIToken(OZ.createOzToken(
+            fraxAddr, "Ozel-FRAX", "ozFRAX", FRAX.decimals()
         ));
-        assertTrue(address(ozUSDC) != address(0));
+        assertTrue(address(ozFRAX) != address(0));
 
         uint rawAmount = 1000;
-        uint amountIn = rawAmount * 10 ** ozUSDC.decimals();
+        uint amountIn = rawAmount * 10 ** ozFRAX.decimals();
 
         uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
-            [ethUsdChainlink, rEthEthChainlink], rawAmount, ozUSDC.decimals(), defaultSlippage
+            [ethUsdChainlink, rEthEthChainlink], rawAmount, ozFRAX.decimals(), defaultSlippage
         );
         
         //------------
@@ -73,7 +73,8 @@ contract ozTokenFactoryTest is Setup {
             minBptOut: HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage)
         });
 
-        ozUSDC.mint(amounts, v, r, s);
+        uint shares = ozFRAX.mint(amounts, msg.sender, v, r, s);
+        console.log('shares: ', shares);
     }
 
 

@@ -47,8 +47,9 @@ interface ozIToken {
 
     function mint( 
         TradeAmounts memory amounts_,
+        address receiver,
         uint8 v_,
         bytes32 r_,
         bytes32 s_
-    ) external;
+    ) external returns(uint);
 }
