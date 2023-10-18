@@ -62,7 +62,7 @@ library Helpers {
         }
     }
 
-    function createUserData(
+    function createUserData( //join this func and below into one (do the kind separation here, in func body)
         IVault.JoinKind kind_,
         uint[] memory amountsIn_, 
         uint minBptOut_
@@ -71,6 +71,18 @@ library Helpers {
             kind_,
             amountsIn_,
             minBptOut_
+        );
+    }
+
+    function createUserData(
+        IVault.ExitKind kind_,
+        uint[] memory bptAmountIn_, 
+        uint exitTokenIndex_
+    ) internal pure returns(bytes memory) {
+        return abi.encode( 
+            kind_,
+            bptAmountIn_,
+            exitTokenIndex_
         );
     }
 

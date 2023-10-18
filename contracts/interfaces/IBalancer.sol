@@ -16,6 +16,12 @@ interface IVault {
         ALL_TOKENS_IN_FOR_EXACT_BPT_OUT
     }
 
+    enum ExitKind {
+        EXACT_BPT_IN_FOR_ONE_TOKEN_OUT,
+        EXACT_BPT_IN_FOR_TOKENS_OUT,
+        BPT_IN_FOR_EXACT_TOKENS_OUT
+    }
+
     struct SingleSwap {
         bytes32 poolId;
         SwapKind kind;
@@ -40,12 +46,26 @@ interface IVault {
         bool fromInternalBalance;
     }
 
+    struct ExitPoolRequest {
+        address[] assets,
+        uint256[] minAmountsOut,
+        bytes userData,
+        bool toInternalBalance
+    }
+
     function swap(
         SingleSwap memory singleSwap,
         FundManagement memory funds,
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint256 amountCalculated);
+
+    function exitPool(
+        bytes32 poolId,
+        address sender,
+        address payable recipient,
+        ExitPoolRequest memory request
+    ) external;
 
     function joinPool(
         bytes32 poolId,
@@ -62,6 +82,7 @@ interface IPool {
         uint256 pauseWindowEndTime,
         uint256 bufferPeriodEndTime
     );
+    function getRate() external view returns(uint);
 }
 
 interface IQueries {
@@ -76,4 +97,12 @@ interface IQueries {
         address recipient,
         IVault.JoinPoolRequest memory request
     ) external returns (uint256 bptOut, uint256[] memory amountsIn);
+
+    function queryExit(
+        bytes32 poolId,
+        address sender,
+        address recipient,
+        ExitPoolRequest request)
+    external returns (uint256 bptIn, uint256[] amountsOut);
+
 }
