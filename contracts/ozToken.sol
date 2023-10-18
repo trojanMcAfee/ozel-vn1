@@ -106,7 +106,7 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function totalSupply() public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
-        return convertToAssets(_totalShares);
+        return _convertToAssets(_totalShares);
     }
 
     function sharesOf(address account_) public view returns(uint) {
