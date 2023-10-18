@@ -53,8 +53,6 @@ library HelpersTests {
 
         for (uint i=0; i < feeds_.length; i++) {
             uint decimals = decimals_ == BASE ? BASE : (BASE - decimals_) + decimals_;
-
-            (,int x,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
             
             (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
             uint expectedOut = 

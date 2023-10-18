@@ -39,10 +39,7 @@ contract ROImoduleL2 {
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
 
         //Swaps underlying to WETH in Uniswap
-        console.log(1); //error is with minWethOut ****
         _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
-        console.log(2);
-        return;
 
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
@@ -81,16 +78,13 @@ contract ROImoduleL2 {
     ) private {
         underlying_.safeApprove(s.swapRouterUni, amountIn_);
 
-        console.log('amountIn: ', amountIn_);
-        console.log('minWethOut - preSwap: ', minWethOut_);
-
-        //implement multihop swap for DAI
+        //implement multihop swap for tokens with no single swap in Uniswap
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
                 tokenIn: underlying_,
                 tokenOut: s.WETH, 
-                fee: 100, //0.05 - 500 / make this a programatic value
+                fee: 500, //0.05 - 500 / make this a programatic value
                 recipient: address(this),
                 deadline: block.timestamp,
                 amountIn: amountIn_,
@@ -98,13 +92,8 @@ contract ROImoduleL2 {
                 sqrtPriceLimitX96: 0
             });
 
-        uint amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params);
-        console.log('amountOut - after swap: ', amountOut);
-        console.log('underlying: ', underlying_);
+        uint amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
         if (amountOut == 0) revert TokenInNotValid(underlying_);
-
-        uint y = IERC20Permit(s.WETH).balanceOf(address(this));
-        console.log('weth bal: ', y);
     }
 
 

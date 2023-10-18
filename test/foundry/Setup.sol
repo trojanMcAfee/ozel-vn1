@@ -149,11 +149,11 @@ contract Setup is Test {
 
 
     function _runSetup() internal {
-        testToken = daiAddr;
+        //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
+        testToken = usdcAddr;
 
         //Initial owner config
         owner = vm.addr(OWNER_PK);
-        // uint decimals = testToken == fraxAddr ? 1e18 : 1e6;
         deal(testToken, owner, 1500 * (10 ** IERC20Permit(testToken).decimals()));
 
         //Deploys diamond infra
