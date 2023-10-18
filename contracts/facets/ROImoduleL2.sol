@@ -19,6 +19,8 @@ import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import "forge-std/console.sol";
 
 
+error TokenInNotValid(address token);
+
 
 contract ROImoduleL2 {
 
@@ -79,19 +81,30 @@ contract ROImoduleL2 {
     ) private {
         underlying_.safeApprove(s.swapRouterUni, amountIn_);
 
+        console.log('amountIn: ', amountIn_);
+        console.log('minWethOut - preSwap: ', minWethOut_);
+
+        //implement multihop swap for DAI
+
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
                 tokenIn: underlying_,
                 tokenOut: s.WETH, 
-                fee: 500, //make this a programatic value
+                fee: 100, //0.05 - 500 / make this a programatic value
                 recipient: address(this),
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: minWethOut_, 
+                amountOutMinimum: minWethOut_, //minWethOut_
                 sqrtPriceLimitX96: 0
             });
 
-        ISwapRouter(s.swapRouterUni).exactInputSingle(params);
+        uint amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params);
+        console.log('amountOut - after swap: ', amountOut);
+        console.log('underlying: ', underlying_);
+        if (amountOut == 0) revert TokenInNotValid(underlying_);
+
+        uint y = IERC20Permit(s.WETH).balanceOf(address(this));
+        console.log('weth bal: ', y);
     }
 
 

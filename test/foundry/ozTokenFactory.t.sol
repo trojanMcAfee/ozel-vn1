@@ -80,12 +80,12 @@ contract ozTokenFactoryTest is Setup {
 
 
     function test_createOzToken2() internal {
-        ozIToken ozFRAX = ozIToken(OZ.createOzToken(
-            fraxAddr, "Ozel-FRAX", "ozFRAX", FRAX.decimals()
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
         ));
-        assertTrue(address(ozFRAX) != address(0));
+        assertTrue(address(ozERC20) != address(0));
 
-        uint decimals = ozFRAX.decimals();
+        uint decimals = ozERC20.decimals();
         console.log('decimals: ', decimals);
 
 

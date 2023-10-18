@@ -41,6 +41,7 @@ contract Setup is Test {
     address internal wethAddr;
     address internal rEthAddr;
     address internal fraxAddr;
+    address internal daiAddr;
 
     //For debugging purposes
     address private usdcAddrImpl;
@@ -60,8 +61,8 @@ contract Setup is Test {
 
     address internal testToken;
 
-    IERC20Permit internal USDC;
-    IERC20Permit internal FRAX;
+    // IERC20Permit internal USDC; 
+    // IERC20Permit internal FRAX;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -100,7 +101,7 @@ contract Setup is Test {
             usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
             wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
             usdcAddrImpl = 0x0f4fb9474303d10905AB86aA8d5A65FE44b6E04A;
-            wethUsdPoolUni = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
+            wethUsdPoolUni = 0xC6962004f452bE9203591991D15f6b388e09E8D0; //not used. Remove
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
             ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
@@ -112,10 +113,11 @@ contract Setup is Test {
             rEthEthChainlink = 0xD6aB2298946840262FcC278fF31516D39fF611eF;
             rEthImpl = 0x3f770Ac673856F105b586bb393d122721265aD46;
             feesCollectorBalancer = 0xce88686553686DA562CE7Cea497CE749DA109f9F;
-            fraxAddr = 0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F;
+            fraxAddr = 0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F; //doesn't have a pool in Uniswap Arb, so it can only be used in L1.
+            daiAddr = 0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1;
 
-            USDC = IERC20Permit(usdcAddr);
-            FRAX = IERC20Permit(fraxAddr);
+            // USDC = IERC20Permit(usdcAddr);
+            // FRAX = IERC20Permit(fraxAddr);
             network = "arbitrum";
             blockNumber = 136177703;
         } else if (chain_ == Network.ETHEREUM) {
@@ -136,9 +138,10 @@ contract Setup is Test {
             rEthImpl = address(0);
             feesCollectorBalancer = address(0);
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
+            daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
-            USDC = IERC20Permit(usdcAddr);
-            FRAX = IERC20Permit(fraxAddr);
+            // USDC = IERC20Permit(usdcAddr);
+            // FRAX = IERC20Permit(fraxAddr);
             network = "ethereum";
             blockNumber = 18284413;
         }
@@ -146,7 +149,7 @@ contract Setup is Test {
 
 
     function _runSetup() internal {
-        testToken = fraxAddr;
+        testToken = daiAddr;
 
         //Initial owner config
         owner = vm.addr(OWNER_PK);
