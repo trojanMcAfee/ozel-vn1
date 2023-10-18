@@ -52,20 +52,36 @@ contract ROImoduleL2 {
         //Deposits rETH in rETH-ETH Balancer pool as LP
         _addLiquidityBalancer(amounts_.minBptOut, poolId);
 
+        //----- Gets amount of BPT
+        uint bptBalance = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
+        console.log('bal BPT post: ', bptBalance);
 
-        // uint bal = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
-        // console.log('bal BPT post: ', bal);
 
+        //----- Calculate my BPT rate
+        uint bptValue = IPool(s.rEthWethPoolBalancer).getRate();
+        console.log('My BPT value: ', bptValue * bal);
+        
+        //----- Remove liquidity from Balancer
+        address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
+        uint[] memory minAmountsOut = Helpers.convertToDynamic([0, 0, 0]); //offchain calcs goes in index 0
 
-        //----- Calculate ozTokens to sender
-        // uint x = IRocketTokenRETH(s.rETH).getExchangeRate();
-        // console.log('x: ', x);
+        bytes memory userData = Helpers.createUserData(
+            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptBalance, 0 //exitTokenIndex
+        );
+        
+        IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
+            assets: assets,
+            minAmountsOut: minAmountsOut,
+            userData: userData,
+            toInternalBalance: false
+        });
 
-        // uint x = this.rETH_ETH();
-        // uint x = ozIDiamond(address(this)).rETH_ETH();
-        // console.log('x: ', x);
-
-        //call getRate() from BPT ****
+        IVault(s.vaultBalancer).exitPool( //finish this, calculate slippage on exit,
+            poolId, //query final WETH bal, query to USD, see how much USD you got compared when joining
+            address(this), //use that to estimate if shares to users would be based
+            payable(user_), //on BPT bal on USDC deposited (based on USD value of BPT)
+            request
+        );
 
     }
 
