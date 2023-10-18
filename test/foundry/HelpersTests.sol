@@ -6,6 +6,8 @@ import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 
+import "forge-std/console.sol";
+
 
 library HelpersTests {
 
@@ -51,14 +53,22 @@ library HelpersTests {
 
         for (uint i=0; i < feeds_.length; i++) {
             uint decimals = decimals_ == BASE ? BASE : (BASE - decimals_) + decimals_;
+            console.log('decimals: ', i, decimals);
+
+            (,int x,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
+            console.log('feed: ', i, uint(x));
             
             (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
             uint expectedOut = 
                 ( i == 0 ? amountIn_ * 10 ** (decimals) : minAmountsOut[i - 1] )
                 .fullMulDiv(1 ether, i == 0 ? uint(price) * 1e10 : uint(price));
 
+            console.log('expectedOut: ', i, expectedOut);
+
             uint minOut = expectedOut - expectedOut.fullMulDiv(slippage_, 10000);
             minAmountsOut[i] = minOut;
+
+            console.log('minOut: ', i, minOut);
         }
 
         return minAmountsOut;
