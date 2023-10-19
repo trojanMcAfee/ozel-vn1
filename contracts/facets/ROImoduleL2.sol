@@ -41,6 +41,9 @@ contract ROImoduleL2 {
         //Swaps underlying to WETH in Uniswap
         _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
 
+        uint y = IERC20Permit(s.WETH).balanceOf(user_);
+        console.log('weth user - before: ', y);
+
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
         if (paused) {
@@ -56,19 +59,58 @@ contract ROImoduleL2 {
         uint bptBalance = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
         console.log('bal BPT post: ', bptBalance);
 
+        _removeLiquidityBalancer(uint(0), bptBalance, poolId, user_); //offchain calc goes in uint(0)
+
 
         //----- Calculate my BPT rate
-        uint bptValue = IPool(s.rEthWethPoolBalancer).getRate();
-        console.log('My BPT value: ', bptValue * bptBalance);
+        // uint bptValue = IPool(s.rEthWethPoolBalancer).getRate();
+        // console.log('My BPT value: ', bptValue * bptBalance);
         
         //----- Remove liquidity from Balancer
+        // address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
+        // uint[] memory minAmountsOut = Helpers.convertToDynamic([uint(0), uint(0), uint(0)]); //offchain calcs goes in index 0
+
+        // bytes memory userData = Helpers.createUserData(
+        //     IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptBalance, 0 //exitTokenIndex
+        // );
+        
+        // IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
+        //     assets: assets,
+        //     minAmountsOut: minAmountsOut,
+        //     userData: userData,
+        //     toInternalBalance: false
+        // });
+
+        // IVault(s.vaultBalancer).exitPool( //finish this, calculate slippage on exit,
+        //     poolId, //query final WETH bal, query to USD, see how much USD you got compared when joining
+        //     address(this), //use that to estimate if shares to users would be based
+        //     payable(user_), //on BPT bal on USDC deposited (based on USD value of BPT)
+        //     request
+        // );
+
+        uint x = IERC20Permit(s.WETH).balanceOf(user_);
+        console.log('weth user - after exit: ', x);
+
+    }
+
+
+    function _removeLiquidityBalancer(
+        uint minWethOut_, 
+        uint bptAmountIn_, 
+        bytes32 poolId_, 
+        address receiver_
+    ) private {
+        //----- Calculate my BPT rate
+        uint bptValue = IPool(s.rEthWethPoolBalancer).getRate();
+        console.log('My BPT value: ', bptValue * bptAmountIn_);
+
         address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
-        uint[] memory minAmountsOut = Helpers.convertToDynamic([uint(0), uint(0), uint(0)]); //offchain calcs goes in index 0
+        uint[] memory minAmountsOut = Helpers.convertToDynamic([minWethOut_, uint(0), uint(0)]);
 
         bytes memory userData = Helpers.createUserData(
-            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptBalance, 0 //exitTokenIndex
+            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptAmountIn_, 0 //exitTokenIndex
         );
-        
+
         IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
             assets: assets,
             minAmountsOut: minAmountsOut,
@@ -77,11 +119,12 @@ contract ROImoduleL2 {
         });
 
         IVault(s.vaultBalancer).exitPool( //finish this, calculate slippage on exit,
-            poolId, //query final WETH bal, query to USD, see how much USD you got compared when joining
+            poolId_, //query final WETH bal, query to USD, see how much USD you got compared when joining
             address(this), //use that to estimate if shares to users would be based
-            payable(user_), //on BPT bal on USDC deposited (based on USD value of BPT)
+            payable(receiver_), //on BPT bal on USDC deposited (based on USD value of BPT)
             request
         );
+
 
     }
 
