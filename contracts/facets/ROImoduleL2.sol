@@ -59,11 +59,11 @@ contract ROImoduleL2 {
 
         //----- Calculate my BPT rate
         uint bptValue = IPool(s.rEthWethPoolBalancer).getRate();
-        console.log('My BPT value: ', bptValue * bal);
+        console.log('My BPT value: ', bptValue * bptBalance);
         
         //----- Remove liquidity from Balancer
         address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
-        uint[] memory minAmountsOut = Helpers.convertToDynamic([0, 0, 0]); //offchain calcs goes in index 0
+        uint[] memory minAmountsOut = Helpers.convertToDynamic([uint(0), uint(0), uint(0)]); //offchain calcs goes in index 0
 
         bytes memory userData = Helpers.createUserData(
             IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptBalance, 0 //exitTokenIndex

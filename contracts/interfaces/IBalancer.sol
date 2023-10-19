@@ -47,10 +47,10 @@ interface IVault {
     }
 
     struct ExitPoolRequest {
-        address[] assets,
-        uint256[] minAmountsOut,
-        bytes userData,
-        bool toInternalBalance
+        address[] assets;
+        uint256[] minAmountsOut;
+        bytes userData;
+        bool toInternalBalance;
     }
 
     function swap(
@@ -102,7 +102,7 @@ interface IQueries {
         bytes32 poolId,
         address sender,
         address recipient,
-        ExitPoolRequest request)
-    external returns (uint256 bptIn, uint256[] amountsOut);
+        IVault.ExitPoolRequest memory request
+    ) external returns (uint256 bptIn, uint256[] memory amountsOut);
 
 }

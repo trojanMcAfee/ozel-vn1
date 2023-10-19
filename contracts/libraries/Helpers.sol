@@ -76,7 +76,7 @@ library Helpers {
 
     function createUserData(
         IVault.ExitKind kind_,
-        uint[] memory bptAmountIn_, 
+        uint bptAmountIn_, 
         uint exitTokenIndex_
     ) internal pure returns(bytes memory) {
         return abi.encode( 
