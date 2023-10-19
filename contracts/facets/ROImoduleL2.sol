@@ -61,10 +61,10 @@ contract ROImoduleL2 {
 
 
         //******** */
-        _removeLiquidityBalancer(uint(0), bptBalance, poolId, user_); //offchain calc goes in uint(0)
+        // _removeLiquidityBalancer(uint(0), bptBalance, poolId, user_); //offchain calc goes in uint(0)
 
-        uint x = IERC20Permit(s.WETH).balanceOf(user_);
-        console.log('weth user - after exit: ', x);
+        // uint x = IERC20Permit(s.WETH).balanceOf(user_);
+        // console.log('weth user - after exit: ', x);
 
     }
 
