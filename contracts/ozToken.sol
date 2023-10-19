@@ -178,7 +178,7 @@ contract ozToken is ERC4626Upgradeable {
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
-        uint shares = previewDeposit(assets_);
+        uint shares = totalSupply() == 0 ? assets_ : previewDeposit(assets_);
         _deposit(_msgSender(), receiver_, assets_, shares);
 
         return shares;

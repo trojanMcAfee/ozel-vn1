@@ -76,6 +76,7 @@ contract ozTokenFactoryTest is Setup {
 
         uint shares = ozERC20.mint(amounts, msg.sender, v, r, s);
         console.log('shares: ', shares);
+
     }
 
 
