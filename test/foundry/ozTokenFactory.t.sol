@@ -36,6 +36,7 @@ contract ozTokenFactoryTest is Setup {
         ) = _createDataOffchain(ozERC20, rawAmount, ALICE_PK, alice);
 
         //Action
+        vm.prank(alice);
         uint shares = ozERC20.mint(amounts, msg.sender, v, r, s); //remove msg.sender, use it in body, and add receiver
         console.log('shares: ', shares);
 
@@ -69,17 +70,12 @@ contract ozTokenFactoryTest is Setup {
         uint rawAmount_,
         uint SENDER_PK_,
         address sender_
-    ) public returns(TradeAmounts memory amounts, uint8 v, bytes32 r, bytes32 s) { 
+    ) private returns(TradeAmounts memory amounts, uint8 v, bytes32 r, bytes32 s) { 
         uint amountIn = rawAmount_ * 10 ** ozERC20_.decimals();
 
         uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
             [ethUsdChainlink, rEthEthChainlink], rawAmount_, ozERC20_.decimals(), defaultSlippage
         );
-
-        
-        // address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
-        // uint[] memory maxAmountsIn = Helpers.convertToDynamic([0, 0, minsOut[1]]);
-        // uint[] memory amountsIn = Helpers.convertToDynamic([0, minsOut[1]]);
 
         (
             address[] memory assets,
@@ -91,26 +87,8 @@ contract ozTokenFactoryTest is Setup {
             assets, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
         );
 
-        (uint bptOut, bytes32 permitHash) = _getFinalsParams(sender_, request, amountIn);
-        
-        // (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
-        //     IPool(rEthWethPoolBalancer).getPoolId(),
-        //     sender_,
-        //     address(ozDiamond),
-        //     request
-        // );
+        (uint bptOut, bytes32 permitHash) = _getHashNBptOut(sender_, request, amountIn);
 
-
-        // bytes32 permitHash = HelpersTests.getPermitHash(
-        //     testToken,
-        //     sender_,
-        //     address(ozDiamond),
-        //     amountIn,
-        //     IERC20Permit(testToken).nonces(sender_),
-        //     block.timestamp
-        // );
-
-        vm.startPrank(sender_);
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
 
         amounts = TradeAmounts({
@@ -123,7 +101,7 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    function _getFinalsParams(
+    function _getHashNBptOut(
         address sender_,
         IVault.JoinPoolRequest memory request_,
         uint amountIn_
