@@ -15,7 +15,7 @@ import { IERC173 } from "../interfaces/IERC173.sol";
 import { IERC165 } from "../interfaces/IERC165.sol";
 
 import "../AppStorage.sol";
-import "forge-std/console.sol";
+// import "forge-std/console.sol";
 
 // It is expected that this contract is customized if you want to deploy your diamond
 // with data from a deployment script. Use the init function to initialize state variables
@@ -31,7 +31,7 @@ contract DiamondInit {
         address[] memory registry_,
         address diamond_,
         address swapRouter_,
-        address priceFeed_,
+        address ethUsdChainlink_, 
         address wethAddr_,
         uint defaultSlippage_,
         address vaultBalancer_,
@@ -55,7 +55,7 @@ contract DiamondInit {
 
         s.ozDiamond = diamond_;
         s.swapRouterUni = swapRouter_;
-        s.ethUsdChainlink = priceFeed_;
+        s.ethUsdChainlink = ethUsdChainlink_;
         s.WETH = wethAddr_;
         s.defaultSlippage = defaultSlippage_;
         s.vaultBalancer = vaultBalancer_;

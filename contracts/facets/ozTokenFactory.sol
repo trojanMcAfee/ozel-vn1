@@ -8,7 +8,7 @@ import {Helpers} from "../libraries/Helpers.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
 // import "hardhat/console.sol";
-import "forge-std/console.sol";
+// import "forge-std/console.sol";
 
 
 error TokenAlreadyInRegistry(address erc20);

@@ -40,7 +40,7 @@ async function main() {
   /**
    * Deploying and integrsting V2 to the DIAMOND
    */
-  const Init = await hre.ethers.getContractFactory("InitUpgradeV2");
+  const Init = await hre.ethers.getContractFactory("DiamondInit");
   const init = await Init.deploy(); 
   await init.deployed();
   console.log('Init deployed to: ', init.address);
@@ -56,6 +56,12 @@ async function main() {
     [tokenFactory.address, 0, [createTokenSelector]]
   ];
   const facetAddresses = [ tokenFactory.address ];
+
+  //Init
+  // const initArgs = [
+  //   registry,
+    
+  // ];
   const initData = init.interface.encodeFunctionData('init', [registry]);
 
   await sendETHOps(1, deployer2);

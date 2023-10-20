@@ -16,7 +16,7 @@ import {Helpers} from "../libraries/Helpers.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 
-import "forge-std/console.sol";
+// import "forge-std/console.sol";
 
 
 error TokenInNotValid(address token);
@@ -74,7 +74,7 @@ contract ROImoduleL2 {
     ) private {
         //----- Calculate my BPT rate
         uint bptValue = IPool(s.rEthWethPoolBalancer).getRate();
-        console.log('My BPT value: ', bptValue * bptAmountIn_);
+        // console.log('My BPT value: ', bptValue * bptAmountIn_);
 
         address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
         uint[] memory minAmountsOut = Helpers.convertToDynamic([minWethOut_, uint(0), uint(0)]);

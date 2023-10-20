@@ -1,6 +1,20 @@
 /* global ethers */
 /* eslint prefer-const: "off" */
 
+const {
+  registry,
+  usdcAddr,
+  swapRouterUni,
+  ethUsdChainlink,
+  wethAddr,
+  defaultSlippage,
+  vaultBalancer,
+  queriesBalancer,
+  rEthAddr,
+  rEthWethPoolBalancer,
+  rEthEthChainlink
+} = require("../state-vars");
+
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 
 async function deployDiamond () {
@@ -12,6 +26,12 @@ async function deployDiamond () {
   const diamondCutFacet = await DiamondCutFacet.deploy()
   await diamondCutFacet.deployed()
   console.log('DiamondCutFacet deployed:', diamondCutFacet.address)
+
+  // deploy Beacon
+  const Beacon = await ethers.getContractFactory('DiamondCutFacet')
+  const beacon = await beacon.deploy()
+  await beacon.deployed()
+  console.log('ozBeacon deployed:', beacon.address)
 
   // deploy Diamond
   const Diamond = await ethers.getContractFactory('Diamond')
@@ -31,8 +51,13 @@ async function deployDiamond () {
   console.log('')
   console.log('Deploying facets')
   const FacetNames = [
-    'DiamondLoupeFacet',
-    'OwnershipFacet'
+    'OwnershipFacet',
+    'MirrorExchange',
+    'ozLoupe',
+    'ozOracles',
+    'ozTokenFactory',
+    'Pools',
+    'ROImoduleL2'
   ]
   const cut = []
   for (const FacetName of FacetNames) {
@@ -53,8 +78,24 @@ async function deployDiamond () {
   const diamondCut = await ethers.getContractAt('IDiamondCut', diamond.address)
   let tx
   let receipt
+
   // call to init function
-  let functionCall = diamondInit.interface.encodeFunctionData('init')
+  const initArgs = [ //check that perhaps ozBeacon and CutFacet are not added to the diamond
+    registry,
+    diamond.address,
+    swapRouterUni,
+    ethUsdChainlink,
+    wethAddr,
+    defaultSlippage,
+    vaultBalancer,
+    queriesBalancer,
+    rEthAddr,
+    rEthWethPoolBalancer,
+    rEthEthChainlink,
+    beacon.address
+  ];
+
+  let functionCall = diamondInit.interface.encodeFunctionData('init', initArgs)
   tx = await diamondCut.diamondCut(cut, diamondInit.address, functionCall)
   console.log('Diamond cut tx: ', tx.hash)
   receipt = await tx.wait()

@@ -16,7 +16,7 @@ import {TradeAmounts} from "../../contracts/AppStorage.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
 
-import "forge-std/console.sol";
+// import "forge-std/console.sol";
 
 
 contract ozTokenFactoryTest is Setup {
@@ -37,15 +37,15 @@ contract ozTokenFactoryTest is Setup {
         //Action
         vm.prank(alice);
         uint shares = ozERC20.mint(amounts, msg.sender, v, r, s); //remove msg.sender, use it in body, and add receiver
-        console.log('shares: ', shares);
+        // console.log('shares: ', shares);
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
         assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
         // assertTrue(shares == ozERC20.balanceOf(alice));
 
-        console.log('*** calling balanceOf() ***');
-        console.log('alice bal: ' , ozERC20.balanceOf(alice));
+        // console.log('*** calling balanceOf() ***');
+        // console.log('alice bal: ' , ozERC20.balanceOf(alice));
     }
 
 
@@ -62,7 +62,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(address(ozERC20) != address(0));
 
         uint decimals = ozERC20.decimals();
-        console.log('decimals: ', decimals);
+        // console.log('decimals: ', decimals);
     }
 
 
