@@ -55,6 +55,13 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
+    struct MinOutVars {
+        address[2] fees;
+        uint rawAmount;
+        uint decimals;
+        uint slippage;
+    }
+
 
     function _createDataOffchain( 
         ozIToken ozERC20_, 
@@ -68,34 +75,41 @@ contract ozTokenFactoryTest is Setup {
             [ethUsdChainlink, rEthEthChainlink], rawAmount_, ozERC20_.decimals(), defaultSlippage
         );
 
-        {
         
-        address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
-        uint[] memory maxAmountsIn = Helpers.convertToDynamic([0, 0, minsOut[1]]);
-        uint[] memory amountsIn = Helpers.convertToDynamic([0, minsOut[1]]);
+        // address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
+        // uint[] memory maxAmountsIn = Helpers.convertToDynamic([0, 0, minsOut[1]]);
+        // uint[] memory amountsIn = Helpers.convertToDynamic([0, minsOut[1]]);
+
+        (
+            address[] memory assets,
+            uint[] memory maxAmountsIn,
+            uint[] memory amountsIn
+        ) = Helpers.convertToDynamics([wethAddr, rEthWethPoolBalancer, rEthAddr], minsOut[1]);
 
         IVault.JoinPoolRequest memory request = Helpers.createRequest(
             assets, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
         );
+
+        (uint bptOut, bytes32 permitHash) = _getFinalsParams(sender_, request, amountIn);
         
-        (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
-            IPool(rEthWethPoolBalancer).getPoolId(),
-            sender_,
-            address(ozDiamond),
-            request
-        );
+        // (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
+        //     IPool(rEthWethPoolBalancer).getPoolId(),
+        //     sender_,
+        //     address(ozDiamond),
+        //     request
+        // );
+
+
+        // bytes32 permitHash = HelpersTests.getPermitHash(
+        //     testToken,
+        //     sender_,
+        //     address(ozDiamond),
+        //     amountIn,
+        //     IERC20Permit(testToken).nonces(sender_),
+        //     block.timestamp
+        // );
 
         vm.startPrank(sender_);
-
-        bytes32 permitHash = HelpersTests.getPermitHash(
-            testToken,
-            sender_,
-            address(ozDiamond),
-            amountIn,
-            IERC20Permit(testToken).nonces(sender_),
-            block.timestamp
-        );
-
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
 
         amounts = TradeAmounts({
@@ -104,13 +118,34 @@ contract ozTokenFactoryTest is Setup {
             minRethOut: minsOut[1],
             minBptOut: HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage)
         });
-        }
 
-        return (amounts, v, r, s);
     }
 
 
- 
+    function _getFinalsParams(
+        address sender_,
+        IVault.JoinPoolRequest memory request_,
+        uint amountIn_
+    ) internal returns(uint, bytes32) {
+        (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
+            IPool(rEthWethPoolBalancer).getPoolId(),
+            sender_,
+            address(ozDiamond),
+            request_
+        );
+
+
+        bytes32 permitHash = HelpersTests.getPermitHash(
+            testToken,
+            sender_,
+            address(ozDiamond),
+            amountIn_,
+            IERC20Permit(testToken).nonces(sender_),
+            block.timestamp
+        );
+
+        return (bptOut, permitHash);
+    }
 
 
     

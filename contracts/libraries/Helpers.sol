@@ -62,6 +62,19 @@ library Helpers {
         }
     }
 
+    function convertToDynamics(
+        address[3] memory addr_,
+        uint minOut_
+    ) internal pure returns(
+        address[] memory assets,
+        uint[] memory maxAmountsIn,
+        uint[] memory amountsIn
+    ) {
+        assets = convertToDynamic(addr_);
+        maxAmountsIn = convertToDynamic([0, 0, minOut_]);
+        amountsIn = convertToDynamic([0, minOut_]);
+    }
+
     function createUserData( //join this func and below into one (do the kind separation here, in func body)
         IVault.JoinKind kind_,
         uint[] memory amountsIn_, 
