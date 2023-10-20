@@ -26,7 +26,6 @@ contract ozTokenFactoryTest is Setup {
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
         ));
-        assertTrue(address(ozERC20) != address(0));
 
         uint rawAmount = 1000;
 
@@ -41,7 +40,12 @@ contract ozTokenFactoryTest is Setup {
         console.log('shares: ', shares);
 
         //Post-conditions
+        assertTrue(address(ozERC20) != address(0));
         assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
+        // assertTrue(shares == ozERC20.balanceOf(alice));
+
+        console.log('*** calling balanceOf() ***');
+        console.log('alice bal: ' , ozERC20.balanceOf(alice));
     }
 
 
@@ -60,6 +64,7 @@ contract ozTokenFactoryTest is Setup {
         uint decimals = ozERC20.decimals();
         console.log('decimals: ', decimals);
     }
+
 
 
 
