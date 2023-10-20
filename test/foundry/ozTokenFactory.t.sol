@@ -21,7 +21,8 @@ import "forge-std/console.sol";
 
 contract ozTokenFactoryTest is Setup {
 
-    function test_createOzToken() public {
+    function test_initialMintShares() public {
+        //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
         ));
@@ -32,10 +33,14 @@ contract ozTokenFactoryTest is Setup {
         (
             TradeAmounts memory amounts,
             uint8 v, bytes32 r, bytes32 s
-        ) = _createDataOffchain(ozERC20, rawAmount);
+        ) = _createDataOffchain(ozERC20, rawAmount, ALICE_PK, alice);
 
+        //Action
         uint shares = ozERC20.mint(amounts, msg.sender, v, r, s);
         console.log('shares: ', shares);
+
+        //Post-conditions
+        assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
     }
 
 
@@ -51,15 +56,19 @@ contract ozTokenFactoryTest is Setup {
 
 
 
-    function _createDataOffchain(
+    function _createDataOffchain( 
         ozIToken ozERC20_, 
-        uint rawAmount_
-    ) public returns(TradeAmounts memory, uint8, bytes32, bytes32) { 
+        uint rawAmount_,
+        uint SENDER_PK_,
+        address sender_
+    ) public returns(TradeAmounts memory amounts, uint8 v, bytes32 r, bytes32 s) { 
         uint amountIn = rawAmount_ * 10 ** ozERC20_.decimals();
 
         uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
             [ethUsdChainlink, rEthEthChainlink], rawAmount_, ozERC20_.decimals(), defaultSlippage
         );
+
+        {
         
         address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
         uint[] memory maxAmountsIn = Helpers.convertToDynamic([0, 0, minsOut[1]]);
@@ -71,30 +80,31 @@ contract ozTokenFactoryTest is Setup {
         
         (uint bptOut,) = IQueries(queriesBalancer).queryJoin(
             IPool(rEthWethPoolBalancer).getPoolId(),
-            owner,
+            sender_,
             address(ozDiamond),
             request
         );
 
-        vm.startPrank(owner);
+        vm.startPrank(sender_);
 
         bytes32 permitHash = HelpersTests.getPermitHash(
             testToken,
-            owner,
+            sender_,
             address(ozDiamond),
             amountIn,
-            IERC20Permit(testToken).nonces(owner),
+            IERC20Permit(testToken).nonces(sender_),
             block.timestamp
         );
 
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(OWNER_PK, permitHash);
+        (v, r, s) = vm.sign(SENDER_PK_, permitHash);
 
-        TradeAmounts memory amounts = TradeAmounts({
+        amounts = TradeAmounts({
             amountIn: amountIn,
             minWethOut: minsOut[0],
             minRethOut: minsOut[1],
             minBptOut: HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage)
         });
+        }
 
         return (amounts, v, r, s);
     }

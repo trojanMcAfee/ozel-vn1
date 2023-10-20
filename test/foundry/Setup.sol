@@ -26,8 +26,14 @@ import "forge-std/console.sol";
 
 
 contract Setup is Test {
+
     uint OWNER_PK = 123;
+    uint ALICE_PK = 456;
+    uint BOB_PK = 789;
+
     address internal owner;
+    address internal alice;
+    address internal bob;
    
     enum Network {
         ARBITRUM,
@@ -148,9 +154,12 @@ contract Setup is Test {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
         testToken = usdcAddr;
 
-        //Initial owner config
+        //Initial users config
         owner = vm.addr(OWNER_PK);
-        deal(testToken, owner, 1500 * (10 ** IERC20Permit(testToken).decimals()));
+        alice = vm.addr(ALICE_PK);
+        bob = vm.addr(BOB_PK);
+        deal(testToken, alice, 1500 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, bob, 2000 * (10 ** IERC20Permit(testToken).decimals()));
 
         //Deploys diamond infra
         cutFacet = new DiamondCutFacet();
@@ -274,6 +283,8 @@ contract Setup is Test {
         vm.label(address(initDiamond), "DiamondInit");
         vm.label(address(roiL2), "ROImoduleL2");
         vm.label(owner, "owner");
+        vm.label(alice, "Alice");
+        vm.label(bob, "Bob");
         vm.label(usdcAddr, "USDCproxy");
         vm.label(usdtAddr, "USDT");
         vm.label(address(ozDiamond), "ozDiamond");
