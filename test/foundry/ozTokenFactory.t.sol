@@ -36,12 +36,18 @@ contract ozTokenFactoryTest is Setup {
         ) = _createDataOffchain(ozERC20, rawAmount, ALICE_PK, alice);
 
         //Action
-        uint shares = ozERC20.mint(amounts, msg.sender, v, r, s);
+        uint shares = ozERC20.mint(amounts, msg.sender, v, r, s); //remove msg.sender, use it in body, and add receiver
         console.log('shares: ', shares);
 
         //Post-conditions
         assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
     }
+
+
+
+
+
+
 
 
     function test_createOzToken2() internal {
@@ -55,13 +61,8 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    struct MinOutVars {
-        address[2] fees;
-        uint rawAmount;
-        uint decimals;
-        uint slippage;
-    }
 
+    /** HELPERS ***/
 
     function _createDataOffchain( 
         ozIToken ozERC20_, 
