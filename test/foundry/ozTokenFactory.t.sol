@@ -28,14 +28,39 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(address(ozERC20) != address(0));
 
         uint rawAmount = 1000;
-        uint amountIn = rawAmount * 10 ** ozERC20.decimals();
+
+        (
+            TradeAmounts memory amounts,
+            uint8 v, bytes32 r, bytes32 s
+        ) = _createDataOffchain(ozERC20, rawAmount);
+
+        uint shares = ozERC20.mint(amounts, msg.sender, v, r, s);
+        console.log('shares: ', shares);
+    }
+
+
+    function test_createOzToken2() internal {
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
+        ));
+        assertTrue(address(ozERC20) != address(0));
+
+        uint decimals = ozERC20.decimals();
+        console.log('decimals: ', decimals);
+    }
+
+
+
+    function _createDataOffchain(
+        ozIToken ozERC20_, 
+        uint rawAmount_
+    ) public returns(TradeAmounts memory, uint8, bytes32, bytes32) { 
+        uint amountIn = rawAmount_ * 10 ** ozERC20_.decimals();
 
         uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
-            [ethUsdChainlink, rEthEthChainlink], rawAmount, ozERC20.decimals(), defaultSlippage
+            [ethUsdChainlink, rEthEthChainlink], rawAmount_, ozERC20_.decimals(), defaultSlippage
         );
         
-        //------------
-
         address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
         uint[] memory maxAmountsIn = Helpers.convertToDynamic([0, 0, minsOut[1]]);
         uint[] memory amountsIn = Helpers.convertToDynamic([0, minsOut[1]]);
@@ -50,9 +75,6 @@ contract ozTokenFactoryTest is Setup {
             address(ozDiamond),
             request
         );
-
-
-        //---------
 
         vm.startPrank(owner);
 
@@ -74,23 +96,11 @@ contract ozTokenFactoryTest is Setup {
             minBptOut: HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage)
         });
 
-        uint shares = ozERC20.mint(amounts, msg.sender, v, r, s);
-        console.log('shares: ', shares);
-
+        return (amounts, v, r, s);
     }
 
 
-    function test_createOzToken2() internal {
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
-        ));
-        assertTrue(address(ozERC20) != address(0));
-
-        uint decimals = ozERC20.decimals();
-        console.log('decimals: ', decimals);
-
-
-    }
+ 
 
 
     

@@ -116,8 +116,6 @@ contract Setup is Test {
             fraxAddr = 0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F; //doesn't have a pool in Uniswap Arb, so it can only be used in L1.
             daiAddr = 0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1;
 
-            // USDC = IERC20Permit(usdcAddr);
-            // FRAX = IERC20Permit(fraxAddr);
             network = "arbitrum";
             blockNumber = 136177703;
         } else if (chain_ == Network.ETHEREUM) {
@@ -140,8 +138,6 @@ contract Setup is Test {
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
             daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
-            // USDC = IERC20Permit(usdcAddr);
-            // FRAX = IERC20Permit(fraxAddr);
             network = "ethereum";
             blockNumber = 18284413;
         }

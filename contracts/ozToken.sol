@@ -111,7 +111,7 @@ contract ozToken is ERC4626Upgradeable {
 
     /**
      * There are 2 totalSupply() funcs. This ^ and in ERC20Upgradeable.
-     * The one in ERC20 goes along with _mint() there, so they goes hand in hand.
+     * The one in ERC20 goes along with _mint() there, so they go hand in hand.
      * Do more test and see which ones is the correct one. 
      * I think it's ERC20
      */
@@ -177,13 +177,7 @@ contract ozToken is ERC4626Upgradeable {
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
-        console.log('---------- in deposit');
-        console.log('assets: ', assets_);
-        console.log('totalSupply: ***', totalSupply());
-
         uint shares = totalSupply() == 0 ? assets_ : previewDeposit(assets_);
-
-        console.log('shares in deposit: ', shares);
 
         _deposit(_msgSender(), receiver_, assets_, shares);
 
@@ -221,11 +215,6 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
-        console.log('---------- in _convertToAssets');
-        console.log('shares: ', shares_);
-        console.log('totalAssets: ', totalAssets());
-        console.log('totalShares: ', totalShares());
-
         return shares_.mulDiv(totalAssets(), totalShares(), rounding_);
     }
 

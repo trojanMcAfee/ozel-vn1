@@ -41,9 +41,6 @@ contract ROImoduleL2 {
         //Swaps underlying to WETH in Uniswap
         _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
 
-        uint y = IERC20Permit(s.WETH).balanceOf(address(this));
-        console.log('weth user - before: ', y);
-
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
         if (paused) {
@@ -56,8 +53,8 @@ contract ROImoduleL2 {
         _addLiquidityBalancer(amounts_.minBptOut, poolId);
 
         //----- Gets amount of BPT
-        uint bptBalance = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
-        console.log('bal BPT post: ', bptBalance);
+        // uint bptBalance = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
+        // console.log('bal BPT post: ', bptBalance);
 
 
         //******** */
