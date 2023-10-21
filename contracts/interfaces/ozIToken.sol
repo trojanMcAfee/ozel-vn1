@@ -56,4 +56,5 @@ interface ozIToken {
     function implementation() external view returns (address);
     function beacon() external view returns(address);
     function sharesOf(address account_) external view returns(uint);
+    function totalShares() external view returns(uint);
 }

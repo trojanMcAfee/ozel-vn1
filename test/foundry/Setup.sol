@@ -67,13 +67,10 @@ contract Setup is Test {
 
     address internal testToken;
 
-    // IERC20Permit internal USDC; 
-    // IERC20Permit internal FRAX;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
     DiamondCutFacet internal cutFacet;
-    // DiamondLoupeFacet internal loupe;
     OwnershipFacet internal ownership;
     Diamond internal ozDiamond;
     ozBeacon internal beacon;
