@@ -134,8 +134,6 @@ contract ozToken is ERC4626Upgradeable {
     ) external returns(uint) {
         address token = asset();
 
-        console.log('sender in mint: ', receiver_);
-
         IERC20Permit(token).permit(
             msg.sender,
             _ozDiamond,
@@ -160,21 +158,14 @@ contract ozToken is ERC4626Upgradeable {
         address receiver_,
         uint256 assets_,
         uint256 shares_
-    ) internal override { //good here
+    ) internal override { 
         _totalShares += shares_;
-
-        console.log('---- in _deposit to alice');
-        console.log('should alice: ', receiver_);
-        console.log('caller: ', caller_);
-        console.log('shares: ', shares_);
 
         unchecked {
             // Overflow not possible: shares + shares amount is at most totalShares + shares amount
             // which is checked above.
             _shares[receiver_] += shares_;
         }
-
-        console.log('shares[receiver]: ', _shares[receiver_]);
 
         uint assets = convertToAssets(shares_);
         _mint(receiver_, assets);
@@ -224,11 +215,6 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
-        console.log('------ in _convertToAssets ozToken'); 
-        console.log('shares: ', shares_);
-        console.log('totalAssets: ', totalAssets());
-        console.log('totalShares: ', totalShares());
-        
         return shares_.mulDiv(totalAssets(), totalShares(), rounding_);
     }
 
