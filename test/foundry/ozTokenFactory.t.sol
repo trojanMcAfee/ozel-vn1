@@ -16,7 +16,7 @@ import {TradeAmounts} from "../../contracts/AppStorage.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
 
-// import "forge-std/console.sol";
+import "forge-std/console.sol";
 
 
 contract ozTokenFactoryTest is Setup {
@@ -46,6 +46,12 @@ contract ozTokenFactoryTest is Setup {
 
         // console.log('*** calling balanceOf() ***');
         // console.log('alice bal: ' , ozERC20.balanceOf(alice));
+
+        address x = ozERC20.implementation();
+        console.log('impl: ', x);
+
+        address y = ozERC20.beacon();
+        console.log('beacon: ', y);
     }
 
 

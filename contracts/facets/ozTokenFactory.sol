@@ -5,7 +5,8 @@ pragma solidity 0.8.21;
 // import {ozToken} from "../ozToken.sol";
 import {AppStorage} from "../AppStorage.sol";
 import {Helpers} from "../libraries/Helpers.sol";
-import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
+import {ozTokenProxy} from "../ozTokenProxy.sol";
+// import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
 // import "hardhat/console.sol";
 // import "forge-std/console.sol";
@@ -39,10 +40,9 @@ contract ozTokenFactory {
             underlying_, s.ozDiamond, name_, symbol_, decimals_
         );
 
-        BeaconProxy newToken = new BeaconProxy(s.ozBeacon, data);
+        ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, data);
         //------
 
-        // ozToken newToken = new ozToken(name_, symbol_, underlying_, decimals_, s.ozDiamond);
         s.ozTokenRegistry.push(underlying_);
 
         emit TokenCreated(address(newToken));

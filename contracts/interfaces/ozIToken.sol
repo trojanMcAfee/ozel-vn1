@@ -52,4 +52,7 @@ interface ozIToken {
         bytes32 r_,
         bytes32 s_
     ) external returns(uint);
+
+    function implementation() external view returns (address);
+    function beacon() external view returns(address);
 }
