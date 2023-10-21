@@ -26,6 +26,12 @@ let fraxAddr; //doesn't have a pool in Uniswap Arb, so it can only be used in L1
 let daiAddr;
 const defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
 
+
+const diamondABI = [
+    'function facetAddresses() external view returns (address[] memory facetAddresses_)'
+];
+
+
 let network = 'arbitrum';
 switch (network) {
     case 'arbitrum': 
@@ -66,5 +72,6 @@ module.exports = {
     queriesBalancer,
     rEthAddr,
     rEthWethPoolBalancer,
-    rEthEthChainlink
+    rEthEthChainlink,
+    diamondABI
 };

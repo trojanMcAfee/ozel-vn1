@@ -13,7 +13,7 @@ const {
   rEthAddr,
   rEthWethPoolBalancer,
   rEthEthChainlink
-} = require("../state-vars");
+} = require("./state-vars");
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 
@@ -27,9 +27,14 @@ async function deployDiamond () {
   await diamondCutFacet.deployed()
   console.log('DiamondCutFacet deployed:', diamondCutFacet.address)
 
-  // deploy Beacon
-  const Beacon = await ethers.getContractFactory('DiamondCutFacet')
-  const beacon = await Beacon.deploy()
+  // deploy ozToken as implementation + the Beacon
+  const OzToken = await ethers.getContractFactory('ozToken')
+  const ozToken = await OzToken.deploy()
+  await ozToken.deployed()
+  console.log('ozToken deployed:', ozToken.address)
+
+  const Beacon = await ethers.getContractFactory('ozBeacon')
+  const beacon = await Beacon.deploy(ozToken.address)
   await beacon.deployed()
   console.log('ozBeacon deployed:', beacon.address)
 
@@ -72,6 +77,12 @@ async function deployDiamond () {
     })
   }
 
+  cut.push({
+    facetAddress: beacon.address,
+    action: FacetCutAction.Add,
+    functionSelectors: getSelectors(beacon)
+  });
+
   // upgrade diamond with facets
   console.log('')
   console.log('Diamond Cut:', cut)
@@ -103,7 +114,7 @@ async function deployDiamond () {
     throw Error(`Diamond upgrade failed: ${tx.hash}`)
   }
   console.log('Completed diamond cut')
-  return diamond.address
+  return diamond.address;
 }
 
 // We recommend this pattern to be able to use async/await everywhere
