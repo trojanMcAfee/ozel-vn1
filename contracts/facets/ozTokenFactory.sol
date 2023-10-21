@@ -19,6 +19,8 @@ contract ozTokenFactory {
     using Helpers for address[];
 
     AppStorage internal s;
+
+    event TokenCreated(address indexed ozToken);
     
     //Wrapper function - returns address of ozToken
     function createOzToken(
@@ -42,6 +44,8 @@ contract ozTokenFactory {
 
         // ozToken newToken = new ozToken(name_, symbol_, underlying_, decimals_, s.ozDiamond);
         s.ozTokenRegistry.push(underlying_);
+
+        emit TokenCreated(address(newToken));
 
         return address(newToken);
     }

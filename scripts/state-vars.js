@@ -1,11 +1,3 @@
-
-
-// const opsL2_2 = {
-//     gasLimit: ethers.BigNumber.from('5000000'),
-//     gasPrice: ethers.BigNumber.from('5134698068')
-// };
-    
-
 let usdcAddr;
 let usdtAddr;
 let wethAddr;
@@ -26,10 +18,16 @@ let fraxAddr; //doesn't have a pool in Uniswap Arb, so it can only be used in L1
 let daiAddr;
 const defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
 
-
 const diamondABI = [
-    'function facetAddresses() external view returns (address[] memory facetAddresses_)'
+    'function facetAddresses() external view returns (address[] memory facetAddresses_)',
+    'function createOzToken(address,string,string,uint8) external returns(address)'
 ];
+
+const ops = {
+    gasLimit: ethers.BigNumber.from('5000000'),
+    gasPrice: ethers.BigNumber.from('5134698068')
+};
+   
 
 
 let network = 'arbitrum';
@@ -58,7 +56,7 @@ switch (network) {
         usdcAddr = '1'
 }
 
-const registry = [usdcAddr];
+const registry = [usdtAddr];
 
 
 module.exports = {
@@ -73,5 +71,6 @@ module.exports = {
     rEthAddr,
     rEthWethPoolBalancer,
     rEthEthChainlink,
-    diamondABI
+    diamondABI,
+    ops
 };

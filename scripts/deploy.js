@@ -109,6 +109,6 @@ if (require.main === module) {
       console.error(error)
       process.exit(1)
     })
-}
+} 
 
 exports.deployDiamond = deployDiamond
