@@ -29,7 +29,7 @@ async function deployDiamond () {
 
   // deploy Beacon
   const Beacon = await ethers.getContractFactory('DiamondCutFacet')
-  const beacon = await beacon.deploy()
+  const beacon = await Beacon.deploy()
   await beacon.deployed()
   console.log('ozBeacon deployed:', beacon.address)
 

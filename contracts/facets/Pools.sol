@@ -2,4 +2,9 @@
 pragma solidity 0.8.21;
 
 
-contract Pools {}
+contract Pools {
+    function getHello() external view returns(uint) {
+        return 2;
+    }
+
+}

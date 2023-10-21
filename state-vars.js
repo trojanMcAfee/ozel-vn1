@@ -6,8 +6,27 @@
 // };
     
 
+let usdcAddr;
+let usdtAddr;
+let wethAddr;
+let usdcAddrImpl;
+let wethUsdPoolUni; //not used. Remove
+let swapRouterUni;
+let ethUsdChainlink;
+let vaultBalancer;
+let queriesBalancer;
+let rEthAddr;
+let rEthWethPoolBalancer;
+let accessControlledOffchainAggregator;
+let aeWETH;
+let rEthEthChainlink;
+let rEthImpl;
+let feesCollectorBalancer;
+let fraxAddr; //doesn't have a pool in Uniswap Arb, so it can only be used in L1.
+let daiAddr;
 const defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
 
+let network = 'arbitrum';
 switch (network) {
     case 'arbitrum': 
         usdcAddr = '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8';
@@ -28,6 +47,7 @@ switch (network) {
         feesCollectorBalancer = '0xce88686553686DA562CE7Cea497CE749DA109f9F';
         fraxAddr = '0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F'; //doesn't have a pool in Uniswap Arb, so it can only be used in L1.
         daiAddr = '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1';
+        break;
     case 'ethereum':
         usdcAddr = '1'
 }

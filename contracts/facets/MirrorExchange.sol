@@ -2,4 +2,9 @@
 pragma solidity 0.8.21;
 
 
-contract MirrorExchange {}
+contract MirrorExchange {
+
+    function getHi() external view returns(uint) {
+        return 1;
+    }
+}

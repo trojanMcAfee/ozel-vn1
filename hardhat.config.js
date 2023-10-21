@@ -6,6 +6,9 @@ require('dotenv').config();
 module.exports = {
   solidity: {
     version: "0.8.21",
+    settings: {
+      viaIR: true,
+    }
   },
   networks: {
     hardhat: {
