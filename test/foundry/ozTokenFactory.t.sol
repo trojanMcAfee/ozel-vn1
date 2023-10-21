@@ -36,22 +36,19 @@ contract ozTokenFactoryTest is Setup {
 
         //Action
         vm.prank(alice);
-        uint shares = ozERC20.mint(amounts, msg.sender, v, r, s); //remove msg.sender, use it in body, and add receiver
-        // console.log('shares: ', shares);
+        uint shares = ozERC20.mint(amounts, alice, v, r, s); //remove msg.sender, use it in body, and add receiver
+        console.log('shares in test: ', shares);
+        console.log('alice: ', alice);
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
         assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
+        console.log('bal: ', ozERC20.balanceOf(alice));
+        // console.log('shares ***: ', ozERC20.sharesOf(alice));
         // assertTrue(shares == ozERC20.balanceOf(alice));
 
         // console.log('*** calling balanceOf() ***');
         // console.log('alice bal: ' , ozERC20.balanceOf(alice));
-
-        address x = ozERC20.implementation();
-        console.log('impl: ', x);
-
-        address y = ozERC20.beacon();
-        console.log('beacon: ', y);
     }
 
 

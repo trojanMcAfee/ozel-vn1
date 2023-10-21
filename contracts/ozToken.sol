@@ -17,7 +17,7 @@ import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {AppStorage, TradeAmounts} from "./AppStorage.sol";
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 
-// import "forge-std/console.sol";
+import "forge-std/console.sol";
 
 
 error ozTokenInvalidMintReceiver(address account);
@@ -134,6 +134,8 @@ contract ozToken is ERC4626Upgradeable {
     ) external returns(uint) {
         address token = asset();
 
+        console.log('sender in mint: ', receiver_);
+
         IERC20Permit(token).permit(
             msg.sender,
             _ozDiamond,
@@ -161,8 +163,10 @@ contract ozToken is ERC4626Upgradeable {
     ) internal override { //good here
         _totalShares += shares_;
 
-        // console.log('---- in _deposit');
-        // console.log('shares: ', shares_);
+        console.log('---- in _deposit to alice');
+        console.log('should alice: ', receiver_);
+        console.log('caller: ', caller_);
+        console.log('shares: ', shares_);
 
         unchecked {
             // Overflow not possible: shares + shares amount is at most totalShares + shares amount
@@ -170,7 +174,7 @@ contract ozToken is ERC4626Upgradeable {
             _shares[receiver_] += shares_;
         }
 
-        // console.log('shares[receiver]: ', _shares[receiver_]);
+        console.log('shares[receiver]: ', _shares[receiver_]);
 
         uint assets = convertToAssets(shares_);
         _mint(receiver_, assets);
@@ -220,10 +224,10 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
-        // console.log('------ in _convertToAssets ozToken'); //good 1st one
-        // console.log('shares: ', shares_);
-        // console.log('totalAssets: ', totalAssets());
-        // console.log('totalShares: ', totalShares());
+        console.log('------ in _convertToAssets ozToken'); 
+        console.log('shares: ', shares_);
+        console.log('totalAssets: ', totalAssets());
+        console.log('totalShares: ', totalShares());
         
         return shares_.mulDiv(totalAssets(), totalShares(), rounding_);
     }
