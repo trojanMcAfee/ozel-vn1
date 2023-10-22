@@ -57,6 +57,8 @@ contract ozTokenFactoryTest is Setup {
         console.log('totalAssets: ', ozERC20.totalAssets());
         console.log('totalShares: ', ozERC20.totalShares());
 
+        // return;
+
         /**
          * Testing a 2nd user mint
          */

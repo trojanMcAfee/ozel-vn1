@@ -124,6 +124,7 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function balanceOf(address account_) public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
+        console.log('*** balanceOf ***');
         return convertToAssets(sharesOf(account_));
     }
 
@@ -170,8 +171,13 @@ contract ozToken is ERC4626Upgradeable {
             _shares[receiver_] += shares_;
         }
 
-        uint assets = convertToAssets(shares_);
-        _mint(receiver_, assets);
+        // console.log('*** _deposit ***');
+        // uint assets = convertToAssets(shares_);
+        // console.log('assets ^^^ - should not 0: ', assets);
+        // console.log('assets_: ', assets_);
+        // console.log('sharesOf ****: ', sharesOf(receiver_));
+        _mint(receiver_, assets_);
+        // console.log('totalSupply: ', totalSupply());
         
         emit Deposit(caller_, receiver_, assets_, shares_);
     }
@@ -218,6 +224,9 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
+        // console.log('shares: ', shares_);
+        // console.log('totalAssets: ', totalAssets());
+        // console.log('totalShares: ', totalShares());
         return shares_.mulDiv(totalAssets(), totalShares(), rounding_);
     }
 
