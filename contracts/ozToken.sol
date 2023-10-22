@@ -89,9 +89,9 @@ contract ozToken is ERC4626Upgradeable {
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
         // return assets_.mulDiv(_BASE, getMult(), rounding_);
-        console.log('assets in _convertToShares: ', assets_);
-        console.log('totalShares: ', totalShares());
-        console.log('totalAssets: ', totalAssets());
+        // console.log('assets in _convertToShares: ', assets_);
+        // console.log('totalShares: ', totalShares());
+        // console.log('totalAssets: ', totalAssets());
 
         return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
     }
@@ -145,11 +145,11 @@ contract ozToken is ERC4626Upgradeable {
             v_, r_, s_
         );
 
-        _totalAssets += amounts_.amountIn;
-
         ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
 
         uint shares = deposit(amounts_.amountIn, receiver_);
+
+        _totalAssets += amounts_.amountIn;
 
         return shares;
 
@@ -163,7 +163,6 @@ contract ozToken is ERC4626Upgradeable {
         uint256 shares_
     ) internal override { 
         _totalShares += shares_;
-        console.log('shares added - totalShares: ', _totalShares);
 
         unchecked {
             // Overflow not possible: shares + shares amount is at most totalShares + shares amount
@@ -182,7 +181,6 @@ contract ozToken is ERC4626Upgradeable {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
         uint shares = totalSupply() == 0 ? assets_ : previewDeposit(assets_);
-        console.log('shares in deposit: ', shares);
 
         _deposit(_msgSender(), receiver_, assets_, shares);
 

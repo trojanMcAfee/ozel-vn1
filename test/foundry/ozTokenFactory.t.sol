@@ -43,6 +43,20 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
         assertTrue(shares == ozERC20.balanceOf(alice));
 
+        console.log('--------- ALICE ----------');
+        console.log('');
+        console.log('bal alice: ', ozERC20.balanceOf(alice));
+        console.log('bal bob: ', ozERC20.balanceOf(bob));
+        console.log('bal charlie: ', ozERC20.balanceOf(charlie));
+        console.log('');
+        console.log('shares alice: ', ozERC20.sharesOf(alice));
+        console.log('shares bob: ', ozERC20.sharesOf(bob));
+        console.log('shares charlie: ', ozERC20.sharesOf(charlie));
+        console.log('');
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('totalAssets: ', ozERC20.totalAssets());
+        console.log('totalShares: ', ozERC20.totalShares());
+
         /**
          * Testing a 2nd user mint
          */
@@ -56,15 +70,40 @@ contract ozTokenFactoryTest is Setup {
         vm.prank(bob);
         shares = ozERC20.mint(amounts, bob, v, r, s);
 
-        console.log('bob shares: ', shares);
-        console.log('bob bal: ', ozERC20.balanceOf(bob));
         console.log('');
-        console.log('alice shares: ', ozERC20.sharesOf(alice));
-        console.log('alice bal: ', ozERC20.balanceOf(alice));
+        console.log('bal alice: ', ozERC20.balanceOf(alice));
+        console.log('bal bob: ', ozERC20.balanceOf(bob));
+        console.log('bal charlie: ', ozERC20.balanceOf(charlie));
         console.log('');
-        console.log('totalShares in test: ', ozERC20.totalShares());
+        console.log('shares alice: ', ozERC20.sharesOf(alice));
+        console.log('shares bob: ', ozERC20.sharesOf(bob));
+        console.log('shares charlie: ', ozERC20.sharesOf(charlie));
+        console.log('');
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('totalAssets: ', ozERC20.totalAssets());
+        console.log('totalShares: ', ozERC20.totalShares());
 
+        console.log('--------- CHARLIE ----------');
+        (
+            amounts,
+            v, r, s
+        ) = _createDataOffchain(ozERC20, 1000, CHARLIE_PK, charlie);
 
+        vm.prank(charlie);
+        shares = ozERC20.mint(amounts, charlie, v, r, s);
+
+        console.log('');
+        console.log('bal alice: ', ozERC20.balanceOf(alice));
+        console.log('bal bob: ', ozERC20.balanceOf(bob));
+        console.log('bal charlie: ', ozERC20.balanceOf(charlie));
+        console.log('');
+        console.log('shares alice: ', ozERC20.sharesOf(alice));
+        console.log('shares bob: ', ozERC20.sharesOf(bob));
+        console.log('shares charlie: ', ozERC20.sharesOf(charlie));
+        console.log('');
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('totalAssets: ', ozERC20.totalAssets());
+        console.log('totalShares: ', ozERC20.totalShares());
     }
 
 

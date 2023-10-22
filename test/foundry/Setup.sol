@@ -30,10 +30,12 @@ contract Setup is Test {
     uint OWNER_PK = 123;
     uint ALICE_PK = 456;
     uint BOB_PK = 789;
+    uint CHARLIE_PK = 101112;
 
     address internal owner;
     address internal alice;
     address internal bob;
+    address internal charlie;
    
     enum Network {
         ARBITRUM,
@@ -155,8 +157,10 @@ contract Setup is Test {
         owner = vm.addr(OWNER_PK);
         alice = vm.addr(ALICE_PK);
         bob = vm.addr(BOB_PK);
+        charlie = vm.addr(CHARLIE_PK);
         deal(testToken, alice, 1500 * (10 ** IERC20Permit(testToken).decimals()));
         deal(testToken, bob, 2000 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, charlie, 3000 * (10 ** IERC20Permit(testToken).decimals()));
 
         //Deploys diamond infra
         cutFacet = new DiamondCutFacet();
