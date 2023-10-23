@@ -6,7 +6,7 @@ import "../../contracts/interfaces/ozIDiamond.sol";
 import "../../contracts/upgradeInitializers/DiamondInit.sol";
 import {Test} from "forge-std/Test.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
-import "../../contracts/interfaces/IERC20Permit.sol";
+import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import {ROImoduleL2} from "../../contracts/facets/ROImoduleL2.sol";
 import "../../contracts/facets/DiamondCutFacet.sol";
@@ -230,9 +230,9 @@ contract Setup is Test {
         uint length;
         if (id_ == 0) {
             length = 6;
-        } else if (id_ == 1) {
+        } else if (id_ == 1 || id_ == 6) {
             length = 2;
-        } else if (id_ == 2 || id_ == 4 || id_ == 5 || id_ == 6) {
+        } else if (id_ == 2 || id_ == 4 || id_ == 5) {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
@@ -264,6 +264,7 @@ contract Setup is Test {
             selectors[0] = roiL2.useUnderlying.selector;
         } else if (id_ == 6) {
             selectors[0] = oracles.rETH_ETH.selector;
+            selectors[1] = oracles.getUnderlyingValue.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;
