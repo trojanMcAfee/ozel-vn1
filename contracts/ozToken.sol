@@ -124,8 +124,9 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function balanceOf(address account_) public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
-        console.log('*** balanceOf ***');
-        return convertToAssets(sharesOf(account_));
+        // return convertToAssets(sharesOf(account_));
+
+        return ( (sharesOf(account_) * 10 ** 12) * ozIDiamond(_ozDiamond).getUnderlyingValue() ) / 10 ** 39;
     }
 
 
