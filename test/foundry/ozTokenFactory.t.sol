@@ -32,11 +32,8 @@ contract ozTokenFactoryTest is Setup {
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20_, rawAmount_, userPk_, user_);
 
-        //Action
         vm.prank(user_);
         uint shares = ozERC20_.mint(amounts, user_, v, r, s); 
-
-        //Post-condit
 
         return shares;
     }
@@ -47,6 +44,7 @@ contract ozTokenFactoryTest is Setup {
             testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
         ));
 
+        //Action
         uint rawAmount = 1000;
         uint shares = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
 
