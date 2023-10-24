@@ -21,6 +21,26 @@ import "forge-std/console.sol";
 
 contract ozTokenFactoryTest is Setup {
 
+    function _mintOzTokens(
+        ozIToken ozERC20_,
+        uint rawAmount_, 
+        address user_, 
+        uint userPk_
+    ) private returns(uint) {
+        (
+            TradeAmounts memory amounts,
+            uint8 v, bytes32 r, bytes32 s
+        ) = _createDataOffchain(ozERC20_, rawAmount_, userPk_, user_);
+
+        //Action
+        vm.prank(user_);
+        uint shares = ozERC20_.mint(amounts, user_, v, r, s); 
+
+        //Post-condit
+
+        return shares;
+    }
+
     function test_initialMintShares() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
@@ -28,15 +48,18 @@ contract ozTokenFactoryTest is Setup {
         ));
 
         uint rawAmount = 1000;
+        uint shares = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
 
-        (
-            TradeAmounts memory amounts,
-            uint8 v, bytes32 r, bytes32 s
-        ) = _createDataOffchain(ozERC20, rawAmount, ALICE_PK, alice);
 
-        //Action
-        vm.prank(alice);
-        uint shares = ozERC20.mint(amounts, alice, v, r, s); 
+
+        // (
+        //     TradeAmounts memory amounts,
+        //     uint8 v, bytes32 r, bytes32 s
+        // ) = _createDataOffchain(ozERC20, rawAmount, ALICE_PK, alice);
+
+        // //Action
+        // vm.prank(alice);
+        // uint shares = ozERC20.mint(amounts, alice, v, r, s); 
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
@@ -63,13 +86,15 @@ contract ozTokenFactoryTest is Setup {
          */
         console.log('--------- BOB ----------');
 
-        (
-            amounts,
-            v, r, s
-        ) = _createDataOffchain(ozERC20, 1000, BOB_PK, bob);
+        // (
+        //     amounts,
+        //     v, r, s
+        // ) = _createDataOffchain(ozERC20, 1000, BOB_PK, bob);
 
-        vm.prank(bob);
-        shares = ozERC20.mint(amounts, bob, v, r, s);
+        // vm.prank(bob);
+        // shares = ozERC20.mint(amounts, bob, v, r, s);
+
+        shares = _mintOzTokens(ozERC20, 1000, bob, BOB_PK);
 
         console.log('');
         console.log('bal alice: ', ozERC20.balanceOf(alice));
@@ -85,13 +110,15 @@ contract ozTokenFactoryTest is Setup {
         console.log('totalShares: ', ozERC20.totalShares());
 
         console.log('--------- CHARLIE ----------');
-        (
-            amounts,
-            v, r, s
-        ) = _createDataOffchain(ozERC20, 1000, CHARLIE_PK, charlie);
+        // (
+        //     amounts,
+        //     v, r, s
+        // ) = _createDataOffchain(ozERC20, 1000, CHARLIE_PK, charlie);
 
-        vm.prank(charlie);
-        shares = ozERC20.mint(amounts, charlie, v, r, s);
+        // vm.prank(charlie);
+        // shares = ozERC20.mint(amounts, charlie, v, r, s);
+
+        shares = _mintOzTokens(ozERC20, 1000, charlie, CHARLIE_PK);
 
         console.log('');
         console.log('bal alice: ', ozERC20.balanceOf(alice));
