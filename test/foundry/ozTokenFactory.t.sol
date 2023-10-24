@@ -39,8 +39,8 @@ contract ozTokenFactoryTest is Setup {
         uint shares = ozERC20.mint(amounts, alice, v, r, s); 
 
         //Post-conditions
-        // assertTrue(address(ozERC20) != address(0));
-        // assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
+        assertTrue(address(ozERC20) != address(0));
+        assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
         // assertTrue(shares == ozERC20.balanceOf(alice));
 
         console.log('--------- ALICE ----------');
@@ -57,7 +57,6 @@ contract ozTokenFactoryTest is Setup {
         console.log('totalAssets: ', ozERC20.totalAssets());
         console.log('totalShares: ', ozERC20.totalShares());
 
-        // return;
 
         /**
          * Testing a 2nd user mint
@@ -89,7 +88,7 @@ contract ozTokenFactoryTest is Setup {
         (
             amounts,
             v, r, s
-        ) = _createDataOffchain(ozERC20, 500, CHARLIE_PK, charlie);
+        ) = _createDataOffchain(ozERC20, 1000, CHARLIE_PK, charlie);
 
         vm.prank(charlie);
         shares = ozERC20.mint(amounts, charlie, v, r, s);

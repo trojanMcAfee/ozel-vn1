@@ -124,9 +124,7 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function balanceOf(address account_) public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
-        // return convertToAssets(sharesOf(account_));
-
-        return ( (sharesOf(account_) * 10 ** 12) * ozIDiamond(_ozDiamond).getUnderlyingValue() ) / 10 ** 21;
+        return convertToAssets(sharesOf(account_));
     }
 
 
@@ -225,10 +223,16 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
+        // console.log('------------------');
         // console.log('shares: ', shares_);
         // console.log('totalAssets: ', totalAssets());
         // console.log('totalShares: ', totalShares());
-        return shares_.mulDiv(totalAssets(), totalShares(), rounding_);
+        // console.log('underlying val: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        // console.log('------------------');
+        // return shares_.mulDiv(totalAssets(), totalShares(), rounding_);
+
+
+        return (shares_ * 1e12).mulDiv(ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares(), 1e21, rounding_);
     }
 
     function _transfer(address from, address to, uint256 amount) internal override {
