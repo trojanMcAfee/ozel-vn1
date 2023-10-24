@@ -108,9 +108,9 @@ contract ozToken is ERC4626Upgradeable {
         return _totalShares;
     }
 
-    // function totalSupply() public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
-    //     return _convertToAssets(_totalShares, MathUpgradeable.Rounding.Down);
-    // }
+    function totalSupply() public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
+        return _totalShares == 0 ? 0 : _convertToAssets(_totalShares, MathUpgradeable.Rounding.Down);
+    }
 
     /**
      * There are 2 totalSupply() funcs. This ^ and in ERC20Upgradeable.
@@ -185,7 +185,7 @@ contract ozToken is ERC4626Upgradeable {
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
-        uint shares = totalSupply() == 0 ? assets_ : previewDeposit(assets_);
+        uint shares = totalShares() == 0 ? assets_ : previewDeposit(assets_);
 
         _deposit(_msgSender(), receiver_, assets_, shares);
 
@@ -223,15 +223,6 @@ contract ozToken is ERC4626Upgradeable {
     }
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
-        // console.log('------------------');
-        // console.log('shares: ', shares_);
-        // console.log('totalAssets: ', totalAssets());
-        // console.log('totalShares: ', totalShares());
-        // console.log('underlying val: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-        // console.log('------------------');
-        // return shares_.mulDiv(totalAssets(), totalShares(), rounding_);
-
-
         return (shares_ * 1e12).mulDiv(ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares(), 1e21, rounding_);
     }
 
