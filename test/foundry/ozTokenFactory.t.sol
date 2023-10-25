@@ -22,7 +22,7 @@ import "forge-std/console.sol";
 contract ozTokenFactoryTest is Setup {
 
 
-    function test_initialMintShares() public {
+    function test_mintingOzTokens() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -52,68 +52,10 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(balanceBob / 2 == balanceCharlie);
 
         assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
-        assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + (rawAmount / 2) + (rawAmount / 4));
-        bool x = ozERC20.totalShares() / 10 ** IERC20Permit(testToken).decimals() == (sharesAlice + sharesBob + sharesCharlie);
-        console.log('x: ', x);
-        console.log('1st: ', ozERC20.totalShares() / 10 ** IERC20Permit(testToken).decimals());
-        console.log('2nd: ', sharesAlice + sharesBob + sharesCharlie);
-
-
-        assertTrue(ozERC20.totalShares() == (sharesAlice + sharesBob + sharesCharlie));
-        console.log(4);
-
-        console.log('--------- ALICE ----------');
-        console.log('');
-        console.log('bal alice: ', ozERC20.balanceOf(alice));
-        console.log('bal bob: ', ozERC20.balanceOf(bob));
-        console.log('bal charlie: ', ozERC20.balanceOf(charlie));
-        console.log('');
-        console.log('shares alice: ', ozERC20.sharesOf(alice));
-        console.log('shares bob: ', ozERC20.sharesOf(bob));
-        console.log('shares charlie: ', ozERC20.sharesOf(charlie));
-        console.log('');
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('totalAssets: ', ozERC20.totalAssets());
-        console.log('totalShares: ', ozERC20.totalShares());
-
-
-        /**
-         * Testing a 2nd user mint
-         */
-        console.log('--------- BOB ----------');
-
-        // shares = _mintOzTokens(ozERC20, 1000, bob, BOB_PK);
-
-        console.log('');
-        console.log('bal alice: ', ozERC20.balanceOf(alice));
-        console.log('bal bob: ', ozERC20.balanceOf(bob));
-        console.log('bal charlie: ', ozERC20.balanceOf(charlie));
-        console.log('');
-        console.log('shares alice: ', ozERC20.sharesOf(alice));
-        console.log('shares bob: ', ozERC20.sharesOf(bob));
-        console.log('shares charlie: ', ozERC20.sharesOf(charlie));
-        console.log('');
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('totalAssets: ', ozERC20.totalAssets());
-        console.log('totalShares: ', ozERC20.totalShares());
-
-        console.log('--------- CHARLIE ----------');
-
-        // shares = _mintOzTokens(ozERC20, 1000, charlie, CHARLIE_PK);
-
-        console.log('');
-        console.log('bal alice: ', ozERC20.balanceOf(alice));
-        console.log('bal bob: ', ozERC20.balanceOf(bob));
-        console.log('bal charlie: ', ozERC20.balanceOf(charlie));
-        console.log('');
-        console.log('shares alice: ', ozERC20.sharesOf(alice));
-        console.log('shares bob: ', ozERC20.sharesOf(bob));
-        console.log('shares charlie: ', ozERC20.sharesOf(charlie));
-        console.log('');
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('totalAssets: ', ozERC20.totalAssets());
-        console.log('totalShares: ', ozERC20.totalShares());
-    }
+        assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + rawAmount / 2 + rawAmount / 4);
+        assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
+    }   
+     
 
 
 
