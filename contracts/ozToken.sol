@@ -14,7 +14,7 @@ import {
     IERC20Upgradeable
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
-import {AppStorage, TradeAmounts} from "./AppStorage.sol";
+import {AppStorage, TradeAmounts, TradeAmountsOut} from "./AppStorage.sol";
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 
 import "forge-std/console.sol";
@@ -175,6 +175,31 @@ contract ozToken is ERC4626Upgradeable {
 
         _afterTokenTransfer(account, address(0), amount);
     }
+
+    // struct TradeAmountsOut {
+    //     uint ozAmountIn;
+    //     uint minWethOut;
+    //     uint bptAmountIn;
+    // }
+
+
+
+
+    function burn(
+        TradeAmountsOut memory amounts_,
+        address receiver_,
+        uint8 v_, bytes32 r_, bytes32 s_
+    ) public returns(uint) {
+
+        IERC20Permit(address(this)).permit(
+            owner_
+        );
+
+        //this burn method will connect to withdraw from ERC4626
+
+
+    }
+
 
     function _withdraw(
         address caller,

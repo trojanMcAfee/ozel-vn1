@@ -42,6 +42,7 @@ struct TradeAmounts {
 
 
 struct TradeAmountsOut {
+    uint ozAmountIn;
     uint minWethOut;
     uint bptAmountIn;
 }
