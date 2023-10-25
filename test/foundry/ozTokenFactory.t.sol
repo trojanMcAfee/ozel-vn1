@@ -22,7 +22,7 @@ import "forge-std/console.sol";
 contract ozTokenFactoryTest is Setup {
 
 
-    function test_mintingOzTokens() public {
+    function test_minting() internal {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -55,24 +55,24 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + rawAmount / 2 + rawAmount / 4);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
     }   
+
+
+    function test_redeeming() public {
+        //Pre-conditions
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20"
+        ));
+
+        //Actions
+        uint rawAmount = 100;
+        uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
+
+    }
      
 
 
 
 
-
-
-
-
-    function test_createOzToken2() internal {
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
-        assertTrue(address(ozERC20) != address(0));
-
-        // uint decimals = ozERC20.decimals();
-        // console.log('decimals: ', decimals);
-    }
 
 
 

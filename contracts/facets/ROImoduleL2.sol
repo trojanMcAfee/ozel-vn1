@@ -52,17 +52,16 @@ contract ROImoduleL2 {
         //Deposits rETH in rETH-ETH Balancer pool as LP
         _addLiquidityBalancer(amounts_.minBptOut, poolId);
 
-        //----- Gets amount of BPT
-        // uint bptBalance = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));
-        // console.log('bal BPT post: ', bptBalance);
-
-
         //******** */
         // _removeLiquidityBalancer(uint(0), bptBalance, poolId, user_); //offchain calc goes in uint(0)
 
-        // uint x = IERC20Permit(s.WETH).balanceOf(user_);
-        // console.log('weth user - after exit: ', x);
+    }
 
+
+    function withdrawUnderlying() external {
+
+
+        
     }
 
 

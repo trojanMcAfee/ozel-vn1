@@ -40,16 +40,11 @@ struct TradeAmounts {
     uint minBptOut;
 }
 
-// struct ozToken {
-//     address self;
-//     address underlying;
-//     string name;
-//     string symbol;
-//     uint totalShares;
-//     mapping(address => uint) shares;
-//     mapping(address => mapping(address => uint256)) allowances;
-//     //add here later Permit vars
-// }
+
+struct TradeAmountsOut {
+    uint minWethOut;
+    uint bptAmountIn;
+}
 
 
 
