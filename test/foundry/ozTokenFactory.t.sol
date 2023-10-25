@@ -21,22 +21,6 @@ import "forge-std/console.sol";
 
 contract ozTokenFactoryTest is Setup {
 
-    function _mintOzTokens(
-        ozIToken ozERC20_,
-        uint rawAmount_, 
-        address user_, 
-        uint userPk_
-    ) private returns(uint) {
-        (
-            TradeAmounts memory amounts,
-            uint8 v, bytes32 r, bytes32 s
-        ) = _createDataOffchain(ozERC20_, rawAmount_, userPk_, user_);
-
-        vm.prank(user_);
-        uint shares = ozERC20_.mint(amounts, user_, v, r, s); 
-
-        return shares;
-    }
 
     function test_initialMintShares() public {
         //Pre-conditions
@@ -44,14 +28,39 @@ contract ozTokenFactoryTest is Setup {
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
-        //Action
-        uint rawAmount = 10000;
-        uint shares = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
+        //Actions
+        uint rawAmount = 100;
+        uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
+        uint sharesBob = _mintOzTokens(ozERC20, rawAmount / 2, bob, BOB_PK);
+        uint sharesCharlie = _mintOzTokens(ozERC20, rawAmount / 4, charlie, CHARLIE_PK);
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(shares == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
-        // assertTrue(shares == ozERC20.balanceOf(alice));
+        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        assertTrue(sharesAlice / 2 == sharesBob);
+        assertTrue(sharesAlice / 4 == sharesCharlie);
+        assertTrue(sharesBob == sharesCharlie * 2);
+        assertTrue(sharesBob / 2 == sharesCharlie);
+
+        uint balanceAlice = ozERC20.balanceOf(alice);
+        uint balanceBob = ozERC20.balanceOf(bob);
+        uint balanceCharlie = ozERC20.balanceOf(charlie);
+
+        assertTrue(balanceAlice / 2 == balanceBob);
+        assertTrue(balanceAlice / 4 == balanceCharlie);
+        assertTrue(balanceBob == balanceCharlie * 2);
+        assertTrue(balanceBob / 2 == balanceCharlie);
+
+        assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
+        assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + (rawAmount / 2) + (rawAmount / 4));
+        bool x = ozERC20.totalShares() / 10 ** IERC20Permit(testToken).decimals() == (sharesAlice + sharesBob + sharesCharlie);
+        console.log('x: ', x);
+        console.log('1st: ', ozERC20.totalShares() / 10 ** IERC20Permit(testToken).decimals());
+        console.log('2nd: ', sharesAlice + sharesBob + sharesCharlie);
+
+
+        assertTrue(ozERC20.totalShares() == (sharesAlice + sharesBob + sharesCharlie));
+        console.log(4);
 
         console.log('--------- ALICE ----------');
         console.log('');
@@ -73,7 +82,7 @@ contract ozTokenFactoryTest is Setup {
          */
         console.log('--------- BOB ----------');
 
-        shares = _mintOzTokens(ozERC20, 1000, bob, BOB_PK);
+        // shares = _mintOzTokens(ozERC20, 1000, bob, BOB_PK);
 
         console.log('');
         console.log('bal alice: ', ozERC20.balanceOf(alice));
@@ -90,7 +99,7 @@ contract ozTokenFactoryTest is Setup {
 
         console.log('--------- CHARLIE ----------');
 
-        shares = _mintOzTokens(ozERC20, 100, charlie, CHARLIE_PK);
+        // shares = _mintOzTokens(ozERC20, 1000, charlie, CHARLIE_PK);
 
         console.log('');
         console.log('bal alice: ', ozERC20.balanceOf(alice));
@@ -127,6 +136,23 @@ contract ozTokenFactoryTest is Setup {
 
 
     /** HELPERS ***/
+
+    function _mintOzTokens(
+        ozIToken ozERC20_,
+        uint rawAmount_, 
+        address user_, 
+        uint userPk_
+    ) private returns(uint) {
+        (
+            TradeAmounts memory amounts,
+            uint8 v, bytes32 r, bytes32 s
+        ) = _createDataOffchain(ozERC20_, rawAmount_, userPk_, user_);
+
+        vm.prank(user_);
+        uint shares = ozERC20_.mint(amounts, user_, v, r, s); 
+
+        return shares;
+    }
 
     function _createDataOffchain( 
         ozIToken ozERC20_, 
@@ -188,6 +214,7 @@ contract ozTokenFactoryTest is Setup {
 
         return (bptOut, permitHash);
     }
+    
 
 
     
