@@ -74,9 +74,6 @@ contract ozToken is ERC4626Upgradeable {
     }
 
 
-    function getMult() public view returns(uint) {
-        return ozIDiamond(_ozDiamond).getRewardMultiplier();
-    }
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
         return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
@@ -189,36 +186,11 @@ contract ozToken is ERC4626Upgradeable {
         //do this function comparing with _withdraw()
     } 
 
+
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
-        // console.log('underlying: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-
-        // console.log('***********');
-        // uint x = shares_;
-        // uint y = ozIDiamond(_ozDiamond).getUnderlyingValue() / 1e12;
-        // console.log('shares: ', x);
-        // console.log('underlying dec: ', y);
-        // console.log('totalShares: ', totalShares());
-        // uint z = y / totalShares();
-        // console.log('shares * under: ', x * z);
-        // console.log('***********');
-
-        // uint val = ozIDiamond(_ozDiamond).getUnderlyingValue();
-        // console.log('val: ', val);
-        // console.log('totalShares * 1e12: ', totalShares() * 10 ** 12);
-        // uint sh = shares_ * 1e12;
-        // console.log('shares: ', sh);
-        // console.log('totalShares: ', totalShares());
-        // console.log('***********');
-        // uint total = shares_.mulDiv(val / totalShares(), 1e15, rounding_);
-        // console.log('shares * val: ', shares_ * val);
-        // console.log('total: ', (shares_ * val) / 1e15);
-
-        // return shares_ * (ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares());
-        
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
-
-        // return (shares_ * 1e12).mulDiv(ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares(), 1e21, rounding_);
     }
+
 
     function _transfer(address from, address to, uint256 amount) internal override {
         if (from == address(0)) {
@@ -247,30 +219,6 @@ contract ozToken is ERC4626Upgradeable {
         _afterTokenTransfer(from, to, amount);
     }
 
-    /**
-     * Multiplier stuff
-     */
-     function _setRewardMultiplier(uint256 _rewardMultiplier) private {
-        if (_rewardMultiplier < _BASE) {
-            revert USDMInvalidRewardMultiplier(_rewardMultiplier);
-        }
-
-        s.rewardMultiplier = _rewardMultiplier;
-
-        emit RewardMultiplier(s.rewardMultiplier);
-    }
-
-    function setRewardMultiplier(uint256 _rewardMultiplier) external { //protect this funciton
-        _setRewardMultiplier(_rewardMultiplier);
-    }
-
-    function addRewardMultiplier(uint256 _rewardMultiplierIncrement) external {
-        if (_rewardMultiplierIncrement == 0) {
-            revert USDMInvalidRewardMultiplier(_rewardMultiplierIncrement);
-        }
-
-        _setRewardMultiplier(s.rewardMultiplier + _rewardMultiplierIncrement);
-    }
 
 
 }
