@@ -35,16 +35,11 @@ contract ROImoduleL2 {
         address user_,
         TradeAmounts memory amounts_
     ) external {
-        // console.log(1);
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
-        // console.log('user bal: ', IWETH(underlying_).balanceOf(user_));
-        // console.log('amount: ', amounts_.amountIn);
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
-        // console.log(2);
 
         //Swaps underlying to WETH in Uniswap
         _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
-        // console.log(3);
 
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
@@ -53,11 +48,9 @@ contract ROImoduleL2 {
         }
 
         _swapBalancer(poolId, amounts_.minRethOut);
-        // console.log(4);
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
         _addLiquidityBalancer(amounts_.minBptOut, poolId);
-        // console.log(5);
 
         //----- Gets amount of BPT
         // uint bptBalance = IWETH(s.rEthWethPoolBalancer).balanceOf(address(this));

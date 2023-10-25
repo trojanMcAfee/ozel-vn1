@@ -49,8 +49,6 @@ contract ozToken is ERC4626Upgradeable {
 
     address private _ozDiamond;
 
-    uint8 private _decimals;
-
     uint private constant _BASE = 1e18;
     uint private _totalShares;
     uint private _totalAssets;
@@ -68,24 +66,17 @@ contract ozToken is ERC4626Upgradeable {
         address underlying_,
         address diamond_,
         string memory name_,
-        string memory symbol_,
-        uint8 decimals_
+        string memory symbol_
     ) external initializer {
         __ERC20_init(name_, symbol_);
         __ERC4626_init(IERC20MetadataUpgradeable(underlying_));
         _ozDiamond = diamond_;
-        // _decimals = decimals_;
     }
 
 
     function getMult() public view returns(uint) {
         return ozIDiamond(_ozDiamond).getRewardMultiplier();
     }
-
-    // function decimals() public view override(ERC20Upgradeable, IERC20MetadataUpgradeable) returns(uint8) {
-    //     return _decimals;
-    // }
-
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
         return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
@@ -95,10 +86,6 @@ contract ozToken is ERC4626Upgradeable {
         return _totalAssets;
     }
 
-    // function _convertToAssets(uint shares_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
-    //     return shares_.mulDiv(getMult(), _BASE, rounding_);
-    // }
-
     function totalShares() public view returns(uint) { //from USDM
         return _totalShares;
     }
@@ -106,13 +93,6 @@ contract ozToken is ERC4626Upgradeable {
     function totalSupply() public view override(ERC20Upgradeable, IERC20Upgradeable) returns(uint) {
         return _totalShares == 0 ? 0 : _convertToAssets(_totalShares, MathUpgradeable.Rounding.Down);
     }
-
-    /**
-     * There are 2 totalSupply() funcs. This ^ and in ERC20Upgradeable.
-     * The one in ERC20 goes along with _mint() there, so they go hand in hand.
-     * Do more test and see which ones is the correct one. 
-     * I think it's ERC20
-     */
 
     function sharesOf(address account_) public view returns(uint) {
         return _shares[account_];
@@ -132,8 +112,6 @@ contract ozToken is ERC4626Upgradeable {
     ) external returns(uint) {
         address token = asset();
 
-        console.log('amounts_.amountIn: ', amounts_.amountIn);
-
         IERC20Permit(token).permit(
             msg.sender,
             _ozDiamond,
@@ -142,9 +120,6 @@ contract ozToken is ERC4626Upgradeable {
             v_, r_, s_
         );
 
-        uint x = IERC20Permit(token).allowance(msg.sender, _ozDiamond);
-        console.log('allow: ', x);
-
         ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
 
         uint shares = deposit(amounts_.amountIn, receiver_);
@@ -152,8 +127,6 @@ contract ozToken is ERC4626Upgradeable {
         _totalAssets += amounts_.amountIn;
 
         return shares;
-
-        // ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, receiver_, amounts_); 
     }
 
     function _deposit( //test mint/deposit ****
@@ -170,13 +143,7 @@ contract ozToken is ERC4626Upgradeable {
             _shares[receiver_] += shares_;
         }
 
-        // console.log('*** _deposit ***');
-        // uint assets = convertToAssets(shares_);
-        // console.log('assets ^^^ - should not 0: ', assets);
-        // console.log('assets_: ', assets_);
-        // console.log('sharesOf ****: ', sharesOf(receiver_));
         _mint(receiver_, assets_);
-        // console.log('totalSupply: ', totalSupply());
         
         emit Deposit(caller_, receiver_, assets_, shares_);
     }
@@ -246,9 +213,9 @@ contract ozToken is ERC4626Upgradeable {
         // console.log('shares * val: ', shares_ * val);
         // console.log('total: ', (shares_ * val) / 1e15);
 
-        return shares_ * (ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares());
+        // return shares_ * (ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares());
         
-        // return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
+        return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
 
         // return (shares_ * 1e12).mulDiv(ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares(), 1e21, rounding_);
     }

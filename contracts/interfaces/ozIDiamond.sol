@@ -14,8 +14,7 @@ interface ozIDiamond {
     function createOzToken(
         address erc20_,
         string memory name_,
-        string memory symbol_,
-        uint8 decimals_
+        string memory symbol_
     ) external returns(address);
 
     function useUnderlying(

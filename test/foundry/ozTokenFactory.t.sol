@@ -41,7 +41,7 @@ contract ozTokenFactoryTest is Setup {
     function test_initialMintShares() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
+            testToken, "Ozel-ERC20", "ozERC20"
         ));
 
         //Action
@@ -115,11 +115,11 @@ contract ozTokenFactoryTest is Setup {
 
     function test_createOzToken2() internal {
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20", IERC20Permit(testToken).decimals()
+            testToken, "Ozel-ERC20", "ozERC20"
         ));
         assertTrue(address(ozERC20) != address(0));
 
-        uint decimals = ozERC20.decimals();
+        // uint decimals = ozERC20.decimals();
         // console.log('decimals: ', decimals);
     }
 

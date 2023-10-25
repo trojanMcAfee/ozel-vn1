@@ -27,8 +27,7 @@ contract ozTokenFactory {
     function createOzToken(
         address underlying_,
         string memory name_,
-        string memory symbol_,
-        uint8 decimals_
+        string memory symbol_
     ) external returns(address) { //put an onlyOwner
 
         if (s.ozTokenRegistry.indexOf(underlying_) != -1) revert TokenAlreadyInRegistry(underlying_);
@@ -36,8 +35,8 @@ contract ozTokenFactory {
 
         //------
         bytes memory data = abi.encodeWithSignature( //use encodeCall here on you have the interface for ozToken
-            "initialize(address,address,string,string,uint8)", 
-            underlying_, s.ozDiamond, name_, symbol_, decimals_
+            "initialize(address,address,string,string)", 
+            underlying_, s.ozDiamond, name_, symbol_
         );
 
         ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, data);
