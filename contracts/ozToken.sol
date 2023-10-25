@@ -230,14 +230,22 @@ contract ozToken is ERC4626Upgradeable {
         // console.log('shares * under: ', x * z);
         // console.log('***********');
 
-        // uint val = ozIDiamond(_ozDiamond).getUnderlyingValue() / 1e12;
+        // uint val = ozIDiamond(_ozDiamond).getUnderlyingValue();
+        // console.log('val: ', val);
+        // console.log('totalShares * 1e12: ', totalShares() * 10 ** 12);
+        // uint sh = shares_ * 1e12;
+        // console.log('shares: ', sh);
+        // console.log('totalShares: ', totalShares());
+        // console.log('***********');
         // uint total = shares_.mulDiv(val / totalShares(), 1e15, rounding_);
         // console.log('shares * val: ', shares_ * val);
         // console.log('total: ', (shares_ * val) / 1e15);
-        
-        //trying to get this to 6 decimals
 
-        return (shares_ * 1e12).mulDiv(ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares(), 1e21, rounding_);
+        return shares_ * (ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares());
+        
+        // return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
+
+        // return (shares_ * 1e12).mulDiv(ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares(), 1e21, rounding_);
     }
 
     function _transfer(address from, address to, uint256 amount) internal override {

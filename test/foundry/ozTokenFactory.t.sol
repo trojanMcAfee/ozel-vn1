@@ -45,7 +45,7 @@ contract ozTokenFactoryTest is Setup {
         ));
 
         //Action
-        uint rawAmount = 1000;
+        uint rawAmount = 10000;
         uint shares = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
 
         //Post-conditions
@@ -90,7 +90,7 @@ contract ozTokenFactoryTest is Setup {
 
         console.log('--------- CHARLIE ----------');
 
-        shares = _mintOzTokens(ozERC20, 1000, charlie, CHARLIE_PK);
+        shares = _mintOzTokens(ozERC20, 100, charlie, CHARLIE_PK);
 
         console.log('');
         console.log('bal alice: ', ozERC20.balanceOf(alice));
