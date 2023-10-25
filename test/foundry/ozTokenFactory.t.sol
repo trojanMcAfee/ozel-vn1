@@ -50,7 +50,7 @@ contract ozTokenFactoryTest is Setup {
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(shares == rawAmount * ( 10 ** ozERC20.decimals() ));
+        assertTrue(shares == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
         // assertTrue(shares == ozERC20.balanceOf(alice));
 
         console.log('--------- ALICE ----------');
@@ -134,7 +134,7 @@ contract ozTokenFactoryTest is Setup {
         uint SENDER_PK_,
         address sender_
     ) private returns(TradeAmounts memory amounts, uint8 v, bytes32 r, bytes32 s) { 
-        uint amountIn = rawAmount_ * 10 ** ozERC20_.decimals();
+        uint amountIn = rawAmount_ * 10 ** IERC20Permit(testToken).decimals();
 
         uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
             [ethUsdChainlink, rEthEthChainlink], rawAmount_, ozERC20_.decimals(), defaultSlippage

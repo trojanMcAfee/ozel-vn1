@@ -74,7 +74,7 @@ contract ozToken is ERC4626Upgradeable {
         __ERC20_init(name_, symbol_);
         __ERC4626_init(IERC20MetadataUpgradeable(underlying_));
         _ozDiamond = diamond_;
-        _decimals = decimals_;
+        // _decimals = decimals_;
     }
 
 
@@ -82,9 +82,9 @@ contract ozToken is ERC4626Upgradeable {
         return ozIDiamond(_ozDiamond).getRewardMultiplier();
     }
 
-    function decimals() public view override(ERC20Upgradeable, IERC20MetadataUpgradeable) returns(uint8) {
-        return _decimals;
-    }
+    // function decimals() public view override(ERC20Upgradeable, IERC20MetadataUpgradeable) returns(uint8) {
+    //     return _decimals;
+    // }
 
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
@@ -132,6 +132,8 @@ contract ozToken is ERC4626Upgradeable {
     ) external returns(uint) {
         address token = asset();
 
+        console.log('amounts_.amountIn: ', amounts_.amountIn);
+
         IERC20Permit(token).permit(
             msg.sender,
             _ozDiamond,
@@ -139,6 +141,9 @@ contract ozToken is ERC4626Upgradeable {
             block.timestamp,
             v_, r_, s_
         );
+
+        uint x = IERC20Permit(token).allowance(msg.sender, _ozDiamond);
+        console.log('allow: ', x);
 
         ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
 
