@@ -48,9 +48,7 @@ interface ozIToken {
     function mint( 
         TradeAmounts memory amounts_,
         address receiver,
-        uint8 v_,
-        bytes32 r_,
-        bytes32 s_
+        uint8 v_, bytes32 r_, bytes32 s_
     ) external returns(uint);
 
     function implementation() external view returns (address);
@@ -58,4 +56,10 @@ interface ozIToken {
     function sharesOf(address account_) external view returns(uint);
     function totalShares() external view returns(uint);
     function totalAssets() external view returns(uint);
+
+    function burn(
+        TradeAmountsOut memory amounts_,
+        address receiver_,
+        uint8 v_, bytes32 r_, bytes32 s_
+    ) external returns(uint);
 }

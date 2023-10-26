@@ -63,9 +63,11 @@ contract ozTokenFactoryTest is Setup {
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
-        //Actions
         uint rawAmount = 100;
         uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
+
+        //Action
+        ozERC20.burn()
 
     }
      

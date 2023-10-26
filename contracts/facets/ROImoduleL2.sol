@@ -57,9 +57,20 @@ contract ROImoduleL2 {
 
     }
 
+    //  amounts_.ozAmountIn,
+    //         amounts_.minWethOut,
+    //         amounts_.bptAmountIn
 
-    function withdrawUnderlying() external {
 
+    function useOzTokens(
+        TradeAmountsOut memory amts_,
+        address ozToken_,
+        address owner_,
+        address receiver_
+    ) external {
+        ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
+
+        console.log(IERC20Permit(ozToken_).balanceOf(address(this)));
 
         
     }

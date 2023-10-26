@@ -186,14 +186,31 @@ contract ozToken is ERC4626Upgradeable {
 
 
     function burn(
-        TradeAmountsOut memory amounts_,
+        TradeAmountsOut memory amts_,
         address receiver_,
         uint8 v_, bytes32 r_, bytes32 s_
     ) public returns(uint) {
 
+        //Move the ozToken from sender to _ozDiamond
         IERC20Permit(address(this)).permit(
-            owner_
+            msg.sender,
+            _ozDiamond,
+            amts_.amountOut,
+            block.timestampt,
+            v_, r_, s_
         );
+
+        //ozDiamond gets the ozTokens, and process them with a function
+        ozIDiamond(_ozDIamond).useOzTokens(
+            amts_,
+            address(this),
+            msg.sender,
+            receiver_
+        );
+
+        //That function burns the ozTokens, and returns the underlying to the user
+
+    
 
         //this burn method will connect to withdraw from ERC4626
 
