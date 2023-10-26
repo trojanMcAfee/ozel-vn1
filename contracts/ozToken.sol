@@ -160,8 +160,14 @@ contract ozToken is ERC4626Upgradeable {
     function _burn(address account, uint256 amount) internal override {
         if (account == address(0)) revert ozTokenInvalidMintReceiver(account); //change the error here
     
-        uint256 shares = convertToShares(amount);
-        uint256 accountShares = sharesOf(account);
+        // uint256 shares = convertToShares(amount);
+        // uint256 accountShares = sharesOf(account);
+
+        uint bptAmountIn = convertToUnderlying(amount);
+
+        //have to end with USDC here
+        
+    
 
         if (accountShares < shares) {
             revert USDMInsufficientBurnBalance(account, accountShares, shares);
@@ -175,14 +181,13 @@ contract ozToken is ERC4626Upgradeable {
 
         _afterTokenTransfer(account, address(0), amount);
     }
+    
 
-    function convertToUnderlying(address shares_) public returns(uint) {
-        totalShares() --- totalUnderlying();
-           shares_ ------- shareOfUnderlying
+    function convertToUnderlying(address shares_) public returns(uint amountUnderlying) {
+        // totalShares() --- totalUnderlying();
+        //    shares_ ------- shareOfUnderlying (x)
 
-        ^ this func is bptAmountIn;
-
-
+        amountUnderlying = ((shares_ * 10 ** 12) * totalUnderlying()) / totalShares();
     }
 
     // struct TradeAmountsOut {
@@ -207,7 +212,16 @@ contract ozToken is ERC4626Upgradeable {
             v_, r_, s_
         );
 
-        //ozDiamond gets the ozTokens, and process them with a function
+        //Gets the amount of shares per ozTokens transferred
+        uint shares = withdraw(amts_.ozAmountIn, receiver_, msg.sender);
+
+        //Converts from shares to BPT
+        amts_.bptAmountIn = convertToUnderlying(shares);
+
+        // /**
+        //  * - Redeems BPT for rETH
+        //  * - Swaps rETH for USDC
+        //  */
         ozIDiamond(_ozDIamond).useOzTokens(
             amts_,
             address(this),
@@ -215,25 +229,31 @@ contract ozToken is ERC4626Upgradeable {
             receiver_
         );
 
-        //That function burns the ozTokens, and returns the underlying to the user
-        // uint assets = _burn(amts_.ozAmountIn)
-    
+        //Transfers USDC to receiver
+        uint asset = asset();
+        asset.safeTransferFrom(
+            address(this), 
+            receiver_, 
+            IERC20Permit(asset).balanceOf(address(this))
+        );
 
-        //this burn method will connect to withdraw from ERC4626
+        //Updates totalSupply, totalAssets, and totalShares
+
+       
 
 
     }
 
 
-    function _withdraw(
-        address caller,
-        address receiver,
-        address owner,
-        uint256 assets,
-        uint256 shares
-    ) internal override {
-        //do this function comparing with _withdraw()
-    } 
+    // function _withdraw(
+    //     address caller,
+    //     address receiver,
+    //     address owner,
+    //     uint256 assets,
+    //     uint256 shares
+    // ) internal override {
+    //     //do this function comparing with _withdraw()
+    // } 
 
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
