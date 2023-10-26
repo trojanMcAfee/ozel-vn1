@@ -176,6 +176,15 @@ contract ozToken is ERC4626Upgradeable {
         _afterTokenTransfer(account, address(0), amount);
     }
 
+    function convertToUnderlying(address shares_) public returns(uint) {
+        totalShares() --- totalUnderlying();
+           shares_ ------- shareOfUnderlying
+
+        ^ this func is bptAmountIn;
+
+
+    }
+
     // struct TradeAmountsOut {
     //     uint ozAmountIn;
     //     uint minWethOut;
@@ -229,6 +238,10 @@ contract ozToken is ERC4626Upgradeable {
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
+    }
+
+    function totalUnderlying() public view returns(uint) {
+        return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);
     }
 
 
