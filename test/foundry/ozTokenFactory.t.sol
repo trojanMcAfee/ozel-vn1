@@ -12,7 +12,7 @@ import {Helpers} from "../../contracts/libraries/Helpers.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
-import {TradeAmounts} from "../../contracts/AppStorage.sol";
+import {TradeAmounts, TradeAmountsOut} from "../../contracts/AppStorage.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
 
@@ -67,7 +67,56 @@ contract ozTokenFactoryTest is Setup {
         uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
 
         //Action
-        ozERC20.burn()
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+        // uint minWethOut = 
+
+        // address[] memory assets = new address[](3);
+        // assets[0] = wethAddr;
+        // assets[1] = rEthWethPoolBalancer;
+        // assets[2] = rEthAddr;
+        address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
+
+        // uint[] memory minAmountsOut = new uint[](2);
+        // minAmountsOut[0] = Helpers.calculateMinAmountOut(bptAmountIn);
+        // minAmountsOut[1] = 0;
+         uint[] memory minAmountsOut = HelpersTests.calculateMinAmountsOut(
+            [ethUsdChainlink, rEthEthChainlink], ozAmountIn / 1 ether, ozERC20_.decimals(), defaultSlippage
+        );
+
+        uint exitTokenIndex = 0;
+        bytes memory userData = Helpers.createUserData(
+            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptAmountIn, exitTokenIndex
+        );
+
+
+        // (
+        //     address[] memory assets,
+        //     uint[] memory maxAmountsIn,
+        //     uint[] memory amountsIn
+        // ) = Helpers.convertToDynamics([wethAddr, rEthWethPoolBalancer, rEthAddr], minsOut[1]);
+
+        IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
+            assets: assets,
+            minAmountsOut: minAmountsOut,
+            userData: userData,
+            toInternalBalance: false 
+        });
+
+        (, uint[] memory amountsOut) = IQueries(s.queriesBalancer).queryExit(
+            IPool(rEthWethPoolBalancer).getPoolId(),
+            alice,
+            address(ozDiamond),
+            request
+        );
+
+        TradeAmountsOut memory amts = TradeAmountsOut({
+            ozAmountIn: ozAmountIn,
+            minWethOut: amountsOut[0],
+            bptAmountIn: //how much BPT does my ozTokens get
+        });
+
+        vm.prank(alice);
+        ozERC20.burn(minWethOut, bptAmountIn);
 
     }
      
@@ -97,6 +146,22 @@ contract ozTokenFactoryTest is Setup {
 
         return shares;
     }
+
+
+    function _createDataOffchain( 
+        ozIToken ozERC20_, 
+        uint rawAmount_,
+        uint SENDER_PK_,
+        address sender_
+    ) private returns(TradeAmountsOut memory amts, uint8 v, bytes32 r, bytes32 s) {
+        uint amountIn = rawAmount_ * 10 ** IERC20Permit(ozERC20_).decimals();
+
+        uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
+            [ethUsdChainlink, rEthEthChainlink], rawAmount_, ozERC20_.decimals(), defaultSlippage
+        );
+    }
+    
+
 
     function _createDataOffchain( 
         ozIToken ozERC20_, 

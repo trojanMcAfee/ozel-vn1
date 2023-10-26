@@ -183,8 +183,6 @@ contract ozToken is ERC4626Upgradeable {
     // }
 
 
-
-
     function burn(
         TradeAmountsOut memory amts_,
         address receiver_,
@@ -209,7 +207,7 @@ contract ozToken is ERC4626Upgradeable {
         );
 
         //That function burns the ozTokens, and returns the underlying to the user
-
+        // uint assets = _burn(amts_.ozAmountIn)
     
 
         //this burn method will connect to withdraw from ERC4626

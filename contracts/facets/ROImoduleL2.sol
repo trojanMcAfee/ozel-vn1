@@ -68,12 +68,24 @@ contract ROImoduleL2 {
         address owner_,
         address receiver_
     ) external {
+        bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 
-        console.log(IERC20Permit(ozToken_).balanceOf(address(this)));
+        console.log(' ozBal: ', IERC20Permit(ozToken_).balanceOf(address(this)));
+
+        _removeLiquidityBalancer(
+            amts_.minWethOut, amts_.bptAmountIn_, poolId, receiver_
+        ); //I have WETH now
+
+        //Swap WETH to USDC
+        // _swapUni();
 
         
     }
+
+    // function totalUnderlying() public view returns(uint) {
+    //     return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
+    // }
 
 
     function _removeLiquidityBalancer(
