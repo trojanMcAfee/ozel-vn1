@@ -76,18 +76,6 @@ contract ozToken is ERC4626Upgradeable {
 
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
-        // console.log('---------');
-        // console.log('assets - ozTokens: ', assets_);
-        // console.log('totalShares: ', totalShares());
-        // console.log('totalAssets: ', totalAssets());
-        // console.log('total: ', assets_.mulDiv(totalShares(), totalAssets(), rounding_));
-        // console.log('totalUnderlying: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-        // console.log('---------');
-        
-        // uint x = assets_.mulDiv(totalShares(), totalAssets(), rounding_);
-        // return x;
-        //-------
-
         return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
     }
 

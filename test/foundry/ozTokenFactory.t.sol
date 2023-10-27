@@ -87,19 +87,23 @@ contract ozTokenFactoryTest is Setup {
 
         //---------------
         uint balAlice = ozERC20.balanceOf(alice);
-        console.log('bal alice pre - should not 0: ', balAlice);
+        assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
 
         uint balBob = ozERC20.balanceOf(bob);
-        console.log('bal bob pre - should 0: ', balBob);
+        assertTrue(balBob == 0);
 
+        //Action
         vm.prank(alice);
         ozERC20.transfer(bob, balAlice);
 
+        //Post-conditions
         balAlice = ozERC20.balanceOf(alice);
-        console.log('bal alice post - should 0: ', balAlice);
+        assertTrue(balAlice > 0 && balAlice < 0.000001 * 1 ether);
+        // console.log('bal alice post - should 0: ', balAlice);
 
         balBob = ozERC20.balanceOf(bob);
-        console.log('bal bob post - should not 0: ', balBob);
+        assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
+        // console.log('bal bob post - should not 0: ', balBob);
 
         
 
