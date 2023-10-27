@@ -106,7 +106,7 @@ contract ozToken is ERC4626Upgradeable {
         uint8 v_,
         bytes32 r_,
         bytes32 s_
-    ) external returns(uint) {
+    ) external returns(uint) { //check if this return (shares) is necessary
         address token = asset();
 
         IERC20Permit(token).permit(
@@ -256,10 +256,7 @@ contract ozToken is ERC4626Upgradeable {
         }
 
         uint256 shares = convertToShares(amount);
-        console.log('shares to transfer: ', shares);
-
         uint256 fromShares = _shares[from];
-        console.log('shares alice has: ', fromShares);
 
         if (fromShares < shares) {
             revert ERC20InsufficientBalance(from, fromShares, shares);

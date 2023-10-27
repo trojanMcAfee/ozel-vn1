@@ -78,16 +78,10 @@ contract ozTokenFactoryTest is Setup {
 
     function test_transfer() public {
         //Pre-conditions
-        // ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-        //     testToken, "Ozel-ERC20", "ozERC20"
-        // ));
-
         uint rawAmount = 100;
-        (uint sharesAlice, ozIToken ozERC20) = 
-            _createAndMintOzTokens(testToken, rawAmount, alice, ALICE_PK);
 
+        ozIToken ozERC20 = _createAndMintOzTokens(testToken, rawAmount, alice, ALICE_PK);
 
-        //---------------
         uint balAlice = ozERC20.balanceOf(alice);
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
 
@@ -203,13 +197,10 @@ contract ozTokenFactoryTest is Setup {
         uint rawAmount_, 
         address user_, 
         uint userPk_
-    ) private returns(uint, ozIToken) {
+    ) private returns(ozIToken) {
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken_, "Ozel-ERC20", "ozERC20"
         ));
-
-        // uint rawAmount = 100;
-        // uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
 
         (
             TradeAmounts memory amounts,
@@ -217,9 +208,9 @@ contract ozTokenFactoryTest is Setup {
         ) = _createDataOffchain(ozERC20, rawAmount_, userPk_, user_);
 
         vm.prank(user_);
-        uint shares = ozERC20.mint(amounts, user_, v, r, s); 
+        ozERC20.mint(amounts, user_, v, r, s); 
 
-        return (shares, ozERC20);
+        return ozERC20;
     }
 
     function _mintOzTokens(
