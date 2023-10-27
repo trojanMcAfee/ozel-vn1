@@ -6,7 +6,7 @@ pragma solidity 0.8.21;
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage, TradeAmounts} from "../AppStorage.sol";
+import {AppStorage, TradeAmounts, TradeAmountsOut} from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
 // import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
@@ -71,11 +71,13 @@ contract ROImoduleL2 {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 
-        console.log(' ozBal: ', IERC20Permit(ozToken_).balanceOf(address(this)));
+        console.log(' ozBal ******: ', IERC20Permit(ozToken_).balanceOf(address(this)));
 
         _removeLiquidityBalancer(
-            amts_.minWethOut, amts_.bptAmountIn_, poolId, receiver_
+            amts_.minWethOut, amts_.bptAmountIn, poolId, receiver_
         ); //I have WETH now
+
+        return;
 
         //Swap WETH to USDC
         // _swapUni();
@@ -83,9 +85,20 @@ contract ROImoduleL2 {
         
     }
 
-    // function totalUnderlying() public view returns(uint) {
-    //     return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
-    // }
+    enum Asset {
+        USD,
+        UNDERLYING
+    }
+
+    function totalUnderlying() public view returns(uint) {
+        // uint subTotal = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);
+
+        // if (type_ == UNDERLYING) {
+        //     return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);
+        // } else if (type_ == USD) {
+            
+        // }
+    }
 
 
     function _removeLiquidityBalancer(
@@ -121,6 +134,11 @@ contract ROImoduleL2 {
 
 
     }
+
+
+    // function totalUnderlying() public view returns(uint) {
+    //     return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
+    // }
 
 
     //**** HELPERS */

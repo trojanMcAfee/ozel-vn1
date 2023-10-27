@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {IDiamondCut} from "./IDiamondCut.sol";
-import {TradeAmounts} from "../AppStorage.sol";
+import {TradeAmounts, TradeAmountsOut} from "../AppStorage.sol";
 
 
 interface ozIDiamond {
@@ -23,8 +23,16 @@ interface ozIDiamond {
         TradeAmounts memory amounts_
     ) external;
 
+    function useOzTokens(
+        TradeAmountsOut memory amts_,
+        address ozToken_,
+        address owner_,
+        address receiver_
+    ) external;
+
     function getDiamondAddr() external view returns(address);
     function rETH_ETH() external returns(uint256); //if not used, removed
     function getRewardMultiplier() external view returns(uint);
     function getUnderlyingValue() external view returns(uint);
+    function totalUnderlying() external view returns(uint);
 }

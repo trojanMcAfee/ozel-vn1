@@ -76,7 +76,19 @@ contract ozToken is ERC4626Upgradeable {
 
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
-        return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
+        // console.log('---------');
+        // console.log('assets - ozTokens: ', assets_);
+        // console.log('totalShares: ', totalShares());
+        // console.log('totalAssets: ', totalAssets());
+        // console.log('total: ', assets_.mulDiv(totalShares(), totalAssets(), rounding_));
+        // console.log('totalUnderlying: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        // console.log('---------');
+        
+        // uint x = assets_.mulDiv(totalShares(), totalAssets(), rounding_);
+        // return x;
+        //-------
+
+        return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
     }
 
     function totalAssets() public view override returns(uint) {
@@ -164,7 +176,6 @@ contract ozToken is ERC4626Upgradeable {
         uint256 accountShares = sharesOf(account);
         uint assets = convertToAssets(shares);
     
-
         if (accountShares < shares) {
             revert USDMInsufficientBurnBalance(account, accountShares, shares);
         }
@@ -180,12 +191,12 @@ contract ozToken is ERC4626Upgradeable {
     }
     
     //underlying is BPT ***
-    function convertToUnderlying(address shares_) public returns(uint amountUnderlying) {
-        // totalShares() --- totalUnderlying();
-        //    shares_ ------- shareOfUnderlying (x)
+    // function convertToUnderlying(uint shares_) public view returns(uint amountUnderlying) {
+    //     // totalShares() --- totalUnderlying();
+    //     //    shares_ ------- shareOfUnderlying (x)
 
-        amountUnderlying = ((shares_ * 10 ** 12) * totalUnderlying()) / totalShares();
-    }
+    //     amountUnderlying = ((shares_ * 10 ** 12) * totalUnderlying()) / totalShares();
+    // }
 
     // struct TradeAmountsOut {
     //     uint ozAmountIn;
@@ -204,8 +215,8 @@ contract ozToken is ERC4626Upgradeable {
         IERC20Permit(address(this)).permit(
             msg.sender,
             _ozDiamond,
-            amts_.amountOut,
-            block.timestampt,
+            amts_.ozAmountIn,
+            block.timestamp,
             v_, r_, s_
         );
 
@@ -213,13 +224,13 @@ contract ozToken is ERC4626Upgradeable {
         uint shares = withdraw(amts_.ozAmountIn, receiver_, msg.sender);
 
         //Converts from shares to BPT
-        amts_.bptAmountIn = convertToUnderlying(shares);
+        // amts_.bptAmountIn = convertToUnderlying(shares);
 
         // /**
         //  * - Redeems BPT for rETH
         //  * - Swaps rETH for USDC
         //  */
-        ozIDiamond(_ozDIamond).useOzTokens(
+        ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
             address(this),
             msg.sender,
@@ -240,8 +251,38 @@ contract ozToken is ERC4626Upgradeable {
         //Updates totalSupply, totalAssets, and totalShares
 
        
+        return 1;
 
+    }
 
+    function _transfer(
+        address from, 
+        address to, 
+        uint256 amount
+    ) internal override {
+        if (from == address(0)) {
+            revert ERC20InvalidSender(from);
+        }
+        if (to == address(0)) {
+            revert ERC20InvalidReceiver(to);
+        }
+
+        uint256 shares = convertToShares(amount);
+        console.log('shares to transfer: ', shares);
+
+        uint256 fromShares = _shares[from];
+        console.log('shares alice has: ', fromShares);
+
+        if (fromShares < shares) {
+            revert ERC20InsufficientBalance(from, fromShares, shares);
+        }
+
+        unchecked {
+            _shares[from] = fromShares - shares;
+            // Overflow not possible: the sum of all shares is capped by totalShares, and the sum is preserved by
+            // decrementing then incrementing.
+            _shares[to] += shares;
+        }
     }
 
 
@@ -259,7 +300,7 @@ contract ozToken is ERC4626Upgradeable {
         uint256 assets,
         address receiver,
         address owner
-    ) public override returns (uint256) {
+    ) public view override returns (uint256) {
         require(assets <= maxWithdraw(owner), "ERC4626: withdraw more than max");
 
         uint256 shares = previewWithdraw(assets);
@@ -274,37 +315,48 @@ contract ozToken is ERC4626Upgradeable {
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
     }
 
-    function totalUnderlying() public view returns(uint) {
-        return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);
-    }
+    // enum Asset {
+    //     USD,
+    //     UNDERLYING
+    // }
+
+    // function totalUnderlying(Asset type_) public view returns(uint) {
+    //     uint subTotal = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);
+
+    //     if (type_ == UNDERLYING) {
+    //         return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);
+    //     } else if (type_ == USD) {
+
+    //     }
+    // }
 
 
-    function _transfer(address from, address to, uint256 amount) internal override {
-        if (from == address(0)) {
-            revert ERC20InvalidSender(from);
-        }
-        if (to == address(0)) {
-            revert ERC20InvalidReceiver(to);
-        }
+    // function _transfer(address from, address to, uint256 amount) internal override {
+    //     if (from == address(0)) {
+    //         revert ERC20InvalidSender(from);
+    //     }
+    //     if (to == address(0)) {
+    //         revert ERC20InvalidReceiver(to);
+    //     }
 
-        _beforeTokenTransfer(from, to, amount);
+    //     _beforeTokenTransfer(from, to, amount);
 
-        uint256 shares = convertToShares(amount); //put there one of the previews...
-        uint256 fromShares = _shares[from];
+    //     uint256 shares = convertToShares(amount); //put there one of the previews...
+    //     uint256 fromShares = _shares[from];
 
-        if (fromShares < shares) {
-            revert ERC20InsufficientBalance(from, fromShares, shares);
-        }
+    //     if (fromShares < shares) {
+    //         revert ERC20InsufficientBalance(from, fromShares, shares);
+    //     }
 
-        unchecked {
-            _shares[from] = fromShares - shares;
-            // Overflow not possible: the sum of all shares is capped by totalShares, and the sum is preserved by
-            // decrementing then incrementing.
-            _shares[to] += shares;
-        }
+    //     unchecked {
+    //         _shares[from] = fromShares - shares;
+    //         // Overflow not possible: the sum of all shares is capped by totalShares, and the sum is preserved by
+    //         // decrementing then incrementing.
+    //         _shares[to] += shares;
+    //     }
 
-        _afterTokenTransfer(from, to, amount);
-    }
+    //     _afterTokenTransfer(from, to, amount);
+    // }
 
 
 

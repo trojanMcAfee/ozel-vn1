@@ -2,7 +2,7 @@
 pragma solidity 0.8.21;
 
 
-import {TradeAmounts} from "../AppStorage.sol";
+import {TradeAmounts, TradeAmountsOut} from "../AppStorage.sol";
 
 
 /// @dev Interface of the ERC20 standard as defined in the EIP.
