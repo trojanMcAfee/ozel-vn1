@@ -157,16 +157,12 @@ contract ozToken is ERC4626Upgradeable {
     }
 
 
-    function _burn(address account, uint256 amount) internal override {
+    function _burn(address account, uint256 shares) internal override {
         if (account == address(0)) revert ozTokenInvalidMintReceiver(account); //change the error here
     
         // uint256 shares = convertToShares(amount);
-        // uint256 accountShares = sharesOf(account);
-
-        uint bptAmountIn = convertToUnderlying(amount);
-
-        //have to end with USDC here
-        
+        uint256 accountShares = sharesOf(account);
+        uint assets = convertToAssets(shares);
     
 
         if (accountShares < shares) {
@@ -177,12 +173,13 @@ contract ozToken is ERC4626Upgradeable {
             _shares[account] = accountShares - shares;
             // Overflow not possible: amount <= accountShares <= totalShares.
             _totalShares -= shares;
+            _totalAssets -= assets;
         }
 
-        _afterTokenTransfer(account, address(0), amount);
+        // _afterTokenTransfer(account, address(0), amount);
     }
     
-
+    //underlying is BPT ***
     function convertToUnderlying(address shares_) public returns(uint amountUnderlying) {
         // totalShares() --- totalUnderlying();
         //    shares_ ------- shareOfUnderlying (x)
@@ -229,13 +226,16 @@ contract ozToken is ERC4626Upgradeable {
             receiver_
         );
 
+        uint assets = IERC20Permit(asset()).balanceOf(address(this));
+        _withdraw(_msgSender(), receiver_, msg.sender, assets, shares);
+
         //Transfers USDC to receiver
-        uint asset = asset();
-        asset.safeTransferFrom(
-            address(this), 
-            receiver_, 
-            IERC20Permit(asset).balanceOf(address(this))
-        );
+        // uint asset = asset();
+        // asset.safeTransferFrom(
+        //     address(this), 
+        //     receiver_, 
+        //     IERC20Permit(asset).balanceOf(address(this))
+        // );
 
         //Updates totalSupply, totalAssets, and totalShares
 
@@ -254,6 +254,20 @@ contract ozToken is ERC4626Upgradeable {
     // ) internal override {
     //     //do this function comparing with _withdraw()
     // } 
+
+    function withdraw(
+        uint256 assets,
+        address receiver,
+        address owner
+    ) public override returns (uint256) {
+        require(assets <= maxWithdraw(owner), "ERC4626: withdraw more than max");
+
+        uint256 shares = previewWithdraw(assets);
+
+        // _withdraw(_msgSender(), receiver, owner, assets, shares);
+
+        return shares;
+    }
 
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
