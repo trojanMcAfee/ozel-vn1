@@ -76,14 +76,16 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    function test_oz() public {
+    function test_transfer() public {
         //Pre-conditions
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        // ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+        //     testToken, "Ozel-ERC20", "ozERC20"
+        // ));
 
         uint rawAmount = 100;
-        uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
+        (uint sharesAlice, ozIToken ozERC20) = 
+            _createAndMintOzTokens(testToken, rawAmount, alice, ALICE_PK);
+
 
         //---------------
         uint balAlice = ozERC20.balanceOf(alice);
@@ -99,18 +101,9 @@ contract ozTokenFactoryTest is Setup {
         //Post-conditions
         balAlice = ozERC20.balanceOf(alice);
         assertTrue(balAlice > 0 && balAlice < 0.000001 * 1 ether);
-        // console.log('bal alice post - should 0: ', balAlice);
 
         balBob = ozERC20.balanceOf(bob);
         assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
-        // console.log('bal bob post - should not 0: ', balBob);
-
-        
-
-
-
-
-
     }
 
 
@@ -204,6 +197,30 @@ contract ozTokenFactoryTest is Setup {
 
 
     /** HELPERS ***/
+
+    function _createAndMintOzTokens(
+        address testToken_,
+        uint rawAmount_, 
+        address user_, 
+        uint userPk_
+    ) private returns(uint, ozIToken) {
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken_, "Ozel-ERC20", "ozERC20"
+        ));
+
+        // uint rawAmount = 100;
+        // uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
+
+        (
+            TradeAmounts memory amounts,
+            uint8 v, bytes32 r, bytes32 s
+        ) = _createDataOffchain(ozERC20, rawAmount_, userPk_, user_);
+
+        vm.prank(user_);
+        uint shares = ozERC20.mint(amounts, user_, v, r, s); 
+
+        return (shares, ozERC20);
+    }
 
     function _mintOzTokens(
         ozIToken ozERC20_,
