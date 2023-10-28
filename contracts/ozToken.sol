@@ -181,15 +181,6 @@ contract ozToken is ERC4626Upgradeable {
     
     //underlying is BPT ***
     function convertToUnderlying(uint shares_) public view returns(uint amountUnderlying) {
-        // totalShares() --- totalUnderlying();
-        //    shares_ ------- shareOfUnderlying (x)
-        // console.log('---- in ozToken -----');
-        // console.log('shares: ', shares_);
-        // console.log('ozIDiamond(_ozDiamond).totalUnderlying() / 1e12: ', ozIDiamond(_ozDiamond).totalUnderlying() / 1e12);
-        // console.log('ozIDiamond(_ozDiamond).totalUnderlying(): ', ozIDiamond(_ozDiamond).totalUnderlying());
-        // console.log('totalShares: ', totalShares());
-        // console.log('---- in ozToken -----');
-
         amountUnderlying = (shares_ * ozIDiamond(_ozDiamond).totalUnderlying()) / totalShares();
     }
 

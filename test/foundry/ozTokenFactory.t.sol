@@ -131,24 +131,32 @@ contract ozTokenFactoryTest is Setup {
             [ethUsdChainlink, rEthEthChainlink], ozAmountIn / 1 ether, ozERC20.decimals(), defaultSlippage
         );
 
-        //------
+        // console.log('minOut: ', minAmountsOut[0]);
+
+        uint bptValue = IPool(rEthWethPoolBalancer).getRate();
+        console.log('bptValue: ', bptValue);
+        console.log('ozAmountIn: ', ozAmountIn);
+        
         uint shares = ozERC20.previewWithdraw(ozAmountIn);
         uint bptAmountIn = ozERC20.convertToUnderlying(shares);
 
-        // console.log('---- in test -----');
-        // console.log('shares alice: ', shares);
-        // console.log('totalShares: ', ozERC20.totalShares());
-        // console.log('totalUnderlying: ', OZ.totalUnderlying());
-        console.log('bptAmountIn: ', bptAmountIn);
-        // console.log('ozAmountIn: ', ozAmountIn);
-        // console.log('---- in test -----');
-        return;
+        uint amountOut = (bptAmountIn * bptValue) / 1 ether;
+        console.log('amountOut: ', amountOut);
+        uint minBptOut = Helpers.calculateMinAmountOut(amountOut, defaultSlippage);
+        console.log('minBptOut: ', minBptOut);
+
+        uint bal2 =IERC20Permit(rEthWethPoolBalancer).balanceOf(address(OZ));
+        console.log('bal - amountOut: ', (bal2 * bptValue) / 1 ether);
+
+        //------
+        // uint shares = ozERC20.previewWithdraw(ozAmountIn);
+        // uint bptAmountIn = ozERC20.convertToUnderlying(shares);
         //-------
 
-        // uint exitTokenIndex = 0;
-        // bytes memory userData = Helpers.createUserData(
-        //     IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptAmountIn, exitTokenIndex
-        // );
+        uint exitTokenIndex = 0;
+        bytes memory userData = Helpers.createUserData(
+            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptAmountIn, exitTokenIndex
+        );
 
 
         // (

@@ -69,4 +69,6 @@ interface ozIToken {
     function convertToUnderlying(uint shares_) external view returns(uint amountUnderlying);
 
     function nonces(address owner) external view returns (uint256);
+
+    function convertToShares(uint256 assets) external view returns (uint256 shares);
 }
