@@ -15,8 +15,13 @@ import {
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {AppStorage, TradeAmounts, TradeAmountsOut} from "./AppStorage.sol";
-// import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
-import {ERC20Permit, IERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
+// import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+import {IERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol";
+import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol";
+import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
+import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 
 import "forge-std/console.sol";
 
@@ -42,8 +47,9 @@ error USDMInvalidBlockedAccount(address account);
 error USDMPausedTransfers();
 
 
-contract ozToken is ERC4626Upgradeable, ERC20Permit {
+contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
     
+    using CountersUpgradeable for CountersUpgradeable.Counter;
     using MathUpgradeable for uint;
 
     AppStorage internal s;
@@ -55,9 +61,12 @@ contract ozToken is ERC4626Upgradeable, ERC20Permit {
     uint private _totalAssets;
 
     mapping(address user => uint256 shares) private _shares;
-    mapping(address => uint) private _nonces; //**** */
+    mapping(address => CountersUpgradeable.Counter) private _nonces;
 
-    event RewardMultiplier(uint256 indexed value);
+    bytes32 private constant _PERMIT_TYPEHASH =
+        keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+
+    // event RewardMultiplier(uint256 indexed value);
 
 
     constructor() {
@@ -72,6 +81,7 @@ contract ozToken is ERC4626Upgradeable, ERC20Permit {
     ) external initializer {
         __ERC20_init(name_, symbol_);
         __ERC4626_init(IERC20MetadataUpgradeable(underlying_));
+        __EIP712_init(name_, "1");
         _ozDiamond = diamond_;
     }
 
@@ -210,8 +220,9 @@ contract ozToken is ERC4626Upgradeable, ERC20Permit {
         TradeAmountsOut memory amts_,
         address receiver_
     ) public {
-        address(this).safeTransferFrom(msg.sender, _ozDiamond);
+        // address(this).safeTransferFrom(msg.sender, _ozDiamond);
 
+        //remove from ozIToken.sol also
 
     }
 
@@ -230,7 +241,18 @@ contract ozToken is ERC4626Upgradeable, ERC20Permit {
             v_, r_, s_
         );
 
-        ozIDiamond(_ozDiamond).uzeOzTokens(amts_, address(this), msg.sender, receiver_);
+        ozIDiamond(_ozDiamond).useOzTokens(
+            amts_,
+            address(this),
+            msg.sender,
+            receiver_
+        );
+
+        // ozIDiamond(_ozDiamond).uzeOzTokens(amts_, address(this), msg.sender, receiver_);
+        // bytes4 x = ozIDiamond(_ozDiamond).uzeOzTokens.selector;
+        // console.logBytes4(x);
+        // console.log('selector ^^^');
+        // revert('here');
 
         //Gets the amount of shares per ozTokens transferred
         uint shares = withdraw(amts_.ozAmountIn, receiver_, msg.sender);
@@ -242,12 +264,12 @@ contract ozToken is ERC4626Upgradeable, ERC20Permit {
         //  * - Redeems BPT for rETH
         //  * - Swaps rETH for USDC
         //  */
-        ozIDiamond(_ozDiamond).useOzTokens(
-            amts_,
-            address(this),
-            msg.sender,
-            receiver_
-        );
+        // ozIDiamond(_ozDiamond).useOzTokens(
+        //     amts_,
+        //     address(this),
+        //     msg.sender,
+        //     receiver_
+        // );
 
         uint assets = IERC20Permit(asset()).balanceOf(address(this));
         _withdraw(_msgSender(), receiver_, msg.sender, assets, shares);
@@ -325,6 +347,78 @@ contract ozToken is ERC4626Upgradeable, ERC20Permit {
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
     }
+
+    //----------------------
+
+    /**
+     * @notice Returns the EIP-712 DOMAIN_SEPARATOR.
+     * @return A bytes32 value representing the EIP-712 DOMAIN_SEPARATOR.
+     */
+    function DOMAIN_SEPARATOR() external view returns (bytes32) {
+        return _domainSeparatorV4();
+    }
+
+    /**
+     * @notice Returns the current nonce for the given owner address.
+     * @param owner The address whose nonce is to be retrieved.
+     * @return The current nonce as a uint256 value.
+     */
+    function nonces(address owner) external view returns (uint256) {
+        return _nonces[owner].current();
+    }
+
+    /**
+     * @dev Private function that increments and returns the current nonce for a given owner address.
+     * @param owner The address whose nonce is to be incremented.
+     */
+    function _useNonce(address owner) private returns (uint256 current) {
+        CountersUpgradeable.Counter storage nonce = _nonces[owner];
+        current = nonce.current();
+
+        nonce.increment();
+    }
+
+    /**
+     * @notice Allows an owner to approve a spender with a one-time signature, bypassing the need for a transaction.
+     * @dev Uses the EIP-2612 standard.
+     * @param owner The address of the token owner.
+     * @param spender The address of the spender.
+     * @param value The amount of tokens to be approved.
+     * @param deadline The expiration time of the signature, specified as a Unix timestamp.
+     * @param v The recovery byte of the signature.
+     * @param r The first 32 bytes of the signature.
+     * @param s_ The second 32 bytes of the signature.
+     */
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s_
+    ) external {
+        if (block.timestamp > deadline) {
+            revert ERC2612ExpiredDeadline(deadline, block.timestamp);
+        }
+
+        bytes32 structHash = keccak256(abi.encode(_PERMIT_TYPEHASH, owner, spender, value, _useNonce(owner), deadline));
+        bytes32 hash = _hashTypedDataV4(structHash);
+        address signer = ECDSAUpgradeable.recover(hash, v, r, s_);
+
+        if (signer != owner) {
+            revert ERC2612InvalidSignature(owner, spender);
+        }
+
+        _approve(owner, spender, value);
+    }
+
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+     */
+    uint256[42] private __gap;
 
 
     // function nonces(address owner) external view returns (uint256) {

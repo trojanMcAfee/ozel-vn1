@@ -230,11 +230,11 @@ contract Setup is Test {
         uint length;
         if (id_ == 0) {
             length = 6;
-        } else if (id_ == 1 || id_ == 6 || id_ == 5) {
+        } else if (id_ == 1 || id_ == 6) {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
-        } else if (id_ == 3) {
+        } else if (id_ == 3 || id_ == 5) {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
@@ -263,6 +263,7 @@ contract Setup is Test {
         } else if (id_ == 5) {
             selectors[0] = roiL2.useUnderlying.selector;
             selectors[1] = roiL2.totalUnderlying.selector;
+            selectors[2] = roiL2.useOzTokens.selector;
         } else if (id_ == 6) {
             selectors[0] = oracles.rETH_ETH.selector;
             selectors[1] = oracles.getUnderlyingValue.selector;
