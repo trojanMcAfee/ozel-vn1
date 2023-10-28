@@ -127,9 +127,9 @@ contract ozTokenFactoryTest is Setup {
         // uint[] memory minAmountsOut = new uint[](2);
         // minAmountsOut[0] = Helpers.calculateMinAmountOut(bptAmountIn);
         // minAmountsOut[1] = 0;
-         uint[] memory minAmountsOut = HelpersTests.calculateMinAmountsOut(
-            [ethUsdChainlink, rEthEthChainlink], ozAmountIn / 1 ether, ozERC20.decimals(), defaultSlippage
-        );
+        //  uint[] memory minAmountsOut = HelpersTests.calculateMinAmountsOut(
+        //     [ethUsdChainlink, rEthEthChainlink], ozAmountIn / 1 ether, ozERC20.decimals(), defaultSlippage
+        // );
 
         // console.log('minOut: ', minAmountsOut[0]);
 
@@ -141,7 +141,9 @@ contract ozTokenFactoryTest is Setup {
         uint bptAmountIn = ozERC20.convertToUnderlying(shares);
 
         uint amountWethOut = (bptAmountIn * bptValue) / 1 ether;
-        uint minWethOut = Helpers.calculateMinAmountOut(amouamountWethOutntOut, defaultSlippage);
+        uint minWethOut = Helpers.calculateMinAmountOut(amountWethOut, defaultSlippage);
+
+        uint[] memory minAmountsOut = Helpers.convertToDynamic([minWethOut, uint(0), uint(0)]);
         //continue with the exit request using minWethOut
 
         //------
@@ -161,19 +163,24 @@ contract ozTokenFactoryTest is Setup {
         //     uint[] memory amountsIn
         // ) = Helpers.convertToDynamics([wethAddr, rEthWethPoolBalancer, rEthAddr], minsOut[1]);
 
-        // IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
-        //     assets: assets,
-        //     minAmountsOut: minAmountsOut,
-        //     userData: userData,
-        //     toInternalBalance: false 
-        // });
+        IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
+            assets: assets,
+            minAmountsOut: minAmountsOut,
+            userData: userData,
+            toInternalBalance: false 
+        });
 
-        // (, uint[] memory amountsOut) = IQueries(queriesBalancer).queryExit(
-        //     IPool(rEthWethPoolBalancer).getPoolId(),
-        //     alice,
-        //     address(ozDiamond),
-        //     request
-        // );
+        (, uint[] memory amountsOut) = IQueries(queriesBalancer).queryExit(
+            IPool(rEthWethPoolBalancer).getPoolId(),
+            alice,
+            address(ozDiamond),
+            request
+        );
+
+        uint minWethAmountOffchain = Helpers.calculateMinAmountOut(amountsOut[0], defaultSlippage);
+        console.log('minWethAmountOffchain: ', minWethAmountOffchain);
+
+
 
         // TradeAmountsOut memory amts = TradeAmountsOut({
         //     ozAmountIn: ozAmountIn,
