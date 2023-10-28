@@ -6,7 +6,7 @@ import "../../contracts/facets/ozTokenFactory.sol";
 import {Setup} from "./Setup.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 // import "solady/src/utils/FixedPointMathLib.sol";
-// import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {IQueries, IPool, IAsset, IVault} from "../../contracts/interfaces/IBalancer.sol";
 import {Helpers} from "../../contracts/libraries/Helpers.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
@@ -15,14 +15,17 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import {TradeAmounts, TradeAmountsOut} from "../../contracts/AppStorage.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
+import "solady/src/utils/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 
 
 contract ozTokenFactoryTest is Setup {
 
+    using FixedPointMathLib for uint;
 
-    function test_minting() internal {
+
+    function test_minting() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -57,7 +60,7 @@ contract ozTokenFactoryTest is Setup {
     }   
 
     
-    function test_totalUnderlying() internal {
+    function test_totalUnderlying() public {
         //Pre-conditions
         uint rawAmount = 100;
 
@@ -83,7 +86,7 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    function test_transfer() internal {
+    function test_transfer() public {
         //Pre-conditions
         uint rawAmount = 100;
 
@@ -180,6 +183,13 @@ contract ozTokenFactoryTest is Setup {
         uint minWethAmountOffchain = Helpers.calculateMinAmountOut(amountsOut[0], defaultSlippage);
         console.log('minWethAmountOffchain: ', minWethAmountOffchain);
 
+        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        console.log('price: ', uint(price));
+
+        // uint(price) * minWethAmountOffchain / 10 ** 26
+        uint minUsdcOut = uint(price).mulDiv(minWethAmountOffchain, 1e8);
+        assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
+        
 
 
         // TradeAmountsOut memory amts = TradeAmountsOut({
