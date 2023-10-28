@@ -101,14 +101,27 @@ library Helpers {
 
     function createRequest(
         address[] memory assets_,
-        uint[] memory maxAmountsIn_,
+        uint[] memory maxAmountsIn_, 
         bytes memory userData_
-    ) internal pure returns(IVault.JoinPoolRequest memory) {
+    ) internal pure returns(IVault.JoinPoolRequest memory) { 
         return IVault.JoinPoolRequest({
             assets: assets_,
             maxAmountsIn: maxAmountsIn_,
             userData: userData_,
             fromInternalBalance: false
+        });
+    }
+
+    function createExitRequest(
+        address[] memory assets_,
+        uint[] memory minAmountsOut_,
+        bytes memory userData_
+    ) internal pure returns(IVault.ExitPoolRequest memory) {
+        return IVault.ExitPoolRequest({
+            assets: assets_,
+            minAmountsOut: minAmountsOut_,
+            userData: userData_,
+            toInternalBalance: false
         });
     }
 

@@ -5,6 +5,9 @@ pragma solidity 0.8.21;
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
+import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
+import {IPool} from "../../contracts/interfaces/IBalancer.sol";
+import {Helpers} from "../../contracts/libraries/Helpers.sol";
 
 import "forge-std/console.sol";
 
@@ -39,6 +42,24 @@ library HelpersTests {
                         )
                     )
                 );
+    }
+
+    function calculateMinAmountsOut(
+        address rEthWethPoolBalancer_,
+        ozIToken ozERC20_,
+        uint ozAmountIn_,
+        uint slippage_
+    ) internal returns(uint[] memory) {
+        uint bptValue = IPool(rEthWethPoolBalancer_).getRate();
+
+        uint shares = ozERC20_.previewWithdraw(ozAmountIn_);
+        uint bptAmountIn = ozERC20_.convertToUnderlying(shares);
+
+        uint amountWethOut = (bptAmountIn * bptValue) / 1 ether;
+        uint minWethOut = Helpers.calculateMinAmountOut(amountWethOut, slippage_);
+        uint[] memory minAmountsOut = Helpers.convertToDynamic([minWethOut, uint(0), uint(0)]);
+
+        return minAmountsOut;
     }
 
 
