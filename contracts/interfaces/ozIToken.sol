@@ -63,6 +63,11 @@ interface ozIToken {
         uint8 v_, bytes32 r_, bytes32 s_
     ) external returns(uint);
 
+    function burn(
+        TradeAmountsOut memory amts_,
+        address receiver_
+    ) external;
+
     function burn2(uint amount, address receiver) external; //delete this
 
     function previewWithdraw(uint256 assets) external view returns (uint256 shares);

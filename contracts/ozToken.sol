@@ -15,7 +15,8 @@ import {
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {AppStorage, TradeAmounts, TradeAmountsOut} from "./AppStorage.sol";
-import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
+// import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
+import {ERC20Permit, IERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
 import "forge-std/console.sol";
 
@@ -41,7 +42,7 @@ error USDMInvalidBlockedAccount(address account);
 error USDMPausedTransfers();
 
 
-contract ozToken is ERC4626Upgradeable {
+contract ozToken is ERC4626Upgradeable, ERC20Permit {
     
     using MathUpgradeable for uint;
 
@@ -204,6 +205,16 @@ contract ozToken is ERC4626Upgradeable {
     }
 
 
+
+    function burn(
+        TradeAmountsOut memory amts_,
+        address receiver_
+    ) public {
+        address(this).safeTransferFrom(msg.sender, _ozDiamond);
+
+
+    }
+
     function burn(
         TradeAmountsOut memory amts_,
         address receiver_,
@@ -218,6 +229,8 @@ contract ozToken is ERC4626Upgradeable {
             block.timestamp,
             v_, r_, s_
         );
+
+        ozIDiamond(_ozDiamond).uzeOzTokens(amts_, address(this), msg.sender, receiver_);
 
         //Gets the amount of shares per ozTokens transferred
         uint shares = withdraw(amts_.ozAmountIn, receiver_, msg.sender);
@@ -253,6 +266,7 @@ contract ozToken is ERC4626Upgradeable {
         return 1;
 
     }
+
 
     function _transfer(
         address from, 
@@ -313,9 +327,9 @@ contract ozToken is ERC4626Upgradeable {
     }
 
 
-    function nonces(address owner) external view returns (uint256) {
-        // return _nonces[owner].current();
-    }
+    // function nonces(address owner) external view returns (uint256) {
+    //     // return _nonces[owner].current();
+    // }
 
     // enum Asset {
     //     USD,

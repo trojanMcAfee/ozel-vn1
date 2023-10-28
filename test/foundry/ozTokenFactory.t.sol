@@ -137,8 +137,6 @@ contract ozTokenFactoryTest is Setup {
         // console.log('minOut: ', minAmountsOut[0]);
 
         uint bptValue = IPool(rEthWethPoolBalancer).getRate();
-        console.log('bptValue: ', bptValue);
-        console.log('ozAmountIn: ', ozAmountIn);
         
         uint shares = ozERC20.previewWithdraw(ozAmountIn);
         uint bptAmountIn = ozERC20.convertToUnderlying(shares);
@@ -181,37 +179,38 @@ contract ozTokenFactoryTest is Setup {
         );
 
         uint minWethAmountOffchain = Helpers.calculateMinAmountOut(amountsOut[0], defaultSlippage);
-        console.log('minWethAmountOffchain: ', minWethAmountOffchain);
 
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        console.log('price: ', uint(price));
 
-        // uint(price) * minWethAmountOffchain / 10 ** 26
         uint minUsdcOut = uint(price).mulDiv(minWethAmountOffchain, 1e8);
         assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
         
+        //--------------------------------------
 
+        TradeAmountsOut memory amts = TradeAmountsOut({
+            ozAmountIn: ozAmountIn,
+            minWethOut: minWethAmountOffchain,
+            bptAmountIn: bptAmountIn
+        });
 
-        // TradeAmountsOut memory amts = TradeAmountsOut({
-        //     ozAmountIn: ozAmountIn,
-        //     minWethOut: amountsOut[0],
-        //     bptAmountIn: bptAmountIn
-        // });
+        bytes32 permitHash = HelpersTests.getPermitHash(
+            address(ozERC20),
+            alice,
+            address(ozDiamond),
+            ozAmountIn,
+            ozERC20.nonces(alice),
+            block.timestamp
+        );
 
-        // bytes32 permitHash = HelpersTests.getPermitHash(
-        //     testToken,
-        //     alice,
-        //     address(ozDiamond),
-        //     ozAmountIn,
-        //     ozERC20.nonces(alice),
-        //     block.timestamp
-        // );
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
 
-        // (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
+        vm.prank(alice);
+        ozERC20.burn(amts, alice, v, r, s); 
+
+        //-----------
 
         // vm.prank(alice);
-        // ozERC20.burn(amts, alice, v, r, s); 
-
+        // ozERC20.burn(amts, alice);
 
 
     }
