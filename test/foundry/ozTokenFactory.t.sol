@@ -140,13 +140,9 @@ contract ozTokenFactoryTest is Setup {
         uint shares = ozERC20.previewWithdraw(ozAmountIn);
         uint bptAmountIn = ozERC20.convertToUnderlying(shares);
 
-        uint amountOut = (bptAmountIn * bptValue) / 1 ether;
-        console.log('amountOut: ', amountOut);
-        uint minBptOut = Helpers.calculateMinAmountOut(amountOut, defaultSlippage);
-        console.log('minBptOut: ', minBptOut);
-
-        uint bal2 =IERC20Permit(rEthWethPoolBalancer).balanceOf(address(OZ));
-        console.log('bal - amountOut: ', (bal2 * bptValue) / 1 ether);
+        uint amountWethOut = (bptAmountIn * bptValue) / 1 ether;
+        uint minWethOut = Helpers.calculateMinAmountOut(amouamountWethOutntOut, defaultSlippage);
+        //continue with the exit request using minWethOut
 
         //------
         // uint shares = ozERC20.previewWithdraw(ozAmountIn);
