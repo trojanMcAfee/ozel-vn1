@@ -62,4 +62,11 @@ interface ozIToken {
         address receiver_,
         uint8 v_, bytes32 r_, bytes32 s_
     ) external returns(uint);
+
+    function burn2(uint amount, address receiver) external; //delete this
+
+    function previewWithdraw(uint256 assets) external view returns (uint256 shares);
+    function convertToUnderlying(uint shares_) external view returns(uint amountUnderlying);
+
+    function nonces(address owner) external view returns (uint256);
 }

@@ -91,7 +91,7 @@ contract ROImoduleL2 {
     }
 
     function totalUnderlying() public view returns(uint) {
-        // uint subTotal = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);
+        return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
 
         // if (type_ == UNDERLYING) {
         //     return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);

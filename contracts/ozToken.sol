@@ -54,6 +54,7 @@ contract ozToken is ERC4626Upgradeable {
     uint private _totalAssets;
 
     mapping(address user => uint256 shares) private _shares;
+    mapping(address => uint) private _nonces; //**** */
 
     event RewardMultiplier(uint256 indexed value);
 
@@ -179,18 +180,37 @@ contract ozToken is ERC4626Upgradeable {
     }
     
     //underlying is BPT ***
-    // function convertToUnderlying(uint shares_) public view returns(uint amountUnderlying) {
-    //     // totalShares() --- totalUnderlying();
-    //     //    shares_ ------- shareOfUnderlying (x)
+    function convertToUnderlying(uint shares_) public view returns(uint amountUnderlying) {
+        // totalShares() --- totalUnderlying();
+        //    shares_ ------- shareOfUnderlying (x)
+        // console.log('---- in ozToken -----');
+        // console.log('shares: ', shares_);
+        // console.log('ozIDiamond(_ozDiamond).totalUnderlying() / 1e12: ', ozIDiamond(_ozDiamond).totalUnderlying() / 1e12);
+        // console.log('ozIDiamond(_ozDiamond).totalUnderlying(): ', ozIDiamond(_ozDiamond).totalUnderlying());
+        // console.log('totalShares: ', totalShares());
+        // console.log('---- in ozToken -----');
 
-    //     amountUnderlying = ((shares_ * 10 ** 12) * totalUnderlying()) / totalShares();
-    // }
+        amountUnderlying = (shares_ * ozIDiamond(_ozDiamond).totalUnderlying()) / totalShares();
+    }
 
     // struct TradeAmountsOut {
     //     uint ozAmountIn;
     //     uint minWethOut;
     //     uint bptAmountIn;
     // }
+
+    function burn2(uint amount, address receiver) public {
+        // this.transferFrom(msg.sender, receiver, amount);
+        // this.transfer(receiver, amount);
+
+        (bool success,) = address(this).delegatecall(
+            abi.encodeWithSelector(
+                this.transfer.selector,
+                receiver, amount
+            )
+        );
+        require(success, "Fff");
+    }
 
 
     function burn(
@@ -257,6 +277,7 @@ contract ozToken is ERC4626Upgradeable {
 
         uint256 shares = convertToShares(amount);
         uint256 fromShares = _shares[from];
+        console.log('from: ', from);
 
         if (fromShares < shares) {
             revert ERC20InsufficientBalance(from, fromShares, shares);
@@ -298,6 +319,11 @@ contract ozToken is ERC4626Upgradeable {
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
+    }
+
+
+    function nonces(address owner) external view returns (uint256) {
+        // return _nonces[owner].current();
     }
 
     // enum Asset {
