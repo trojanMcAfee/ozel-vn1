@@ -27,15 +27,29 @@ contract ozTokenFactoryTest is Setup {
 
     function test_minting() public {
         //Pre-conditions
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        // ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+        //     testToken, "Ozel-ERC20", "ozERC20"
+        // ));
 
         //Actions
         uint rawAmount = 100;
-        uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
-        uint sharesBob = _mintOzTokens(ozERC20, rawAmount / 2, bob, BOB_PK);
-        uint sharesCharlie = _mintOzTokens(ozERC20, rawAmount / 4, charlie, CHARLIE_PK);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        // uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true
+        );
+
+        amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
+        // uint sharesBob = _mintOzTokens(ozERC20, rawAmount / 2, bob, BOB_PK);
+        (, uint sharesBob) = _createAndMintOzTokens(
+            address(ozERC20), amountIn, bob, BOB_PK, false
+        );
+
+        amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
+        // uint sharesCharlie = _mintOzTokens(ozERC20, rawAmount / 4, charlie, CHARLIE_PK);
+        (, uint sharesCharlie) = _createAndMintOzTokens(
+            address(ozERC20), amountIn, charlie, CHARLIE_PK, false
+        );
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
@@ -60,37 +74,14 @@ contract ozTokenFactoryTest is Setup {
     }   
 
     
-    function test_totalUnderlying() public {
-        //Pre-conditions
-        uint rawAmount = 100;
-
-        ozIToken ozERC20 = _createAndMintOzTokens(testToken, rawAmount, alice, ALICE_PK);
-
-        uint balAlice = ozERC20.balanceOf(alice);
-        assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
-
-        uint balBob = ozERC20.balanceOf(bob);
-        assertTrue(balBob == 0);
-
-        //Action
-        vm.startPrank(alice);
-        // ozERC20.transfer(bob, balAlice);
-        // ozERC20.approve(address(ozERC20), type(uint).max);
-        ozERC20.burn2(balAlice, bob);
-
-        uint bal = ozERC20.balanceOf(alice);
-        console.log('bal - should 0: ', bal);
-
-        bal = ozERC20.balanceOf(bob);
-        console.log('should not 0: ', bal);
-    }
+   
 
 
     function test_transfer() public {
         //Pre-conditions
         uint rawAmount = 100;
 
-        ozIToken ozERC20 = _createAndMintOzTokens(testToken, rawAmount, alice, ALICE_PK);
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, rawAmount, alice, ALICE_PK, true);
 
         uint balAlice = ozERC20.balanceOf(alice);
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
@@ -115,15 +106,13 @@ contract ozTokenFactoryTest is Setup {
         //Pre-conditions
         uint amountIn = 100 * 10 ** IERC20Permit(testToken).decimals();
 
-        ozIToken ozERC20 = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK);
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true);
         testToken = address(ozERC20);
 
         //Action
         uint ozAmountIn = ozERC20.balanceOf(alice);
 
         (
-            // uint minUsdcOut,
-            // TradeAmountsOut memory amts,
             RequestType memory req,
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
@@ -189,28 +178,28 @@ contract ozTokenFactoryTest is Setup {
         address testToken_,
         uint amountIn_, 
         address user_, 
-        uint userPk_
-    ) private returns(ozIToken) {
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken_, "Ozel-ERC20", "ozERC20"
-        ));
+        uint userPk_,
+        bool create_
+    ) private returns(ozIToken, uint) {
+        ozIToken ozERC20;
 
-        // (
-        //     TradeAmounts memory amounts,
-        //     uint8 v, bytes32 r, bytes32 s
-        // ) = _createDataOffchain(ozERC20, amountIn_, userPk_, user_);
+        if (create_) {
+            ozERC20 = ozIToken(OZ.createOzToken(
+                testToken_, "Ozel-ERC20", "ozERC20"
+            ));
+        } else {
+            ozERC20 = ozIToken(testToken_);
+        }
 
         (
-            // uint minUsdcOut,
-            // TradeAmountsOut memory amts,
             RequestType memory req,
             uint8 v, bytes32 r, bytes32 s
-        ) = _createDataOffchain(ozERC20, amountIn_, ALICE_PK, alice, Type.IN);
+        ) = _createDataOffchain(ozERC20, amountIn_, userPk_, user_, Type.IN);
 
         vm.prank(user_);
-        ozERC20.mint(req.amtsIn, user_, v, r, s); 
+        uint shares = ozERC20.mint(req.amtsIn, user_, v, r, s); 
 
-        return ozERC20;
+        return (ozERC20, shares);
     }
 
     function _mintOzTokens(
