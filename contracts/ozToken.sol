@@ -86,9 +86,16 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
     }
 
 
-
+    //bugg here ***
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
-        return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
+        console.log('*******');
+        console.log('assets: ', assets_);
+        console.log('totalShares: ', totalShares());
+        console.log('underVal: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        console.log('*******');
+        
+        // return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
+        return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
     }
 
     function totalAssets() public view override returns(uint) {
@@ -157,11 +164,15 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         emit Deposit(caller_, receiver_, assets_, shares_);
     }
 
+    //this previewDeposit (calls _convertToShares) uses assets_ as the incoming USDC in minting.
+    //while _convertToSahres on the previewWithdraw of the test uses amountIn as the ozERC20 ball (the correct appraoch)
+    //possible solution --> add a new previewDeposit that gets called only when depositing USDC
 
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
         uint shares = totalShares() == 0 ? assets_ : previewDeposit(assets_);
+        console.log('shares in depo: ', shares);
 
         _deposit(_msgSender(), receiver_, assets_, shares);
 

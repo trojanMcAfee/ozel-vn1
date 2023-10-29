@@ -68,6 +68,7 @@ contract ROImoduleL2 {
         address owner_,
         address receiver_
     ) external {
+        console.log(3);
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 

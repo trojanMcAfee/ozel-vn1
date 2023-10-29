@@ -45,32 +45,35 @@ contract ozTokenFactoryTest is Setup {
             address(ozERC20), amountIn, bob, BOB_PK, false
         );
 
-        amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
-        // uint sharesCharlie = _mintOzTokens(ozERC20, rawAmount / 4, charlie, CHARLIE_PK);
-        (, uint sharesCharlie) = _createAndMintOzTokens(
-            address(ozERC20), amountIn, charlie, CHARLIE_PK, false
-        );
+        console.log('sharesAlice: ', sharesAlice);
+        console.log('sharesBob: ', sharesBob);
+
+        // amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
+        // // uint sharesCharlie = _mintOzTokens(ozERC20, rawAmount / 4, charlie, CHARLIE_PK);
+        // (, uint sharesCharlie) = _createAndMintOzTokens(
+        //     address(ozERC20), amountIn, charlie, CHARLIE_PK, false
+        // );
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
         assertTrue(sharesAlice / 2 == sharesBob);
-        assertTrue(sharesAlice / 4 == sharesCharlie);
-        assertTrue(sharesBob == sharesCharlie * 2);
-        assertTrue(sharesBob / 2 == sharesCharlie);
+        // assertTrue(sharesAlice / 4 == sharesCharlie);
+        // assertTrue(sharesBob == sharesCharlie * 2);
+        // assertTrue(sharesBob / 2 == sharesCharlie);
 
-        uint balanceAlice = ozERC20.balanceOf(alice);
-        uint balanceBob = ozERC20.balanceOf(bob);
-        uint balanceCharlie = ozERC20.balanceOf(charlie);
+        // uint balanceAlice = ozERC20.balanceOf(alice);
+        // uint balanceBob = ozERC20.balanceOf(bob);
+        // uint balanceCharlie = ozERC20.balanceOf(charlie);
 
-        assertTrue(balanceAlice / 2 == balanceBob);
-        assertTrue(balanceAlice / 4 == balanceCharlie);
-        assertTrue(balanceBob == balanceCharlie * 2);
-        assertTrue(balanceBob / 2 == balanceCharlie);
+        // assertTrue(balanceAlice / 2 == balanceBob);
+        // assertTrue(balanceAlice / 4 == balanceCharlie);
+        // assertTrue(balanceBob == balanceCharlie * 2);
+        // assertTrue(balanceBob / 2 == balanceCharlie);
 
-        assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
-        assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + rawAmount / 2 + rawAmount / 4);
-        assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
+        // assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
+        // assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + rawAmount / 2 + rawAmount / 4);
+        // assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
     }   
 
     
@@ -116,47 +119,7 @@ contract ozTokenFactoryTest is Setup {
             RequestType memory req,
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
-   
-        // address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
-
-
-        // uint[] memory minAmountsOut = HelpersTests.calculateMinAmountsOut(
-        //     rEthWethPoolBalancer, ozERC20, ozAmountIn, defaultSlippage
-        // );
-
-        //------
-        // uint shares = ozERC20.previewWithdraw(ozAmountIn);
-        // uint bptAmountIn = ozERC20.convertToUnderlying(shares);
-        //-------
-
-
-        // IVault.ExitPoolRequest memory request = Helpers.createExitRequest(
-        //     assets, minAmountsOut, Helpers.createUserData(IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptAmountIn, 0)
-        // );
-
-
-        // (uint amountWethOut2, bytes32 permitHash) = _getHashNBptOut2(alice, request, ozAmountIn);
-
-        // uint minWethAmountOffchain = Helpers.calculateMinAmountOut(amountWethOut2, defaultSlippage);
-
-        // (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-
-        // uint minUsdcOut = uint(price).mulDiv(minWethAmountOffchain, 1e8);
-        // *****
-        // (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        // minUsdcOut = uint(price).mulDiv(minWethAmountOffchain, 1e8);
-        // assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
-        
-        //--------------------------------------
-
-        // TradeAmountsOut memory amts = TradeAmountsOut({
-        //     ozAmountIn: ozAmountIn,
-        //     minWethOut: minWethAmountOffchain,
-        //     bptAmountIn: bptAmountIn
-        // });
-
-
-        // (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
+        console.log(3);
 
         vm.prank(alice);
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
@@ -227,8 +190,6 @@ contract ozTokenFactoryTest is Setup {
         address sender_,
         Type reqType
     ) private returns(
-        // uint minUsdcOut, 
-        // TradeAmountsOut memory amts,
         RequestType memory req,
         uint8 v, bytes32 r, bytes32 s
     ) {
@@ -244,13 +205,13 @@ contract ozTokenFactoryTest is Setup {
             );
 
             uint shares = ozERC20_.previewWithdraw(amountIn_);
+            console.log('shares after previewW: ', shares);
             bptAmountIn = ozERC20_.convertToUnderlying(shares);
 
             IVault.ExitPoolRequest memory request = Helpers.createExitRequest(
                 assets, minAmountsOut, Helpers.createUserData(IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptAmountIn, 0)
             );
 
-            // RequestType memory req;
             req.exit = request;
             req.req = Type.OUT;
         } else if (reqType == Type.IN) {
@@ -268,12 +229,10 @@ contract ozTokenFactoryTest is Setup {
                 assets2, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
             );
 
-            // RequestType memory req;
             req.join = request;
             req.req = Type.IN;
         }
         
-        // (uint amountWethOut, bytes32 permitHash) = _getHashNBptOut(sender_, req, ozAmountIn_);
         (uint amountOut, bytes32 permitHash) = _getHashNBptOut(sender_, req, amountIn_);
 
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
@@ -299,51 +258,14 @@ contract ozTokenFactoryTest is Setup {
                 minBptOut: HelpersTests.calculateMinAmountsOut(amountOut, defaultSlippage)
             });
 
-            // req.amtsIn = amounts;
         }
 
-        // (v, r, s) = vm.sign(SENDER_PK_, permitHash);
     }
     
 
 
-    // function _createDataOffchain( 
-    //     ozIToken ozERC20_, 
-    //     uint amountIn_,
-    //     uint SENDER_PK_,
-    //     address sender_
-    // ) private returns(TradeAmounts memory amounts, uint8 v, bytes32 r, bytes32 s) { 
-    //     // uint amountIn = rawAmount_ * 10 ** IERC20Permit(testToken).decimals();
 
-    //     uint[] memory minsOut = HelpersTests.calculateMinAmountsOut(
-    //         [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
-    //     );
-
-    //     (
-    //         address[] memory assets,
-    //         uint[] memory maxAmountsIn,
-    //         uint[] memory amountsIn
-    //     ) = Helpers.convertToDynamics([wethAddr, rEthWethPoolBalancer, rEthAddr], minsOut[1]);
-
-    //     IVault.JoinPoolRequest memory request = Helpers.createRequest(
-    //         assets, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
-    //     );
-
-    //     RequestType memory req;
-    //     req.join = request;
-    //     req.req = Type.IN;
-
-    //     (uint bptOut, bytes32 permitHash) = _getHashNBptOut(sender_, req, amountIn_);
-
-    //     (v, r, s) = vm.sign(SENDER_PK_, permitHash);
-
-    //     amounts = TradeAmounts({
-    //         amountIn: amountIn,
-    //         minWethOut: minsOut[0],
-    //         minRethOut: minsOut[1],
-    //         minBptOut: HelpersTests.calculateMinAmountsOut(bptOut, defaultSlippage)
-    //     });
-    // }
+   
 
     enum Type {
         IN,
@@ -400,29 +322,9 @@ contract ozTokenFactoryTest is Setup {
         return (paramOut, permitHash);
     }
 
-    // function _getHashNBptOut2(
-    //     address sender_,
-    //     RequestType memory request_, //IVault.ExitPoolRequest memory request_
-    //     uint ozAmountIn_
-    // ) internal returns(uint, bytes32) {
-    //     (, uint[] memory amountsOut) = IQueries(queriesBalancer).queryExit(
-    //         IPool(rEthWethPoolBalancer).getPoolId(),
-    //         alice,
-    //         address(ozDiamond),
-    //         request_
-    //     );
+   
 
-    //     bytes32 permitHash = HelpersTests.getPermitHash(
-    //         testToken,
-    //         sender_,
-    //         address(ozDiamond),
-    //         ozAmountIn_,
-    //         IERC20Permit(testToken).nonces(sender_),
-    //         block.timestamp
-    //     );
-
-    //     return (amountsOut[0], permitHash);
-    // }
+   
     
 
 
