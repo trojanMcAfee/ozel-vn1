@@ -304,7 +304,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
         uint256 shares = convertToShares(amount);
         uint256 fromShares = _shares[from];
-        console.log('from: ', from);
 
         if (fromShares < shares) {
             revert ERC20InsufficientBalance(from, fromShares, shares);

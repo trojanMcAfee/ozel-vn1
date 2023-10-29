@@ -72,6 +72,7 @@ contract ROImoduleL2 {
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 
         console.log(' ozBal ******: ', IERC20Permit(ozToken_).balanceOf(address(this)));
+        console.log('ozBal alice - should 0: ', IERC20Permit(ozToken_).balanceOf(owner_));
 
         revert('exitoooo');
 
