@@ -138,12 +138,12 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         return shares;
     }
 
-    function _convertToSharesUnderlying(uint assets_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
+    function _convertToSharesFromUnderlying(uint assets_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
         return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
     }
 
     function previewDeposit(uint assets_) public view override returns(uint) {
-        return _convertToSharesUnderlying(assets_, MathUpgradeable.Rounding.Down);
+        return _convertToSharesFromUnderlying(assets_, MathUpgradeable.Rounding.Down);
     }
 
 
@@ -173,7 +173,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
-        console.log('totalShares in depo: ', totalShares());
         uint shares = totalShares() == 0 ? assets_ : previewDeposit(assets_);
 
         _deposit(_msgSender(), receiver_, assets_, shares);

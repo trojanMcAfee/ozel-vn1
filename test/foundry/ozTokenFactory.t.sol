@@ -26,30 +26,21 @@ contract ozTokenFactoryTest is Setup {
 
 
     function test_minting() public {
-        //Pre-conditions
-        // ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-        //     testToken, "Ozel-ERC20", "ozERC20"
-        // ));
-
-        //Actions
+        /**
+         * Pre-conditions + Actions (creating of ozTokens)
+         */
         uint rawAmount = 100;
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        // uint sharesAlice = _mintOzTokens(ozERC20, rawAmount, alice, ALICE_PK);
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
             testToken, amountIn, alice, ALICE_PK, true
         );
 
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
-        // uint sharesBob = _mintOzTokens(ozERC20, rawAmount / 2, bob, BOB_PK);
         (, uint sharesBob) = _createAndMintOzTokens(
             address(ozERC20), amountIn, bob, BOB_PK, false
         );
 
-        // console.log('sharesAlice: ', sharesAlice);
-        // console.log('sharesBob: ', sharesBob);
-
         amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
-        // uint sharesCharlie = _mintOzTokens(ozERC20, rawAmount / 4, charlie, CHARLIE_PK);
         (, uint sharesCharlie) = _createAndMintOzTokens(
             address(ozERC20), amountIn, charlie, CHARLIE_PK, false
         );
@@ -84,7 +75,9 @@ contract ozTokenFactoryTest is Setup {
         //Pre-conditions
         uint rawAmount = 100;
 
-        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, rawAmount, alice, ALICE_PK, true);
+        (ozIToken ozERC20,) = _createAndMintOzTokens(
+            testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true
+        );
 
         uint balAlice = ozERC20.balanceOf(alice);
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
@@ -127,11 +120,6 @@ contract ozTokenFactoryTest is Setup {
 
     }
      
-
-
-
-
-
 
 
 
