@@ -92,6 +92,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         console.log('assets: ', assets_);
         console.log('totalShares: ', totalShares());
         console.log('underVal: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        console.log('totalAssets: ', totalAssets());
         console.log('*******');
         
         // return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
@@ -145,6 +146,25 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         return shares;
     }
 
+    function _convertToSharesUnderlying(uint assets_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
+        console.log('*******2');
+        console.log('assets: ', assets_);
+        console.log('totalShares: ', totalShares());
+        console.log('underVal: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        console.log('totalAssets: ', totalAssets());
+        console.log('total: ', assets_.mulDiv(totalShares(), totalAssets(), rounding_));
+        console.log('*******');
+        
+        uint x = assets_.mulDiv(totalShares(), totalAssets(), rounding_);
+        console.log('x: ', x);
+        return x;
+    }
+
+    function previewDeposit(uint assets_) public view override returns(uint) {
+        return _convertToSharesUnderlying(assets_, MathUpgradeable.Rounding.Down);
+    }
+
+
     function _deposit( 
         address caller_,
         address receiver_,
@@ -171,8 +191,19 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
+        console.log('totalShares in depo: ', totalShares());
         uint shares = totalShares() == 0 ? assets_ : previewDeposit(assets_);
-        console.log('shares in depo: ', shares);
+
+        // uint shares;
+        // if (totalShares() == 0) {
+        //     shares = assets_;
+        // } else {
+        //     console.log('should log');
+        //     shares = previewDeposit(assets_);
+        //     console.log('shares in if block: ', shares);
+        // }
+
+        // console.log('shares in depo2: ', shares);
 
         _deposit(_msgSender(), receiver_, assets_, shares);
 
