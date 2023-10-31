@@ -5,8 +5,13 @@ pragma solidity 0.8.21;
 // import "../../lib/forge-std/src/interfaces/IERC20.sol"; 
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
-// import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage, TradeAmounts, TradeAmountsOut} from "../AppStorage.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {
+    AppStorage, 
+    TradeAmounts, 
+    TradeAmountsOut, 
+    Asset
+} from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
 // import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
@@ -74,6 +79,7 @@ contract ROImoduleL2 {
         // console.log(' ozBal ******: ', IERC20Permit(ozToken_).balanceOf(address(this)));
         // console.log('ozBal alice - should 0: ', IERC20Permit(ozToken_).balanceOf(owner_));
 
+        revert('exittooo');
 
         _removeLiquidityBalancer(
             amts_.minWethOut, amts_.bptAmountIn, poolId, receiver_
@@ -87,19 +93,18 @@ contract ROImoduleL2 {
         
     }
 
-    enum Asset {
-        USD,
-        UNDERLYING
-    }
+    // enum Asset {
+    //     USD,
+    //     UNDERLYING
+    // }
 
-    function totalUnderlying() public view returns(uint) {
-        return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
+    function totalUnderlying(Asset type_) public view returns(uint total) {
+        total = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
 
-        // if (type_ == UNDERLYING) {
-        //     return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(_ozDiamond);
-        // } else if (type_ == USD) {
-            
-        // }
+        if (type_ == Asset.USD) {
+            (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+            total = uint(price).mulDiv(total, 1e8);
+        }
     }
 
 

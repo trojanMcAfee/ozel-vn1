@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {IDiamondCut} from "./IDiamondCut.sol";
-import {TradeAmounts, TradeAmountsOut} from "../AppStorage.sol";
+import {TradeAmounts, TradeAmountsOut, Asset} from "../AppStorage.sol";
 
 
 interface ozIDiamond {
@@ -34,5 +34,5 @@ interface ozIDiamond {
     function rETH_ETH() external returns(uint256); //if not used, removed
     function getRewardMultiplier() external view returns(uint);
     function getUnderlyingValue() external view returns(uint);
-    function totalUnderlying() external view returns(uint);
+    function totalUnderlying(Asset) external view returns(uint);
 }

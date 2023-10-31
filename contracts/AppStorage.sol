@@ -47,6 +47,11 @@ struct TradeAmountsOut {
     uint bptAmountIn;
 }
 
+enum Asset {
+    USD,
+    UNDERLYING
+}
+
 
 
 
