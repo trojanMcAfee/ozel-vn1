@@ -17,10 +17,16 @@ import {ozTokenFactory} from "../../contracts/facets/ozTokenFactory.sol";
 import "../../contracts/facets/Pools.sol";
 import "../../contracts/Diamond.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
-import {ozOracles} from "../../contracts/facets/ozOracles.sol"; 
+import {ozOracle} from "../../contracts/facets/ozOracle.sol"; 
 import {ozBeacon} from "../../contracts/facets/ozBeacon.sol";
 import {ozLoupe} from "../../contracts/facets/ozLoupe.sol";
 import {ozToken} from "../../contracts/ozToken.sol";
+import {
+    Tokens,
+    Dexes,
+    Oracles,
+    DiamondInfra
+} from "../../contracts/AppStorage.sol";
 
 // import "forge-std/console.sol";
 
@@ -83,7 +89,7 @@ contract Setup is Test {
     MirrorExchange internal mirrorEx;  
     Pools internal pools;
     ROImoduleL2 internal roiL2;
-    ozOracles internal oracles;
+    ozOracle internal oracle;
     ozLoupe internal loupe;
 
     ozIDiamond internal OZ;
@@ -92,8 +98,31 @@ contract Setup is Test {
 
     uint internal constant _BASE = 18;
 
+    // struct Tokens {
+    //     address weth;
+    //     address reth;
+    //     address usdc;
+    // }
+
+    // struct Dexes {
+    //     address swapRouterUni;
+    //     address vaultBalancer;
+    //     address queriesBalancer;
+    //     address rEthWethPoolBalancer;
+    // }
+
+    // struct Oracles {
+    //     address ethUsdChainlink;
+    //     address rEthEthChainlink;
+    // }
+
+    // struct DiamondInfra {
+    //     address ozDiamond;
+    //     address beacon;
+    //     uint defaultSlippage; //try chaning this to an uin8
+    // }
+
     /** FUNCTIONS **/
-    
     function setUp() public {
         (string memory network, uint blockNumber) = _chooseNetwork(Network.ARBITRUM);
         vm.createSelectFork(vm.rpcUrl(network), blockNumber);
@@ -178,7 +207,7 @@ contract Setup is Test {
         factory = new ozTokenFactory();
         pools = new Pools();
         roiL2 = new ROImoduleL2();
-        oracles = new ozOracles();
+        oracle = new ozOracle();
         beacon = new ozBeacon(address(tokenOz));
 
         //Create initial FacetCuts
@@ -189,29 +218,62 @@ contract Setup is Test {
         cuts[3] = _createCut(address(factory), 3);
         cuts[4] = _createCut(address(pools), 4);
         cuts[5] = _createCut(address(roiL2), 5);
-        cuts[6] = _createCut(address(oracles), 6);
+        cuts[6] = _createCut(address(oracle), 6);
         cuts[7] = _createCut(address(beacon), 7);
 
         //Create ERC20 registry
-        address[] memory registry = new address[](1);
-        registry[0] = usdtAddr;
+        // address[] memory registry = new address[](1);
+        // registry[0] = usdtAddr;
+
+        Tokens memory tokens = Tokens({
+            weth: wethAddr,
+            reth: rEthAddr,
+            usdc: usdcAddr,
+            usdt: usdtAddr
+        });
+
+        Dexes memory dexes = Dexes({
+            swapRouterUni: swapRouterUni,
+            vaultBalancer: vaultBalancer,
+            queriesBalancer: queriesBalancer,
+            rEthWethPoolBalancer: rEthWethPoolBalancer
+        });
+
+        Oracles memory oracles = Oracles({
+            ethUsdChainlink: ethUsdChainlink,
+            rEthEthChainlink: rEthEthChainlink
+        });
+
+        DiamondInfra memory infra = DiamondInfra({
+            ozDiamond: address(ozDiamond),
+            beacon: address(beacon),
+            defaultSlippage: defaultSlippage
+        });
 
         bytes memory initData = abi.encodeWithSelector(
             initDiamond.init.selector, 
-            registry,
-            address(ozDiamond),
-            swapRouterUni,
-            ethUsdChainlink,
-            wethAddr,
-            defaultSlippage,
-            vaultBalancer,
-            queriesBalancer,
-            rEthAddr,
-            rEthWethPoolBalancer,
-            rEthEthChainlink,
-            address(beacon),
-            usdcAddr
+            tokens,
+            dexes,
+            oracles,
+            infra
         );
+
+        // bytes memory initData = abi.encodeWithSelector(
+        //     initDiamond.init.selector, 
+        //     registry,
+        //     address(ozDiamond), //DiamondInfra
+        //     swapRouterUni, //Dexes
+        //     ethUsdChainlink, //Oracles
+        //     wethAddr, //tokens
+        //     defaultSlippage, //DiamondInfra
+        //     vaultBalancer, //Dexes
+        //     queriesBalancer, //Dexes
+        //     rEthAddr, //tokens
+        //     rEthWethPoolBalancer, //Dexes
+        //     rEthEthChainlink, //Oracles
+        //     address(beacon), //DiamondInfra
+        //     usdcAddr //tokens
+        // );
 
         OZ = ozIDiamond(address(ozDiamond));
 
@@ -266,8 +328,8 @@ contract Setup is Test {
             selectors[1] = roiL2.totalUnderlying.selector;
             selectors[2] = roiL2.useOzTokens.selector;
         } else if (id_ == 6) {
-            selectors[0] = oracles.rETH_ETH.selector;
-            selectors[1] = oracles.getUnderlyingValue.selector;
+            selectors[0] = oracle.rETH_ETH.selector;
+            selectors[1] = oracle.getUnderlyingValue.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;
@@ -312,7 +374,7 @@ contract Setup is Test {
         vm.label(rEthAddr, "rETH");
         vm.label(rEthImpl, "rETHimpl");
         vm.label(feesCollectorBalancer, "FeesCollectorBalancer");
-        vm.label(address(oracles), "ozOracles");
+        vm.label(address(oracle), "ozOracle");
         vm.label(address(beacon), "ozBeacon");
         vm.label(address(tokenOz), "ozTokenImplementation");
         vm.label(fraxAddr, "FRAX");

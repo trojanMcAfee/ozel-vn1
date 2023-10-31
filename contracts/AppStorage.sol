@@ -14,6 +14,7 @@ struct AppStorage {
     address ozDiamond;
     address WETH; 
     address USDC;
+    address USDT;
 
     address swapRouterUni;
     address ethUsdChainlink; //consider removing this since minOut is calculated in the FE
@@ -52,6 +53,35 @@ struct TradeAmountsOut {
 enum Asset {
     USD,
     UNDERLYING
+}
+
+
+/**
+ * DiamondInit structs
+ */
+struct Tokens {
+    address weth;
+    address reth;
+    address usdc;
+    address usdt;
+}
+
+struct Dexes {
+    address swapRouterUni;
+    address vaultBalancer;
+    address queriesBalancer;
+    address rEthWethPoolBalancer;
+}
+
+struct Oracles {
+    address ethUsdChainlink;
+    address rEthEthChainlink;
+}
+
+struct DiamondInfra {
+    address ozDiamond;
+    address beacon;
+    uint defaultSlippage; //try chaning this to an uin8
 }
 
 

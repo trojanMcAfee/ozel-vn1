@@ -10,7 +10,7 @@ import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import "forge-std/console.sol";
 
 
-contract ozOracles {
+contract ozOracle {
 
     AppStorage private s;
 
