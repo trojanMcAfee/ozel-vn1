@@ -126,7 +126,7 @@ contract ozTokenFactoryTest is Setup {
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        uint minUsdcOut = uint(price).mulDiv(req.exit.minAmountsOut[0], 1e8);
+        uint minUsdcOut = uint(price).mulDiv(req.exit.minAmountsOut[0], 1e8); //req.exit.minAmountsOut[0] --> minWethOutOffchain
 
         //Actions
         vm.prank(alice);
@@ -148,9 +148,7 @@ contract ozTokenFactoryTest is Setup {
         address user_, 
         uint userPk_,
         bool create_
-    ) private returns(ozIToken, uint) {
-        ozIToken ozERC20;
-
+    ) private returns(ozIToken ozERC20, uint shares) {
         if (create_) {
             ozERC20 = ozIToken(OZ.createOzToken(
                 testToken_, "Ozel-ERC20", "ozERC20"
@@ -165,9 +163,7 @@ contract ozTokenFactoryTest is Setup {
         ) = _createDataOffchain(ozERC20, amountIn_, userPk_, user_, Type.IN);
 
         vm.prank(user_);
-        uint shares = ozERC20.mint(req.amtsIn, user_, v, r, s); 
-
-        return (ozERC20, shares);
+        shares = ozERC20.mint(req.amtsIn, user_, v, r, s); 
     }
 
 
@@ -221,16 +217,9 @@ contract ozTokenFactoryTest is Setup {
             req.req = Type.IN;
         }
         
-        (uint amountOut, bytes32 permitHash) = _getHashNBptOut(sender_, req, amountIn_);
+        (uint amountOut, bytes32 permitHash) = _getHashNAmountOut(sender_, req, amountIn_);
 
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
-
-        //-------
-        // (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        // uint minUsdcOut = uint(price).mulDiv(minAmountsOut[0], 1e8);
-        // // console.log('minUsdcOut ****: ', uint(price).mulDiv(minAmountsOut[0], 1e8));
-        // assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
-        //-------
 
         if (reqType == Type.OUT) {
             req.amtsOut = TradeAmountsOut({
@@ -238,8 +227,6 @@ contract ozTokenFactoryTest is Setup {
                 minWethOut: Helpers.calculateMinAmountOut(amountOut, defaultSlippage),
                 bptAmountIn: bptAmountIn
             });
-
-            // req.amtsOut = amounts;
         } else if (reqType == Type.IN) {
             req.amtsIn = TradeAmounts({
                 amountIn: amountIn_,
@@ -247,16 +234,14 @@ contract ozTokenFactoryTest is Setup {
                 minRethOut: minAmountsOut[1],
                 minBptOut: HelpersTests.calculateMinAmountsOut(amountOut, defaultSlippage)
             });
-
         }
-
     }
     
 
 
-    function _getHashNBptOut(
+    function _getHashNAmountOut(
         address sender_,
-        RequestType memory request_, //IVault.JoinPoolRequest memory request_
+        RequestType memory request_, 
         uint amountIn_
     ) internal returns(uint, bytes32) {
         uint bptOut;
@@ -294,16 +279,4 @@ contract ozTokenFactoryTest is Setup {
 
         return (paramOut, permitHash);
     }
-
-   
-
-   
-    
-
-
-    
-
-
-
-
 }

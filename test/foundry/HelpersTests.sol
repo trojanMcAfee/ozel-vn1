@@ -49,7 +49,7 @@ library HelpersTests {
         ozIToken ozERC20_,
         uint ozAmountIn_,
         uint slippage_
-    ) internal returns(uint[] memory) {
+    ) internal view returns(uint[] memory) {
         uint bptValue = IPool(rEthWethPoolBalancer_).getRate();
 
         uint shares = ozERC20_.previewWithdraw(ozAmountIn_);
