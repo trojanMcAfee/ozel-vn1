@@ -24,6 +24,19 @@ contract ozTokenFactoryTest is Setup {
 
     using FixedPointMathLib for uint;
 
+     enum Type {
+        IN,
+        OUT
+    }
+
+    struct RequestType {
+        IVault.JoinPoolRequest join;
+        IVault.ExitPoolRequest exit;
+        Type req;
+        TradeAmounts amtsIn;
+        TradeAmountsOut amtsOut;
+    }
+
 
     function test_minting() public {
         /**
@@ -68,8 +81,6 @@ contract ozTokenFactoryTest is Setup {
     }   
 
     
-   
-
 
     function test_transfer() public {
         //Pre-conditions
@@ -107,12 +118,17 @@ contract ozTokenFactoryTest is Setup {
 
         //Action
         uint ozAmountIn = ozERC20.balanceOf(alice);
+        
 
         (
             RequestType memory req,
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
-        console.log(3);
+
+        uint minWehtOutOffchain = req.exit.minAmountsOut[0];
+        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        uint minUsdcOut = uint(price).mulDiv(minWehtOutOffchain, 1e8);
+        assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
 
         vm.prank(alice);
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
@@ -120,7 +136,6 @@ contract ozTokenFactoryTest is Setup {
 
     }
      
-
 
 
     /** HELPERS ***/
@@ -153,22 +168,6 @@ contract ozTokenFactoryTest is Setup {
         return (ozERC20, shares);
     }
 
-    function _mintOzTokens(
-        ozIToken ozERC20_,
-        uint rawAmount_, 
-        address user_, 
-        uint userPk_
-    ) private returns(uint) {
-        // (
-        //     TradeAmounts memory amounts,
-        //     uint8 v, bytes32 r, bytes32 s
-        // ) = _createDataOffchain(ozERC20_, rawAmount_, userPk_, user_, Type.IN);
-
-        // vm.prank(user_);
-        // uint shares = ozERC20_.mint(amounts, user_, v, r, s); 
-
-        // return shares;
-    }
 
 
     function _createDataOffchain( 
@@ -193,7 +192,6 @@ contract ozTokenFactoryTest is Setup {
             );
 
             uint shares = ozERC20_.previewWithdraw(amountIn_);
-            console.log('shares after previewW: ', shares);
             bptAmountIn = ozERC20_.convertToUnderlying(shares);
 
             IVault.ExitPoolRequest memory request = Helpers.createExitRequest(
@@ -227,7 +225,9 @@ contract ozTokenFactoryTest is Setup {
 
         //-------
         // (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        // minUsdcOut = uint(price).mulDiv(minWethAmountOffchain, 1e8);
+        // uint minUsdcOut = uint(price).mulDiv(minAmountsOut[0], 1e8);
+        // // console.log('minUsdcOut ****: ', uint(price).mulDiv(minAmountsOut[0], 1e8));
+        // assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
         //-------
 
         if (reqType == Type.OUT) {
@@ -250,23 +250,6 @@ contract ozTokenFactoryTest is Setup {
 
     }
     
-
-
-
-   
-
-    enum Type {
-        IN,
-        OUT
-    }
-
-    struct RequestType {
-        IVault.JoinPoolRequest join;
-        IVault.ExitPoolRequest exit;
-        Type req;
-        TradeAmounts amtsIn;
-        TradeAmountsOut amtsOut;
-    }
 
 
     function _getHashNBptOut(

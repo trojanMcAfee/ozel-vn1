@@ -166,9 +166,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         emit Deposit(caller_, receiver_, assets_, shares_);
     }
 
-    //this previewDeposit (calls _convertToShares) uses assets_ as the incoming USDC in minting.
-    //while _convertToSahres on the previewWithdraw of the test uses amountIn as the ozERC20 ball (the correct appraoch)
-    //possible solution --> add a new previewDeposit that gets called only when depositing USDC
 
     function deposit(uint assets_, address receiver_) public override returns(uint) {
         require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
