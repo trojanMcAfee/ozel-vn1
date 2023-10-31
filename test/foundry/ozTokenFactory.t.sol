@@ -125,13 +125,15 @@ contract ozTokenFactoryTest is Setup {
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-        uint minWehtOutOffchain = req.exit.minAmountsOut[0];
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        uint minUsdcOut = uint(price).mulDiv(minWehtOutOffchain, 1e8);
-        assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
+        uint minUsdcOut = uint(price).mulDiv(req.exit.minAmountsOut[0], 1e8);
 
+        //Actions
         vm.prank(alice);
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
+
+        //Post-conditions
+        assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
 
 
     }

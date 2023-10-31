@@ -68,14 +68,12 @@ contract ROImoduleL2 {
         address owner_,
         address receiver_
     ) external {
-        console.log(3);
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 
-        console.log(' ozBal ******: ', IERC20Permit(ozToken_).balanceOf(address(this)));
-        console.log('ozBal alice - should 0: ', IERC20Permit(ozToken_).balanceOf(owner_));
+        // console.log(' ozBal ******: ', IERC20Permit(ozToken_).balanceOf(address(this)));
+        // console.log('ozBal alice - should 0: ', IERC20Permit(ozToken_).balanceOf(owner_));
 
-        revert('exitoooo');
 
         _removeLiquidityBalancer(
             amts_.minWethOut, amts_.bptAmountIn, poolId, receiver_
