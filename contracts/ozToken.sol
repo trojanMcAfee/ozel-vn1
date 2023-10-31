@@ -88,15 +88,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
     //bugg here ***
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
-        console.log('*******');
-        console.log('assets: ', assets_);
-        console.log('totalShares: ', totalShares());
-        console.log('underVal: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-        console.log('totalAssets: ', totalAssets());
-        console.log('*******');
-        
-        // return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
-        return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
+        return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
     }
 
     function totalAssets() public view override returns(uint) {
@@ -147,17 +139,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
     }
 
     function _convertToSharesUnderlying(uint assets_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
-        console.log('*******2');
-        console.log('assets: ', assets_);
-        console.log('totalShares: ', totalShares());
-        console.log('underVal: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-        console.log('totalAssets: ', totalAssets());
-        console.log('total: ', assets_.mulDiv(totalShares(), totalAssets(), rounding_));
-        console.log('*******');
-        
-        uint x = assets_.mulDiv(totalShares(), totalAssets(), rounding_);
-        console.log('x: ', x);
-        return x;
+        return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
     }
 
     function previewDeposit(uint assets_) public view override returns(uint) {
@@ -193,17 +175,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
         console.log('totalShares in depo: ', totalShares());
         uint shares = totalShares() == 0 ? assets_ : previewDeposit(assets_);
-
-        // uint shares;
-        // if (totalShares() == 0) {
-        //     shares = assets_;
-        // } else {
-        //     console.log('should log');
-        //     shares = previewDeposit(assets_);
-        //     console.log('shares in if block: ', shares);
-        // }
-
-        // console.log('shares in depo2: ', shares);
 
         _deposit(_msgSender(), receiver_, assets_, shares);
 
