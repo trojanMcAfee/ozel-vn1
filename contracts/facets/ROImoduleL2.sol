@@ -32,8 +32,8 @@ contract ROImoduleL2 {
     using TransferHelper for address;
     using FixedPointMathLib for uint;
   
-
     AppStorage internal s;
+
 
     function useUnderlying( 
         address underlying_, 
@@ -76,16 +76,13 @@ contract ROImoduleL2 {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 
-        // console.log(' ozBal ******: ', IERC20Permit(ozToken_).balanceOf(address(this)));
-        // console.log('ozBal alice - should 0: ', IERC20Permit(ozToken_).balanceOf(owner_));
-
-        revert('exittooo');
-
         _removeLiquidityBalancer(
-            amts_.minWethOut, amts_.bptAmountIn, poolId, receiver_
-        ); //I have WETH now
+            amts_.minWethOut, amts_.bptAmountIn, poolId
+        ); 
 
-        // return;
+        
+
+        revert('exittooo2');
 
         //Swap WETH to USDC
         // _swapUni();
@@ -93,10 +90,6 @@ contract ROImoduleL2 {
         
     }
 
-    // enum Asset {
-    //     USD,
-    //     UNDERLYING
-    // }
 
     function totalUnderlying(Asset type_) public view returns(uint total) {
         total = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
@@ -111,13 +104,8 @@ contract ROImoduleL2 {
     function _removeLiquidityBalancer(
         uint minWethOut_, 
         uint bptAmountIn_, 
-        bytes32 poolId_, 
-        address receiver_
+        bytes32 poolId_
     ) private {
-        //----- Calculate my BPT rate
-        uint bptValue = IPool(s.rEthWethPoolBalancer).getRate();
-        // console.log('My BPT value: ', bptValue * bptAmountIn_);
-
         address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
         uint[] memory minAmountsOut = Helpers.convertToDynamic([minWethOut_, uint(0), uint(0)]);
 
@@ -132,20 +120,16 @@ contract ROImoduleL2 {
             toInternalBalance: false
         });
 
-        IVault(s.vaultBalancer).exitPool( //finish this, calculate slippage on exit,
-            poolId_, //query final WETH bal, query to USD, see how much USD you got compared when joining
-            address(this), //use that to estimate if shares to users would be based
-            payable(receiver_), //on BPT bal on USDC deposited (based on USD value of BPT)
+        IVault(s.vaultBalancer).exitPool( 
+            poolId_, 
+            address(this), 
+            payable(address(this)), 
             request
         );
-
 
     }
 
 
-    // function totalUnderlying() public view returns(uint) {
-    //     return IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
-    // }
 
 
     //**** HELPERS */
