@@ -12,7 +12,8 @@ struct AppStorage {
 
     address[] ozTokenRegistry;
     address ozDiamond;
-    address WETH;
+    address WETH; 
+    address USDC;
 
     address swapRouterUni;
     address ethUsdChainlink; //consider removing this since minOut is calculated in the FE
@@ -27,7 +28,7 @@ struct AppStorage {
 
     mapping(address underlying => address token) ozTokens;
     address[] ozTokensArr;
-    uint rewardMultiplier;
+    uint rewardMultiplier; //remove if not used
 
     address ozBeacon;
   
@@ -45,6 +46,7 @@ struct TradeAmountsOut {
     uint ozAmountIn;
     uint minWethOut;
     uint bptAmountIn;
+    uint minUsdcOut;
 }
 
 enum Asset {

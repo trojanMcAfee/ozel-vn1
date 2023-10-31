@@ -80,7 +80,19 @@ contract ROImoduleL2 {
             amts_.minWethOut, amts_.bptAmountIn, poolId
         ); 
 
-        
+        uint bal = IERC20Permit(s.USDC).balanceOf(receiver_);
+        console.log('usdc bal pre: ', bal);
+
+        _swapUni(
+            IERC20Permit(s.WETH).balanceOf(address(this)),
+            amts_.minUsdcOut,
+            s.WETH,
+            s.USDC,
+            receiver_
+        );
+
+        bal = IERC20Permit(s.USDC).balanceOf(receiver_);
+        console.log('usdc bal post: ', bal);
 
         revert('exittooo2');
 
@@ -156,6 +168,31 @@ contract ROImoduleL2 {
 
         uint amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
         if (amountOut == 0) revert TokenInNotValid(underlying_);
+    }
+
+    function _swapUni(
+        uint amountIn_, 
+        uint minAmountOut_, 
+        address tokenIn_,
+        address tokenOut_,
+        address receiver_
+    ) private {
+        tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
+
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({
+                tokenIn: tokenIn_,
+                tokenOut: tokenOut_, 
+                fee: 500, //0.05 - 500 / make this a programatic value
+                recipient: address(this),
+                deadline: block.timestamp,
+                amountIn: amountIn_,
+                amountOutMinimum: minAmountOut_, //minWethOut_
+                sqrtPriceLimitX96: 0
+            });
+
+        uint amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
+        if (amountOut == 0) revert TokenInNotValid(tokenIn_);
     }
 
 

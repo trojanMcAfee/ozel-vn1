@@ -32,9 +32,9 @@ contract ozTokenFactoryTest is Setup {
     struct RequestType {
         IVault.JoinPoolRequest join;
         IVault.ExitPoolRequest exit;
-        Type req;
         TradeAmounts amtsIn;
         TradeAmountsOut amtsOut;
+        Type req;
     }
 
 
@@ -125,14 +125,15 @@ contract ozTokenFactoryTest is Setup {
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        uint minUsdcOut = uint(price).mulDiv(req.exit.minAmountsOut[0], 1e8); //req.exit.minAmountsOut[0] --> minWethOutOffchain
+        // (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        // uint minUsdcOut = uint(price).mulDiv(req.exit.minAmountsOut[0], 1e8); //req.exit.minAmountsOut[0] --> minWethOutOffchain
 
         //Actions
         vm.prank(alice);
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
 
         //Post-conditions
+        uint minUsdcOut = req.amtsOut.minUsdcOut;
         assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
 
 
@@ -222,10 +223,16 @@ contract ozTokenFactoryTest is Setup {
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
 
         if (reqType == Type.OUT) {
+            uint minWethOut = Helpers.calculateMinAmountOut(amountOut, defaultSlippage);
+
+            (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+            uint minUsdcOut = uint(price).mulDiv(minWethOut, 1e8);
+
             req.amtsOut = TradeAmountsOut({
                 ozAmountIn: amountIn_,
-                minWethOut: Helpers.calculateMinAmountOut(amountOut, defaultSlippage),
-                bptAmountIn: bptAmountIn
+                minWethOut: minWethOut,
+                bptAmountIn: bptAmountIn,
+                minUsdcOut: minUsdcOut
             });
         } else if (reqType == Type.IN) {
             req.amtsIn = TradeAmounts({

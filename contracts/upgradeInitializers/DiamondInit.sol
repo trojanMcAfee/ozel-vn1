@@ -39,7 +39,8 @@ contract DiamondInit {
         address rEthAddr_,
         address rEthWethPoolBalancer_,
         address rEthEthChainlink_,
-        address beacon_
+        address beacon_,
+        address usdcAddr_
     ) external {
         // adding ERC165 data **** COMPLETE this with rest of funcs/interfaces
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
@@ -64,6 +65,7 @@ contract DiamondInit {
         s.rEthWethPoolBalancer = rEthWethPoolBalancer_;
         s.rEthEthChainlink = rEthEthChainlink_;
         s.ozBeacon = beacon_;
+        s.USDC = usdcAddr_;
     }
 
 
