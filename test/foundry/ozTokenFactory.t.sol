@@ -16,7 +16,7 @@ import {TradeAmounts, TradeAmountsOut} from "../../contracts/AppStorage.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
-import {Type, RequestType} from "./AppStorageTests.sol";
+import {Type, RequestType, ReqIn, ReqOut} from "./AppStorageTests.sol";
 
 import "forge-std/console.sol";
 
@@ -248,17 +248,30 @@ contract ozTokenFactoryTest is Setup {
             // req.exit = request;
             // req.req = Type.OUT;
 
+            
+
+            ReqOut memory reqOut = ReqOut(
+                address(ozERC20_),
+                wethAddr,
+                rEthWethPoolBalancer,
+                rEthAddr,
+                amountIn,
+                defaultSlippage
+            );
+
+            bytes memory data = abi.encode(reqOut);
+
             (
                 RequestType memory req,
                 uint[] memory minAmountsOutInternal,
                 uint bptAmountIn
-            ) = _handleRequestOut(ozERC20_, amountIn_);
+            ) = HelpersTests.handleRequestOut(ozERC20_, amountIn_);
 
             minAmountsOut = minAmountsOutInternal;
-        } else if (reqType == Type.IN) {
-            bytes memory data = abi.encode(
+        } else if (reqType == Type.IN) { 
+            ReqIn memory reqIn = ReqIn(
                 address(ozERC20_),
-                amountIn_,
+                amountIn,
                 ethUsdChainlink,
                 rEthEthChainlink,
                 testToken,
@@ -268,16 +281,7 @@ contract ozTokenFactoryTest is Setup {
                 defaultSlippage
             );
 
-            // struct RequestIn {
-            //     ozIToken ozERC20_;
-            //     uint amountIn;
-            //     address[2] memory feeds; //[ethUsdChainlink, rEthEthChainlink]
-            //     address testToken;
-            //     address wethAddr;
-            //     address rEthWethPoolBalancer;
-            //     address rEthAddr;
-            // }
-
+            bytes memory data = abi.encode(reqIn);
 
             (
                 RequestType memory req,

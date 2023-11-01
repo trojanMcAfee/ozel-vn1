@@ -18,3 +18,24 @@ struct RequestType {
     TradeAmountsOut amtsOut;
     Type req;
 }
+
+struct ReqIn {
+    address ozERC20Addr;
+    address ethUsdChainlink;
+    address rEthEthChainlink;
+    address testToken;
+    address wethAddr;
+    address rEthWethPoolBalancer;
+    address rEthAddr;
+    uint defaultSlippage;
+    uint amountIn;
+}
+
+struct ReqOut {
+    address ozERC20Addr;
+    address wethAddr;
+    address rEthWethPoolBalancer;
+    address rEthAddr;
+    uint amountIn;
+    uint defaultSlippage;
+}
