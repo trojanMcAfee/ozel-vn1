@@ -255,7 +255,7 @@ contract ozTokenFactoryTest is Setup {
                 wethAddr,
                 rEthWethPoolBalancer,
                 rEthAddr,
-                amountIn,
+                amountIn_,
                 defaultSlippage
             );
 
@@ -265,13 +265,13 @@ contract ozTokenFactoryTest is Setup {
                 RequestType memory req,
                 uint[] memory minAmountsOutInternal,
                 uint bptAmountIn
-            ) = HelpersTests.handleRequestOut(ozERC20_, amountIn_);
+            ) = HelpersTests.handleRequestOut(data);
 
             minAmountsOut = minAmountsOutInternal;
         } else if (reqType == Type.IN) { 
             ReqIn memory reqIn = ReqIn(
                 address(ozERC20_),
-                amountIn,
+                amountIn_,
                 ethUsdChainlink,
                 rEthEthChainlink,
                 testToken,

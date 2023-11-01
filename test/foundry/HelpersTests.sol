@@ -95,7 +95,7 @@ library HelpersTests {
         uint bptAmountIn
     ) {
 
-        ReqOut memory reqOut = data_._decode2();
+        ReqOut memory reqOut = _decode2(data_);
 
         ozIToken ozERC20 = ozIToken(reqOut.ozERC20Addr);
 
@@ -165,7 +165,7 @@ library HelpersTests {
     // }
 
     function _decode(bytes memory data_) private returns(ReqIn memory) {
-        (ReqIn memory reqIn) = abi.decode(data_, ((
+        (ReqIn memory reqIn) = abi.decode(data_, (((
             address,
             address,
             address,
@@ -175,7 +175,7 @@ library HelpersTests {
             address,
             uint256,
             uint256
-        )));
+        ))));
 
         return reqIn;
     }
@@ -201,7 +201,7 @@ library HelpersTests {
         RequestType memory req,
         uint[] memory minAmountsOut
     ) {
-        ReqIn memory reqIn = data_._decode();
+        ReqIn memory reqIn = _decode(data_);
 
         ozIToken ozERC20 = ozIToken(reqIn.ozERC20Addr);
 
