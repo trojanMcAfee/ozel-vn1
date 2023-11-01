@@ -6,8 +6,9 @@ import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IPool} from "../../contracts/interfaces/IBalancer.sol";
+import {IPool, IVault} from "../../contracts/interfaces/IBalancer.sol";
 import {Helpers} from "../../contracts/libraries/Helpers.sol";
+import {RequestType, Type} from "./AppStorageTests.sol";
 
 import "forge-std/console.sol";
 
@@ -85,6 +86,54 @@ library HelpersTests {
         }
 
         return minAmountsOut;
+    }
+
+    function handleRequestIn(
+        bytes memory data_
+    ) internal returns(
+        RequestType memory req,
+        uint[] memory minAmountsOut
+    ) {
+        (
+            address ozERC20Addr,
+            uint256 amountIn,
+            address ethUsdChainlink,
+            address rEthEthChainlink,
+            address testToken,
+            address wethAddr,
+            address rEthWethPoolBalancer,
+            address rEthAddr,
+            uint256 defaultSlippage
+        ) = abi.decode(data_, (
+            address,
+            uint256,
+            address,
+            address,
+            address,
+            address,
+            address,
+            address,
+            uint256
+        ));
+
+        ozIToken ozERC20 = ozIToken(ozERC20Addr);
+
+        minAmountsOut = calculateMinAmountsOut(
+            [ethUsdChainlink, rEthEthChainlink], amountIn / 10 ** IERC20Permit(testToken).decimals(), ozERC20.decimals(), defaultSlippage
+        );
+
+        (
+            address[] memory assets,
+            uint[] memory maxAmountsIn,
+            uint[] memory amountsIn
+        ) = Helpers.convertToDynamics([wethAddr, rEthWethPoolBalancer, rEthAddr], minAmountsOut[1]);
+
+        IVault.JoinPoolRequest memory request = Helpers.createRequest(
+            assets, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
+        );
+
+        req.join = request;
+        req.req = Type.IN;
     }
 
 

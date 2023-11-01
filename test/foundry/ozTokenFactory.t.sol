@@ -16,6 +16,7 @@ import {TradeAmounts, TradeAmountsOut} from "../../contracts/AppStorage.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
+import {Type, RequestType} from "./AppStorageTests.sol";
 
 import "forge-std/console.sol";
 
@@ -24,18 +25,18 @@ contract ozTokenFactoryTest is Setup {
 
     using FixedPointMathLib for uint;
 
-     enum Type {
-        IN,
-        OUT
-    }
+    // enum Type {
+    //     IN,
+    //     OUT
+    // }
 
-    struct RequestType {
-        IVault.JoinPoolRequest join;
-        IVault.ExitPoolRequest exit;
-        TradeAmounts amtsIn;
-        TradeAmountsOut amtsOut;
-        Type req;
-    }
+    // struct RequestType {
+    //     IVault.JoinPoolRequest join;
+    //     IVault.ExitPoolRequest exit;
+    //     TradeAmounts amtsIn;
+    //     TradeAmountsOut amtsOut;
+    //     Type req;
+    // }
 
 
     function test_minting() public {
@@ -190,6 +191,31 @@ contract ozTokenFactoryTest is Setup {
         req.req = Type.OUT;
     }
 
+    
+
+
+    // function _handleRequestIn(ozIToken ozERC20_, uint amountIn_) private returns(
+    //     RequestType memory req,
+    //     uint[] memory minAmountsOut
+    // ) {
+    //     minAmountsOut = HelpersTests.calculateMinAmountsOut(
+    //         [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
+    //     );
+
+    //     (
+    //         address[] memory assets2,
+    //         uint[] memory maxAmountsIn,
+    //         uint[] memory amountsIn
+    //     ) = Helpers.convertToDynamics([wethAddr, rEthWethPoolBalancer, rEthAddr], minAmountsOut[1]);
+
+    //     IVault.JoinPoolRequest memory request = Helpers.createRequest(
+    //         assets2, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
+    //     );
+
+    //     req.join = request;
+    //     req.req = Type.IN;
+    // }
+
 
     function _createDataOffchain( 
         ozIToken ozERC20_, 
@@ -224,33 +250,64 @@ contract ozTokenFactoryTest is Setup {
 
             (
                 RequestType memory req,
-                uint[] memory minAmountsOut,
+                uint[] memory minAmountsOutInternal,
                 uint bptAmountIn
             ) = _handleRequestOut(ozERC20_, amountIn_);
+
+            minAmountsOut = minAmountsOutInternal;
         } else if (reqType == Type.IN) {
-            minAmountsOut = HelpersTests.calculateMinAmountsOut(
-                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
+            bytes memory data = abi.encode(
+                address(ozERC20_),
+                amountIn_,
+                ethUsdChainlink,
+                rEthEthChainlink,
+                testToken,
+                wethAddr,
+                rEthWethPoolBalancer,
+                rEthAddr,
+                defaultSlippage
             );
+
+            // struct RequestIn {
+            //     ozIToken ozERC20_;
+            //     uint amountIn;
+            //     address[2] memory feeds; //[ethUsdChainlink, rEthEthChainlink]
+            //     address testToken;
+            //     address wethAddr;
+            //     address rEthWethPoolBalancer;
+            //     address rEthAddr;
+            // }
+
 
             (
-                address[] memory assets2,
-                uint[] memory maxAmountsIn,
-                uint[] memory amountsIn
-            ) = Helpers.convertToDynamics([wethAddr, rEthWethPoolBalancer, rEthAddr], minAmountsOut[1]);
+                RequestType memory req,
+                uint[] memory minAmountsOutInternal
+            ) = HelpersTests.handleRequestIn(data);
 
-            IVault.JoinPoolRequest memory request = Helpers.createRequest(
-                assets2, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
-            );
+            minAmountsOut = minAmountsOutInternal;
+            // minAmountsOut = HelpersTests.calculateMinAmountsOut(
+            //     [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
+            // );
 
-            req.join = request;
-            req.req = Type.IN;
+            // (
+            //     address[] memory assets2,
+            //     uint[] memory maxAmountsIn,
+            //     uint[] memory amountsIn
+            // ) = Helpers.convertToDynamics([wethAddr, rEthWethPoolBalancer, rEthAddr], minAmountsOut[1]);
+
+            // IVault.JoinPoolRequest memory request = Helpers.createRequest(
+            //     assets2, maxAmountsIn, Helpers.createUserData(IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, 0)
+            // );
+
+            // req.join = request;
+            // req.req = Type.IN;
         }
         
         (uint amountOut, bytes32 permitHash) = _getHashNAmountOut(sender_, req, amountIn_);
 
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
 
-        if (reqType == Type.OUT) {
+        if (reqType == Type.OUT) { 
             uint minWethOut = Helpers.calculateMinAmountOut(amountOut, defaultSlippage);
 
             (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
