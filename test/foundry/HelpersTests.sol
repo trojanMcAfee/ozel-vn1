@@ -117,78 +117,15 @@ library HelpersTests {
     }
 
 
-    // function _decodeReqIn(
-    //     bytes memory data_
-    // ) private returns(
-    //     address,
-    //     uint256,
-    //     address,
-    //     address,
-    //     address,
-    //     address,
-    //     address,
-    //     address,
-    //     uint256
-    // ) {
-    //     (
-    //         address ozERC20Addr,
-    //         uint256 amountIn,
-    //         address ethUsdChainlink,
-    //         address rEthEthChainlink,
-    //         address testToken,
-    //         address wethAddr,
-    //         address rEthWethPoolBalancer,
-    //         address rEthAddr,
-    //         uint256 defaultSlippage
-    //     ) = abi.decode(data_, (
-    //         address,
-    //         uint256,
-    //         address,
-    //         address,
-    //         address,
-    //         address,
-    //         address,
-    //         address,
-    //         uint256
-    //     ));
-
-    //     return address ozERC20Addr,
-    //         uint256 amountIn,
-    //         address ethUsdChainlink,
-    //         address rEthEthChainlink,
-    //         address testToken,
-    //         address wethAddr,
-    //         address rEthWethPoolBalancer,
-    //         address rEthAddr,
-    //         uint256 defaultSlippage
-
-    // }
 
     function _decode(bytes memory data_) private returns(ReqIn memory) {
-        (ReqIn memory reqIn) = abi.decode(data_, (((
-            address,
-            address,
-            address,
-            address,
-            address,
-            address,
-            address,
-            uint256,
-            uint256
-        ))));
+        (ReqIn memory reqIn) = abi.decode(data_, (ReqIn));
 
         return reqIn;
     }
 
     function _decode2(bytes memory data_) private returns(ReqOut memory) {
-        (ReqOut memory reqOut) = abi.decode(data_, ((
-            address,
-            address,
-            address,
-            address,
-            uint256,
-            uint256
-        )));
+        (ReqOut memory reqOut) = abi.decode(data_, (ReqOut));
 
         return reqOut;
     }
