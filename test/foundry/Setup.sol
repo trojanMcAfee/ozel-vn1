@@ -27,6 +27,7 @@ import {
     Oracles,
     DiamondInfra
 } from "../../contracts/AppStorage.sol";
+import {ReqOut, ReqIn} from "./AppStorageTests.sol";
 
 // import "forge-std/console.sol";
 
@@ -98,31 +99,39 @@ contract Setup is Test {
 
     uint internal constant _BASE = 18;
 
-    // struct Tokens {
-    //     address weth;
-    //     address reth;
-    //     address usdc;
-    // }
+   
 
-    // struct Dexes {
-    //     address swapRouterUni;
-    //     address vaultBalancer;
-    //     address queriesBalancer;
-    //     address rEthWethPoolBalancer;
-    // }
+    /** FUNCTIONS **/ 
+    function _getBytesReqOut(address ozERC20Addr_, uint amountIn_) internal returns(bytes memory) {
+        ReqOut memory reqOut = ReqOut(
+        ozERC20Addr_,
+        wethAddr,
+        rEthWethPoolBalancer,
+        rEthAddr,
+        amountIn_,
+        defaultSlippage
+    );
 
-    // struct Oracles {
-    //     address ethUsdChainlink;
-    //     address rEthEthChainlink;
-    // }
+        return abi.encode(reqOut);
+    }
 
-    // struct DiamondInfra {
-    //     address ozDiamond;
-    //     address beacon;
-    //     uint defaultSlippage; //try chaning this to an uin8
-    // }
+    function _getBytesReqIn(address ozERC20Addr_, uint amountIn_) internal returns(bytes memory) {
+        ReqIn memory reqIn = ReqIn(
+            ozERC20Addr_,
+            ethUsdChainlink,
+            rEthEthChainlink,
+            testToken,
+            wethAddr,
+            rEthWethPoolBalancer,
+            rEthAddr,
+            defaultSlippage,
+            amountIn_
+        );
 
-    /** FUNCTIONS **/
+        return abi.encode(reqIn);
+    }
+
+
     function setUp() public {
         (string memory network, uint blockNumber) = _chooseNetwork(Network.ARBITRUM);
         vm.createSelectFork(vm.rpcUrl(network), blockNumber);

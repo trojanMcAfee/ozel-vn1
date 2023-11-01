@@ -145,7 +145,7 @@ contract ozTokenFactoryTest is Setup {
     /** HELPERS ***/
 
     function _encode() private returns(bytes memory) {
-        
+
 
 
     }
@@ -216,16 +216,18 @@ contract ozTokenFactoryTest is Setup {
         address[] memory assets;
 
         if (reqType == Type.OUT) {
-            ReqOut memory reqOut = ReqOut(
-                address(ozERC20_),
-                wethAddr,
-                rEthWethPoolBalancer,
-                rEthAddr,
-                amountIn_,
-                defaultSlippage
-            );
+            // ReqOut memory reqOut = ReqOut(
+            //     address(ozERC20_),
+            //     wethAddr,
+            //     rEthWethPoolBalancer,
+            //     rEthAddr,
+            //     amountIn_,
+            //     defaultSlippage
+            // );
 
-            bytes memory data = abi.encode(reqOut);
+            // bytes memory data = abi.encode(reqOut);
+
+            bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
 
             (
                 RequestType memory req,
@@ -235,19 +237,21 @@ contract ozTokenFactoryTest is Setup {
 
             minAmountsOut = minAmountsOutInternal;
         } else if (reqType == Type.IN) { 
-            ReqIn memory reqIn = ReqIn(
-                address(ozERC20_),
-                ethUsdChainlink,
-                rEthEthChainlink,
-                testToken,
-                wethAddr,
-                rEthWethPoolBalancer,
-                rEthAddr,
-                defaultSlippage,
-                amountIn_
-            );
+            // ReqIn memory reqIn = ReqIn(
+            //     address(ozERC20_),
+            //     ethUsdChainlink,
+            //     rEthEthChainlink,
+            //     testToken,
+            //     wethAddr,
+            //     rEthWethPoolBalancer,
+            //     rEthAddr,
+            //     defaultSlippage,
+            //     amountIn_
+            // );
 
-            bytes memory data = abi.encode(reqIn);
+            // bytes memory data = abi.encode(reqIn);
+
+            bytes memory data = _getBytesReqIn(address(ozERC20_), amountIn_);
 
             (
                 RequestType memory req,
