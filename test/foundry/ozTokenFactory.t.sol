@@ -144,11 +144,34 @@ contract ozTokenFactoryTest is Setup {
 
     /** HELPERS ***/
 
-    function _encode() private returns(bytes memory) {
+   function _createRequestType(
+        Type reqType_,
+        uint amountOut_,
+        uint amountIn_,
+        uint bptAmountIn_,
+        uint[] memory minAmountsOut_
+    ) private returns(RequestType memory req) {
+        if (reqType_ == Type.OUT) { 
+            uint minWethOut = Helpers.calculateMinAmountOut(amountOut_, defaultSlippage);
 
+            (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+            uint minUsdcOut = uint(price).mulDiv(minWethOut, 1e8);
 
-
-    }
+            req.amtsOut = TradeAmountsOut({
+                ozAmountIn: amountIn_,
+                minWethOut: minWethOut,
+                bptAmountIn: bptAmountIn_,
+                minUsdcOut: minUsdcOut
+            });
+        } else if (reqType_ == Type.IN) {
+            req.amtsIn = TradeAmounts({
+                amountIn: amountIn_,
+                minWethOut: minAmountsOut_[0],
+                minRethOut: minAmountsOut_[1],
+                minBptOut: HelpersTests.calculateMinAmountsOut(amountOut_, defaultSlippage)
+            });
+        }
+   }
  
 
     function _createAndMintOzTokens(
@@ -216,17 +239,6 @@ contract ozTokenFactoryTest is Setup {
         address[] memory assets;
 
         if (reqType == Type.OUT) {
-            // ReqOut memory reqOut = ReqOut(
-            //     address(ozERC20_),
-            //     wethAddr,
-            //     rEthWethPoolBalancer,
-            //     rEthAddr,
-            //     amountIn_,
-            //     defaultSlippage
-            // );
-
-            // bytes memory data = abi.encode(reqOut);
-
             bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
 
             (
@@ -237,20 +249,6 @@ contract ozTokenFactoryTest is Setup {
 
             minAmountsOut = minAmountsOutInternal;
         } else if (reqType == Type.IN) { 
-            // ReqIn memory reqIn = ReqIn(
-            //     address(ozERC20_),
-            //     ethUsdChainlink,
-            //     rEthEthChainlink,
-            //     testToken,
-            //     wethAddr,
-            //     rEthWethPoolBalancer,
-            //     rEthAddr,
-            //     defaultSlippage,
-            //     amountIn_
-            // );
-
-            // bytes memory data = abi.encode(reqIn);
-
             bytes memory data = _getBytesReqIn(address(ozERC20_), amountIn_);
 
             (
@@ -265,26 +263,28 @@ contract ozTokenFactoryTest is Setup {
 
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
 
-        if (reqType == Type.OUT) { 
-            uint minWethOut = Helpers.calculateMinAmountOut(amountOut, defaultSlippage);
+        req = _createRequestType(reqType, amountOut, amountIn_, bptAmountIn, minAmountsOut);
 
-            (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-            uint minUsdcOut = uint(price).mulDiv(minWethOut, 1e8);
+        // if (reqType == Type.OUT) { 
+        //     uint minWethOut = Helpers.calculateMinAmountOut(amountOut, defaultSlippage);
 
-            req.amtsOut = TradeAmountsOut({
-                ozAmountIn: amountIn_,
-                minWethOut: minWethOut,
-                bptAmountIn: bptAmountIn,
-                minUsdcOut: minUsdcOut
-            });
-        } else if (reqType == Type.IN) {
-            req.amtsIn = TradeAmounts({
-                amountIn: amountIn_,
-                minWethOut: minAmountsOut[0],
-                minRethOut: minAmountsOut[1],
-                minBptOut: HelpersTests.calculateMinAmountsOut(amountOut, defaultSlippage)
-            });
-        }
+        //     (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        //     uint minUsdcOut = uint(price).mulDiv(minWethOut, 1e8);
+
+        //     req.amtsOut = TradeAmountsOut({
+        //         ozAmountIn: amountIn_,
+        //         minWethOut: minWethOut,
+        //         bptAmountIn: bptAmountIn,
+        //         minUsdcOut: minUsdcOut
+        //     });
+        // } else if (reqType == Type.IN) {
+        //     req.amtsIn = TradeAmounts({
+        //         amountIn: amountIn_,
+        //         minWethOut: minAmountsOut[0],
+        //         minRethOut: minAmountsOut[1],
+        //         minBptOut: HelpersTests.calculateMinAmountsOut(amountOut, defaultSlippage)
+        //     });
+        // }
     }
     
 

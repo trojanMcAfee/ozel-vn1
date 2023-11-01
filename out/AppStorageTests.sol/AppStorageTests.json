@@ -1,0 +1,786 @@
+{
+  "abi": [],
+  "bytecode": {
+    "object": "0x",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "linkReferences": {}
+  },
+  "ast": {
+    "absolutePath": "test/foundry/AppStorageTests.sol",
+    "id": 39170,
+    "exportedSymbols": {
+      "IVault": [
+        1576
+      ],
+      "ReqIn": [
+        39156
+      ],
+      "ReqOut": [
+        39169
+      ],
+      "RequestType": [
+        39137
+      ],
+      "TradeAmounts": [
+        52
+      ],
+      "TradeAmountsOut": [
+        61
+      ],
+      "Type": [
+        39121
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "45:773:75",
+    "nodes": [
+      {
+        "id": 39113,
+        "nodeType": "PragmaDirective",
+        "src": "45:23:75",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".21"
+        ]
+      },
+      {
+        "id": 39115,
+        "nodeType": "ImportDirective",
+        "src": "71:64:75",
+        "nodes": [],
+        "absolutePath": "contracts/interfaces/IBalancer.sol",
+        "file": "../../contracts/interfaces/IBalancer.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 39170,
+        "sourceUnit": 1643,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 39114,
+              "name": "IVault",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 1576,
+              "src": "79:6:75",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 39118,
+        "nodeType": "ImportDirective",
+        "src": "136:77:75",
+        "nodes": [],
+        "absolutePath": "contracts/AppStorage.sol",
+        "file": "../../contracts/AppStorage.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 39170,
+        "sourceUnit": 96,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 39116,
+              "name": "TradeAmounts",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 52,
+              "src": "144:12:75",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          },
+          {
+            "foreign": {
+              "id": 39117,
+              "name": "TradeAmountsOut",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 61,
+              "src": "158:15:75",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 39121,
+        "nodeType": "EnumDefinition",
+        "src": "216:29:75",
+        "nodes": [],
+        "canonicalName": "Type",
+        "members": [
+          {
+            "id": 39119,
+            "name": "IN",
+            "nameLocation": "232:2:75",
+            "nodeType": "EnumValue",
+            "src": "232:2:75"
+          },
+          {
+            "id": 39120,
+            "name": "OUT",
+            "nameLocation": "240:3:75",
+            "nodeType": "EnumValue",
+            "src": "240:3:75"
+          }
+        ],
+        "name": "Type",
+        "nameLocation": "221:4:75"
+      },
+      {
+        "id": 39137,
+        "nodeType": "StructDefinition",
+        "src": "247:156:75",
+        "nodes": [],
+        "canonicalName": "RequestType",
+        "members": [
+          {
+            "constant": false,
+            "id": 39124,
+            "mutability": "mutable",
+            "name": "join",
+            "nameLocation": "295:4:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39137,
+            "src": "272:27:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_struct$_JoinPoolRequest_$1525_storage_ptr",
+              "typeString": "struct IVault.JoinPoolRequest"
+            },
+            "typeName": {
+              "id": 39123,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 39122,
+                "name": "IVault.JoinPoolRequest",
+                "nameLocations": [
+                  "272:6:75",
+                  "279:15:75"
+                ],
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 1525,
+                "src": "272:22:75"
+              },
+              "referencedDeclaration": 1525,
+              "src": "272:22:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_JoinPoolRequest_$1525_storage_ptr",
+                "typeString": "struct IVault.JoinPoolRequest"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39127,
+            "mutability": "mutable",
+            "name": "exit",
+            "nameLocation": "328:4:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39137,
+            "src": "305:27:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_struct$_ExitPoolRequest_$1536_storage_ptr",
+              "typeString": "struct IVault.ExitPoolRequest"
+            },
+            "typeName": {
+              "id": 39126,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 39125,
+                "name": "IVault.ExitPoolRequest",
+                "nameLocations": [
+                  "305:6:75",
+                  "312:15:75"
+                ],
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 1536,
+                "src": "305:22:75"
+              },
+              "referencedDeclaration": 1536,
+              "src": "305:22:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_ExitPoolRequest_$1536_storage_ptr",
+                "typeString": "struct IVault.ExitPoolRequest"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39130,
+            "mutability": "mutable",
+            "name": "amtsIn",
+            "nameLocation": "351:6:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39137,
+            "src": "338:19:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_struct$_TradeAmounts_$52_storage_ptr",
+              "typeString": "struct TradeAmounts"
+            },
+            "typeName": {
+              "id": 39129,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 39128,
+                "name": "TradeAmounts",
+                "nameLocations": [
+                  "338:12:75"
+                ],
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 52,
+                "src": "338:12:75"
+              },
+              "referencedDeclaration": 52,
+              "src": "338:12:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_TradeAmounts_$52_storage_ptr",
+                "typeString": "struct TradeAmounts"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39133,
+            "mutability": "mutable",
+            "name": "amtsOut",
+            "nameLocation": "379:7:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39137,
+            "src": "363:23:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_struct$_TradeAmountsOut_$61_storage_ptr",
+              "typeString": "struct TradeAmountsOut"
+            },
+            "typeName": {
+              "id": 39132,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 39131,
+                "name": "TradeAmountsOut",
+                "nameLocations": [
+                  "363:15:75"
+                ],
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 61,
+                "src": "363:15:75"
+              },
+              "referencedDeclaration": 61,
+              "src": "363:15:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_TradeAmountsOut_$61_storage_ptr",
+                "typeString": "struct TradeAmountsOut"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39136,
+            "mutability": "mutable",
+            "name": "req",
+            "nameLocation": "397:3:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39137,
+            "src": "392:8:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_enum$_Type_$39121",
+              "typeString": "enum Type"
+            },
+            "typeName": {
+              "id": 39135,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 39134,
+                "name": "Type",
+                "nameLocations": [
+                  "392:4:75"
+                ],
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 39121,
+                "src": "392:4:75"
+              },
+              "referencedDeclaration": 39121,
+              "src": "392:4:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_enum$_Type_$39121",
+                "typeString": "enum Type"
+              }
+            },
+            "visibility": "internal"
+          }
+        ],
+        "name": "RequestType",
+        "nameLocation": "254:11:75",
+        "scope": 39170,
+        "visibility": "public"
+      },
+      {
+        "id": 39156,
+        "nodeType": "StructDefinition",
+        "src": "405:246:75",
+        "nodes": [],
+        "canonicalName": "ReqIn",
+        "members": [
+          {
+            "constant": false,
+            "id": 39139,
+            "mutability": "mutable",
+            "name": "ozERC20Addr",
+            "nameLocation": "432:11:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "424:19:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39138,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "424:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39141,
+            "mutability": "mutable",
+            "name": "ethUsdChainlink",
+            "nameLocation": "457:15:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "449:23:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39140,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "449:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39143,
+            "mutability": "mutable",
+            "name": "rEthEthChainlink",
+            "nameLocation": "486:16:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "478:24:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39142,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "478:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39145,
+            "mutability": "mutable",
+            "name": "testToken",
+            "nameLocation": "516:9:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "508:17:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39144,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "508:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39147,
+            "mutability": "mutable",
+            "name": "wethAddr",
+            "nameLocation": "539:8:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "531:16:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39146,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "531:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39149,
+            "mutability": "mutable",
+            "name": "rEthWethPoolBalancer",
+            "nameLocation": "561:20:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "553:28:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39148,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "553:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39151,
+            "mutability": "mutable",
+            "name": "rEthAddr",
+            "nameLocation": "595:8:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "587:16:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39150,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "587:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39153,
+            "mutability": "mutable",
+            "name": "defaultSlippage",
+            "nameLocation": "614:15:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "609:20:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 39152,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "609:4:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39155,
+            "mutability": "mutable",
+            "name": "amountIn",
+            "nameLocation": "640:8:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39156,
+            "src": "635:13:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 39154,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "635:4:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "visibility": "internal"
+          }
+        ],
+        "name": "ReqIn",
+        "nameLocation": "412:5:75",
+        "scope": 39170,
+        "visibility": "public"
+      },
+      {
+        "id": 39169,
+        "nodeType": "StructDefinition",
+        "src": "653:165:75",
+        "nodes": [],
+        "canonicalName": "ReqOut",
+        "members": [
+          {
+            "constant": false,
+            "id": 39158,
+            "mutability": "mutable",
+            "name": "ozERC20Addr",
+            "nameLocation": "681:11:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39169,
+            "src": "673:19:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39157,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "673:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39160,
+            "mutability": "mutable",
+            "name": "wethAddr",
+            "nameLocation": "706:8:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39169,
+            "src": "698:16:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39159,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "698:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39162,
+            "mutability": "mutable",
+            "name": "rEthWethPoolBalancer",
+            "nameLocation": "728:20:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39169,
+            "src": "720:28:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39161,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "720:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39164,
+            "mutability": "mutable",
+            "name": "rEthAddr",
+            "nameLocation": "762:8:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39169,
+            "src": "754:16:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 39163,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "754:7:75",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39166,
+            "mutability": "mutable",
+            "name": "amountIn",
+            "nameLocation": "781:8:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39169,
+            "src": "776:13:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 39165,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "776:4:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 39168,
+            "mutability": "mutable",
+            "name": "defaultSlippage",
+            "nameLocation": "800:15:75",
+            "nodeType": "VariableDeclaration",
+            "scope": 39169,
+            "src": "795:20:75",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 39167,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "795:4:75",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "visibility": "internal"
+          }
+        ],
+        "name": "ReqOut",
+        "nameLocation": "660:6:75",
+        "scope": 39170,
+        "visibility": "public"
+      }
+    ],
+    "license": "GPL-2.0-or-later"
+  },
+  "id": 75
+}

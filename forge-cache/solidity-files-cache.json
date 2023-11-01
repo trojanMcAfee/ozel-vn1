@@ -13,8 +13,8 @@
   },
   "files": {
     "contracts/AppStorage.sol": {
-      "lastModificationDate": 1698755638573,
-      "contentHash": "e43af06c08e0b54a21a3a3de30d74ceb",
+      "lastModificationDate": 1698794823183,
+      "contentHash": "311cc81c41f273307d03c0b97c9c4d62",
       "sourceName": "contracts/AppStorage.sol",
       "solcConfig": {
         "settings": {
@@ -359,8 +359,8 @@
       }
     },
     "contracts/facets/ROImoduleL2.sol": {
-      "lastModificationDate": 1698790724036,
-      "contentHash": "749bffe40d8e594e89e34eb335b27f32",
+      "lastModificationDate": 1698793377602,
+      "contentHash": "f048b32c27fa3a66e4f968a03e813ca4",
       "sourceName": "contracts/facets/ROImoduleL2.sol",
       "solcConfig": {
         "settings": {
@@ -512,10 +512,10 @@
         }
       }
     },
-    "contracts/facets/ozOracles.sol": {
-      "lastModificationDate": 1698098994385,
-      "contentHash": "8fe6c3817a79172bda1bd3c06360ed62",
-      "sourceName": "contracts/facets/ozOracles.sol",
+    "contracts/facets/ozOracle.sol": {
+      "lastModificationDate": 1698794981446,
+      "contentHash": "166436a891a0dab4bb10f20bc587648a",
+      "sourceName": "contracts/facets/ozOracle.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -556,8 +556,8 @@
       ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
-        "ozOracles": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozOracles.sol/ozOracles.json"
+        "ozOracle": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozOracle.sol/ozOracle.json"
         }
       }
     },
@@ -1462,8 +1462,8 @@
       }
     },
     "contracts/upgradeInitializers/DiamondInit.sol": {
-      "lastModificationDate": 1697916203214,
-      "contentHash": "85b4c4f4ab6ac2ddbb6aebf53fa01a00",
+      "lastModificationDate": 1698795167928,
+      "contentHash": "35177ee513043910f7795bdfeff1a7a1",
       "sourceName": "contracts/upgradeInitializers/DiamondInit.sol",
       "solcConfig": {
         "settings": {
@@ -3637,9 +3637,56 @@
         }
       }
     },
+    "test/foundry/AppStorageTests.sol": {
+      "lastModificationDate": 1698865553453,
+      "contentHash": "d006703a029f58a1c3d12b326f1a2d7e",
+      "sourceName": "test/foundry/AppStorageTests.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "AppStorageTests": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "AppStorageTests.sol/AppStorageTests.json"
+        }
+      }
+    },
     "test/foundry/HelpersTests.sol": {
-      "lastModificationDate": 1698756007489,
-      "contentHash": "c61c473f31d3c8760412636aa5f90940",
+      "lastModificationDate": 1698866446786,
+      "contentHash": "422b37e8bb4c8a6020d72f9c855d2385",
       "sourceName": "test/foundry/HelpersTests.sol",
       "solcConfig": {
         "settings": {
@@ -3680,7 +3727,8 @@
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
         "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
-        "node_modules/solady/src/utils/FixedPointMathLib.sol"
+        "node_modules/solady/src/utils/FixedPointMathLib.sol",
+        "test/foundry/AppStorageTests.sol"
       ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
@@ -3690,8 +3738,8 @@
       }
     },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1698531002690,
-      "contentHash": "b5bed46570b65cf951a51d283bdf23fc",
+      "lastModificationDate": 1698867793574,
+      "contentHash": "b1643cfc17ec0d3c21092bdc02c3436e",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -3733,7 +3781,7 @@
         "contracts/facets/ROImoduleL2.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozLoupe.sol",
-        "contracts/facets/ozOracles.sol",
+        "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
@@ -3796,7 +3844,8 @@
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
         "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
         "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
-        "node_modules/solady/src/utils/FixedPointMathLib.sol"
+        "node_modules/solady/src/utils/FixedPointMathLib.sol",
+        "test/foundry/AppStorageTests.sol"
       ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
@@ -3847,8 +3896,8 @@
       }
     },
     "test/foundry/ozTokenFactory.t.sol": {
-      "lastModificationDate": 1698755957340,
-      "contentHash": "d5f16bef536e82139bcd0054386204a6",
+      "lastModificationDate": 1698868719509,
+      "contentHash": "c73617d7e071842f4221c470176ecf5f",
       "sourceName": "test/foundry/ozTokenFactory.t.sol",
       "solcConfig": {
         "settings": {
@@ -3890,7 +3939,7 @@
         "contracts/facets/ROImoduleL2.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozLoupe.sol",
-        "contracts/facets/ozOracles.sol",
+        "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
@@ -3955,6 +4004,7 @@
         "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
         "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
         "node_modules/solady/src/utils/FixedPointMathLib.sol",
+        "test/foundry/AppStorageTests.sol",
         "test/foundry/HelpersTests.sol",
         "test/foundry/Setup.sol"
       ],
