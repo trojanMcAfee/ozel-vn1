@@ -55,43 +55,26 @@ contract DiamondInit {
             s.ozTokenRegistry.push(registry[i]);
         }
 
-        // s.ozDiamond = diamond_;
-        s.ozDiamond = infra_.ozDiamond;
-
-        // s.swapRouterUni = swapRouter_;
+        //DEXs
         s.swapRouterUni = dexes_.swapRouterUni;
-
-        // s.ethUsdChainlink = ethUsdChainlink_;
-        s.ethUsdChainlink = oracles_.ethUsdChainlink;
-
-        // s.WETH = wethAddr_;
-        s.WETH = tokens_.weth;
-
-        // s.defaultSlippage = defaultSlippage_;
-        s.defaultSlippage = infra_.defaultSlippage;
-
-        // s.vaultBalancer = vaultBalancer_;
         s.vaultBalancer = dexes_.vaultBalancer;
-
-        // s.queriesBalancer = queriesBalancer_;
         s.queriesBalancer = dexes_.queriesBalancer;
-
-        // s.rETH = rEthAddr_;
-        s.rETH = tokens_.reth;
-
-        // s.rEthWethPoolBalancer = rEthWethPoolBalancer_;
         s.rEthWethPoolBalancer = dexes_.rEthWethPoolBalancer;
 
-        // s.rEthEthChainlink = rEthEthChainlink_;
+        //Oracles
+        s.ethUsdChainlink = oracles_.ethUsdChainlink;
         s.rEthEthChainlink = oracles_.rEthEthChainlink;
 
-        // s.ozBeacon = beacon_;
+        //Diamond infra
+        s.ozDiamond = infra_.ozDiamond;
         s.ozBeacon = infra_.beacon;
+        s.defaultSlippage = infra_.defaultSlippage;
 
-        // s.USDC = usdcAddr_;
+        //ERC20s
+        s.WETH = tokens_.weth;
         s.USDC = tokens_.usdc;
-
         s.USDT = tokens_.usdt;
+        s.rETH = tokens_.reth;
 
     }
 

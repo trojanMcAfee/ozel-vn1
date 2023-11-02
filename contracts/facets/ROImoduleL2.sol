@@ -213,7 +213,6 @@ contract ROImoduleL2 {
             toInternalBalance: false
         });
 
-        console.log('querySwap: ', s.queriesBalancer);
         uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds);
         uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
 

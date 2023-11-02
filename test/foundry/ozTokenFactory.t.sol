@@ -25,19 +25,6 @@ contract ozTokenFactoryTest is Setup {
 
     using FixedPointMathLib for uint;
 
-    // enum Type {
-    //     IN,
-    //     OUT
-    // }
-
-    // struct RequestType {
-    //     IVault.JoinPoolRequest join;
-    //     IVault.ExitPoolRequest exit;
-    //     TradeAmounts amtsIn;
-    //     TradeAmountsOut amtsOut;
-    //     Type req;
-    // }
-
 
     function test_minting() public {
         /**
@@ -117,19 +104,14 @@ contract ozTokenFactoryTest is Setup {
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true);
         testToken = address(ozERC20);
 
-        //Action
         uint ozAmountIn = ozERC20.balanceOf(alice);
         
-
         (
             RequestType memory req,
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-        // (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        // uint minUsdcOut = uint(price).mulDiv(req.exit.minAmountsOut[0], 1e8); //req.exit.minAmountsOut[0] --> minWethOutOffchain
-
-        //Actions
+        //Action
         vm.prank(alice);
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
 
@@ -197,31 +179,6 @@ contract ozTokenFactoryTest is Setup {
         vm.prank(user_);
         shares = ozERC20.mint(req.amtsIn, user_, v, r, s); 
     }
-
-
-    // function _handleRequestOut(ozIToken ozERC20_, uint amountIn_) private returns(
-    //     RequestType memory req,
-    //     uint[] memory minAmountsOut,
-    //     uint bptAmountIn
-    // ) {
-    //     address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
-
-    //     minAmountsOut = HelpersTests.calculateMinAmountsOut(
-    //         rEthWethPoolBalancer, ozERC20_, amountIn_, defaultSlippage
-    //     );
-
-    //     uint shares = ozERC20_.previewWithdraw(amountIn_);
-    //     bptAmountIn = ozERC20_.convertToUnderlying(shares);
-
-    //     IVault.ExitPoolRequest memory request = Helpers.createExitRequest(
-    //         assets, minAmountsOut, Helpers.createUserData(IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptAmountIn, 0)
-    //     );
-
-    //     req.exit = request;
-    //     req.req = Type.OUT;
-    // }
-
-
 
 
     function _createDataOffchain( 
