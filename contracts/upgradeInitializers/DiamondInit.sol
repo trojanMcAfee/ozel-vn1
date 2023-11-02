@@ -74,7 +74,7 @@ contract DiamondInit {
         s.vaultBalancer = dexes_.vaultBalancer;
 
         // s.queriesBalancer = queriesBalancer_;
-        s.queriesBalancer = dexes_.vaultBalancer;
+        s.queriesBalancer = dexes_.queriesBalancer;
 
         // s.rETH = rEthAddr_;
         s.rETH = tokens_.reth;
