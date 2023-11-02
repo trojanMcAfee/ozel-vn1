@@ -102,36 +102,6 @@ contract Setup is Test {
    
 
     /** FUNCTIONS **/ 
-    function _getBytesReqOut(address ozERC20Addr_, uint amountIn_) internal returns(bytes memory) {
-        ReqOut memory reqOut = ReqOut(
-        ozERC20Addr_,
-        wethAddr,
-        rEthWethPoolBalancer,
-        rEthAddr,
-        amountIn_,
-        defaultSlippage
-    );
-
-        return abi.encode(reqOut);
-    }
-
-    function _getBytesReqIn(address ozERC20Addr_, uint amountIn_) internal returns(bytes memory) {
-        ReqIn memory reqIn = ReqIn(
-            ozERC20Addr_,
-            ethUsdChainlink,
-            rEthEthChainlink,
-            testToken,
-            wethAddr,
-            rEthWethPoolBalancer,
-            rEthAddr,
-            defaultSlippage,
-            amountIn_
-        );
-
-        return abi.encode(reqIn);
-    }
-
-
     function setUp() public {
         (string memory network, uint blockNumber) = _chooseNetwork(Network.ARBITRUM);
         vm.createSelectFork(vm.rpcUrl(network), blockNumber);
