@@ -44,7 +44,10 @@ contract ROImoduleL2 {
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
 
         //Swaps underlying to WETH in Uniswap
-        _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
+        // _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
+        _swapUni(
+            amounts_.amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
+        );
 
         //Swaps WETH to rETH in Balancer
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
@@ -92,8 +95,6 @@ contract ROImoduleL2 {
 
         revert('exittooo2');
 
-        //Swap WETH to USDC
-        // _swapUni();
 
         
     }
@@ -188,7 +189,7 @@ contract ROImoduleL2 {
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: _formatMinOut(minAmountOut_, tokenOut_), //minWethOut_
+                amountOutMinimum: _formatMinOut(minAmountOut_, tokenOut_), 
                 sqrtPriceLimitX96: 0
             });
 
