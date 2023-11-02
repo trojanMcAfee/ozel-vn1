@@ -44,7 +44,6 @@ contract ROImoduleL2 {
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
 
         //Swaps underlying to WETH in Uniswap
-        // _swapUni(amounts_.amountIn, amounts_.minWethOut, underlying_);
         _swapUni(
             amounts_.amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
         );
@@ -79,9 +78,6 @@ contract ROImoduleL2 {
             amts_.minWethOut, amts_.bptAmountIn, poolId
         ); 
 
-        uint bal = IERC20Permit(s.USDC).balanceOf(receiver_);
-        console.log('usdc bal pre: ', bal);
-
         _swapUni(
             IERC20Permit(s.WETH).balanceOf(address(this)),
             amts_.minUsdcOut,
@@ -89,14 +85,6 @@ contract ROImoduleL2 {
             s.USDC,
             receiver_
         );
-
-        bal = IERC20Permit(s.USDC).balanceOf(receiver_);
-        console.log('usdc bal post: ', bal);
-
-        revert('exittooo2');
-
-
-        
     }
 
 
@@ -144,36 +132,6 @@ contract ROImoduleL2 {
     //**** HELPERS */
     function _swapUni(
         uint amountIn_, 
-        uint minWethOut_, 
-        address underlying_
-    ) private {
-        underlying_.safeApprove(s.swapRouterUni, amountIn_);
-
-        //implement multihop swap for tokens with no single swap in Uniswap
-
-        ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({
-                tokenIn: underlying_,
-                tokenOut: s.WETH, 
-                fee: 500, //0.05 - 500 / make this a programatic value
-                recipient: address(this),
-                deadline: block.timestamp,
-                amountIn: amountIn_,
-                amountOutMinimum: minWethOut_, //minWethOut_
-                sqrtPriceLimitX96: 0
-            });
-
-        uint amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
-        if (amountOut == 0) revert TokenInNotValid(underlying_);
-    }
-
-    function _formatMinOut(uint minOut_, address tokenOut_) private view returns(uint) {
-        uint decimals = IERC20Permit(tokenOut_).decimals();
-        return decimals == 18 ? minOut_ : minOut_ / 10 ** (18 - decimals);
-    }
-
-    function _swapUni(
-        uint amountIn_, 
         uint minAmountOut_, 
         address tokenIn_,
         address tokenOut_,
@@ -195,6 +153,12 @@ contract ROImoduleL2 {
 
         uint amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
         if (amountOut == 0) revert TokenInNotValid(tokenIn_);
+    }
+
+
+    function _formatMinOut(uint minOut_, address tokenOut_) private view returns(uint) {
+        uint decimals = IERC20Permit(tokenOut_).decimals();
+        return decimals == 18 ? minOut_ : minOut_ / 10 ** (18 - decimals);
     }
 
 
