@@ -62,10 +62,6 @@ contract ROImoduleL2 {
 
     }
 
-    //  amounts_.ozAmountIn,
-    //         amounts_.minWethOut,
-    //         amounts_.bptAmountIn
-
 
     function useOzTokens(
         TradeAmountsOut memory amts_,
@@ -170,6 +166,11 @@ contract ROImoduleL2 {
         if (amountOut == 0) revert TokenInNotValid(underlying_);
     }
 
+    function _formatMinOut(uint minOut_, address tokenOut_) private view returns(uint) {
+        uint decimals = IERC20Permit(tokenOut_).decimals();
+        return decimals == 18 ? minOut_ : minOut_ / 10 ** (18 - decimals);
+    }
+
     function _swapUni(
         uint amountIn_, 
         uint minAmountOut_, 
@@ -180,14 +181,14 @@ contract ROImoduleL2 {
         tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
 
         ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({
+            ISwapRouter.ExactInputSingleParams({ 
                 tokenIn: tokenIn_,
                 tokenOut: tokenOut_, 
                 fee: 500, //0.05 - 500 / make this a programatic value
                 recipient: address(this),
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: minAmountOut_, //minWethOut_
+                amountOutMinimum: _formatMinOut(minAmountOut_, tokenOut_), //minWethOut_
                 sqrtPriceLimitX96: 0
             });
 
