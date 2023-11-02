@@ -257,39 +257,11 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             receiver_
         );
 
-        // ozIDiamond(_ozDiamond).uzeOzTokens(amts_, address(this), msg.sender, receiver_);
-        // bytes4 x = ozIDiamond(_ozDiamond).uzeOzTokens.selector;
-        // console.logBytes4(x);
-        // console.log('selector ^^^');
-        // revert('here');
-
         //Gets the amount of shares per ozTokens transferred
         uint shares = withdraw(amts_.ozAmountIn, receiver_, msg.sender);
 
-        //Converts from shares to BPT
-        // amts_.bptAmountIn = convertToUnderlying(shares);
-
-        // /**
-        //  * - Redeems BPT for rETH
-        //  * - Swaps rETH for USDC
-        //  */
-        // ozIDiamond(_ozDiamond).useOzTokens(
-        //     amts_,
-        //     address(this),
-        //     msg.sender,
-        //     receiver_
-        // );
-
         uint assets = IERC20Permit(asset()).balanceOf(address(this));
         _withdraw(_msgSender(), receiver_, msg.sender, assets, shares);
-
-        //Transfers USDC to receiver
-        // uint asset = asset();
-        // asset.safeTransferFrom(
-        //     address(this), 
-        //     receiver_, 
-        //     IERC20Permit(asset).balanceOf(address(this))
-        // );
 
         //Updates totalSupply, totalAssets, and totalShares
 
