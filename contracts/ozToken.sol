@@ -239,7 +239,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         TradeAmountsOut memory amts_,
         address receiver_,
         uint8 v_, bytes32 r_, bytes32 s_
-    ) public returns(uint) {
+    ) public {
 
         //Move the ozToken from sender to _ozDiamond
         IERC20Permit(address(this)).permit(
@@ -250,7 +250,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             v_, r_, s_
         );
 
-        ozIDiamond(_ozDiamond).useOzTokens(
+        uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
             address(this),
             msg.sender,
@@ -260,14 +260,10 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         //Gets the amount of shares per ozTokens transferred
         uint shares = withdraw(amts_.ozAmountIn, receiver_, msg.sender);
 
-        uint assets = IERC20Permit(asset()).balanceOf(address(this));
-        _withdraw(_msgSender(), receiver_, msg.sender, assets, shares);
+        // uint assets = IERC20Permit(asset()).balanceOf(address(this));
+        _withdraw(_msgSender(), receiver_, msg.sender, amountOut, shares);
 
         //Updates totalSupply, totalAssets, and totalShares
-
-       
-        return 1;
-
     }
 
 

@@ -70,7 +70,7 @@ contract ROImoduleL2 {
         address ozToken_,
         address owner_,
         address receiver_
-    ) external {
+    ) external returns(uint amountOut) {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 
@@ -78,12 +78,12 @@ contract ROImoduleL2 {
             amts_.minWethOut, amts_.bptAmountIn, poolId
         ); 
 
-        _swapUni(
+        amountOut =_swapUni(
             IERC20Permit(s.WETH).balanceOf(address(this)),
             amts_.minUsdcOut,
             s.WETH,
             s.USDC,
-            receiver_
+            ozToken_
         );
     }
 
@@ -136,7 +136,7 @@ contract ROImoduleL2 {
         address tokenIn_,
         address tokenOut_,
         address receiver_
-    ) private {
+    ) private returns(uint amountOut) {
         tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
 
         ISwapRouter.ExactInputSingleParams memory params =
@@ -151,7 +151,7 @@ contract ROImoduleL2 {
                 sqrtPriceLimitX96: 0
             });
 
-        uint amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
+        amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
         if (amountOut == 0) revert TokenInNotValid(tokenIn_);
     }
 

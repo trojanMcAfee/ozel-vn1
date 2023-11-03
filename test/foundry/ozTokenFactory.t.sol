@@ -98,10 +98,13 @@ contract ozTokenFactoryTest is Setup {
 
     function test_redeeming() public {
         //Pre-conditions
-        uint amountIn = 100 * 10 ** IERC20Permit(testToken).decimals();
+        // uint amountIn = 100 * 10 ** IERC20Permit(testToken).decimals();
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(amountIn > 0);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true);
-        testToken = address(ozERC20);
+        // testToken = address(ozERC20);
+        console.log('bal post creation - should 0: ', IERC20Permit(testToken).balanceOf(alice));
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         
@@ -117,6 +120,8 @@ contract ozTokenFactoryTest is Setup {
         //Post-conditions
         uint minUsdcOut = req.amtsOut.minUsdcOut;
         assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
+
+        console.log('bal post redeem - should ~100: ', IERC20Permit(testToken).balanceOf(alice));
 
 
     }
