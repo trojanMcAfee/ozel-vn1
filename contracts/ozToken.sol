@@ -310,7 +310,14 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         address receiver,
         address owner
     ) public view override returns (uint256) {
-        require(assets <= maxWithdraw(owner), "ERC4626: withdraw more than max");
+        console.log('--- withdraw in ozToken ---');
+        console.log('assets: ', assets);
+        console.log('maxWithdraw(owner): ', maxWithdraw(owner));
+        console.log('receiver: ', receiver);
+        console.log('owner: ', owner);
+        console.log('--- end of withdraw in ozToken ---');
+
+        require(assets <= maxWithdraw(owner), "ozToken: withdraw more than max");
 
         uint256 shares = previewWithdraw(assets);
 
