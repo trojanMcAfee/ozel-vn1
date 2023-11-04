@@ -99,7 +99,7 @@ contract ozTokenFactoryTest is Setup {
     function test_redeeming() public {
         //Pre-conditions
         // uint amountIn = 100 * 10 ** IERC20Permit(testToken).decimals();
-        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice); //USDC
         assertTrue(amountIn > 0);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true);
@@ -112,6 +112,15 @@ contract ozTokenFactoryTest is Setup {
             RequestType memory req,
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+
+        console.log('req.amtsOut.ozAmountIn: ', req.amtsOut.ozAmountIn);
+        console.log('req.amtsOut.minWethOut: ', req.amtsOut.minWethOut);
+        console.log('req.amtsOut.bptAmountIn: ', req.amtsOut.bptAmountIn);
+        console.log('req.amtsOut.minUsdcOut: ', req.amtsOut.minUsdcOut);
+        console.log('alice: ', alice);
+        console.log('v: ', uint(v));
+        console.logBytes32(r);
+        console.logBytes32(s);
 
         //Action
         vm.prank(alice);
@@ -272,15 +281,6 @@ contract ozTokenFactoryTest is Setup {
 
 
     function _getBytesReqOut(address ozERC20Addr_, uint amountIn_) private view returns(bytes memory) {
-        console.log('--- _getBytesReqOut ----');
-        console.log('ozERC20Addr_: ', ozERC20Addr_);
-        console.log('wethAddr: ', wethAddr);
-        console.log('rEthWethPoolBalancer: ', rEthWethPoolBalancer);
-        console.log('rEthAddr: ', rEthAddr);
-        console.log('amountIn_: ', amountIn_);
-        console.log('defaultSlippage: ', defaultSlippage);
-        console.log('--- end _getBytesReqOut ----');
-        
         ReqOut memory reqOut = ReqOut(
         ozERC20Addr_,
         wethAddr,
