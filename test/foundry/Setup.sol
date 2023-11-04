@@ -236,24 +236,7 @@ contract Setup is Test {
             oracles,
             infra
         );
-
-        // bytes memory initData = abi.encodeWithSelector(
-        //     initDiamond.init.selector, 
-        //     registry,
-        //     address(ozDiamond), //DiamondInfra
-        //     swapRouterUni, //Dexes
-        //     ethUsdChainlink, //Oracles
-        //     wethAddr, //tokens
-        //     defaultSlippage, //DiamondInfra
-        //     vaultBalancer, //Dexes
-        //     queriesBalancer, //Dexes
-        //     rEthAddr, //tokens
-        //     rEthWethPoolBalancer, //Dexes
-        //     rEthEthChainlink, //Oracles
-        //     address(beacon), //DiamondInfra
-        //     usdcAddr //tokens
-        // );
-
+      
         OZ = ozIDiamond(address(ozDiamond));
 
         //Initialize diamond

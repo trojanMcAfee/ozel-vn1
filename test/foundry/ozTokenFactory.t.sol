@@ -127,9 +127,7 @@ contract ozTokenFactoryTest is Setup {
     }
      
 
-
     /** HELPERS ***/
-
    function _createRequestType(
         Type reqType_,
         uint amountOut_,
@@ -197,7 +195,6 @@ contract ozTokenFactoryTest is Setup {
     ) {
         uint[] memory minAmountsOut;
         uint bptAmountIn;
-        // address[] memory assets;
 
         if (reqType == Type.OUT) {
             bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
@@ -275,6 +272,15 @@ contract ozTokenFactoryTest is Setup {
 
 
     function _getBytesReqOut(address ozERC20Addr_, uint amountIn_) private view returns(bytes memory) {
+        console.log('--- _getBytesReqOut ----');
+        console.log('ozERC20Addr_: ', ozERC20Addr_);
+        console.log('wethAddr: ', wethAddr);
+        console.log('rEthWethPoolBalancer: ', rEthWethPoolBalancer);
+        console.log('rEthAddr: ', rEthAddr);
+        console.log('amountIn_: ', amountIn_);
+        console.log('defaultSlippage: ', defaultSlippage);
+        console.log('--- end _getBytesReqOut ----');
+        
         ReqOut memory reqOut = ReqOut(
         ozERC20Addr_,
         wethAddr,
