@@ -86,7 +86,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
     }
 
 
-    //bugg here ***
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
         return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
     }
@@ -240,6 +239,12 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         address receiver_,
         uint8 v_, bytes32 r_, bytes32 s_
     ) public {
+        uint256 accountShares = sharesOf(msg.sender);
+        uint shares = convertToShares(amts_.ozAmountIn);
+
+        if (accountShares < shares) {
+            revert USDMInsufficientBurnBalance(msg.sender, accountShares, shares);
+        }
 
         //Move the ozToken from sender to _ozDiamond
         IERC20Permit(address(this)).permit(
@@ -250,8 +255,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             v_, r_, s_
         );
 
-        //Gets the amount of shares per ozTokens transferred
-        uint shares = withdraw(amts_.ozAmountIn, receiver_, msg.sender);
 
         uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
@@ -261,10 +264,28 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         );
 
 
-        // uint assets = IERC20Permit(asset()).balanceOf(address(this));
-        _withdraw(_msgSender(), receiver_, msg.sender, amountOut, shares);
+        uint256 accountShares2 = sharesOf(_ozDiamond);
+        console.log('accountShares2: ', accountShares2);
+        console.log('totalShares: ', totalShares());
+        console.log('totalAssets: ', totalAssets());
+        console.log('in: ', amts_.ozAmountIn);
 
-        //Updates totalSupply, totalAssets, and totalShares
+        unchecked {
+            _shares[_ozDiamond] = 0;
+            // Overflow not possible: amount <= accountShares <= totalShares.
+            _totalShares -= accountShares2;
+            _totalAssets -= amts_.ozAmountIn;
+        }
+
+
+
+        // uint shares = withdraw(amts_.ozAmountIn, receiver_, address(this));
+
+        // _withdraw(_msgSender(), receiver_, msg.sender, amountOut, shares);
+
+        // _withdraw(address(this), receiver_, address(this), amountOut, shares);
+
+
     }
 
 
@@ -314,8 +335,11 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         // console.log('--- withdraw in ozToken ---');
         // console.log('assets: ', assets);
         // console.log('maxWithdraw(owner): ', maxWithdraw(owner));
+        // console.log('balanceOf(owner): ', balanceOf(owner));
+        // console.log('balanceOf(user): ', balanceOf(receiver));
         // console.log('receiver: ', receiver);
         // console.log('owner: ', owner);
+        // console.log('address(this) ^: ', address(this));
         // console.log('--- end of withdraw in ozToken ---');
 
         require(assets <= maxWithdraw(owner), "ozToken: withdraw more than max");

@@ -20,6 +20,7 @@ import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import {Helpers} from "../libraries/Helpers.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
+import {ozIToken} from "../interfaces/ozIToken.sol";
 
 import "forge-std/console.sol";
 
@@ -72,7 +73,19 @@ contract ROImoduleL2 {
         address receiver_
     ) external returns(uint amountOut) {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
+
+        // console.log('bal pre address(this) ****: ', ozIToken(ozToken_).balanceOf(address(this)));
+        // console.log('bal pre owner: ', ozIToken(ozToken_).balanceOf(owner_));
+
+        // console.log('bal diamond 1 ^^^^: ', ozIToken(ozToken_).balanceOf(ozToken_));
+
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
+
+        // console.log('bal diamond 2 ^^^^: ', ozIToken(ozToken_).balanceOf(ozToken_));
+
+        // console.log('bal post address(this): ', ozIToken(ozToken_).balanceOf(address(this)));
+        // console.log('address(this): ', address(this));
+        // console.log('bal post owner: ', ozIToken(ozToken_).balanceOf(owner_));
 
         //problem is that this ^ safeTransferFrom modifies the shares mapping.
         //but this _burn() --> also tries to do it later on in the tx.
@@ -90,6 +103,8 @@ contract ROImoduleL2 {
             s.USDC,
             ozToken_
         );
+
+        // console.log('bal diamond 4 ^^^^: ', ozIToken(ozToken_).balanceOf(address(this)));
     }
 
 
@@ -122,12 +137,18 @@ contract ROImoduleL2 {
             toInternalBalance: false
         });
 
+        console.log('bal diamond 6 ^^^^: ', ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac).balanceOf(address(this)));
+        console.log('bal diamond 6 ^^^^: ', ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac).sharesOf(address(this)));
+
         IVault(s.vaultBalancer).exitPool( 
             poolId_, 
             address(this), 
             payable(address(this)), 
             request
         );
+
+        console.log('bal diamond 7 ^^^^: ', ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac).balanceOf(address(this)));
+        console.log('bal diamond 71 ^^^^: ', ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac).sharesOf(address(this)));
 
     }
 
