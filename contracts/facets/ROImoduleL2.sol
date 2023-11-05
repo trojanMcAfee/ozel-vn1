@@ -74,6 +74,11 @@ contract ROImoduleL2 {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 
+        //problem is that this ^ safeTransferFrom modifies the shares mapping.
+        //but this _burn() --> also tries to do it later on in the tx.
+        //find a way to put together the shares mapping mods into one instead of two.
+        //tip of redeemBranch has an attempt already but it reverts
+
         _removeLiquidityBalancer(
             amts_.minWethOut, amts_.bptAmountIn, poolId
         ); 
