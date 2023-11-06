@@ -98,13 +98,10 @@ contract ozTokenFactoryTest is Setup {
 
     function test_redeeming() public {
         //Pre-conditions
-        // uint amountIn = 100 * 10 ** IERC20Permit(testToken).decimals();
-        uint amountIn = IERC20Permit(testToken).balanceOf(alice); //USDC
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
         assertTrue(amountIn > 0);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true);
-        // testToken = address(ozERC20);
-        console.log('bal post creation - should 0: ', IERC20Permit(testToken).balanceOf(alice));
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         
@@ -122,46 +119,23 @@ contract ozTokenFactoryTest is Setup {
         // console.logBytes32(r);
         // console.logBytes32(s);
 
-        r = 0xe94977a01bea7869c6dabe7d8b5f0c7656f7b6c3d1987c19950fc0ed24b1e182;
-        s = 0x4158eb872d8b6ad2142a10a92bc468f799eae29b322c7db30ee6987a1313033c;
+        // r = 0xe94977a01bea7869c6dabe7d8b5f0c7656f7b6c3d1987c19950fc0ed24b1e182;
+        // s = 0x4158eb872d8b6ad2142a10a92bc468f799eae29b322c7db30ee6987a1313033c;
 
         //Action
         vm.prank(alice);
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
-        console.log(3);
-        console.log('bal usdc: ', IERC20Permit(usdcAddr).balanceOf(alice));
 
+        //Post-conditions
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
+
         assertTrue(balanceUnderlyingAlice > 99 * decimalsUnderlying && balanceUnderlyingAlice < 100 * decimalsUnderlying);
-
         assertTrue(ozERC20.totalSupply() == 0);
-
         assertTrue((ozERC20.totalAssets() / decimalsUnderlying) == 0);
-        // console.log('totalSupply: ', ozERC20.totalSupply());
-        // console.log('totalAssets: ', ozERC20.totalAssets());
-
         assertTrue((ozERC20.totalShares() / decimalsUnderlying) == 0);
         assertTrue((ozERC20.sharesOf(alice) / decimalsUnderlying) == 0);
         assertTrue((ozERC20.balanceOf(alice) / ozERC20.decimals()) == 0);
-
-
-
-        // console.log('totalShares: ', ozERC20.totalShares());
-        // console.log('shares alice: ', ozERC20.sharesOf(alice));
-        // console.log('bal alice: ', ozERC20.balanceOf(alice));
-        // console.log('shares diamond: ', ozERC20.sharesOf(address(ozDiamond)));
-        // console.log('bal diamond: ', ozERC20.balanceOf(address(ozDiamond)));
-
-        //Post-conditions
-        // uint minUsdcOut = req.amtsOut.minUsdcOut;
-        // console.log(4);
-        // assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
-        // console.log(5);
-
-        // console.log('bal post redeem - should ~100: ', IERC20Permit(testToken).balanceOf(alice));
-
-
     }
      
 
