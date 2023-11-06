@@ -236,12 +236,16 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         console.log('totalSupply: ', totalSupply());
         uint assets = previewRedeem(shares);
 
+        console.log('shares alice pre ^^^: ', accountShares);
+
         uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
             address(this),
             msg.sender,
             receiver_
         );
+
+        console.log('shares alice post ^^^: ', sharesOf(msg.sender));
 
 
         uint256 accountShares2 = sharesOf(_ozDiamond);
@@ -254,7 +258,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         unchecked {
             _shares[_ozDiamond] = 0;
             // Overflow not possible: amount <= accountShares <= totalShares.
-            _totalShares -= accountShares;
+            _totalShares -= accountShares2;
             _totalAssets -= assets;
         }
 
