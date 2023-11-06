@@ -208,6 +208,9 @@ contract ozTokenFactoryTest is Setup {
         uint[] memory minAmountsOut;
         uint bptAmountIn;
 
+        console.log('is: ', reqType == Type.OUT);
+        console.log('reqType: ', uint(reqType));
+        console.log('typeOut: ', uint(Type.OUT));
         if (reqType == Type.OUT) {
             bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
 
@@ -231,7 +234,7 @@ contract ozTokenFactoryTest is Setup {
             minAmountsOut = minAmountsOutInternal;
             req = reqInternal;
         }
-        
+        console.log('amount in before getHash***: ', amountIn_);
         (uint amountOut, bytes32 permitHash) = _getHashNAmountOut(sender_, req, amountIn_);
 
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
@@ -270,6 +273,8 @@ contract ozTokenFactoryTest is Setup {
             paramOut = amountsOut[0];
         }
 
+        console.log('amount in before gerPermit ^^^: ', amountIn_);
+        //amountIn_ is changing when I use ozERC20Addr here. Why????
         bytes32 permitHash = HelpersTests.getPermitHash(
             testToken,
             sender_,
