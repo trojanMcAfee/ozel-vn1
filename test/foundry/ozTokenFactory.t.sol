@@ -130,11 +130,26 @@ contract ozTokenFactoryTest is Setup {
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
         console.log(3);
         console.log('bal usdc: ', IERC20Permit(usdcAddr).balanceOf(alice));
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('totalAssets: ', ozERC20.totalAssets());
-        console.log('totalShares: ', ozERC20.totalShares());
-        console.log('shares alice: ', ozERC20.sharesOf(alice));
-        console.log('bal alice: ', ozERC20.balanceOf(alice));
+
+        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceUnderlyingAlice > 99 * decimalsUnderlying && balanceUnderlyingAlice < 100 * decimalsUnderlying);
+
+        assertTrue(ozERC20.totalSupply() == 0);
+
+        assertTrue((ozERC20.totalAssets() / decimalsUnderlying) == 0);
+        // console.log('totalSupply: ', ozERC20.totalSupply());
+        // console.log('totalAssets: ', ozERC20.totalAssets());
+
+        assertTrue((ozERC20.totalShares() / decimalsUnderlying) == 0);
+        assertTrue((ozERC20.sharesOf(alice) / decimalsUnderlying) == 0);
+        assertTrue((ozERC20.balanceOf(alice) / ozERC20.decimals()) == 0);
+
+
+
+        // console.log('totalShares: ', ozERC20.totalShares());
+        // console.log('shares alice: ', ozERC20.sharesOf(alice));
+        // console.log('bal alice: ', ozERC20.balanceOf(alice));
         // console.log('shares diamond: ', ozERC20.sharesOf(address(ozDiamond)));
         // console.log('bal diamond: ', ozERC20.balanceOf(address(ozDiamond)));
 

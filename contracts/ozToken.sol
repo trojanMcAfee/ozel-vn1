@@ -238,7 +238,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
         console.log('shares alice pre ^^^: ', accountShares);
 
-        uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(
+        ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
             address(this),
             msg.sender,
