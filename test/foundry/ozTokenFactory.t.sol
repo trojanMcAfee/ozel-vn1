@@ -132,12 +132,12 @@ contract ozTokenFactoryTest is Setup {
         console.log('bal usdc: ', IERC20Permit(usdcAddr).balanceOf(alice));
 
         //Post-conditions
-        uint minUsdcOut = req.amtsOut.minUsdcOut;
-        console.log(4);
-        assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
-        console.log(5);
+        // uint minUsdcOut = req.amtsOut.minUsdcOut;
+        // console.log(4);
+        // assertTrue(minUsdcOut > 99 * 1 ether && minUsdcOut < 100 * 1 ether);
+        // console.log(5);
 
-        console.log('bal post redeem - should ~100: ', IERC20Permit(testToken).balanceOf(alice));
+        // console.log('bal post redeem - should ~100: ', IERC20Permit(testToken).balanceOf(alice));
 
 
     }

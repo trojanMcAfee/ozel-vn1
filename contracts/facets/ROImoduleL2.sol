@@ -101,7 +101,7 @@ contract ROImoduleL2 {
             amts_.minUsdcOut,
             s.WETH,
             s.USDC,
-            ozToken_
+            receiver_
         );
 
         // console.log('bal diamond 4 ^^^^: ', ozIToken(ozToken_).balanceOf(address(this)));
@@ -137,18 +137,12 @@ contract ROImoduleL2 {
             toInternalBalance: false
         });
 
-        console.log('bal diamond 6 ^^^^: ', ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac).balanceOf(address(this)));
-        console.log('bal diamond 6 ^^^^: ', ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac).sharesOf(address(this)));
-
         IVault(s.vaultBalancer).exitPool( 
             poolId_, 
             address(this), 
             payable(address(this)), 
             request
         );
-
-        console.log('bal diamond 7 ^^^^: ', ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac).balanceOf(address(this)));
-        console.log('bal diamond 71 ^^^^: ', ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac).sharesOf(address(this)));
 
     }
 

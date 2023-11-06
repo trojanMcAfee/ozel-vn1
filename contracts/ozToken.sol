@@ -87,6 +87,10 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
+        // if (totalShares() == 0) {
+        //     return ozIDiamond(_ozDiamond).getUnderlyingValue();
+        // }
+        
         return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
     }
 
@@ -143,6 +147,10 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
     function previewDeposit(uint assets_) public view override returns(uint) {
         return _convertToSharesFromUnderlying(assets_, MathUpgradeable.Rounding.Down);
+    }
+
+    function previewRedeem(uint shares_) public view override returns(uint) {
+        return _convertToAssetsFromUnderlying(shares_, MathUpgradeable.Rounding.Down);
     }
 
 
@@ -203,36 +211,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         amountUnderlying = (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
     }
 
-    // struct TradeAmountsOut {
-    //     uint ozAmountIn;
-    //     uint minWethOut;
-    //     uint bptAmountIn;
-    // }
-
-    function burn2(uint amount, address receiver) public {
-        // this.transferFrom(msg.sender, receiver, amount);
-        // this.transfer(receiver, amount);
-
-        (bool success,) = address(this).delegatecall(
-            abi.encodeWithSelector(
-                this.transfer.selector,
-                receiver, amount
-            )
-        );
-        require(success, "Fff");
-    }
-
-
-
-    function burn(
-        TradeAmountsOut memory amts_,
-        address receiver_
-    ) public {
-        // address(this).safeTransferFrom(msg.sender, _ozDiamond);
-
-        //remove from ozIToken.sol also
-
-    }
 
     function burn(
         TradeAmountsOut memory amts_,
@@ -255,6 +233,8 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             v_, r_, s_
         );
 
+        console.log('totalSupply: ', totalSupply());
+        uint assets = previewRedeem(shares);
 
         uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
@@ -268,13 +248,14 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         console.log('accountShares2: ', accountShares2);
         console.log('totalShares: ', totalShares());
         console.log('totalAssets: ', totalAssets());
-        console.log('in: ', amts_.ozAmountIn);
+        console.log('in: ', assets);
+        console.log('.');
 
         unchecked {
             _shares[_ozDiamond] = 0;
             // Overflow not possible: amount <= accountShares <= totalShares.
             _totalShares -= accountShares2;
-            _totalAssets -= amts_.ozAmountIn;
+            _totalAssets -= assets;
         }
 
 
@@ -353,7 +334,17 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
+        console.log('--- _convertToAssets ---');
+        console.log('shares: ', shares_);
+        console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        console.log('totalAssets: ', totalAssets());
+        console.log('--- end _convertToAssets ---');
+        
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
+    }
+
+    function _convertToAssetsFromUnderlying(uint shares_, MathUpgradeable.Rounding rounding_) private view returns(uint){
+        return shares_.mulDiv(ozIDiamond(_ozDiamond).getUnderlyingValue(), totalSupply(), rounding_);
     }
 
     //----------------------
