@@ -130,6 +130,13 @@ contract ozTokenFactoryTest is Setup {
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
         console.log(3);
         console.log('bal usdc: ', IERC20Permit(usdcAddr).balanceOf(alice));
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('totalAssets: ', ozERC20.totalAssets());
+        console.log('totalShares: ', ozERC20.totalShares());
+        console.log('shares alice: ', ozERC20.sharesOf(alice));
+        console.log('bal alice: ', ozERC20.balanceOf(alice));
+        // console.log('shares diamond: ', ozERC20.sharesOf(address(ozDiamond)));
+        // console.log('bal diamond: ', ozERC20.balanceOf(address(ozDiamond)));
 
         //Post-conditions
         // uint minUsdcOut = req.amtsOut.minUsdcOut;

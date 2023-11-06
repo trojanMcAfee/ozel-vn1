@@ -254,7 +254,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
         unchecked {
             _shares[_ozDiamond] = 0;
             // Overflow not possible: amount <= accountShares <= totalShares.
-            _totalShares -= accountShares2;
+            _totalShares -= accountShares;
             _totalAssets -= assets;
         }
 
