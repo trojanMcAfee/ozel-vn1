@@ -104,20 +104,13 @@ contract ozTokenFactoryTest is Setup {
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
+        testToken = address(ozERC20);
         
         (
             RequestType memory req,
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-        // console.log('req.amtsOut.ozAmountIn: ', req.amtsOut.ozAmountIn);
-        // console.log('req.amtsOut.minWethOut: ', req.amtsOut.minWethOut);
-        // console.log('req.amtsOut.bptAmountIn: ', req.amtsOut.bptAmountIn);
-        // console.log('req.amtsOut.minUsdcOut: ', req.amtsOut.minUsdcOut);
-        // console.log('alice: ', alice);
-        // console.log('v: ', uint(v));
-        // console.logBytes32(r);
-        // console.logBytes32(s);
 
         // r = 0xe94977a01bea7869c6dabe7d8b5f0c7656f7b6c3d1987c19950fc0ed24b1e182;
         // s = 0x4158eb872d8b6ad2142a10a92bc468f799eae29b322c7db30ee6987a1313033c;
@@ -127,6 +120,7 @@ contract ozTokenFactoryTest is Setup {
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
 
         //Post-conditions
+        testToken = usdcAddr;
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
 

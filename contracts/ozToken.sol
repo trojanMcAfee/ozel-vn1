@@ -233,10 +233,10 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             v_, r_, s_
         );
 
-        console.log('totalSupply: ', totalSupply());
+        // console.log('totalSupply: ', totalSupply());
         uint assets = previewRedeem(shares);
 
-        console.log('shares alice pre ^^^: ', accountShares);
+        // console.log('shares alice pre ^^^: ', accountShares);
 
         ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
@@ -245,15 +245,15 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             receiver_
         );
 
-        console.log('shares alice post ^^^: ', sharesOf(msg.sender));
+        // console.log('shares alice post ^^^: ', sharesOf(msg.sender));
 
 
         uint256 accountShares2 = sharesOf(_ozDiamond);
-        console.log('accountShares2: ', accountShares2);
-        console.log('totalShares: ', totalShares());
-        console.log('totalAssets: ', totalAssets());
-        console.log('in: ', assets);
-        console.log('.');
+        // console.log('accountShares2: ', accountShares2);
+        // console.log('totalShares: ', totalShares());
+        // console.log('totalAssets: ', totalAssets());
+        // console.log('in: ', assets);
+        // console.log('.');
 
         unchecked {
             _shares[_ozDiamond] = 0;
@@ -338,11 +338,11 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
-        console.log('--- _convertToAssets ---');
-        console.log('shares: ', shares_);
-        console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-        console.log('totalAssets: ', totalAssets());
-        console.log('--- end _convertToAssets ---');
+        // console.log('--- _convertToAssets ---');
+        // console.log('shares: ', shares_);
+        // console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        // console.log('totalAssets: ', totalAssets());
+        // console.log('--- end _convertToAssets ---');
         
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
     }
