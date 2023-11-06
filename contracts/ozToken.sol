@@ -66,7 +66,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
     bytes32 private constant _PERMIT_TYPEHASH =
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
-    // event RewardMultiplier(uint256 indexed value);
 
 
     constructor() {
@@ -87,10 +86,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
 
 
     function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view override returns(uint) {
-        // if (totalShares() == 0) {
-        //     return ozIDiamond(_ozDiamond).getUnderlyingValue();
-        // }
-        
         return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
     }
 
@@ -233,10 +228,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             v_, r_, s_
         );
 
-        // console.log('totalSupply: ', totalSupply());
         uint assets = previewRedeem(shares);
-
-        // console.log('shares alice pre ^^^: ', accountShares);
 
         ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
@@ -245,15 +237,7 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             receiver_
         );
 
-        // console.log('shares alice post ^^^: ', sharesOf(msg.sender));
-
-
         uint256 accountShares2 = sharesOf(_ozDiamond);
-        // console.log('accountShares2: ', accountShares2);
-        // console.log('totalShares: ', totalShares());
-        // console.log('totalAssets: ', totalAssets());
-        // console.log('in: ', assets);
-        // console.log('.');
 
         unchecked {
             _shares[_ozDiamond] = 0;
@@ -261,16 +245,6 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
             _totalShares -= accountShares2;
             _totalAssets -= assets;
         }
-
-
-
-        // uint shares = withdraw(amts_.ozAmountIn, receiver_, address(this));
-
-        // _withdraw(_msgSender(), receiver_, msg.sender, amountOut, shares);
-
-        // _withdraw(address(this), receiver_, address(this), amountOut, shares);
-
-
     }
 
 
@@ -302,48 +276,22 @@ contract ozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeab
     }
 
 
-    // function _withdraw(
-    //     address caller,
-    //     address receiver,
-    //     address owner,
-    //     uint256 assets,
-    //     uint256 shares
-    // ) internal override {
-    //     //do this function comparing with _withdraw()
-    // } 
-
     function withdraw(
         uint256 assets,
         address receiver,
         address owner
-    ) public view override returns (uint256) {
-        // console.log('--- withdraw in ozToken ---');
-        // console.log('assets: ', assets);
-        // console.log('maxWithdraw(owner): ', maxWithdraw(owner));
-        // console.log('balanceOf(owner): ', balanceOf(owner));
-        // console.log('balanceOf(user): ', balanceOf(receiver));
-        // console.log('receiver: ', receiver);
-        // console.log('owner: ', owner);
-        // console.log('address(this) ^: ', address(this));
-        // console.log('--- end of withdraw in ozToken ---');
-
+    ) public override returns (uint256) {
         require(assets <= maxWithdraw(owner), "ozToken: withdraw more than max");
 
         uint256 shares = previewWithdraw(assets);
 
-        // _withdraw(_msgSender(), receiver, owner, assets, shares);
+        _withdraw(_msgSender(), receiver, owner, assets, shares);
 
         return shares;
     }
 
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view override returns (uint256 assets) {
-        // console.log('--- _convertToAssets ---');
-        // console.log('shares: ', shares_);
-        // console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-        // console.log('totalAssets: ', totalAssets());
-        // console.log('--- end _convertToAssets ---');
-        
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
     }
 

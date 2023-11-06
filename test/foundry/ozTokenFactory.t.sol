@@ -112,9 +112,6 @@ contract ozTokenFactoryTest is Setup {
         ) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
 
-        // r = 0xe94977a01bea7869c6dabe7d8b5f0c7656f7b6c3d1987c19950fc0ed24b1e182;
-        // s = 0x4158eb872d8b6ad2142a10a92bc468f799eae29b322c7db30ee6987a1313033c;
-
         //Action
         vm.prank(alice);
         ozERC20.burn(req.amtsOut, alice, v, r, s); 
@@ -202,9 +199,6 @@ contract ozTokenFactoryTest is Setup {
         uint[] memory minAmountsOut;
         uint bptAmountIn;
 
-        console.log('is: ', reqType == Type.OUT);
-        console.log('reqType: ', uint(reqType));
-        console.log('typeOut: ', uint(Type.OUT));
         if (reqType == Type.OUT) {
             bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
 
@@ -228,7 +222,7 @@ contract ozTokenFactoryTest is Setup {
             minAmountsOut = minAmountsOutInternal;
             req = reqInternal;
         }
-        console.log('amount in before getHash***: ', amountIn_);
+
         (uint amountOut, bytes32 permitHash) = _getHashNAmountOut(sender_, req, amountIn_);
 
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
@@ -267,8 +261,6 @@ contract ozTokenFactoryTest is Setup {
             paramOut = amountsOut[0];
         }
 
-        console.log('amount in before gerPermit ^^^: ', amountIn_);
-        //amountIn_ is changing when I use ozERC20Addr here. Why????
         bytes32 permitHash = HelpersTests.getPermitHash(
             testToken,
             sender_,
