@@ -25,7 +25,7 @@ contract ozTokenFactoryTest is Setup {
     using FixedPointMathLib for uint;
 
 
-    function test_minting() public {
+    function test_minting_approve() public {
         //Pre-condition
         uint rawAmount = 100;
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -109,6 +109,37 @@ contract ozTokenFactoryTest is Setup {
 
         balBob = ozERC20.balanceOf(bob);
         assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
+    }
+
+
+    function test_redeeming_approve() public {
+        //Pre-conditions
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
+        assertTrue(amountIn > 0);
+
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
+
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+        testToken = address(ozERC20);
+
+        (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+
+        //Action
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
+        ozERC20.burn(req.amtsOut, alice); 
+
+        //Post-conditions
+        testToken = usdcAddr;
+        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
+
+        assertTrue(balanceUnderlyingAlice > 99 * decimalsUnderlying && balanceUnderlyingAlice < 100 * decimalsUnderlying);
+        assertTrue(ozERC20.totalSupply() == 0);
+        assertTrue((ozERC20.totalAssets() / decimalsUnderlying) == 0);
+        assertTrue((ozERC20.totalShares() / decimalsUnderlying) == 0);
+        assertTrue((ozERC20.sharesOf(alice) / decimalsUnderlying) == 0);
+        assertTrue((ozERC20.balanceOf(alice) / ozERC20.decimals()) == 0);
     }
 
 
