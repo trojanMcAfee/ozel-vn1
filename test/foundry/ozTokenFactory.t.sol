@@ -25,7 +25,7 @@ contract ozTokenFactoryTest is Setup {
     using FixedPointMathLib for uint;
 
 
-    function test_minting() public {
+    function test_minting_eip2612() public {
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
@@ -201,6 +201,7 @@ contract ozTokenFactoryTest is Setup {
         );
 
         shares = ozERC20.mint(req.amtsIn, user_); 
+        vm.stopPrank();
     }
 
 
