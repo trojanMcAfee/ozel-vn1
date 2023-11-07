@@ -200,20 +200,20 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
     function mint( 
         TradeAmounts memory amounts_,
-        address receiver_,
-        uint8 v_,
-        bytes32 r_,
-        bytes32 s_
+        address receiver_
+        // uint8 v_,
+        // bytes32 r_,
+        // bytes32 s_
     ) external returns(uint) { //check if this return (shares) is necessary
         address token = asset();
 
-        IERC20Permit(token).permit(
-            msg.sender,
-            _ozDiamond,
-            amounts_.amountIn,
-            block.timestamp,
-            v_, r_, s_
-        );
+        // IERC20Permit(token).permit(
+        //     msg.sender,
+        //     _ozDiamond,
+        //     amounts_.amountIn,
+        //     block.timestamp,
+        //     v_, r_, s_
+        // );
 
         ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
 

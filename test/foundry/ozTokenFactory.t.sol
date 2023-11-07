@@ -182,6 +182,7 @@ contract ozTokenFactoryTest is Setup {
             ));
         } else {
             ozERC20 = ozIToken(testToken_);
+            
         }
 
         (
@@ -189,8 +190,17 @@ contract ozTokenFactoryTest is Setup {
             uint8 v, bytes32 r, bytes32 s
         ) = _createDataOffchain(ozERC20, amountIn_, userPk_, user_, Type.IN);
 
-        vm.prank(user_);
-        shares = ozERC20.mint(req.amtsIn, user_, v, r, s); 
+        vm.startPrank(user_);
+
+        IERC20Permit(testToken).permit(
+            user_, 
+            address(ozDiamond), 
+            req.amtsIn.amountIn, 
+            block.timestamp, 
+            v, r, s
+        );
+
+        shares = ozERC20.mint(req.amtsIn, user_); 
     }
 
 
