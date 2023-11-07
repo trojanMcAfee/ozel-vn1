@@ -202,13 +202,22 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         TradeAmounts memory amounts_,
         address receiver_
     ) external returns(uint) { //check if this return (shares) is necessary
-        address token = asset();
+        uint assets = amounts_.amountIn;
 
-        ozIDiamond(_ozDiamond).useUnderlying(token, msg.sender, amounts_); 
+        require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
-        uint shares = deposit(amounts_.amountIn, receiver_);
+        ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts_); 
 
-        _totalAssets += amounts_.amountIn;
+        uint shares = totalShares() == 0 ? assets : previewDeposit(assets);
+
+        _totalAssets += assets;
+        _totalShares += shares;
+
+        unchecked {
+            _shares[receiver_] += shares;
+        }
+
+        //emit a Deposit/Mint event here
 
         return shares;
     }
@@ -227,33 +236,33 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
 
-    function _deposit( 
-        address caller_,
-        address receiver_,
-        uint256 assets_,
-        uint256 shares_
-    ) internal { 
-        _totalShares += shares_;
+    // function _deposit( 
+    //     address caller_,
+    //     address receiver_,
+    //     uint256 assets_,
+    //     uint256 shares_
+    // ) internal { 
+    //     _totalShares += shares_;
 
-        unchecked {
-            // Overflow not possible: shares + shares amount is at most totalShares + shares amount
-            // which is checked above.
-            _shares[receiver_] += shares_;
-        }
+    //     unchecked {
+    //         // Overflow not possible: shares + shares amount is at most totalShares + shares amount
+    //         // which is checked above.
+    //         _shares[receiver_] += shares_;
+    //     }
         
-        // emit Deposit(caller_, receiver_, assets_, shares_);
-    }
+    //     // emit Deposit(caller_, receiver_, assets_, shares_);
+    // }
 
 
-    function deposit(uint assets_, address receiver_) public returns(uint) {
-        require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
+    // function deposit(uint assets_, address receiver_) public returns(uint) {
+    //     require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
-        uint shares = totalShares() == 0 ? assets_ : previewDeposit(assets_);
+    //     uint shares = totalShares() == 0 ? assets_ : previewDeposit(assets_);
 
-        _deposit(msg.sender, receiver_, assets_, shares);
+    //     _deposit(msg.sender, receiver_, assets_, shares);
 
-        return shares;
-    }
+    //     return shares;
+    // }
 
     function maxDeposit(address) public view returns (uint256) {
         return _isVaultCollateralized() ? type(uint256).max : 0;
