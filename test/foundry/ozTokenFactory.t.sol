@@ -113,8 +113,16 @@ contract ozTokenFactoryTest is Setup {
 
 
         //Action
-        vm.prank(alice);
-        ozERC20.burn(req.amtsOut, alice, v, r, s); 
+        vm.startPrank(alice);
+        ozERC20.permit(
+            alice,
+            address(ozDiamond),
+            req.amtsOut.ozAmountIn,
+            block.timestamp,
+            v, r, s
+        );
+
+        ozERC20.burn(req.amtsOut, alice); 
 
         //Post-conditions
         testToken = usdcAddr;

@@ -59,8 +59,7 @@ interface ozIToken {
 
     function burn(
         TradeAmountsOut memory amts_,
-        address receiver_,
-        uint8 v_, bytes32 r_, bytes32 s_
+        address receiver_
     ) external;
 
 
@@ -70,4 +69,14 @@ interface ozIToken {
     function nonces(address owner) external view returns (uint256);
 
     function convertToShares(uint256 assets) external view returns (uint256 shares);
+
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external;
 }
