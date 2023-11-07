@@ -25,6 +25,22 @@ contract ozTokenFactoryTest is Setup {
     using FixedPointMathLib for uint;
 
 
+    function test_minting() public {
+        //Pre-condition
+        uint rawAmount = 100;
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        //Action
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, false
+        );
+
+        //Post-conditions
+        assertTrue(address(ozERC20) != address(0));
+        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+    }
+
+
     function test_minting_eip2612() public {
         /**
          * Pre-conditions + Actions (creating of ozTokens)
@@ -32,17 +48,17 @@ contract ozTokenFactoryTest is Setup {
         uint rawAmount = 100;
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
-            testToken, amountIn, alice, ALICE_PK, true
+            testToken, amountIn, alice, ALICE_PK, true, true
         );
 
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
         (, uint sharesBob) = _createAndMintOzTokens(
-            address(ozERC20), amountIn, bob, BOB_PK, false
+            address(ozERC20), amountIn, bob, BOB_PK, false, true
         );
 
         amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
         (, uint sharesCharlie) = _createAndMintOzTokens(
-            address(ozERC20), amountIn, charlie, CHARLIE_PK, false
+            address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true
         );
 
         //Post-conditions
@@ -74,7 +90,7 @@ contract ozTokenFactoryTest is Setup {
         uint rawAmount = 100;
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(
-            testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true
+            testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true, true
         );
 
         uint balAlice = ozERC20.balanceOf(alice);
@@ -101,7 +117,7 @@ contract ozTokenFactoryTest is Setup {
         uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
         assertTrue(amountIn > 0);
 
-        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true);
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
@@ -174,7 +190,8 @@ contract ozTokenFactoryTest is Setup {
         uint amountIn_, 
         address user_, 
         uint userPk_,
-        bool create_
+        bool create_,
+        bool is2612_
     ) private returns(ozIToken ozERC20, uint shares) {
         if (create_) {
             ozERC20 = ozIToken(OZ.createOzToken(
@@ -192,13 +209,17 @@ contract ozTokenFactoryTest is Setup {
 
         vm.startPrank(user_);
 
-        IERC20Permit(testToken).permit(
-            user_, 
-            address(ozDiamond), 
-            req.amtsIn.amountIn, 
-            block.timestamp, 
-            v, r, s
-        );
+        if (is2612_) {
+            IERC20Permit(testToken).permit(
+                user_, 
+                address(ozDiamond), 
+                req.amtsIn.amountIn, 
+                block.timestamp, 
+                v, r, s
+            );
+        } else {
+            IERC20Permit(testToken).approve(address(ozDiamond), req.amtsIn.amountIn);
+        }
 
         shares = ozERC20.mint(req.amtsIn, user_); 
         vm.stopPrank();
