@@ -96,7 +96,7 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    function test_redeeming() public {
+    function test_redeeming_eip2612() public {
         //Pre-conditions
         uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
         assertTrue(amountIn > 0);
