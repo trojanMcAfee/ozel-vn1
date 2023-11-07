@@ -262,7 +262,7 @@ contract ozTokenFactoryTest is Setup {
         uint amountIn_,
         uint SENDER_PK_,
         address sender_,
-        Type reqType
+        Type reqType_
     ) private returns( 
         RequestType memory req,
         uint8 v, bytes32 r, bytes32 s
@@ -270,7 +270,7 @@ contract ozTokenFactoryTest is Setup {
         uint[] memory minAmountsOut;
         uint bptAmountIn;
 
-        if (reqType == Type.OUT) {
+        if (reqType_ == Type.OUT) {
             bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
 
             (
@@ -282,7 +282,7 @@ contract ozTokenFactoryTest is Setup {
             minAmountsOut = minAmountsOutInternal;
             req = reqInternal;
             bptAmountIn = bptAmountInternal;
-        } else if (reqType == Type.IN) { 
+        } else if (reqType_ == Type.IN) { 
             bytes memory data = _getBytesReqIn(address(ozERC20_), amountIn_);
 
             (
@@ -298,7 +298,7 @@ contract ozTokenFactoryTest is Setup {
 
         (v, r, s) = vm.sign(SENDER_PK_, permitHash);
 
-        req = _createRequestType(reqType, amountOut, amountIn_, bptAmountIn, minAmountsOut);
+        req = _createRequestType(reqType_, amountOut, amountIn_, bptAmountIn, minAmountsOut);
     }
     
 
