@@ -2,7 +2,7 @@
 pragma solidity 0.8.21;
 
 
-import {TradeAmounts, TradeAmountsOut} from "../AppStorage.sol";
+import {AmountsIn, AmountsOut} from "../AppStorage.sol";
 
 
 /// @dev Interface of the ERC20 standard as defined in the EIP.
@@ -46,7 +46,7 @@ interface ozIToken {
     function decimals() external view returns (uint8);
 
     function mint( 
-        TradeAmounts memory amounts_,
+        AmountsIn memory amounts_,
         address receiver
     ) external returns(uint);
 
@@ -57,7 +57,7 @@ interface ozIToken {
     function totalAssets() external view returns(uint);
 
     function burn(
-        TradeAmountsOut memory amts_,
+        AmountsOut memory amts_,
         address receiver_
     ) external;
 

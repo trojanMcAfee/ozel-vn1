@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {IDiamondCut} from "./IDiamondCut.sol";
-import {TradeAmounts, TradeAmountsOut, Asset} from "../AppStorage.sol";
+import {AmountsIn, AmountsOut, Asset} from "../AppStorage.sol";
 
 
 interface ozIDiamond {
@@ -20,11 +20,11 @@ interface ozIDiamond {
     function useUnderlying(
         address underlying_, 
         address user_, 
-        TradeAmounts memory amounts_
+        AmountsIn memory amounts_
     ) external;
 
     function useOzTokens(
-        TradeAmountsOut memory amts_,
+        AmountsOut memory amts_,
         address ozToken_,
         address owner_,
         address receiver_

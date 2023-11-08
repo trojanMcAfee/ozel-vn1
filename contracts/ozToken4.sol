@@ -14,7 +14,7 @@ import {
     IERC20Upgradeable
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
-import {AppStorage, TradeAmounts, TradeAmountsOut, Asset} from "./AppStorage.sol";
+import {AppStorage, AmountsIn, AmountsOut, Asset} from "./AppStorage.sol";
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 // import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -111,7 +111,7 @@ contract ozToken4 is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradea
 
 
     function mint( 
-        TradeAmounts memory amounts_,
+        AmountsIn memory amounts_,
         address receiver_,
         uint8 v_,
         bytes32 r_,
@@ -208,7 +208,7 @@ contract ozToken4 is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradea
 
 
     function burn(
-        TradeAmountsOut memory amts_,
+        AmountsOut memory amts_,
         address receiver_,
         uint8 v_, bytes32 r_, bytes32 s_
     ) public {

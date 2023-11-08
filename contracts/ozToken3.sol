@@ -9,7 +9,7 @@
 // import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 // import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
-// import {TradeAmounts} from "./AppStorage.sol";
+// import {AmountsIn} from "./AppStorage.sol";
 
 // import "forge-std/console.sol";
 
@@ -208,7 +208,7 @@
     
 
 //     function mint( 
-//         TradeAmounts memory amounts_,
+//         AmountsIn memory amounts_,
 //         uint8 v_,
 //         bytes32 r_,
 //         bytes32 s_

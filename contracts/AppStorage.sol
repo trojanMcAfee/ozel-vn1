@@ -35,7 +35,7 @@ struct AppStorage {
   
 }
 
-struct TradeAmounts {
+struct AmountsIn {
     uint amountIn;
     uint minWethOut;
     uint minRethOut;
@@ -43,7 +43,7 @@ struct TradeAmounts {
 }
 
 
-struct TradeAmountsOut {
+struct AmountsOut {
     uint ozAmountIn;
     uint minWethOut;
     uint bptAmountIn;

@@ -10,7 +10,7 @@ import {
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
-import {TradeAmounts, TradeAmountsOut, Asset} from "./AppStorage.sol";
+import {AmountsIn, AmountsOut, Asset} from "./AppStorage.sol";
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 // import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -197,7 +197,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function mint( 
-        TradeAmounts memory amounts_,
+        AmountsIn memory amounts_,
         address receiver_
     ) external returns(uint) { 
         uint assets = amounts_.amountIn;
@@ -251,7 +251,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
 
     function burn(
-        TradeAmountsOut memory amts_,
+        AmountsOut memory amts_,
         address receiver_
     ) public {
         uint256 accountShares = sharesOf(msg.sender);

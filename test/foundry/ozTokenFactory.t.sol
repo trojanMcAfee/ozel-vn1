@@ -11,7 +11,7 @@ import {Helpers} from "../../contracts/libraries/Helpers.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
-import {TradeAmounts, TradeAmountsOut} from "../../contracts/AppStorage.sol";
+import {AmountsIn, AmountsOut} from "../../contracts/AppStorage.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
@@ -199,14 +199,14 @@ contract ozTokenFactoryTest is Setup {
             (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
             uint minUsdcOut = uint(price).mulDiv(minWethOut, 1e8);
 
-            req.amtsOut = TradeAmountsOut({
+            req.amtsOut = AmountsOut({
                 ozAmountIn: amountIn_,
                 minWethOut: minWethOut,
                 bptAmountIn: bptAmountIn_,
                 minUsdcOut: minUsdcOut
             });
         } else if (reqType_ == Type.IN) {
-            req.amtsIn = TradeAmounts({
+            req.amtsIn = AmountsIn({
                 amountIn: amountIn_,
                 minWethOut: minAmountsOut_[0],
                 minRethOut: minAmountsOut_[1],

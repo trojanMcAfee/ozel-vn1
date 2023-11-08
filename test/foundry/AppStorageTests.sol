@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {IVault} from "../../contracts/interfaces/IBalancer.sol";
-import {TradeAmounts, TradeAmountsOut} from "../../contracts/AppStorage.sol";
+import {AmountsIn, AmountsOut} from "../../contracts/AppStorage.sol";
 
 
 enum Type {
@@ -14,8 +14,8 @@ enum Type {
 struct RequestType {
     IVault.JoinPoolRequest join;
     IVault.ExitPoolRequest exit;
-    TradeAmounts amtsIn;
-    TradeAmountsOut amtsOut;
+    AmountsIn amtsIn;
+    AmountsOut amtsOut;
     Type req;
 }
 

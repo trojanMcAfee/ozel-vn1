@@ -8,8 +8,8 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {
     AppStorage, 
-    TradeAmounts, 
-    TradeAmountsOut, 
+    AmountsIn, 
+    AmountsOut, 
     Asset
 } from "../AppStorage.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
@@ -39,7 +39,7 @@ contract ROImoduleL2 {
     function useUnderlying( 
         address underlying_, 
         address user_,
-        TradeAmounts memory amounts_
+        AmountsIn memory amounts_
     ) external {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
         underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
@@ -63,7 +63,7 @@ contract ROImoduleL2 {
 
 
     function useOzTokens(
-        TradeAmountsOut memory amts_,
+        AmountsOut memory amts_,
         address ozToken_,
         address owner_,
         address receiver_
