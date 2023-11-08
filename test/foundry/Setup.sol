@@ -28,6 +28,7 @@ import {
     DiamondInfra
 } from "../../contracts/AppStorage.sol";
 import {ReqOut, ReqIn} from "./AppStorageTests.sol";
+import {ozCut} from "../../contracts/facets/ozCut.sol";
 
 // import "forge-std/console.sol";
 
@@ -61,7 +62,7 @@ contract Setup is Test {
     //For debugging purposes
     address private usdcAddrImpl;
     address private wethUsdPoolUni;
-    address private accessControlledOffchainAggregator; //0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7
+    address private accessControlledOffchainAggregator; 
     address private aeWETH;
     address private rEthImpl;
     address private feesCollectorBalancer;
@@ -92,6 +93,7 @@ contract Setup is Test {
     ROImoduleL2 internal roiL2;
     ozOracle internal oracle;
     ozLoupe internal loupe;
+    ozCut internal cutOz;
 
     ozIDiamond internal OZ;
 
@@ -181,7 +183,6 @@ contract Setup is Test {
         tokenOz = new ozToken();
 
         //Deploys facets
-        // loupe = new DiamondLoupeFacet();
         loupe = new ozLoupe();
         ownership = new OwnershipFacet();
         mirrorEx = new MirrorExchange();
@@ -190,9 +191,10 @@ contract Setup is Test {
         roiL2 = new ROImoduleL2();
         oracle = new ozOracle();
         beacon = new ozBeacon(address(tokenOz));
+        cutOz = new ozCut();
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](8);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](9);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
         cuts[2] = _createCut(address(mirrorEx), 2);
@@ -201,11 +203,9 @@ contract Setup is Test {
         cuts[5] = _createCut(address(roiL2), 5);
         cuts[6] = _createCut(address(oracle), 6);
         cuts[7] = _createCut(address(beacon), 7);
+        cuts[8] = _createCut(address(cutOz), 8);
 
-        //Create ERC20 registry
-        // address[] memory registry = new address[](1);
-        // registry[0] = usdtAddr;
-
+        //Create init vars
         Tokens memory tokens = Tokens({
             weth: wethAddr,
             reth: rEthAddr,
@@ -259,7 +259,7 @@ contract Setup is Test {
             length = 6;
         } else if (id_ == 1 || id_ == 6) {
             length = 2;
-        } else if (id_ == 2 || id_ == 4) {
+        } else if (id_ == 2 || id_ == 4 || id_ == 8) {
             length = 1;
         } else if (id_ == 3 || id_ == 5) {
             length = 3;
@@ -275,7 +275,7 @@ contract Setup is Test {
             selectors[2] = loupe.facetAddresses.selector;
             selectors[3] = loupe.facetAddress.selector;
             selectors[4] = loupe.supportsInterface.selector;
-            selectors[5] = loupe.getRewardMultiplier.selector;
+            selectors[5] = loupe.getDefaultSlippage.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -300,6 +300,8 @@ contract Setup is Test {
             selectors[2] = beacon.owner.selector;
             selectors[3] = beacon.renounceOwnership.selector;
             selectors[4] = beacon.transferOwnership.selector;
+        } else if (id_ == 8) {
+            selectors[0] = cutOz.changeDefaultSlippage.selector;
         }
 
         cut = IDiamondCut.FacetCut({
@@ -342,6 +344,7 @@ contract Setup is Test {
         vm.label(address(beacon), "ozBeacon");
         vm.label(address(tokenOz), "ozTokenImplementation");
         vm.label(fraxAddr, "FRAX");
+        vm.label(address(cutOz), "ozCut");
     }
 
 

@@ -32,7 +32,8 @@ interface ozIDiamond {
 
     function getDiamondAddr() external view returns(address);
     function rETH_ETH() external returns(uint256); //if not used, removed
-    function getRewardMultiplier() external view returns(uint);
+    function getDefaultSlippage() external view returns(uint);
     function getUnderlyingValue() external view returns(uint);
     function totalUnderlying(Asset) external view returns(uint);
+    function changeDefaultSlippage(uint newBasisPoints_) external;
 }

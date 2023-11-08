@@ -114,6 +114,11 @@ contract ozTokenFactoryTest is Setup {
 
     function test_redeeming_approve() public {
         //Pre-conditions
+        uint newSlippage = 150;
+        vm.prank(owner);
+        OZ.changeDefaultSlippage(newSlippage);
+        assertTrue(OZ.getDefaultSlippage() == newSlippage);
+
         uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
         assertTrue(amountIn > 0);
 
