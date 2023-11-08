@@ -114,7 +114,7 @@ contract ozTokenFactoryTest is Setup {
 
     function test_redeeming_approve() public {
         //Pre-conditions
-        uint newSlippage = 150;
+        uint newSlippage = 500;
         vm.prank(owner);
         OZ.changeDefaultSlippage(newSlippage);
         assertTrue(OZ.getDefaultSlippage() == newSlippage);
@@ -220,7 +220,7 @@ contract ozTokenFactoryTest is Setup {
         uint[] memory minAmountsOut_
     ) private view returns(RequestType memory req) {
         if (reqType_ == Type.OUT) { 
-            uint minWethOut = Helpers.calculateMinAmountOut(amountOut_, defaultSlippage);
+            uint minWethOut = Helpers.calculateMinAmountOut(amountOut_, OZ.getDefaultSlippage());
 
             (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
             uint minUsdcOut = uint(price).mulDiv(minWethOut, 1e8);
@@ -236,7 +236,7 @@ contract ozTokenFactoryTest is Setup {
                 amountIn: amountIn_,
                 minWethOut: minAmountsOut_[0],
                 minRethOut: minAmountsOut_[1],
-                minBptOut: HelpersTests.calculateMinAmountsOut(amountOut_, defaultSlippage)
+                minBptOut: HelpersTests.calculateMinAmountsOut(amountOut_, OZ.getDefaultSlippage())
             });
         }
    }
@@ -378,7 +378,7 @@ contract ozTokenFactoryTest is Setup {
         rEthWethPoolBalancer,
         rEthAddr,
         amountIn_,
-        defaultSlippage
+        OZ.getDefaultSlippage()
     );
 
         return abi.encode(reqOut);
@@ -393,7 +393,7 @@ contract ozTokenFactoryTest is Setup {
             wethAddr,
             rEthWethPoolBalancer,
             rEthAddr,
-            defaultSlippage,
+            OZ.getDefaultSlippage(),
             amountIn_
         );
 
