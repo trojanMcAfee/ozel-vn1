@@ -59,10 +59,6 @@ contract ROImoduleL2 {
 
         //Deposits rETH in rETH-ETH Balancer pool as LP
         _addLiquidityBalancer(amounts_.minBptOut, poolId);
-
-        //******** */
-        // _removeLiquidityBalancer(uint(0), bptBalance, poolId, user_); //offchain calc goes in uint(0)
-
     }
 
 
@@ -74,23 +70,7 @@ contract ROImoduleL2 {
     ) external returns(uint amountOut) {
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
 
-        // console.log('bal pre address(this) ****: ', ozIToken(ozToken_).balanceOf(address(this)));
-        // console.log('bal pre owner: ', ozIToken(ozToken_).balanceOf(owner_));
-
-        // console.log('bal diamond 1 ^^^^: ', ozIToken(ozToken_).balanceOf(ozToken_));
-
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
-
-        // console.log('bal diamond 2 ^^^^: ', ozIToken(ozToken_).balanceOf(ozToken_));
-
-        // console.log('bal post address(this): ', ozIToken(ozToken_).balanceOf(address(this)));
-        // console.log('address(this): ', address(this));
-        // console.log('bal post owner: ', ozIToken(ozToken_).balanceOf(owner_));
-
-        //problem is that this ^ safeTransferFrom modifies the shares mapping.
-        //but this _burn() --> also tries to do it later on in the tx.
-        //find a way to put together the shares mapping mods into one instead of two.
-        //tip of redeemBranch has an attempt already but it reverts
 
         _removeLiquidityBalancer(
             amts_.minWethOut, amts_.bptAmountIn, poolId
@@ -103,8 +83,6 @@ contract ROImoduleL2 {
             s.USDC,
             receiver_
         );
-
-        // console.log('bal diamond 4 ^^^^: ', ozIToken(ozToken_).balanceOf(address(this)));
     }
 
 

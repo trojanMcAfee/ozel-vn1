@@ -10,7 +10,7 @@ import {
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
-import {AppStorage, TradeAmounts, TradeAmountsOut, Asset} from "./AppStorage.sol";
+import {TradeAmounts, TradeAmountsOut, Asset} from "./AppStorage.sol";
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 // import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -47,8 +47,6 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
     using MathUpgradeable for uint;
-
-    AppStorage internal s;
 
     address private _ozDiamond;
     address private _underlying;
@@ -178,7 +176,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return _totalAssets;
     }
 
-    function totalShares() public view returns(uint) { //from USDM
+    function totalShares() public view returns(uint) {
         return _totalShares;
     }
 
@@ -201,7 +199,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     function mint( 
         TradeAmounts memory amounts_,
         address receiver_
-    ) external returns(uint) { //check if this return (shares) is necessary
+    ) external returns(uint) { 
         uint assets = amounts_.amountIn;
 
         require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max");
@@ -235,34 +233,6 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return _convertToAssetsFromUnderlying(shares_, MathUpgradeable.Rounding.Down);
     }
 
-
-    // function _deposit( 
-    //     address caller_,
-    //     address receiver_,
-    //     uint256 assets_,
-    //     uint256 shares_
-    // ) internal { 
-    //     _totalShares += shares_;
-
-    //     unchecked {
-    //         // Overflow not possible: shares + shares amount is at most totalShares + shares amount
-    //         // which is checked above.
-    //         _shares[receiver_] += shares_;
-    //     }
-        
-    //     // emit Deposit(caller_, receiver_, assets_, shares_);
-    // }
-
-
-    // function deposit(uint assets_, address receiver_) public returns(uint) {
-    //     require(assets_ <= maxDeposit(receiver_), "ERC4626: deposit more than max");
-
-    //     uint shares = totalShares() == 0 ? assets_ : previewDeposit(assets_);
-
-    //     _deposit(msg.sender, receiver_, assets_, shares);
-
-    //     return shares;
-    // }
 
     function maxDeposit(address) public view returns (uint256) {
         return _isVaultCollateralized() ? type(uint256).max : 0;
@@ -300,12 +270,11 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
             receiver_
         );
 
-        uint256 accountShares2 = sharesOf(_ozDiamond);
+        accountShares = sharesOf(_ozDiamond);
 
         unchecked {
             _shares[_ozDiamond] = 0;
-            // Overflow not possible: amount <= accountShares <= totalShares.
-            _totalShares -= accountShares2;
+            _totalShares -= accountShares;
             _totalAssets -= assets;
         }
     }
