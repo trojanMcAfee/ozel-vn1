@@ -144,7 +144,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         address owner,
         address spender,
         uint256 amount
-    ) internal virtual {
+    ) private virtual {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
@@ -156,7 +156,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         address owner,
         address spender,
         uint256 amount
-    ) internal virtual {
+    ) private virtual {
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != type(uint256).max) {
             require(currentAllowance >= amount, "ERC20: insufficient allowance");
@@ -168,7 +168,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
     //-----------
 
-    function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) internal view returns(uint) {
+    function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
         return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
     }
 
@@ -312,7 +312,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
 
-    function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) internal view returns (uint256 assets) {
+    function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) private view returns (uint256 assets) {
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
     }
 
