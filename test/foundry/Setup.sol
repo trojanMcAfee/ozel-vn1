@@ -162,13 +162,15 @@ contract Setup is Test {
         testToken = usdcAddr;
 
         //Initial users config
+        uint baseAmount = 1_000_000;
+
         owner = vm.addr(OWNER_PK);
         alice = vm.addr(ALICE_PK);
         bob = vm.addr(BOB_PK);
         charlie = vm.addr(CHARLIE_PK);
-        deal(testToken, alice, 100 * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, bob, 2000 * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, charlie, 3000 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, bob, baseAmount * 20 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, charlie, baseAmount * 30 * (10 ** IERC20Permit(testToken).decimals()));
 
         //Deploys diamond infra
         cutFacet = new DiamondCutFacet();
