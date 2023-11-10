@@ -120,6 +120,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(OZ.getDefaultSlippage() == newSlippage);
 
         uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
+        // uint amountIn = 100 * 1e6;
         assertTrue(amountIn > 0);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
@@ -148,7 +149,14 @@ contract ozTokenFactoryTest is Setup {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
+
+        console.log('bal usdc alice pre: ', IERC20Permit(usdcAddr).balanceOf(alice));
+        console.log('bal oz alice pre: ', ozERC20.balanceOf(alice));
+
         ozERC20.burn(req.amtsOut, alice); 
+
+        console.log('bal usdc alice post: ', IERC20Permit(usdcAddr).balanceOf(alice));
+        console.log('bal oz alice post: ', ozERC20.balanceOf(alice));
 
         //Post-conditions
         testToken = usdcAddr;
