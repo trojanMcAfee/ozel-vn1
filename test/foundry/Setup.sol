@@ -171,8 +171,8 @@ contract Setup is Test {
         bob = vm.addr(BOB_PK);
         charlie = vm.addr(CHARLIE_PK);
         deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, bob, baseAmount * 20 * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, charlie, baseAmount * 30 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, bob, baseAmount * 2 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, charlie, baseAmount * 3 * (10 ** IERC20Permit(testToken).decimals()));
 
         //Deploys diamond infra
         cutFacet = new DiamondCutFacet();
