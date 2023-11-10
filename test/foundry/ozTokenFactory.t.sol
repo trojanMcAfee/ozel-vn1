@@ -188,6 +188,15 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
+    // function test_multipleBalances_smallQuantities() public {
+    //     uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+    //     uint amountIn = 100 * decimalsUnderlying;
+
+
+    // }
+
+
+    //Problem here ****
     function test_redeeming_multipleBigBalances_bigMint_mediumRedeem() public {
         //Pre-conditions
         uint newSlippage = 9900;
