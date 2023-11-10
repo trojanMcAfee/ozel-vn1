@@ -187,7 +187,10 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
-
+    /**
+     * Use quantities like 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
+     * be ineligble so the MEV produce is quite lower
+     */
     function test_redeeming_multipleBigBalances_smallRedeemQuantities() public {
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(amountIn == 100 * 1e6);
