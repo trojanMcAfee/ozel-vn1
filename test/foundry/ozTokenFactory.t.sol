@@ -119,8 +119,8 @@ contract ozTokenFactoryTest is Setup {
         OZ.changeDefaultSlippage(newSlippage);
         assertTrue(OZ.getDefaultSlippage() == newSlippage);
 
-        uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
-        // uint amountIn = 100 * 1e6;
+        // uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
+        uint amountIn = 100 * 1e6;
         assertTrue(amountIn > 0);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
