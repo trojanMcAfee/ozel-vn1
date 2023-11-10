@@ -164,7 +164,7 @@ contract Setup is Test {
         testToken = usdcAddr;
 
         //Initial users config
-        uint baseAmount = 1_000_000;
+        uint baseAmount = 1_000_000; //1_000_000
 
         owner = vm.addr(OWNER_PK);
         alice = vm.addr(ALICE_PK);

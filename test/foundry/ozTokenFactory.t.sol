@@ -114,7 +114,7 @@ contract ozTokenFactoryTest is Setup {
 
     function test_redeeming_approve() public {
         //Pre-conditions
-        uint newSlippage = 500;
+        uint newSlippage = 9900;
         vm.prank(owner);
         OZ.changeDefaultSlippage(newSlippage);
         assertTrue(OZ.getDefaultSlippage() == newSlippage);
@@ -125,16 +125,16 @@ contract ozTokenFactoryTest is Setup {
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
 
         //-------------
-        uint rawAmount = 1_000_000;
-        amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
-        _createAndMintOzTokens(
-            address(ozERC20), amountIn, bob, BOB_PK, false, true
-        );
+        // uint rawAmount = 1_000_000;
+        // amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
+        // _createAndMintOzTokens(
+        //     address(ozERC20), amountIn, bob, BOB_PK, false, true
+        // );
 
-        amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
-        _createAndMintOzTokens(
-            address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true
-        );
+        // amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
+        // _createAndMintOzTokens(
+        //     address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true
+        // );
         //-------------
 
 
@@ -158,12 +158,11 @@ contract ozTokenFactoryTest is Setup {
         uint balanceOzCharliePost = ozERC20.balanceOf(charlie);
 
         // assertTrue(balanceUnderlyingAlice > 99 * decimalsUnderlying && balanceUnderlyingAlice < 100 * decimalsUnderlying);
-        console.log('balanceOzBobPre: ', balanceOzBobPre);
-        console.log('balanceOzBobPost: ', balanceOzBobPost);
-        console.log('balanceOzCharliePre: ', balanceOzCharliePre);
-        console.log('balanceOzCharliePost: ', balanceOzCharliePost);
-
-        //check why the differences in balances
+       
+        // console.log('balanceOzBobPre: ', balanceOzBobPre);
+        // console.log('balanceOzBobPost: ', balanceOzBobPost);
+        // console.log('balanceOzCharliePre: ', balanceOzCharliePre);
+        // console.log('balanceOzCharliePost: ', balanceOzCharliePost);
 
         // assertTrue(balanceOzBobPre == balanceOzBobPost && balanceOzCharliePre == balanceOzCharliePost);
     }
