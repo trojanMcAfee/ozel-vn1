@@ -253,7 +253,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     function burn(
         AmountsOut memory amts_,
         address receiver_
-    ) public {
+    ) public returns(uint) {
         uint256 accountShares = sharesOf(msg.sender);
         uint shares = convertToShares(amts_.ozAmountIn);
 
@@ -263,7 +263,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         uint assets = previewRedeem(shares);
 
-        ozIDiamond(_ozDiamond).useOzTokens(
+        uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(
             amts_,
             address(this),
             msg.sender,
@@ -277,6 +277,8 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
             _totalShares -= accountShares;
             _totalAssets -= assets;
         }
+
+        return amountOut;
     }
 
 

@@ -161,10 +161,10 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(IERC20Permit(usdcAddr).balanceOf(alice) == 1_000_000 * decimalsUnderlying);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-        uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        assertTrue(balanceOzUsdcAlice > 99 * 1 ether && balanceOzUsdcAlice < 100 * 1 ether);
+        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
+        assertTrue(ozAmountIn > 99 * 1 ether && ozAmountIn < 100 * 1 ether);
         testToken = address(ozERC20);
 
         (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
@@ -173,13 +173,16 @@ contract ozTokenFactoryTest is Setup {
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
 
-        ozERC20.burn(req.amtsOut, alice); 
+        uint underlyingOut = ozERC20.burn(req.amtsOut, alice); 
 
         //Post-conditions
         testToken = usdcAddr;
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
-        console.log('balanceUnderlyingAlice - post burn: ', balanceUnderlyingAlice);
-        console.log('bal oz post burn: ', ozERC20.balanceOf(alice));
+        assertTrue(ozERC20.balanceOf(alice) == 0);
+        assertTrue(underlyingOut > 99 * decimalsUnderlying && underlyingOut < 100 * decimalsUnderlying);
+
+        uint finalUnderlyingNetBalanceAlice = balanceUsdcAlicePostMint + underlyingOut;
+        assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
 

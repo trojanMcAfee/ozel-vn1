@@ -59,7 +59,7 @@ interface ozIToken {
     function burn(
         AmountsOut memory amts_,
         address receiver_
-    ) external;
+    ) external returns(uint);
 
 
     function previewWithdraw(uint256 assets) external view returns (uint256 shares);
