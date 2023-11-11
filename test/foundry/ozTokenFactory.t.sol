@@ -24,7 +24,6 @@ import "forge-std/console.sol";
 contract ozTokenFactoryTest is Setup {
 
     using FixedPointMathLib for uint;
-    // using stdStorage for StdStorage;
 
 
 
@@ -214,6 +213,30 @@ contract ozTokenFactoryTest is Setup {
         vm.prank(owner);
         OZ.changeDefaultSlippage(basisPoints_);
         assertTrue(OZ.getDefaultSlippage() == basisPoints_);
+    }
+
+    struct Slot0 {
+        uint160 sqrtPriceX96;
+        int24 tick;
+        uint16 observationIndex;
+        uint16 observationCardinality;
+        uint16 observationCardinalityNext;
+        uint8 feeProtocol;
+        bool unlocked;
+    }
+
+
+    function test_getStorage() public {
+        Slot0 memory slot = Slot0(2,1,1,1,1,2,true);
+
+        (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
+        console.log('sqrtPriceX96 - pre: ', uint(sqrtPriceX96));
+
+        vm.store(wethUsdPoolUni, bytes32(0), bytes32(y));
+
+        (sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
+        console.log('sqrtPriceX96 - post: ', uint(sqrtPriceX96));
+
     }
 
 
