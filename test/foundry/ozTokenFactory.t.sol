@@ -16,6 +16,7 @@ import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {Type, RequestType, ReqIn, ReqOut} from "./AppStorageTests.sol";
+import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 
 import "forge-std/console.sol";
 
@@ -187,9 +188,27 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
-    /**
-     * Use quantities like 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
-     * be ineligble so the MEV produce is quite lower
+
+    function test_redeeming_balancingPool() public {
+        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        console.log('ETHUSD price chainlink: ', uint(price));
+
+        (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
+
+        uint finalPrice = uint(sqrtPriceX96) * (uint(sqrtPriceX96)) * (1e18) >> (96 * 2);
+
+        console.log('price: ', finalPrice);
+
+
+       
+
+
+    }
+
+
+    /** REFERENCE
+     * Used quantities like 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
+     * be ineligble so the MEV produce is quite lower.
      */
     function test_redeeming_multipleBigBalances_smallRedeemQuantities() public {
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
@@ -287,7 +306,7 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    //Problem here (same as below)
+    //Problem here (same as below) ******
     function test_redeeming_bigBalance_bigMint_mediumRedeem() public {
         //Pre-conditions
         uint newSlippage = 9900;
@@ -397,10 +416,10 @@ contract ozTokenFactoryTest is Setup {
 
         //Post-conditions
         testToken = usdcAddr;
-        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
-        uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
-        uint balanceOzBobPost = ozERC20.balanceOf(bob);
-        uint balanceOzCharliePost = ozERC20.balanceOf(charlie);
+        // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        // uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
+        // uint balanceOzBobPost = ozERC20.balanceOf(bob);
+        // uint balanceOzCharliePost = ozERC20.balanceOf(charlie);
 
         // assertTrue(balanceUnderlyingAlice > 99 * decimalsUnderlying && balanceUnderlyingAlice < 100 * decimalsUnderlying);
        

@@ -60,12 +60,12 @@ contract Setup is Test {
     address internal daiAddr;
 
     //For debugging purposes
-    address private usdcAddrImpl;
-    address private wethUsdPoolUni;
-    address private accessControlledOffchainAggregator; 
-    address private aeWETH;
-    address private rEthImpl;
-    address private feesCollectorBalancer;
+    address internal usdcAddrImpl;
+    address internal wethUsdPoolUni;
+    address internal accessControlledOffchainAggregator; 
+    address internal aeWETH;
+    address internal rEthImpl;
+    address internal feesCollectorBalancer;
 
     //Contracts
     address internal swapRouterUni;
