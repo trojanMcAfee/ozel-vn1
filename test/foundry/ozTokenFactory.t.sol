@@ -24,6 +24,8 @@ import "forge-std/console.sol";
 contract ozTokenFactoryTest is Setup {
 
     using FixedPointMathLib for uint;
+    // using stdStorage for StdStorage;
+
 
 
     function test_minting_approve() public {
@@ -188,19 +190,59 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
-
-    function test_redeeming_balancingPool() public {
+    function _getETHprices() private view returns(uint) {
+        // console.log('--- new round of prices ---');
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        console.log('ETHUSD price chainlink: ', uint(price));
+        // console.log('ETHUSD price chainlink: ', uint(price));
 
         (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
+        console.log('sqrtPriceX96: ', uint(sqrtPriceX96));
 
-        uint finalPrice = uint(sqrtPriceX96) * (uint(sqrtPriceX96)) * (1e18) >> (96 * 2);
+        uint priceSpotUni = uint(sqrtPriceX96) * (uint(sqrtPriceX96)) * (1e18) >> (96 * 2);
+        console.log('spot price uni ****: ', priceSpotUni);
+        // console.log(' --- end of new round ---');
 
-        console.log('price: ', finalPrice);
+        return uint(sqrtPriceX96);
+    }
+
+    function _getSqrtPriceX96Diff(uint high_, uint low_) private pure returns(uint) {
+        return (high_ - low_).mulDiv(10000, high_);
+    }
 
 
-       
+    function _changeSlippage(uint basisPoints_) private {
+        vm.prank(owner);
+        OZ.changeDefaultSlippage(basisPoints_);
+        assertTrue(OZ.getDefaultSlippage() == basisPoints_);
+    }
+
+
+    function test_redeeming_balancingPool() public {
+        uint sqrtPriceX96_1 = _getETHprices();
+        //Pre-conditions
+        _changeSlippage(9900);
+
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(amountIn == 1_000_000 * 1e6);
+
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
+        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceUsdcAlicePostMint == 0);
+
+        uint sqrtPriceX96_2 = _getETHprices();
+
+        uint sqrtDiff = _getSqrtPriceX96Diff(sqrtPriceX96_2, sqrtPriceX96_1);
+        console.log('diff: ', sqrtDiff);
+
+        //----------------
+        // amountIn = IERC20Permit(testToken).balanceOf(bob);
+        // _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false);
+        // uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
+        // assertTrue(balanceUsdcBobPostMint == 0);
+        // uint balanceOzBobPostMint = ozERC20.balanceOf(bob);
+        // console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
+
+        // _getETHprices();
 
 
     }
@@ -208,7 +250,7 @@ contract ozTokenFactoryTest is Setup {
 
     /** REFERENCE
      * Used quantities like 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
-     * be ineligble so the MEV produce is quite lower.
+     * be ineligble so the MEV produce is quite lower, proving the efficacy of algo
      */
     function test_redeeming_multipleBigBalances_smallRedeemQuantities() public {
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
