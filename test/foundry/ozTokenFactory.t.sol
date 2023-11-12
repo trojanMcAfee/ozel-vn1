@@ -227,15 +227,54 @@ contract ozTokenFactoryTest is Setup {
 
 
     function test_getStorage() public {
-        Slot0 memory slot = Slot0(2,1,1,1,1,2,true);
+        //Pre-conditions
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(amountIn == 1_000_000 * 1e6);
 
-        (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
-        console.log('sqrtPriceX96 - pre: ', uint(sqrtPriceX96));
+        _changeSlippage(9900);
 
-        vm.store(wethUsdPoolUni, bytes32(0), bytes32(y));
+        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        bytes20 oldSqrtPriceX96 = bytes20(oldSlot0data);
 
-        (sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
-        console.log('sqrtPriceX96 - post: ', uint(sqrtPriceX96));
+        console.log('--- pre mint ---');
+        _getETHprices();
+
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
+        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceUsdcAlicePostMint == 0);
+
+        console.log('-- post mint ---');
+        _getETHprices();
+        
+        bytes12 oldLast12Bytes = bytes12(oldSlot0data<<160);
+        bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
+        vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
+
+        console.log('-- modified slot0 ---');
+        _getETHprices();
+
+
+        //----------
+        // Slot0 memory slot = Slot0(2,1,1,1,1,2,true);
+
+        // bytes32 slot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        // console.logBytes32(slot0data);
+        // console.log('data ^^^');
+
+        // // bytes20 oldSqrtPriceX96 = bytes20(slot0data);
+        // bytes12 x = bytes12(slot0data<<160);
+        // console.logBytes12(x);
+        // console.log('last 12 bytes ^^^');
+
+        //-----------
+
+        // (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
+        // console.log('sqrtPriceX96 - pre: ', uint(sqrtPriceX96));
+
+        // vm.store(wethUsdPoolUni, bytes32(0), bytes32(y));
+
+        // (sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
+        // console.log('sqrtPriceX96 - post: ', uint(sqrtPriceX96));
 
     }
 
