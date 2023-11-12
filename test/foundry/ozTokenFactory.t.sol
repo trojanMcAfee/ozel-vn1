@@ -226,6 +226,15 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
+    function _modifySqrtPriceX96(bytes32 slot0data_) private {
+        bytes12 oldLast12Bytes = bytes12(slot0data_<<160);
+        bytes20 oldSqrtPriceX96 = bytes20(slot0data_);
+
+        bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
+        vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
+    }
+
+
     function test_getStorage() public {
         //Pre-conditions
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
@@ -234,7 +243,7 @@ contract ozTokenFactoryTest is Setup {
         _changeSlippage(9900);
 
         bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
-        bytes20 oldSqrtPriceX96 = bytes20(oldSlot0data);
+        // bytes20 oldSqrtPriceX96 = bytes20(oldSlot0data);
 
         console.log('--- pre mint ---');
         _getETHprices();
@@ -246,9 +255,10 @@ contract ozTokenFactoryTest is Setup {
         console.log('-- post mint ---');
         _getETHprices();
         
-        bytes12 oldLast12Bytes = bytes12(oldSlot0data<<160);
-        bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
-        vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
+        // bytes12 oldLast12Bytes = bytes12(oldSlot0data<<160);
+        // bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
+        // vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
+        _modifySqrtPriceX96(oldSlot0data);
 
         console.log('-- modified slot0 ---');
         _getETHprices();
