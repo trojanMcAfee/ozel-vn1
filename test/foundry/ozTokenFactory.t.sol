@@ -246,65 +246,31 @@ contract ozTokenFactoryTest is Setup {
         return uint256(balance) & mask;
     }
 
-    // function _extractStorageValue(uint key_) private returns(uint value) {
-    //     // bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-    //     uint balancesSlot = 1;
 
-    //     bytes32 mapSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, balancesSlot))) + 2);
-    //     bytes32 secondSlot = keccak256( abi.encodePacked(key_, mapSlot) );
-    //     value = uint(vm.load(vaultBalancer, secondSlot));
-    // }
-
-    function _extractSlot(uint key_, bytes32 pos_, uint offset_) private returns(bytes32) {
+    function _extractSlot(uint key_, bytes32 pos_, uint offset_) private pure returns(bytes32) {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
     }
 
     function test_getStorage2() public {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-        // console.logBytes32(poolId);
         bytes32 balancesSlot = bytes32(uint(1));
-        // bytes32 entriesSlot = keccak256(abi.encodePacked(poolId, uint(1))) + 1;
 
-        //-----------------
-        // bytes32 indexesSlot = bytes32(uint(keccak256(abi.encodePacked(uint(poolId), balancesSlot))) + 2);
         bytes32 indexesSlot = _extractSlot(uint(poolId), balancesSlot, 2);
-        // bytes32 rEthIndexSlot = keccak256( abi.encodePacked(uint(uint160(rEthAddr)), indexesSlot) );
         bytes32 rEthIndexSlot = _extractSlot(uint(uint160(rEthAddr)), indexesSlot, 0);
         uint rEthIndex = uint(vm.load(vaultBalancer, rEthIndexSlot));
 
-        //-----------------
-        // bytes32 entriesSlot = bytes32(uint(keccak256(abi.encodePacked(uint(poolId), balancesSlot))) + 1);
         bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
-        // bytes32 rEthBalanceSlot = bytes32(uint(keccak256(abi.encodePacked(uint(rEthIndex - 1), entriesSlot))) + 1);
         bytes32 rEthBalanceSlot = _extractSlot(uint(rEthIndex - 1), entriesSlot, 1);
         bytes32 rEthBalance = vm.load(vaultBalancer, rEthBalanceSlot);
         uint x = cash(rEthBalance);
 
-        // bytes32(uint256(uint160(rEthAddr)))
 
-
-        console.logBytes32(rEthBalance);
         console.log(x);
         console.log('rETH bal ^^^');
 
     }
 
-    // mapping(bytes32 => EnumerableMap.IERC20ToBytes32Map) internal _generalPoolsBalances;
-
-    // struct IERC20ToBytes32MapEntry {
-    //     IERC20 _key;
-    //     bytes32 _value;
-    // }
-
-    // struct IERC20ToBytes32Map {
-    //     // Number of entries in the map
-    //     uint256 _length;
-    //     // Storage of map keys and values
-    //     mapping(uint256 => IERC20ToBytes32MapEntry) _entries;
-    //     // Position of the entry defined by a key in the `entries` array, plus 1
-    //     // because index 0 means a key is not in the map.
-    //     mapping(IERC20 => uint256) _indexes;
-    // }
+    
 
 
     function test_getStorage() public {
