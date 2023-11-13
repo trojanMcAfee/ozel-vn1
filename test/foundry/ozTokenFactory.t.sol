@@ -245,7 +245,7 @@ contract ozTokenFactoryTest is Setup {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
     }
 
-    function _getTokenBalanceFromSlot(address token_) private view returns(uint, bytes32, bytes32) {
+    function _getTokenBalanceFromSlot(address token_) private view returns(bytes32, bytes32) {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
         bytes32 balancesSlot = bytes32(uint(1));
 
@@ -256,14 +256,13 @@ contract ozTokenFactoryTest is Setup {
         bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
         bytes32 tokenBalanceSlot = _extractSlot(uint(tokenIndex - 1), entriesSlot, 1);
 
-        bytes32 tokenBalance = vm.load(vaultBalancer, tokenBalanceSlot);
-        bytes14 balanceBytes = bytes14(tokenBalance<<144);
+        bytes32 tokenBalanceBytes = vm.load(vaultBalancer, tokenBalanceSlot);
 
-        return (uint(uint112(balanceBytes)), tokenBalanceSlot, tokenBalance);
+        return (tokenBalanceSlot, tokenBalanceBytes);
     }
 
     function _setTokenBalanceFromSlot(address token_, bytes32 oldTokenBalance_) private {
-        (,bytes32 tokenBalanceSlot,) = _getTokenBalanceFromSlot(token_);
+        (bytes32 tokenBalanceSlot,) = _getTokenBalanceFromSlot(token_);
         // console.log(tokenBalanceSlot);
         // console.log('tokenBalanceSlot ^^^');
 
@@ -279,40 +278,49 @@ contract ozTokenFactoryTest is Setup {
         _modifySqrtPriceX96(slot0data_);
     }
 
-    function test_getStorage2() public {
-        //Pre-conditions
+    function test_redeeming_bigBalance_bigMint_smallRedeem() public {
+        /**
+         * Pre-conditions
+         */
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-        // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint rawAmount = 100;
         assertTrue(amountIn == 1_000_000 * 1e6);
 
+        //Changes the default slippage to 99% so the swaps don't fail.
         _changeSlippage(9900);
 
+        //Gets the pre-swap pool values.
         bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
-        (uint wethBalancePreMint,,bytes32 wethBalance) = _getTokenBalanceFromSlot(wethAddr);
-        console.log('WETH bal pre: ', wethBalancePreMint);
+        (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
 
+        //Creates an ozToken and mints some.
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0);
 
-        _resetPoolBalances(oldSlot0data, wethAddr, wethBalance);
-        //-----------
+        //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
+        _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
 
         uint ozAmountIn = rawAmount * 1 ether;
         testToken = address(ozERC20);
 
+        //Creates offchain the token-amount variables needed for safe protocol execution.
         (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
     
-        //Action
+        /**
+         * Action
+         */
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
 
+        //Redeems ozUSDC for USDC.
         uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
-        console.log('underlyingOut: ', underlyingOut);
 
-        //Post-conditions
+        /**
+         * Post-conditions
+         */
         uint balanceAliceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
+
         assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
@@ -522,33 +530,33 @@ contract ozTokenFactoryTest is Setup {
 
 
     //Problem here ***
-    function test_redeeming_bigBalance_bigMint_smallRedeem() public {
-        //Pre-conditions
-        uint newSlippage = 9900;
-        vm.prank(owner);
-        OZ.changeDefaultSlippage(newSlippage);
-        assertTrue(OZ.getDefaultSlippage() == newSlippage);
+    // function test_redeeming_bigBalance_bigMint_smallRedeem() public {
+    //     //Pre-conditions
+    //     uint newSlippage = 9900;
+    //     vm.prank(owner);
+    //     OZ.changeDefaultSlippage(newSlippage);
+    //     assertTrue(OZ.getDefaultSlippage() == newSlippage);
 
-        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
-        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
+    //     uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+    //     uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+    //     assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
 
-        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(balanceUsdcAlicePostMint == 0);
+    //     (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
+    //     uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
+    //     assertTrue(balanceUsdcAlicePostMint == 0);
 
-        uint ozAmountIn = 100 * 1 ether;
-        testToken = address(ozERC20);
+    //     uint ozAmountIn = 100 * 1 ether;
+    //     testToken = address(ozERC20);
 
-        (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+    //     (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-        //Action
-        vm.startPrank(alice);
-        ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
+    //     //Action
+    //     vm.startPrank(alice);
+    //     ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
 
-        uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
-        console.log('underlyingOut: ', underlyingOut);
-    }
+    //     uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
+    //     console.log('underlyingOut: ', underlyingOut);
+    // }
 
 
     function test_redeeming_approve() public {
