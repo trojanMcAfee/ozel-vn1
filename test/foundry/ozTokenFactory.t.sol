@@ -251,18 +251,32 @@ contract ozTokenFactoryTest is Setup {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
     }
 
-    function test_getStorage2() public {
+    function _getTokenBalanceFromSlot(address token_) private view returns(uint) {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
         bytes32 balancesSlot = bytes32(uint(1));
 
         bytes32 indexesSlot = _extractSlot(uint(poolId), balancesSlot, 2);
-        bytes32 rEthIndexSlot = _extractSlot(uint(uint160(rEthAddr)), indexesSlot, 0);
-        uint rEthIndex = uint(vm.load(vaultBalancer, rEthIndexSlot));
+        bytes32 tokenIndexSlot = _extractSlot(uint(uint160(token_)), indexesSlot, 0);
+        uint tokenIndex = uint(vm.load(vaultBalancer, tokenIndexSlot));
 
         bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
-        bytes32 rEthBalanceSlot = _extractSlot(uint(rEthIndex - 1), entriesSlot, 1);
-        bytes32 rEthBalance = vm.load(vaultBalancer, rEthBalanceSlot);
-        uint x = cash(rEthBalance);
+        bytes32 tokenBalanceSlot = _extractSlot(uint(tokenIndex - 1), entriesSlot, 1);
+        bytes32 tokenBalance = vm.load(vaultBalancer, tokenBalanceSlot);
+        return cash(tokenBalance);
+    }
+
+    function test_getStorage2() public {
+        // bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+        // bytes32 balancesSlot = bytes32(uint(1));
+
+        // bytes32 indexesSlot = _extractSlot(uint(poolId), balancesSlot, 2);
+        // bytes32 rEthIndexSlot = _extractSlot(uint(uint160(rEthAddr)), indexesSlot, 0);
+        // uint rEthIndex = uint(vm.load(vaultBalancer, rEthIndexSlot));
+
+        // bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
+        // bytes32 rEthBalanceSlot = _extractSlot(uint(rEthIndex - 1), entriesSlot, 1);
+        // bytes32 rEthBalance = vm.load(vaultBalancer, rEthBalanceSlot);
+        uint x = _getTokenBalanceFromSlot(rEthAddr);
 
 
         console.log(x);
