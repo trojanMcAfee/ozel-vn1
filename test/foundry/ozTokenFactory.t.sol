@@ -243,30 +243,37 @@ contract ozTokenFactoryTest is Setup {
     function test_getStorage2() public {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
 
-        bytes32 slot = keccak256(abi.encodePacked(poolId, uint(1))) + 1;
+        // bytes32 entriesSlot = keccak256(abi.encodePacked(poolId, uint(1))) + 1;
+        bytes32 entriesSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, uint(1)))) + 1);
+
+        bytes32 indexesSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, uint(1)))) + 2);
+        bytes32 slot = keccak256( abi.encodePacked(bytes32(uint256(uint160(rEthAddr))), indexesSlot) );
+
+        // bytes32(uint256(uint160(rEthAddr)))
+
         bytes32 x = vm.load(vaultBalancer, slot);
 
-        console.log(uint(x));
+        console.logBytes32(x);
         console.log('length ^^^');
 
     }
 
-    mapping(bytes32 => EnumerableMap.IERC20ToBytes32Map) internal _generalPoolsBalances;
+    // mapping(bytes32 => EnumerableMap.IERC20ToBytes32Map) internal _generalPoolsBalances;
 
-    struct IERC20ToBytes32MapEntry {
-        IERC20 _key;
-        bytes32 _value;
-    }
+    // struct IERC20ToBytes32MapEntry {
+    //     IERC20 _key;
+    //     bytes32 _value;
+    // }
 
-    struct IERC20ToBytes32Map {
-        // Number of entries in the map
-        uint256 _length;
-        // Storage of map keys and values
-        mapping(uint256 => IERC20ToBytes32MapEntry) _entries;
-        // Position of the entry defined by a key in the `entries` array, plus 1
-        // because index 0 means a key is not in the map.
-        mapping(IERC20 => uint256) _indexes;
-    }
+    // struct IERC20ToBytes32Map {
+    //     // Number of entries in the map
+    //     uint256 _length;
+    //     // Storage of map keys and values
+    //     mapping(uint256 => IERC20ToBytes32MapEntry) _entries;
+    //     // Position of the entry defined by a key in the `entries` array, plus 1
+    //     // because index 0 means a key is not in the map.
+    //     mapping(IERC20 => uint256) _indexes;
+    // }
 
 
     function test_getStorage() public {
