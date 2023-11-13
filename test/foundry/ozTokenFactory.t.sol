@@ -270,14 +270,25 @@ contract ozTokenFactoryTest is Setup {
         vm.store(vaultBalancer, tokenBalanceSlot, oldTokenBalance_);
     }
 
+    function _resetPoolBalances(
+        bytes32 slot0data_, 
+        address token_, 
+        bytes32 oldTokenBalance_
+    ) private {
+        _setTokenBalanceFromSlot(token_, oldTokenBalance_);
+        _modifySqrtPriceX96(slot0data_);
+    }
+
     function test_getStorage2() public {
         //Pre-conditions
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        uint rawAmount = 100;
         assertTrue(amountIn == 1_000_000 * 1e6);
 
         _changeSlippage(9900);
 
-        // bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
         (uint wethBalancePreMint,,bytes32 wethBalance) = _getTokenBalanceFromSlot(wethAddr);
         console.log('WETH bal pre: ', wethBalancePreMint);
 
@@ -285,17 +296,25 @@ contract ozTokenFactoryTest is Setup {
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0);
 
-        _setTokenBalanceFromSlot(wethAddr, wethBalance);
+        _resetPoolBalances(oldSlot0data, wethAddr, wethBalance);
+        //-----------
 
-        (uint wethBalancePostMint,,) = _getTokenBalanceFromSlot(wethAddr);
-        console.log('WETH bal post: ', wethBalancePostMint);
+        uint ozAmountIn = rawAmount * 1 ether;
+        testToken = address(ozERC20);
 
-        // wethBalance = _getTokenBalanceFromSlot(wethAddr);
-        // console.log('WETH bal post: ', wethBalance);
+        (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+    
+        //Action
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
 
+        uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
+        console.log('underlyingOut: ', underlyingOut);
 
-
-
+        //Post-conditions
+        uint balanceAliceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
+        assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
+        assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
     
@@ -581,7 +600,7 @@ contract ozTokenFactoryTest is Setup {
 
         //Post-conditions
         testToken = usdcAddr;
-        // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         // uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
         // uint balanceOzBobPost = ozERC20.balanceOf(bob);
         // uint balanceOzCharliePost = ozERC20.balanceOf(charlie);
