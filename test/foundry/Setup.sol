@@ -4,7 +4,7 @@ pragma solidity 0.8.21;
 
 import "../../contracts/interfaces/ozIDiamond.sol";
 import "../../contracts/upgradeInitializers/DiamondInit.sol";
-import "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
@@ -35,7 +35,7 @@ import {ozCut} from "../../contracts/facets/ozCut.sol";
 
 contract Setup is Test {
 
-    using stdStorage for StdStorage;
+    // using stdStorage for StdStorage;
 
 
     uint OWNER_PK = 123;

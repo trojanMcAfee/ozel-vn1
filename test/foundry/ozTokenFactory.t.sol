@@ -17,6 +17,7 @@ import {HelpersTests} from "./HelpersTests.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
 import {Type, RequestType, ReqIn, ReqOut} from "./AppStorageTests.sol";
 import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
+import {stdStorage, StdStorage} from "forge-std/Test.sol";
 
 import "forge-std/console.sol";
 
@@ -24,6 +25,8 @@ import "forge-std/console.sol";
 contract ozTokenFactoryTest is Setup {
 
     using FixedPointMathLib for uint;
+    using stdStorage for StdStorage;
+
 
 
 
@@ -189,6 +192,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
+    //-----
     function _getETHprices() private view returns(uint) {
         // console.log('--- new round of prices ---');
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
@@ -224,6 +228,7 @@ contract ozTokenFactoryTest is Setup {
         uint8 feeProtocol;
         bool unlocked;
     }
+    //-------
 
 
     function _modifySqrtPriceX96(bytes32 slot0data_) private {
@@ -232,6 +237,20 @@ contract ozTokenFactoryTest is Setup {
 
         bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
         vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
+    }
+    //------
+
+    function test_getStorage2() public {
+        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+
+        uint slot = stdstore
+            .target(vaultBalancer)
+            .sig('_generalPoolsBalances(bytes32)')
+            .with_key(poolId)
+            .find();
+
+        console.log('slot: ', slot);
+
     }
 
 
@@ -243,48 +262,33 @@ contract ozTokenFactoryTest is Setup {
         _changeSlippage(9900);
 
         bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
-        // bytes20 oldSqrtPriceX96 = bytes20(oldSlot0data);
-
-        console.log('--- pre mint ---');
-        _getETHprices();
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0);
-
-        console.log('-- post mint ---');
-        _getETHprices();
-        
-        // bytes12 oldLast12Bytes = bytes12(oldSlot0data<<160);
-        // bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
-        // vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
+    
         _modifySqrtPriceX96(oldSlot0data);
 
-        console.log('-- modified slot0 ---');
-        _getETHprices();
+        uint ozAmountIn = 100 * 1 ether;
+        testToken = address(ozERC20);
+
+        (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+
+        //Action
+        vm.startPrank(alice);
+        console.log('ozAmount in alice: ', req.amtsOut.ozAmountIn);
+        ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
+
+        uint under = OZ.getUnderlyingValue();
+        console.log('under value ****: ', under);
+
+        uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
+        console.log('underlyingOut: ', underlyingOut);
+
+        vm.stopPrank();     
 
 
-        //----------
-        // Slot0 memory slot = Slot0(2,1,1,1,1,2,true);
-
-        // bytes32 slot0data = vm.load(wethUsdPoolUni, bytes32(0));
-        // console.logBytes32(slot0data);
-        // console.log('data ^^^');
-
-        // // bytes20 oldSqrtPriceX96 = bytes20(slot0data);
-        // bytes12 x = bytes12(slot0data<<160);
-        // console.logBytes12(x);
-        // console.log('last 12 bytes ^^^');
-
-        //-----------
-
-        // (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
-        // console.log('sqrtPriceX96 - pre: ', uint(sqrtPriceX96));
-
-        // vm.store(wethUsdPoolUni, bytes32(0), bytes32(y));
-
-        // (sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
-        // console.log('sqrtPriceX96 - post: ', uint(sqrtPriceX96));
+    
 
     }
 
