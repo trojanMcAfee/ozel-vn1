@@ -243,14 +243,29 @@ contract ozTokenFactoryTest is Setup {
     function test_getStorage2() public {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
 
-        uint slot = stdstore
-            .target(vaultBalancer)
-            .sig('_generalPoolsBalances(bytes32)')
-            .with_key(poolId)
-            .find();
+        bytes32 slot = keccak256(abi.encodePacked(poolId, uint(1))) + 1;
+        bytes32 x = vm.load(vaultBalancer, slot);
 
-        console.log('slot: ', slot);
+        console.log(uint(x));
+        console.log('length ^^^');
 
+    }
+
+    mapping(bytes32 => EnumerableMap.IERC20ToBytes32Map) internal _generalPoolsBalances;
+
+    struct IERC20ToBytes32MapEntry {
+        IERC20 _key;
+        bytes32 _value;
+    }
+
+    struct IERC20ToBytes32Map {
+        // Number of entries in the map
+        uint256 _length;
+        // Storage of map keys and values
+        mapping(uint256 => IERC20ToBytes32MapEntry) _entries;
+        // Position of the entry defined by a key in the `entries` array, plus 1
+        // because index 0 means a key is not in the map.
+        mapping(IERC20 => uint256) _indexes;
     }
 
 
