@@ -192,92 +192,12 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
-    //-----
-    function _getETHprices() private view returns(uint) {
-        // console.log('--- new round of prices ---');
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        // console.log('ETHUSD price chainlink: ', uint(price));
+    
 
-        (uint160 sqrtPriceX96,,,,,,) = IUniswapV3Pool(wethUsdPoolUni).slot0();
-        console.log('sqrtPriceX96: ', uint(sqrtPriceX96));
-
-        uint priceSpotUni = uint(sqrtPriceX96) * (uint(sqrtPriceX96)) * (1e18) >> (96 * 2);
-        console.log('spot price uni ****: ', priceSpotUni);
-        // console.log(' --- end of new round ---');
-
-        return uint(sqrtPriceX96);
-    }
-
-    function _getSqrtPriceX96Diff(uint high_, uint low_) private pure returns(uint) {
-        return (high_ - low_).mulDiv(10000, high_);
-    }
-
-
-    function _changeSlippage(uint basisPoints_) private {
-        vm.prank(owner);
-        OZ.changeDefaultSlippage(basisPoints_);
-        assertTrue(OZ.getDefaultSlippage() == basisPoints_);
-    }
-
-    struct Slot0 {
-        uint160 sqrtPriceX96;
-        int24 tick;
-        uint16 observationIndex;
-        uint16 observationCardinality;
-        uint16 observationCardinalityNext;
-        uint8 feeProtocol;
-        bool unlocked;
-    }
-    //-------
-
-
-    function _modifySqrtPriceX96(bytes32 slot0data_) private {
-        bytes12 oldLast12Bytes = bytes12(slot0data_<<160);
-        bytes20 oldSqrtPriceX96 = bytes20(slot0data_);
-
-        bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
-        vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
-    }
-    //------
-
-
-    function _extractSlot(uint key_, bytes32 pos_, uint offset_) private pure returns(bytes32) {
-        return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
-    }
-
-    function _getTokenBalanceFromSlot(address token_) private view returns(bytes32, bytes32) {
-        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-        bytes32 balancesSlot = bytes32(uint(1));
-
-        bytes32 indexesSlot = _extractSlot(uint(poolId), balancesSlot, 2);
-        bytes32 tokenIndexSlot = _extractSlot(uint(uint160(token_)), indexesSlot, 0);
-        uint tokenIndex = uint(vm.load(vaultBalancer, tokenIndexSlot));
-
-        bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
-        bytes32 tokenBalanceSlot = _extractSlot(uint(tokenIndex - 1), entriesSlot, 1);
-
-        bytes32 tokenBalanceBytes = vm.load(vaultBalancer, tokenBalanceSlot);
-
-        return (tokenBalanceSlot, tokenBalanceBytes);
-    }
-
-    function _setTokenBalanceFromSlot(address token_, bytes32 oldTokenBalance_) private {
-        (bytes32 tokenBalanceSlot,) = _getTokenBalanceFromSlot(token_);
-        // console.log(tokenBalanceSlot);
-        // console.log('tokenBalanceSlot ^^^');
-
-        vm.store(vaultBalancer, tokenBalanceSlot, oldTokenBalance_);
-    }
-
-    function _resetPoolBalances(
-        bytes32 slot0data_, 
-        address token_, 
-        bytes32 oldTokenBalance_
-    ) private {
-        _setTokenBalanceFromSlot(token_, oldTokenBalance_);
-        _modifySqrtPriceX96(slot0data_);
-    }
-
+    /**
+     * Mints 1M of ozTokens, then rebalances Uniswap and Balancer pools, 
+     * and redeems a small portio of ozUSDC. 
+     */
     function test_redeeming_bigBalance_bigMint_smallRedeem() public {
         /**
          * Pre-conditions
@@ -325,77 +245,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
-    
 
-
-    function test_getStorage() public {
-        //Pre-conditions
-        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(amountIn == 1_000_000 * 1e6);
-
-        _changeSlippage(9900);
-
-        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
-
-        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(balanceUsdcAlicePostMint == 0);
-    
-        _modifySqrtPriceX96(oldSlot0data);
-
-        uint ozAmountIn = 100 * 1 ether;
-        testToken = address(ozERC20);
-
-        (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
-
-        //Action
-        vm.startPrank(alice);
-        console.log('ozAmount in alice: ', req.amtsOut.ozAmountIn);
-        ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
-
-        uint under = OZ.getUnderlyingValue();
-        console.log('under value ****: ', under);
-
-        uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
-        console.log('underlyingOut: ', underlyingOut);
-
-        vm.stopPrank();     
-
-
-    
-
-    }
-
-
-    function test_redeeming_balancingPool() public {
-        uint sqrtPriceX96_1 = _getETHprices();
-        //Pre-conditions
-        _changeSlippage(9900);
-
-        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(amountIn == 1_000_000 * 1e6);
-
-        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(balanceUsdcAlicePostMint == 0);
-
-        uint sqrtPriceX96_2 = _getETHprices();
-
-        uint sqrtDiff = _getSqrtPriceX96Diff(sqrtPriceX96_2, sqrtPriceX96_1);
-        console.log('diff: ', sqrtDiff);
-
-        //----------------
-        // amountIn = IERC20Permit(testToken).balanceOf(bob);
-        // _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false);
-        // uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
-        // assertTrue(balanceUsdcBobPostMint == 0);
-        // uint balanceOzBobPostMint = ozERC20.balanceOf(bob);
-        // console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
-
-        // _getETHprices();
-
-
-    }
 
 
     /** REFERENCE
@@ -667,6 +517,12 @@ contract ozTokenFactoryTest is Setup {
      
 
     /** HELPERS ***/
+    function _changeSlippage(uint basisPoints_) private {
+        vm.prank(owner);
+        OZ.changeDefaultSlippage(basisPoints_);
+        assertTrue(OZ.getDefaultSlippage() == basisPoints_);
+    }
+
    function _createRequestType(
         Type reqType_,
         uint amountOut_,
@@ -783,7 +639,6 @@ contract ozTokenFactoryTest is Setup {
     }
     
 
-
     function _getHashNAmountOut(
         address sender_,
         RequestType memory request_, 
@@ -853,5 +708,50 @@ contract ozTokenFactoryTest is Setup {
         );
 
         return abi.encode(reqIn);
+    }
+
+
+    //---- Reset pools helpers ----
+
+    function _resetPoolBalances(
+        bytes32 slot0data_, 
+        address token_, 
+        bytes32 oldTokenBalance_
+    ) private {
+        _setTokenBalanceFromSlot(token_, oldTokenBalance_);
+        _modifySqrtPriceX96(slot0data_);
+    }
+
+    function _modifySqrtPriceX96(bytes32 slot0data_) private {
+        bytes12 oldLast12Bytes = bytes12(slot0data_<<160);
+        bytes20 oldSqrtPriceX96 = bytes20(slot0data_);
+
+        bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
+        vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
+    }
+
+    function _extractSlot(uint key_, bytes32 pos_, uint offset_) private pure returns(bytes32) {
+        return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
+    }
+
+    function _getTokenBalanceFromSlot(address token_) private view returns(bytes32, bytes32) {
+        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+        bytes32 balancesSlot = bytes32(uint(1));
+
+        bytes32 indexesSlot = _extractSlot(uint(poolId), balancesSlot, 2);
+        bytes32 tokenIndexSlot = _extractSlot(uint(uint160(token_)), indexesSlot, 0);
+        uint tokenIndex = uint(vm.load(vaultBalancer, tokenIndexSlot));
+
+        bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
+        bytes32 tokenBalanceSlot = _extractSlot(uint(tokenIndex - 1), entriesSlot, 1);
+
+        bytes32 tokenBalanceBytes = vm.load(vaultBalancer, tokenBalanceSlot);
+
+        return (tokenBalanceSlot, tokenBalanceBytes);
+    }
+
+    function _setTokenBalanceFromSlot(address token_, bytes32 oldTokenBalance_) private {
+        (bytes32 tokenBalanceSlot,) = _getTokenBalanceFromSlot(token_);
+        vm.store(vaultBalancer, tokenBalanceSlot, oldTokenBalance_);
     }
 }
