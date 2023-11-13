@@ -240,21 +240,39 @@ contract ozTokenFactoryTest is Setup {
     }
     //------
 
+    //From Balancer's BalanceAllocation.sol (extracts the least significant 112 bits)
+    function cash(bytes32 balance) internal pure returns (uint256) {
+        uint256 mask = 2**(112) - 1;
+        return uint256(balance) & mask;
+    }
+
+    // function _extractTokenBalance() private returns(uint) {
+
+    // }
+
     function test_getStorage2() public {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-
+        console.logBytes32(poolId);
+        uint balancesSlot = 1;
         // bytes32 entriesSlot = keccak256(abi.encodePacked(poolId, uint(1))) + 1;
-        bytes32 entriesSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, uint(1)))) + 1);
 
-        bytes32 indexesSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, uint(1)))) + 2);
-        bytes32 slot = keccak256( abi.encodePacked(bytes32(uint256(uint160(rEthAddr))), indexesSlot) );
+        //-----------------
+        bytes32 indexesSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, balancesSlot))) + 2);
+        bytes32 rEthIndexSlot = keccak256( abi.encodePacked(bytes32(uint256(uint160(rEthAddr))), indexesSlot) );
+        uint rEthIndex = uint(vm.load(vaultBalancer, rEthIndexSlot));
+
+        //-----------------
+        bytes32 entriesSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, balancesSlot))) + 1);
+        bytes32 rEthBalanceSlot = bytes32(uint(keccak256(abi.encodePacked(uint(rEthIndex - 1), entriesSlot))) + 1); //uint(1) is the rEthIndex from above
+        bytes32 rEthBalance = vm.load(vaultBalancer, rEthBalanceSlot);
+        uint x = cash(rEthBalance);
 
         // bytes32(uint256(uint160(rEthAddr)))
 
-        bytes32 x = vm.load(vaultBalancer, slot);
 
-        console.logBytes32(x);
-        console.log('length ^^^');
+        console.logBytes32(rEthBalance);
+        console.log(x);
+        console.log('rETH bal ^^^');
 
     }
 
