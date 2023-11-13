@@ -240,12 +240,6 @@ contract ozTokenFactoryTest is Setup {
     }
     //------
 
-    //From Balancer's BalanceAllocation.sol (extracts the least significant 112 bits)
-    function cash(bytes32 balance) internal pure returns (uint256) {
-        uint256 mask = 2**(112) - 1;
-        return uint256(balance) & mask;
-    }
-
 
     function _extractSlot(uint key_, bytes32 pos_, uint offset_) private pure returns(bytes32) {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
@@ -262,25 +256,36 @@ contract ozTokenFactoryTest is Setup {
         bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
         bytes32 tokenBalanceSlot = _extractSlot(uint(tokenIndex - 1), entriesSlot, 1);
         bytes32 tokenBalance = vm.load(vaultBalancer, tokenBalanceSlot);
-        return cash(tokenBalance);
+
+        // console.logBytes32(tokenBalance);
+        // console.log('tokenBalance ^^^');
+
+        bytes14 balanceBytes = bytes14(tokenBalance<<144);
+        // console.log('bal ****: ', uint(uint112(balanceBytes)));
+
+        return uint(uint112(balanceBytes));
     }
 
     function test_getStorage2() public {
-        // bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-        // bytes32 balancesSlot = bytes32(uint(1));
+        //Pre-conditions
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(amountIn == 1_000_000 * 1e6);
 
-        // bytes32 indexesSlot = _extractSlot(uint(poolId), balancesSlot, 2);
-        // bytes32 rEthIndexSlot = _extractSlot(uint(uint160(rEthAddr)), indexesSlot, 0);
-        // uint rEthIndex = uint(vm.load(vaultBalancer, rEthIndexSlot));
+        _changeSlippage(9900);
 
-        // bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
-        // bytes32 rEthBalanceSlot = _extractSlot(uint(rEthIndex - 1), entriesSlot, 1);
-        // bytes32 rEthBalance = vm.load(vaultBalancer, rEthBalanceSlot);
-        uint x = _getTokenBalanceFromSlot(rEthAddr);
+        // bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        uint wethBalance = _getTokenBalanceFromSlot(wethAddr);
+        console.log('WETH bal pre: ', wethBalance);
+
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
+        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceUsdcAlicePostMint == 0);
+
+        wethBalance = _getTokenBalanceFromSlot(wethAddr);
+        console.log('WETH bal post: ', wethBalance);
 
 
-        console.log(x);
-        console.log('rETH bal ^^^');
+
 
     }
 
