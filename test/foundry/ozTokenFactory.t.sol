@@ -246,24 +246,37 @@ contract ozTokenFactoryTest is Setup {
         return uint256(balance) & mask;
     }
 
-    // function _extractTokenBalance() private returns(uint) {
+    // function _extractStorageValue(uint key_) private returns(uint value) {
+    //     // bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+    //     uint balancesSlot = 1;
 
+    //     bytes32 mapSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, balancesSlot))) + 2);
+    //     bytes32 secondSlot = keccak256( abi.encodePacked(key_, mapSlot) );
+    //     value = uint(vm.load(vaultBalancer, secondSlot));
     // }
+
+    function _extractSlot(uint key_, bytes32 pos_, uint offset_) private returns(bytes32) {
+        return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
+    }
 
     function test_getStorage2() public {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-        console.logBytes32(poolId);
-        uint balancesSlot = 1;
+        // console.logBytes32(poolId);
+        bytes32 balancesSlot = bytes32(uint(1));
         // bytes32 entriesSlot = keccak256(abi.encodePacked(poolId, uint(1))) + 1;
 
         //-----------------
-        bytes32 indexesSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, balancesSlot))) + 2);
-        bytes32 rEthIndexSlot = keccak256( abi.encodePacked(bytes32(uint256(uint160(rEthAddr))), indexesSlot) );
+        // bytes32 indexesSlot = bytes32(uint(keccak256(abi.encodePacked(uint(poolId), balancesSlot))) + 2);
+        bytes32 indexesSlot = _extractSlot(uint(poolId), balancesSlot, 2);
+        // bytes32 rEthIndexSlot = keccak256( abi.encodePacked(uint(uint160(rEthAddr)), indexesSlot) );
+        bytes32 rEthIndexSlot = _extractSlot(uint(uint160(rEthAddr)), indexesSlot, 0);
         uint rEthIndex = uint(vm.load(vaultBalancer, rEthIndexSlot));
 
         //-----------------
-        bytes32 entriesSlot = bytes32(uint(keccak256(abi.encodePacked(poolId, balancesSlot))) + 1);
-        bytes32 rEthBalanceSlot = bytes32(uint(keccak256(abi.encodePacked(uint(rEthIndex - 1), entriesSlot))) + 1); //uint(1) is the rEthIndex from above
+        // bytes32 entriesSlot = bytes32(uint(keccak256(abi.encodePacked(uint(poolId), balancesSlot))) + 1);
+        bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
+        // bytes32 rEthBalanceSlot = bytes32(uint(keccak256(abi.encodePacked(uint(rEthIndex - 1), entriesSlot))) + 1);
+        bytes32 rEthBalanceSlot = _extractSlot(uint(rEthIndex - 1), entriesSlot, 1);
         bytes32 rEthBalance = vm.load(vaultBalancer, rEthBalanceSlot);
         uint x = cash(rEthBalance);
 
