@@ -245,7 +245,21 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
+    //Modify the reference so it can be ran alongside the test above of minRedeem
+    //Then go to the othe problematic tests
 
+    enum Quantity {
+        SMALL,
+        BIG
+    }
+
+    function _dealUnderlying(Quantity qnt_) private {
+        uint baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
+
+        deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, bob, baseAmount * 2 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, charlie, baseAmount * 3 * (10 ** IERC20Permit(testToken).decimals()));
+    }
 
 
     /** REFERENCE
@@ -253,6 +267,8 @@ contract ozTokenFactoryTest is Setup {
      * be ineligble so the MEV produce is quite lower, proving the efficacy of algo
      */
     function test_redeeming_multipleBigBalances_smallRedeemQuantities() public {
+        _dealUnderlying(Quantity.SMALL);
+
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(amountIn == 100 * 1e6);
 
