@@ -51,6 +51,11 @@ contract Setup is Test {
         ETHEREUM
     }
 
+    enum Quantity {
+        SMALL,
+        BIG
+    }
+
 
     //ERC20s
     address internal usdtAddr;
@@ -157,6 +162,14 @@ contract Setup is Test {
             network = "ethereum";
             blockNumber = 18284413;
         }
+    }
+
+    function _dealUnderlying(Quantity qnt_) internal returns(uint baseAmount) {
+        baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
+
+        deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, bob, baseAmount * 2 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, charlie, baseAmount * 3 * (10 ** IERC20Permit(testToken).decimals()));
     }
 
 

@@ -67,6 +67,9 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
+    /**
+     * Mints a small quantity of ozTOkens using EIP2612
+     */
     function test_minting_eip2612() public {
         /**
          * Pre-conditions + Actions (creating of ozTokens)
@@ -110,7 +113,9 @@ contract ozTokenFactoryTest is Setup {
     }   
 
     
-
+    /**
+     * Transfer ozTokens between accounts
+     */
     function test_transfer() public {
         //Pre-conditions
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
@@ -176,9 +181,7 @@ contract ozTokenFactoryTest is Setup {
      * From 1M USDC balance, mint and redeem a small part (100 USDC)
      */
     function test_redeeming_bigBalance_smallMint_smallRedeem() public {
-        /**
-         * Pre-conditions
-         */
+        //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
 
@@ -195,17 +198,12 @@ contract ozTokenFactoryTest is Setup {
 
         (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-        /**
-         * Action
-         */
+        //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
-
         uint underlyingOut = ozERC20.burn(req.amtsOut, alice); 
 
-        /**
-         * Post-conditions
-         */
+        //Post-conditions
         testToken = usdcAddr;
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(ozERC20.balanceOf(alice) == 0);
@@ -217,7 +215,7 @@ contract ozTokenFactoryTest is Setup {
 
     
 
-    /**
+    /** REFERENCE
      * Mints 1M of ozTokens, then rebalances Uniswap and Balancer pools, 
      * and redeems a small portio of ozUSDC. 
      */
@@ -270,31 +268,20 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
-    //Modify the reference so it can be ran alongside the test above of minRedeem
-    //Then go to the othe problematic tests
-
-    enum Quantity {
-        SMALL,
-        BIG
-    }
-
-    function _dealUnderlying(Quantity qnt_) private returns(uint baseAmount) {
-        baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
-
-        deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, bob, baseAmount * 2 * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, charlie, baseAmount * 3 * (10 ** IERC20Permit(testToken).decimals()));
-
-    }
 
 
-    /** REFERENCE
+    /**
      * Used quantities like 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
-     * be ineligble so the MEV produce is quite lower, proving the efficacy of algo
+     * be ineligble so the MEV produced is quite lower, proving the efficacy of the 
+     * rebase algorithm. 
+     *
+     * In this test, the "bigMint" is in relation to the amount being redeem (100:1)
      */
-    function test_redeeming_multipleBigBalances_smallRedeemQuantities() public {
+    function test_redeeming_multipleBigBalances_bigMints_smallRedeem() public {
         _dealUnderlying(Quantity.SMALL);
+        // uint amountToRedeem = 1;
 
+        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(amountIn == 100 * 1e6);
 
@@ -318,7 +305,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(balanceOzCharliePostMint > 299 * 1 ether && balanceOzCharliePostMint < 300 * 1 ether);
         //----------
 
-        uint ozAmountIn = 1 * 1 ether;
+        uint ozAmountIn = 1 * 1 ether; //amountToRedeem = 1
         testToken = address(ozERC20);
         (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
@@ -336,6 +323,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(underlyingOut == IERC20Permit(usdcAddr).balanceOf(alice));
         assertTrue(basisPointsDifferenceBobMEV == 0);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
+        assertTrue(underlyingOut > 999000 && underlyingOut < 1 * 1e6);
     }
 
 
