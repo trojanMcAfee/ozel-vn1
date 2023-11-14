@@ -67,14 +67,28 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
+    function _compressMintData(uint rawAmount_, address tokenIn_) private returns(
+        bytes memory aliceData,
+        bytes memory bobData,
+        bytes memory charlieData
+    ) {
+        uint amountIn = rawAmount_ * 10 ** IERC20Permit(testToken).decimals();
+
+        aliceData = abi.encode(tokenIn_, amountIn, alice, ALICE_PK, true, true);
+        bobData = abi.encode(tokenIn_, amountIn, bob, BOB_PK, false, true);
+        charlieData = abi.encode(tokenIn_, amountIn, charlie, CHARLIE_PK, false, true);
+    }
+
+
     /**
-     * Mints a small quantity of ozTOkens using EIP2612
+     * Mints a small quantity of ozTokens using EIP2612
      */
-    function test_minting_eip2612() public {
+    function test_minting_eip2612() public { 
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
+
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
             testToken, amountIn, alice, ALICE_PK, true, true
