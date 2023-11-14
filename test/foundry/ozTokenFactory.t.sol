@@ -28,12 +28,33 @@ contract ozTokenFactoryTest is Setup {
     using stdStorage for StdStorage;
 
 
-
-
-    function test_minting_approve() public {
+    /**
+     * Mints a small quantity of ozUSDC (~100)
+     */
+    function test_minting_approve_smallMint() public {
         //Pre-condition
-        uint rawAmount = 100;
+        uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        //Action
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, false
+        );
+
+        //Post-conditions
+        assertTrue(address(ozERC20) != address(0));
+        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+    }
+
+
+    /**
+     * Mints a big quantity of ozUSDC (~1M)
+     */
+    function test_minting_approve_bigMint() public {
+        //Pre-condition
+        uint rawAmount = _dealUnderlying(Quantity.BIG);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _changeSlippage(9900);
 
         //Action
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
@@ -50,7 +71,7 @@ contract ozTokenFactoryTest is Setup {
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
-        uint rawAmount = 100;
+        uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
             testToken, amountIn, alice, ALICE_PK, true, true
@@ -92,7 +113,7 @@ contract ozTokenFactoryTest is Setup {
 
     function test_transfer() public {
         //Pre-conditions
-        uint rawAmount = 100;
+        uint rawAmount = _dealUnderlying(Quantity.SMALL);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(
             testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true, true
@@ -121,10 +142,8 @@ contract ozTokenFactoryTest is Setup {
      */
     function test_redeeming_bigBalance_bigMint_bigRedeem() public {
         //Pre-conditions
-        uint newSlippage = 9900;
-        vm.prank(owner);
-        OZ.changeDefaultSlippage(newSlippage);
-        assertTrue(OZ.getDefaultSlippage() == newSlippage);
+        _changeSlippage(9900);
+        _dealUnderlying(Quantity.BIG);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
@@ -157,11 +176,11 @@ contract ozTokenFactoryTest is Setup {
      * From 1M USDC balance, mint and redeem a small part (100 USDC)
      */
     function test_redeeming_bigBalance_smallMint_smallRedeem() public {
-        //Pre-conditions
-        uint newSlippage = 9900;
-        vm.prank(owner);
-        OZ.changeDefaultSlippage(newSlippage);
-        assertTrue(OZ.getDefaultSlippage() == newSlippage);
+        /**
+         * Pre-conditions
+         */
+        _changeSlippage(9900);
+        _dealUnderlying(Quantity.BIG);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = 100 * decimalsUnderlying;
@@ -176,13 +195,17 @@ contract ozTokenFactoryTest is Setup {
 
         (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-        //Action
+        /**
+         * Action
+         */
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
 
         uint underlyingOut = ozERC20.burn(req.amtsOut, alice); 
 
-        //Post-conditions
+        /**
+         * Post-conditions
+         */
         testToken = usdcAddr;
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(ozERC20.balanceOf(alice) == 0);
@@ -202,6 +225,8 @@ contract ozTokenFactoryTest is Setup {
         /**
          * Pre-conditions
          */
+        //Deals big amounts of USDC to testers.
+        _dealUnderlying(Quantity.BIG);
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         uint rawAmount = 100;
         assertTrue(amountIn == 1_000_000 * 1e6);
@@ -253,12 +278,13 @@ contract ozTokenFactoryTest is Setup {
         BIG
     }
 
-    function _dealUnderlying(Quantity qnt_) private {
-        uint baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
+    function _dealUnderlying(Quantity qnt_) private returns(uint baseAmount) {
+        baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
 
         deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
         deal(testToken, bob, baseAmount * 2 * (10 ** IERC20Permit(testToken).decimals()));
         deal(testToken, charlie, baseAmount * 3 * (10 ** IERC20Permit(testToken).decimals()));
+
     }
 
 
@@ -316,11 +342,13 @@ contract ozTokenFactoryTest is Setup {
     //Problem here ****
     function test_redeeming_multipleBigBalances_bigMint_mediumRedeem() public {
         //Pre-conditions
-        uint newSlippage = 9900;
-        vm.prank(owner);
-        OZ.changeDefaultSlippage(newSlippage);
-        assertTrue(OZ.getDefaultSlippage() == newSlippage);
+        // uint newSlippage = 9900;
+        // vm.prank(owner);
+        // OZ.changeDefaultSlippage(newSlippage);
+        _changeSlippage(9900);
+        // assertTrue(OZ.getDefaultSlippage() == newSlippage);
 
+        _dealUnderlying(Quantity.BIG);
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
