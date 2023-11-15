@@ -18,6 +18,7 @@ import "solady/src/utils/FixedPointMathLib.sol";
 import {Type, RequestType, ReqIn, ReqOut} from "./AppStorageTests.sol";
 import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {stdStorage, StdStorage} from "forge-std/Test.sol";
+import {ozToken} from "../../contracts/ozToken.sol";
 
 import "forge-std/console.sol";
 
@@ -67,27 +68,47 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    function _compressMintData(uint rawAmount_, address tokenIn_) private returns(
+    enum User {
+        ALICE,
+        BOB,
+        CHARLIE
+    }
+
+    function _compressMintData(uint rawAmount_) private returns(
         bytes memory aliceData,
         bytes memory bobData,
         bytes memory charlieData
     ) {
         uint amountIn = rawAmount_ * 10 ** IERC20Permit(testToken).decimals();
 
-        aliceData = abi.encode(tokenIn_, amountIn, alice, ALICE_PK, true, true);
-        bobData = abi.encode(tokenIn_, amountIn, bob, BOB_PK, false, true);
-        charlieData = abi.encode(tokenIn_, amountIn, charlie, CHARLIE_PK, false, true);
+        aliceData = abi.encode(testToken, amountIn, alice, ALICE_PK, true, true);
+        bobData = abi.encode(address(0), amountIn, bob, BOB_PK, false, true);
+        charlieData = abi.encode(address(0), amountIn, charlie, CHARLIE_PK, false, true);
+    }
+
+    
+
+    function test_computeAddress() public {
+        bytes32 salt = bytes32(uint(123));
+        address computedOzToken = address(new ozToken{salt: salt}());
+        console.log('computedOzToken: ', computedOzToken);
+
+        address oz = address(new ozToken());
+        console.log('oz: ', oz);
+
+
     }
 
 
     /**
      * Mints a small quantity of ozTokens using EIP2612
      */
-    function test_minting_eip2612() public { 
+    function test_minting_eip2612() public {
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
+        // _compressMintData(rawAmount_);
 
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
@@ -97,7 +118,7 @@ contract ozTokenFactoryTest is Setup {
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
         (, uint sharesBob) = _createAndMintOzTokens(
             address(ozERC20), amountIn, bob, BOB_PK, false, true
-        );
+        ); //try to join this 3 funcs in one
 
         amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
         (, uint sharesCharlie) = _createAndMintOzTokens(
