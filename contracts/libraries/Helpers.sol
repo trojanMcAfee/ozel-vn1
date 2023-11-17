@@ -4,6 +4,8 @@ pragma solidity 0.8.21;
 
 import {IVault, IAsset} from "../interfaces/IBalancer.sol";
 import "solady/src/utils/FixedPointMathLib.sol";
+import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
+// import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
 
 library Helpers {
@@ -124,5 +126,12 @@ library Helpers {
             toInternalBalance: false
         });
     }
+
+    function formatMinOut(uint minOut_, address tokenOut_) internal view returns(uint) {
+        uint decimals = IERC20Permit(tokenOut_).decimals();
+        return decimals == 18 ? minOut_ : minOut_ / 10 ** (18 - decimals);
+    }
+
+    
 
 }

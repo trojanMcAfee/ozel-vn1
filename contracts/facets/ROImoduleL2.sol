@@ -95,7 +95,7 @@ contract ROImoduleL2 {
         }
     }
 
-
+    
     function _removeLiquidityBalancer(
         uint minWethOut_, 
         uint bptAmountIn_, 
@@ -153,7 +153,7 @@ contract ROImoduleL2 {
         if (amountOut == 0) revert TokenInNotValid(tokenIn_);
     }
 
-
+    //This func is in Helpers.sol also ****
     function _formatMinOut(uint minOut_, address tokenOut_) private view returns(uint) {
         uint decimals = IERC20Permit(tokenOut_).decimals();
         return decimals == 18 ? minOut_ : minOut_ / 10 ** (18 - decimals);
