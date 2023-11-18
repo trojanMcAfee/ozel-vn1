@@ -472,7 +472,7 @@ contract ozTokenFactoryTest is Setup {
                 sqrtPriceLimitX96: 0
             });
 
-        ISwapRouter(swapRouterUni).exactInputSingle(params);
+        // ISwapRouter(swapRouterUni).exactInputSingle(params);
 
 
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
@@ -554,8 +554,8 @@ contract ozTokenFactoryTest is Setup {
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
         // uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         // assertTrue(balanceUsdcAlicePostMint == 0);
+        _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
         _resetPools(_toWETH(amountIn));
-        // _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
         console.log('- bal alice oz post-mint: ', ozERC20.balanceOf(alice));
 
 
@@ -569,8 +569,8 @@ contract ozTokenFactoryTest is Setup {
         _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false);
         // uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
         // assertTrue(balanceUsdcBobPostMint == 0);
+        _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
         _resetPools(_toWETH(amountIn));
-        // _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
         console.log('- bal bob oz post-mint: ', ozERC20.balanceOf(bob));
 
 
@@ -806,7 +806,7 @@ contract ozTokenFactoryTest is Setup {
         address token_, 
         bytes32 oldTokenBalance_
     ) private {
-        _setTokenBalanceFromSlot(token_, oldTokenBalance_);
+        // _setTokenBalanceFromSlot(token_, oldTokenBalance_);
         _modifySqrtPriceX96(slot0data_);
     }
 

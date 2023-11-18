@@ -137,7 +137,7 @@ contract ROImoduleL2 {
     ) private returns(uint amountOut) {
         console.log('--- swap uni ---');
         console.log('amountIn: ', amountIn_);
-        console.log('amountOutMinimum: ', _formatMinOut(minAmountOut_, tokenOut_));
+        // console.log('amountOutMinimum: ', _formatMinOut(minAmountOut_, tokenOut_));
 
         tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
 
