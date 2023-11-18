@@ -135,6 +135,10 @@ contract ROImoduleL2 {
         address tokenOut_,
         address receiver_
     ) private returns(uint amountOut) {
+        console.log('--- swap uni ---');
+        console.log('amountIn: ', amountIn_);
+        console.log('amountOutMinimum: ', _formatMinOut(minAmountOut_, tokenOut_));
+
         tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
 
         ISwapRouter.ExactInputSingleParams memory params =
@@ -145,11 +149,13 @@ contract ROImoduleL2 {
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: _formatMinOut(minAmountOut_, tokenOut_), 
+                amountOutMinimum: _formatMinOut(minAmountOut_, tokenOut_), //might be a bug here, in the format ***
                 sqrtPriceLimitX96: 0
             });
 
         amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
+        console.log('amountOut weth uni ^^: ', amountOut);
+        console.log('--- end of swap uni ---');
         if (amountOut == 0) revert TokenInNotValid(tokenIn_);
     }
 
@@ -181,7 +187,8 @@ contract ROImoduleL2 {
         uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
 
         s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
-        IVault(s.vaultBalancer).swap(singleSwap, funds, minRethOut, block.timestamp);
+        uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minRethOut, block.timestamp);
+        console.log('amountOut reth balancer !!: ', amountOut);
     }
 
 
@@ -224,6 +231,7 @@ contract ROImoduleL2 {
             address(this),
             request
         );
+        console.log('bpt bal post join ##: ', IWETH(s.rEthWethPoolBalancer).balanceOf(address(this)));
     }
 
 

@@ -547,7 +547,6 @@ contract ozTokenFactoryTest is Setup {
         (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
-        console.log('--- pre-condition ---');
         uint amountIn = IERC20Permit(testToken).balanceOf(alice) / 2;
         console.log('amountIn alice: ', amountIn);
         // assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
@@ -557,7 +556,7 @@ contract ozTokenFactoryTest is Setup {
         // assertTrue(balanceUsdcAlicePostMint == 0);
         _resetPools(_toWETH(amountIn));
         // _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
-        console.log('bal alice oz post-mint: ', ozERC20.balanceOf(alice));
+        console.log('- bal alice oz post-mint: ', ozERC20.balanceOf(alice));
 
 
         //why are ozTokens balances decreasing after each mint????
@@ -572,7 +571,7 @@ contract ozTokenFactoryTest is Setup {
         // assertTrue(balanceUsdcBobPostMint == 0);
         _resetPools(_toWETH(amountIn));
         // _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
-        console.log('bal bob oz post-mint: ', ozERC20.balanceOf(bob));
+        console.log('- bal bob oz post-mint: ', ozERC20.balanceOf(bob));
 
 
         // amountIn = IERC20Permit(testToken).balanceOf(charlie);
