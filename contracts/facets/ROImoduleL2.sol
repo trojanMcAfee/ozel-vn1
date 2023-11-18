@@ -55,9 +55,10 @@ contract ROImoduleL2 {
             //do something else or throw error and return
         }
 
-        _swapBalancer(poolId, amounts_.minRethOut);
+        // _swapBalancer(poolId, amounts_.minRethOut);
 
-        //Deposits rETH in rETH-ETH Balancer pool as LP
+        //Deposits WETH in rETH-ETH Balancer pool as LP
+        //Skips the rETH swap since it receives the same amt of BPT in the end
         _addLiquidityBalancer(amounts_.minBptOut, poolId);
     }
 
@@ -193,12 +194,12 @@ contract ROImoduleL2 {
 
 
     function _addLiquidityBalancer(uint minBptOutOffchain_, bytes32 poolId_) private {
-        uint amountIn = IERC20Permit(s.rETH).balanceOf(address(this));
-        s.rETH.safeApprove(s.vaultBalancer, amountIn);
+        uint amountIn = IERC20Permit(s.WETH).balanceOf(address(this));
+        s.WETH.safeApprove(s.vaultBalancer, amountIn);
 
         address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
-        uint[] memory maxAmountsIn = Helpers.convertToDynamic([0, 0, amountIn]);
-        uint[] memory amountsIn = Helpers.convertToDynamic([0, amountIn]);
+        uint[] memory maxAmountsIn = Helpers.convertToDynamic([amountIn, 0, 0]);
+        uint[] memory amountsIn = Helpers.convertToDynamic([amountIn, 0]);
 
         IVault.JoinPoolRequest memory request = Helpers.createRequest(
             assets, maxAmountsIn, Helpers.createUserData(
