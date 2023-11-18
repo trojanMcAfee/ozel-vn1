@@ -149,7 +149,7 @@ contract ROImoduleL2 {
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: _formatMinOut(minAmountOut_, tokenOut_), //might be a bug here, in the format ***
+                amountOutMinimum: _formatMinOut(minAmountOut_, tokenOut_),
                 sqrtPriceLimitX96: 0
             });
 
