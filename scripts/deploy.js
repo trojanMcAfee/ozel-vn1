@@ -45,7 +45,7 @@ async function deployDiamond () {
     'ozOracles',
     'ozTokenFactory',
     'Pools',
-    'ROImoduleL2'
+    'ROImoduleL1'
   ]
   const cut = []
   for (const FacetName of FacetNames) {

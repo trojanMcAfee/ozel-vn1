@@ -8,7 +8,7 @@ import {Test} from "forge-std/Test.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
-import {ROImoduleL2} from "../../contracts/facets/ROImoduleL2.sol";
+import {ROImoduleL1} from "../../contracts/facets/ROImoduleL1.sol";
 import "../../contracts/facets/DiamondCutFacet.sol";
 import "../../contracts/facets/DiamondLoupeFacet.sol";
 import "../../contracts/facets/OwnershipFacet.sol";
@@ -96,7 +96,7 @@ contract Setup is Test {
     ozTokenFactory internal factory; 
     MirrorExchange internal mirrorEx;  
     Pools internal pools;
-    ROImoduleL2 internal roiL2;
+    ROImoduleL1 internal roi;
     ozOracle internal oracle;
     ozLoupe internal loupe;
     ozCut internal cutOz;
@@ -197,7 +197,7 @@ contract Setup is Test {
         mirrorEx = new MirrorExchange();
         factory = new ozTokenFactory();
         pools = new Pools();
-        roiL2 = new ROImoduleL2();
+        roi = new ROImoduleL1();
         oracle = new ozOracle();
         beacon = new ozBeacon(address(tokenOz));
         cutOz = new ozCut();
@@ -209,7 +209,7 @@ contract Setup is Test {
         cuts[2] = _createCut(address(mirrorEx), 2);
         cuts[3] = _createCut(address(factory), 3);
         cuts[4] = _createCut(address(pools), 4);
-        cuts[5] = _createCut(address(roiL2), 5);
+        cuts[5] = _createCut(address(roi), 5);
         cuts[6] = _createCut(address(oracle), 6);
         cuts[7] = _createCut(address(beacon), 7);
         cuts[8] = _createCut(address(cutOz), 8);
@@ -297,9 +297,9 @@ contract Setup is Test {
         } else if (id_ == 4) { //Pools
             selectors[0] = 0xe9e05c43;
         } else if (id_ == 5) {
-            selectors[0] = roiL2.useUnderlying.selector;
-            selectors[1] = roiL2.totalUnderlying.selector;
-            selectors[2] = roiL2.useOzTokens.selector;
+            selectors[0] = roi.useUnderlying.selector;
+            selectors[1] = roi.totalUnderlying.selector;
+            selectors[2] = roi.useOzTokens.selector;
         } else if (id_ == 6) {
             selectors[0] = oracle.rETH_ETH.selector;
             selectors[1] = oracle.getUnderlyingValue.selector;
@@ -323,7 +323,7 @@ contract Setup is Test {
     function _setLabels() private {
         vm.label(address(factory), "ozTokenFactory");
         vm.label(address(initDiamond), "DiamondInit");
-        vm.label(address(roiL2), "ROImoduleL2");
+        vm.label(address(roi), "ROImoduleL1");
         vm.label(owner, "owner");
         vm.label(alice, "Alice");
         vm.label(bob, "Bob");
