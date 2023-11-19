@@ -29,6 +29,8 @@ contract ozTokenFactoryTest is Setup {
     using FixedPointMathLib for uint;
     using stdStorage for StdStorage;
 
+    uint constant ONE_ETHER = 1 ether;
+
 
     /**
      * Mints a small quantity of ozUSDC (~100)
@@ -447,97 +449,11 @@ contract ozTokenFactoryTest is Setup {
         assertTrue((ozERC20.balanceOf(alice) / ozERC20.decimals()) == 0);
     }
 
-    function _resetPools(uint amountWeth_) private {
-        deal(wethAddr, owner, amountWeth_);
-        deal(rEthAddr, owner, _toRETH(amountWeth_));
-        deal(rEthWethPoolBalancer, owner, _toBPT(amountWeth_), true);
 
-        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-        address deadAddr = 0x000000000000000000000000000000000000dEaD;
-
-        vm.startPrank(owner);
-        IERC20Permit(wethAddr).approve(swapRouterUni, type(uint).max);
-        IERC20Permit(rEthAddr).approve(vaultBalancer, type(uint).max);
-        // IERC20Permit(rEthWethPoolBalancer).approve(vaultBalancer, type(uint).max);
-
-        ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({ 
-                tokenIn: wethAddr,
-                tokenOut: testToken, 
-                fee: 500,
-                recipient: deadAddr,
-                deadline: block.timestamp,
-                amountIn: amountWeth_,
-                amountOutMinimum: 0, 
-                sqrtPriceLimitX96: 0
-            });
-
-        // ISwapRouter(swapRouterUni).exactInputSingle(params);
-
-
-        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: poolId,
-            kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(rEthAddr),
-            assetOut: IAsset(wethAddr),
-            amount: IERC20Permit(rEthAddr).balanceOf(owner),
-            userData: new bytes(0)
-        });
-
-        IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: owner,
-            fromInternalBalance: false,
-            recipient: payable(deadAddr),
-            toInternalBalance: false
-        });
-
-        IVault(vaultBalancer).swap(singleSwap, funds, 1, block.timestamp);
-        
-        //---------
-
-        address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
-        uint[] memory minAmountsOut = Helpers.convertToDynamic([uint(1), uint(0), uint(0)]);
-
-        bytes memory userData = Helpers.createUserData(
-            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, 
-            IERC20Permit(rEthWethPoolBalancer).balanceOf(owner), 
-            0 
-        );
-
-        IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
-            assets: assets,
-            minAmountsOut: minAmountsOut,
-            userData: userData,
-            toInternalBalance: false
-        });
-
-        IVault(vaultBalancer).exitPool( 
-            poolId, 
-            owner, 
-            payable(deadAddr), 
-            request
-        );
-
-        vm.stopPrank();
-    }
-
-    uint constant ONE_ETHER = 1 ether;
-
-    function _toWETH(uint amountUnderlying_) private view returns(uint) {
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        return amountUnderlying_.mulDiv(ONE_ETHER, uint(price * 1e10));
-    }
-
-    function _toRETH(uint amountWeth_) private view returns(uint) {
-        (,int price,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
-        return amountWeth_.mulDiv(uint(price), ONE_ETHER);
-    }
-
-    function _toBPT(uint amountWeth_) private view returns(uint) {
-        uint bptRate = IPool(rEthWethPoolBalancer).getRate();
-        return amountWeth_.mulDiv(bptRate, ONE_ETHER);
-    }
-
+    /**
+     * This test proves that rebasing algorithm works, and that the difference
+     * between token balances is due to imbalance pools after the test swaps
+     */
     function test_redeeming_multipleBigBalances_bigMint_mediumRedeem() public {
         //Pre-conditions
         _changeSlippage(9900);
@@ -548,56 +464,35 @@ contract ozTokenFactoryTest is Setup {
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice) / 2;
-        console.log('amountIn alice: ', amountIn);
         // assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-        // uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-        // assertTrue(balanceUsdcAlicePostMint == 0);
-        _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
-        _resetPools(_toWETH(amountIn));
-        console.log('- bal alice oz post-mint: ', ozERC20.balanceOf(alice));
-
-
-        //why are ozTokens balances decreasing after each mint????
-        //even after i reset the pool balances and have a constant BPT price??
-
+        _resetPools(_toWETH(amountIn), oldSlot0data);
+        console.log('- bal alice oz post-mint - alice & bob same: ', ozERC20.balanceOf(alice));
 
         //-------------------
-        // amountIn = IERC20Permit(testToken).balanceOf(bob);
-        console.log('amountIn bob: ', amountIn);
         _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false);
-        // uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
-        // assertTrue(balanceUsdcBobPostMint == 0);
-        _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
-        _resetPools(_toWETH(amountIn));
+        _resetPools(_toWETH(amountIn), oldSlot0data);
         console.log('- bal bob oz post-mint: ', ozERC20.balanceOf(bob));
 
-
-        // amountIn = IERC20Permit(testToken).balanceOf(charlie);
-        // console.log('amountIn - charlie: ', amountIn);
-        // _createAndMintOzTokens(address(ozERC20), amountIn, charlie, CHARLIE_PK, false, false);
-        // // uint balanceUsdcCharliePostMint = IERC20Permit(testToken).balanceOf(charlie);
-        // // assertTrue(balanceUsdcCharliePostMint == 0);
-        // // _resetPools(_toWETH(amountIn));
-        // console.log('bal charlie oz post-mint: ', ozERC20.balanceOf(charlie));
         //-------------------
 
-        // uint ozAmountIn = ozERC20.balanceOf(alice) / 10;
-        // testToken = address(ozERC20);
+        uint ozAmountIn = ozERC20.balanceOf(alice) / 10;
+        testToken = address(ozERC20);
 
-        // (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
         // //Action
-        // vm.startPrank(alice);
-        // ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
-        // uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
+        uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
+        vm.stopPrank();
 
         // //Post-conditions
-        // console.log('--- post-conditon ---');
-        // console.log('ozAmountIn alice to redeem: ', ozAmountIn);
-        // console.log('usdc out: ', underlyingOut);
-        // console.log('bal alice usdc post-burn: ', IERC20Permit(usdcAddr).balanceOf(alice));
+        console.log('--- post-conditon ---');
+        console.log('ozAmountIn alice to redeem: ', ozAmountIn);
+        console.log('usdc out: ', underlyingOut);
+        console.log('bal alice usdc post-burn: ', IERC20Permit(usdcAddr).balanceOf(alice));
 
     }
      
@@ -800,13 +695,70 @@ contract ozTokenFactoryTest is Setup {
 
 
     //---- Reset pools helpers ----
+    function _resetPools(uint amountWeth_, bytes32 slot0data_) private {
+        _modifySqrtPriceX96(slot0data_);
+
+        deal(rEthAddr, owner, _toRETH(amountWeth_));
+        deal(rEthWethPoolBalancer, owner, _toBPT(amountWeth_), true);
+
+        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+        address deadAddr = 0x000000000000000000000000000000000000dEaD;
+
+        vm.startPrank(owner);
+        IERC20Permit(rEthAddr).approve(vaultBalancer, type(uint).max);
+
+        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+            poolId: poolId,
+            kind: IVault.SwapKind.GIVEN_IN,
+            assetIn: IAsset(rEthAddr),
+            assetOut: IAsset(wethAddr),
+            amount: IERC20Permit(rEthAddr).balanceOf(owner),
+            userData: new bytes(0)
+        });
+
+        IVault.FundManagement memory funds = IVault.FundManagement({
+            sender: owner,
+            fromInternalBalance: false,
+            recipient: payable(deadAddr),
+            toInternalBalance: false
+        });
+
+        IVault(vaultBalancer).swap(singleSwap, funds, 1, block.timestamp);
+        
+        //---------
+
+        address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
+        uint[] memory minAmountsOut = Helpers.convertToDynamic([uint(1), uint(0), uint(0)]);
+
+        bytes memory userData = Helpers.createUserData(
+            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, 
+            IERC20Permit(rEthWethPoolBalancer).balanceOf(owner), 
+            0 
+        );
+
+        IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
+            assets: assets,
+            minAmountsOut: minAmountsOut,
+            userData: userData,
+            toInternalBalance: false
+        });
+
+        IVault(vaultBalancer).exitPool( 
+            poolId, 
+            owner, 
+            payable(deadAddr), 
+            request
+        );
+
+        vm.stopPrank();
+    }
 
     function _resetPoolBalances(
         bytes32 slot0data_, 
         address token_, 
         bytes32 oldTokenBalance_
     ) private {
-        // _setTokenBalanceFromSlot(token_, oldTokenBalance_);
+        _setTokenBalanceFromSlot(token_, oldTokenBalance_);
         _modifySqrtPriceX96(slot0data_);
     }
 
@@ -841,5 +793,20 @@ contract ozTokenFactoryTest is Setup {
     function _setTokenBalanceFromSlot(address token_, bytes32 oldTokenBalance_) private {
         (bytes32 tokenBalanceSlot,) = _getTokenBalanceFromSlot(token_);
         vm.store(vaultBalancer, tokenBalanceSlot, oldTokenBalance_);
+    }
+
+    function _toWETH(uint amountUnderlying_) private view returns(uint) {
+        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        return amountUnderlying_.mulDiv(ONE_ETHER, uint(price * 1e10));
+    }
+
+    function _toRETH(uint amountWeth_) private view returns(uint) {
+        (,int price,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
+        return amountWeth_.mulDiv(uint(price), ONE_ETHER);
+    }
+
+    function _toBPT(uint amountWeth_) private view returns(uint) {
+        uint bptRate = IPool(rEthWethPoolBalancer).getRate();
+        return amountWeth_.mulDiv(bptRate, ONE_ETHER);
     }
 }

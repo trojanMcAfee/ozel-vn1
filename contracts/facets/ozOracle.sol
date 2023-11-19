@@ -21,15 +21,9 @@ contract ozOracle {
     }
 
     function getUnderlyingValue() external view returns(uint) {
-        uint amountBpt = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
-        console.log('amountBpt ***: ', amountBpt);
-        
+        uint amountBpt = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));        
         uint bptPrice = IPool(s.rEthWethPoolBalancer).getRate(); 
-        // bptPrice = 1001378748446961009;
-        console.log('bptPrice: ', bptPrice);
         (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-
-        console.log('eth price: ', uint(price) * 1e10);
 
         return ( ((bptPrice * amountBpt) / 1 ether) * (uint(price) * 1e10) ) / 1 ether; 
     } 
