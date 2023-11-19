@@ -49,17 +49,7 @@ contract ROImoduleL1 {
             amounts_.amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
         );
 
-        //Swaps WETH to rETH in Balancer
-        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
-        if (paused) {
-            //do something else or throw error and return
-        }
-
-        // _swapBalancer(poolId, amounts_.minRethOut);
-
-        //Deposits WETH in rETH-ETH Balancer pool as LP
-        //Skips the rETH swap since it receives the same amt of BPT in the end
-        _addLiquidityBalancer(amounts_.minBptOut, poolId);
+       
     }
 
 
@@ -136,10 +126,6 @@ contract ROImoduleL1 {
         address tokenOut_,
         address receiver_
     ) private returns(uint amountOut) {
-        console.log('--- swap uni ---');
-        console.log('amountIn: ', amountIn_);
-        // console.log('amountOutMinimum: ', _formatMinOut(minAmountOut_, tokenOut_));
-
         tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
 
         ISwapRouter.ExactInputSingleParams memory params =
@@ -155,8 +141,6 @@ contract ROImoduleL1 {
             });
 
         amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
-        console.log('amountOut weth uni ^^: ', amountOut);
-        console.log('--- end of swap uni ---');
         if (amountOut == 0) revert TokenInNotValid(tokenIn_);
     }
 
@@ -189,7 +173,6 @@ contract ROImoduleL1 {
 
         s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
         uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minRethOut, block.timestamp);
-        console.log('amountOut reth balancer !!: ', amountOut);
     }
 
 
@@ -232,7 +215,6 @@ contract ROImoduleL1 {
             address(this),
             request
         );
-        console.log('bpt bal post join ##: ', IWETH(s.rEthWethPoolBalancer).balanceOf(address(this)));
     }
 
 
