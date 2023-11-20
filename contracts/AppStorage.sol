@@ -42,6 +42,12 @@ struct AmountsIn {
     uint minBptOut;
 }
 
+// struct MintData {
+//     uint112 amountIn;
+//     uint112 minWethOut;
+//     address receiver;
+// }
+
 
 struct AmountsOut {
     uint ozAmountIn;

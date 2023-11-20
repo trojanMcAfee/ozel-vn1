@@ -50,6 +50,10 @@ interface ozIToken {
         address receiver
     ) external returns(uint);
 
+    function mint( 
+        bytes memory data_
+    ) external returns(uint);
+
     function implementation() external view returns (address);
     function beacon() external view returns(address);
     function sharesOf(address account_) external view returns(uint);

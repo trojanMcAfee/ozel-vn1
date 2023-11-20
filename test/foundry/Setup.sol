@@ -80,6 +80,8 @@ contract Setup is Test {
     address internal queriesBalancer;
     address internal rEthWethPoolBalancer;
     address internal rEthEthChainlink;
+    //-- L1----
+    address internal rocketPoolStorage;
 
     address internal testToken;
 
@@ -111,7 +113,7 @@ contract Setup is Test {
 
     /** FUNCTIONS **/ 
     function setUp() public {
-        (string memory network, uint blockNumber) = _chooseNetwork(Network.ARBITRUM);
+        (string memory network, uint blockNumber) = _chooseNetwork(Network.ETHEREUM);
         vm.createSelectFork(vm.rpcUrl(network), blockNumber);
         _runSetup();
     }
@@ -136,6 +138,7 @@ contract Setup is Test {
             feesCollectorBalancer = 0xce88686553686DA562CE7Cea497CE749DA109f9F;
             fraxAddr = 0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F; //doesn't have a pool in Uniswap Arb, so it can only be used in L1.
             daiAddr = 0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1;
+            rocketPoolStorage = address(0);
 
             network = "arbitrum";
             blockNumber = 136177703;
@@ -158,6 +161,7 @@ contract Setup is Test {
             feesCollectorBalancer = address(0);
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
             daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+            rocketPoolStorage = 0xDD3f50F8A6CafbE9b31a427582963f465E745AF8;
 
             network = "ethereum";
             blockNumber = 18284413;

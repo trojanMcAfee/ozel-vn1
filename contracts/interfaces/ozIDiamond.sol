@@ -23,6 +23,13 @@ interface ozIDiamond {
         AmountsIn memory amounts_
     ) external;
 
+    function useUnderlying( 
+        address underlying_, 
+        address user_,
+        uint amountIn_,
+        uint minWethOut_
+    ) external;
+
     function useOzTokens(
         AmountsOut memory amts_,
         address ozToken_,

@@ -197,22 +197,26 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function mint( 
-        AmountsIn memory amounts_,
-        address receiver_
+        // AmountsIn memory amounts_,
+        // address receiver_
+        bytes memory data_
     ) external returns(uint) { 
-        uint assets = amounts_.amountIn;
+        // (uint amountIn, uint minWethOut, address receiver) = data_.extract();
+        (uint amountIn, uint minWethOut, address receiver) = abi.decode(data_, (uint, uint, address));
 
-        require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max");
+        // uint assets = amounts_.amountIn;
 
-        ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts_); 
+        require(amountIn <= maxDeposit(receiver), "ERC4626: deposit more than max");
 
-        uint shares = totalShares() == 0 ? assets : previewDeposit(assets);
+        ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amountIn, minWethOut); 
 
-        _totalAssets += assets;
+        uint shares = totalShares() == 0 ? amountIn : previewDeposit(amountIn);
+
+        _totalAssets += amountIn;
         _totalShares += shares;
 
         unchecked {
-            _shares[receiver_] += shares;
+            _shares[receiver] += shares;
         }
 
         //emit a Deposit/Mint event here

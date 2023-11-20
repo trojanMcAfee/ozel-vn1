@@ -13,8 +13,8 @@
   },
   "files": {
     "contracts/AppStorage.sol": {
-      "lastModificationDate": 1699401797409,
-      "contentHash": "aed14022dc6b0c11ba69e137972c2ad7",
+      "lastModificationDate": 1700430024577,
+      "contentHash": "f162a9830488165a8c6405fb9c77c7c4",
       "sourceName": "contracts/AppStorage.sol",
       "solcConfig": {
         "settings": {
@@ -359,8 +359,8 @@
       }
     },
     "contracts/facets/ROImoduleL1.sol": {
-      "lastModificationDate": 1700423186563,
-      "contentHash": "6dc5f99e2e886e71114f6fdbe597f674",
+      "lastModificationDate": 1700491608341,
+      "contentHash": "049e28cba9bad1b63db36c1e884a7fd5",
       "sourceName": "contracts/facets/ROImoduleL1.sol",
       "solcConfig": {
         "settings": {
@@ -1055,8 +1055,8 @@
       }
     },
     "contracts/interfaces/ozIDiamond.sol": {
-      "lastModificationDate": 1699608156124,
-      "contentHash": "4929693f0433da17afc8bd5f6639fe87",
+      "lastModificationDate": 1700491461997,
+      "contentHash": "9e5f7d307a6853e80df2114723f944a5",
       "sourceName": "contracts/interfaces/ozIDiamond.sol",
       "solcConfig": {
         "settings": {
@@ -1102,8 +1102,8 @@
       }
     },
     "contracts/interfaces/ozIToken.sol": {
-      "lastModificationDate": 1699607748132,
-      "contentHash": "8001111da2edb42e6d3a8d45e87a0839",
+      "lastModificationDate": 1700482385502,
+      "contentHash": "632e6a4ea5eb73a76dbffac06f4eba0b",
       "sourceName": "contracts/interfaces/ozIToken.sol",
       "solcConfig": {
         "settings": {
@@ -1147,9 +1147,50 @@
         }
       }
     },
+    "contracts/libraries/FixedPointMathLib.sol": {
+      "lastModificationDate": 1700425623871,
+      "contentHash": "494511524292c48049bda27e43c32edc",
+      "sourceName": "contracts/libraries/FixedPointMathLib.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.8.0",
+      "artifacts": {
+        "FixedPointMathLib": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "FixedPointMathLib.sol/FixedPointMathLib.json"
+        }
+      }
+    },
     "contracts/libraries/Helpers.sol": {
-      "lastModificationDate": 1700422699324,
-      "contentHash": "829d79f5fe7186b95d03276038e00bef",
+      "lastModificationDate": 1700491419303,
+      "contentHash": "c7f5b62804967ee76cbf94d8917275e9",
       "sourceName": "contracts/libraries/Helpers.sol",
       "solcConfig": {
         "settings": {
@@ -1236,8 +1277,8 @@
       }
     },
     "contracts/ozToken.sol": {
-      "lastModificationDate": 1700422862279,
-      "contentHash": "26aed696c597b0afa69c84baa85388b1",
+      "lastModificationDate": 1700491363577,
+      "contentHash": "3c286d52b8c5d5f70eb41db9debea260",
       "sourceName": "contracts/ozToken.sol",
       "solcConfig": {
         "settings": {
@@ -4097,8 +4138,8 @@
       }
     },
     "test/foundry/HelpersTests.sol": {
-      "lastModificationDate": 1699399757158,
-      "contentHash": "2984b58b68d0f4c54a8c7d2a6ece2392",
+      "lastModificationDate": 1700437654371,
+      "contentHash": "f1303878edc81fabed1e9e91493dbcab",
       "sourceName": "test/foundry/HelpersTests.sol",
       "solcConfig": {
         "settings": {
@@ -4150,8 +4191,8 @@
       }
     },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1700423249848,
-      "contentHash": "ae15811ddb2797fa07c560860445ad59",
+      "lastModificationDate": 1700428512763,
+      "contentHash": "42dc076b611f299271f74be6789575d4",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -4265,6 +4306,135 @@
       "artifacts": {
         "Setup": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "Setup.sol/Setup.json"
+        }
+      }
+    },
+    "test/foundry/ozToken.t.sol": {
+      "lastModificationDate": 1700491596905,
+      "contentHash": "9e06c30c1b293ad7be623c0f85edf785",
+      "sourceName": "test/foundry/ozToken.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Diamond.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
+        "contracts/facets/ROImoduleL1.sol",
+        "contracts/facets/ozBeacon.sol",
+        "contracts/facets/ozCut.sol",
+        "contracts/facets/ozLoupe.sol",
+        "contracts/facets/ozOracle.sol",
+        "contracts/facets/ozTokenFactory.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/ozToken.sol",
+        "contracts/ozTokenProxy.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
+        "node_modules/solady/src/utils/FixedPointMathLib.sol",
+        "test/foundry/AppStorageTests.sol",
+        "test/foundry/HelpersTests.sol",
+        "test/foundry/Setup.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozTokenTest": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozToken.t.sol/ozTokenTest.json"
         }
       }
     },

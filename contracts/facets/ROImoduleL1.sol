@@ -39,15 +39,21 @@ contract ROImoduleL1 {
     function useUnderlying( 
         address underlying_, 
         address user_,
-        AmountsIn memory amounts_
+        // AmountsIn memory amounts_
+        uint amountIn_,
+        uint minWethOut_
     ) external {
-        bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
-        underlying_.safeTransferFrom(user_, address(this), amounts_.amountIn);
+        // bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
+
+        underlying_.safeTransferFrom(user_, address(this), amountIn_);
 
         //Swaps underlying to WETH in Uniswap
         _swapUni(
-            amounts_.amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
+            amountIn_, minWethOut_, underlying_, s.WETH, address(this)
         );
+
+        console.log('weth bal: ', IWETH(s.WETH).balanceOf(address(this)));
+
 
        
     }
