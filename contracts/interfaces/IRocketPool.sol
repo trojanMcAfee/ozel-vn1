@@ -57,3 +57,11 @@ interface IRocketTokenRETH {
 interface IRocketDepositPool {
     function deposit() external payable;
 }
+
+interface IRocketVault {
+    function balanceOf(string memory _networkContractName) external view returns(uint);
+}
+
+interface IRocketDAOProtocolSettingsDeposit {
+    function getMaximumDepositPoolSize() external view returns(uint);
+}

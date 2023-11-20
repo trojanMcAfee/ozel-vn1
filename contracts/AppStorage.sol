@@ -35,6 +35,8 @@ struct AppStorage {
 
     address rocketPoolStorage;
     bytes32 rocketDepositPoolID;
+    address rocketVault;
+    bytes32 rocketDAOProtocolSettingsDepositID;
   
 }
 

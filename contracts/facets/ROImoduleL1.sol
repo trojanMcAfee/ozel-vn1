@@ -21,7 +21,12 @@ import {Helpers} from "../libraries/Helpers.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {ozIToken} from "../interfaces/ozIToken.sol";
-import {IRocketStorage, IRocketDepositPool} from "../interfaces/IRocketPool.sol";
+import {
+    IRocketStorage, 
+    IRocketDepositPool, 
+    IRocketVault,
+    IRocketDAOProtocolSettingsDeposit
+} from "../interfaces/IRocketPool.sol";
 
 import "forge-std/console.sol";
 
@@ -57,16 +62,21 @@ contract ROImoduleL1 {
         address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID);
 
         console.log('rETH pre: ', IWETH(0xae78736Cd615f374D3085123A210448E74Fc6393).balanceOf(address(this)));
+        console.log('checkCapacity: ', _checkRocketCapacity(amountOut));
         IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         console.log('rETH ppost: ', IWETH(0xae78736Cd615f374D3085123A210448E74Fc6393).balanceOf(address(this)));
 
     }
 
 
-    function _checkRocketCapacity() private view returns(bool) {
-        
+    function _checkRocketCapacity(uint amountIn_) private view returns(bool) {
+        uint poolBalance = IRocketVault(s.rocketVault).balanceOf('rocketDepositPool');
+        uint capacityNeeded = poolBalance + amountIn_;
 
+        IRocketDAOProtocolSettingsDeposit settingsDeposit = IRocketDAOProtocolSettingsDeposit(IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDAOProtocolSettingsDepositID));
+        uint maxDepositSize = settingsDeposit.getMaximumDepositPoolSize();
 
+        return capacityNeeded < maxDepositSize;
     }
 
 

@@ -164,7 +164,7 @@ contract Setup is Test {
             rocketPoolStorage = 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46;
 
             network = "ethereum";
-            blockNumber = 18284413;
+            blockNumber = 18513614; //throws error in RocketPool - 18284413
         }
     }
 

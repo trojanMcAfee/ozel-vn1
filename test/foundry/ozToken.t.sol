@@ -50,6 +50,18 @@ contract ozTokenTest is Setup {
         vm.startPrank(alice);
 
         bytes memory data = abi.encode(amountIn, _calculateMinWethOut(amountIn), alice);
+        
+        //------
+        // address rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
+        // bytes32 settingNameSpace = vm.load(rocketDAOProtocolSettingsDeposit, bytes32(1));
+
+        // vm.store(rocketDAOProtocolSettingsDeposit, bytes32(1), );
+
+
+        //modify the value where the maxDeposit is so i can run tests 
+
+        //-------
+
 
         IERC20Permit(testToken).approve(address(ozDiamond), amountIn);
         ozERC20.mint(data); 

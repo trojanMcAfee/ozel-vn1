@@ -22,6 +22,8 @@ import {
     DiamondInfra
 } from "../AppStorage.sol";
 
+import {IRocketStorage} from "../interfaces/IRocketPool.sol";
+
 // import "forge-std/console.sol";
 
 // It is expected that this contract is customized if you want to deploy your diamond
@@ -80,6 +82,10 @@ contract DiamondInit {
         //External infra
         s.rocketPoolStorage = infra_.rocketPoolStorage;
         s.rocketDepositPoolID = keccak256(abi.encodePacked("contract.address", "rocketDepositPool"));
+        s.rocketVault = IRocketStorage(s.rocketPoolStorage).getAddress(
+            keccak256(abi.encodePacked('contract.address', 'rocketVault'))
+        );
+        s.rocketDAOProtocolSettingsDepositID = keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"));
         
 
     }
