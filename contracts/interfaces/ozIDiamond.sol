@@ -17,7 +17,7 @@ interface ozIDiamond {
         string memory symbol_
     ) external returns(address);
 
-    function useUnderlying(
+    function useUnderlying( //remove this
         address underlying_, 
         address user_, 
         AmountsIn memory amounts_

@@ -161,7 +161,7 @@ contract Setup is Test {
             feesCollectorBalancer = address(0);
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
             daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-            rocketPoolStorage = 0xDD3f50F8A6CafbE9b31a427582963f465E745AF8;
+            rocketPoolStorage = 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46;
 
             network = "ethereum";
             blockNumber = 18284413;
@@ -241,6 +241,7 @@ contract Setup is Test {
         DiamondInfra memory infra = DiamondInfra({
             ozDiamond: address(ozDiamond),
             beacon: address(beacon),
+            rocketPoolStorage: rocketPoolStorage,
             defaultSlippage: defaultSlippage
         });
 
@@ -358,6 +359,7 @@ contract Setup is Test {
         vm.label(address(tokenOz), "ozTokenImplementation");
         vm.label(fraxAddr, "FRAX");
         vm.label(address(cutOz), "ozCut");
+        vm.label(rocketPoolStorage, "rocketPoolStorage");
     }
 
 

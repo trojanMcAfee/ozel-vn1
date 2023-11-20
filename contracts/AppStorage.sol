@@ -24,7 +24,7 @@ struct AppStorage {
     address queriesBalancer;
 
     address rETH;
-    address rEthWethPoolBalancer;
+    address rEthWethPoolBalancer; //if balancer is no longer used in L1, remove it
     address rEthEthChainlink;
 
     mapping(address underlying => address token) ozTokens;
@@ -32,6 +32,9 @@ struct AppStorage {
     uint rewardMultiplier; //remove if not used
 
     address ozBeacon;
+
+    address rocketPoolStorage;
+    bytes32 rocketDepositPoolID;
   
 }
 
@@ -84,11 +87,13 @@ struct Oracles {
     address rEthEthChainlink;
 }
 
-struct DiamondInfra {
+struct DiamondInfra { //modify this to infra
     address ozDiamond;
     address beacon;
+    address rocketPoolStorage;
     uint defaultSlippage; //try chaning this to an uin8
 }
+
 
 
 

@@ -21,6 +21,7 @@ import {Helpers} from "../libraries/Helpers.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {ozIToken} from "../interfaces/ozIToken.sol";
+import {IRocketStorage, IRocketDepositPool} from "../interfaces/IRocketPool.sol";
 
 import "forge-std/console.sol";
 
@@ -39,24 +40,35 @@ contract ROImoduleL1 {
     function useUnderlying( 
         address underlying_, 
         address user_,
-        // AmountsIn memory amounts_
         uint amountIn_,
         uint minWethOut_
     ) external {
-        // bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
-
         underlying_.safeTransferFrom(user_, address(this), amountIn_);
 
         //Swaps underlying to WETH in Uniswap
-        _swapUni(
+        uint amountOut = _swapUni(
             amountIn_, minWethOut_, underlying_, s.WETH, address(this)
         );
 
-        console.log('weth bal: ', IWETH(s.WETH).balanceOf(address(this)));
+        //Withdraws ETH from WETH contract
+        IWETH(s.WETH).withdraw(amountOut);
 
+        //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
+        address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID);
 
-       
+        console.log('rETH pre: ', IWETH(0xae78736Cd615f374D3085123A210448E74Fc6393).balanceOf(address(this)));
+        IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
+        console.log('rETH ppost: ', IWETH(0xae78736Cd615f374D3085123A210448E74Fc6393).balanceOf(address(this)));
+
     }
+
+
+    function _checkRocketCapacity() private view returns(bool) {
+        
+
+
+    }
+
 
 
     function useOzTokens(

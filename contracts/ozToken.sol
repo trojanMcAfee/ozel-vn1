@@ -201,7 +201,6 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         // address receiver_
         bytes memory data_
     ) external returns(uint) { 
-        // (uint amountIn, uint minWethOut, address receiver) = data_.extract();
         (uint amountIn, uint minWethOut, address receiver) = abi.decode(data_, (uint, uint, address));
 
         // uint assets = amounts_.amountIn;

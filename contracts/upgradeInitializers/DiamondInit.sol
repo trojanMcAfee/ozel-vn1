@@ -21,6 +21,7 @@ import {
     Oracles,
     DiamondInfra
 } from "../AppStorage.sol";
+
 // import "forge-std/console.sol";
 
 // It is expected that this contract is customized if you want to deploy your diamond
@@ -75,6 +76,11 @@ contract DiamondInit {
         s.USDC = tokens_.usdc;
         s.USDT = tokens_.usdt;
         s.rETH = tokens_.reth;
+
+        //External infra
+        s.rocketPoolStorage = infra_.rocketPoolStorage;
+        s.rocketDepositPoolID = keccak256(abi.encodePacked("contract.address", "rocketDepositPool"));
+        
 
     }
 
