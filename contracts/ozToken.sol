@@ -196,6 +196,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return convertToAssets(sharesOf(account_));
     }
 
+    //---------
     function mint(bytes memory data_) external returns(uint) { 
         (uint amountIn, uint minWethOut, address receiver) = abi.decode(data_, (uint, uint, address));
 
@@ -218,6 +219,32 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         return shares;
     }
+
+
+    function mint( 
+        AmountsIn memory amounts_,
+        address receiver_
+    ) external returns(uint) { 
+        uint assets = amounts_.amountIn;
+
+        require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max");
+
+        ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts_); 
+
+        uint shares = totalShares() == 0 ? assets : previewDeposit(assets);
+
+        _totalAssets += assets;
+        _totalShares += shares;
+
+        unchecked {
+            _shares[receiver_] += shares;
+        }
+
+        //emit a Deposit/Mint event here
+
+        return shares;
+    }
+    //-------------
 
 
     function _convertToSharesFromUnderlying(uint assets_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
