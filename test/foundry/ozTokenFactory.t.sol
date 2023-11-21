@@ -577,7 +577,13 @@ contract ozTokenFactoryTest is Setup {
         vm.stopPrank();
     }
 
-   
+    uint constant ONE_ETHER = 1 ether;
+
+   function _calculateMinWethOut(uint amountIn_) internal view returns(uint minOut) {
+        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        uint expectedOut = amountIn_.mulDivDown(uint(price) * 1e10, ONE_ETHER);
+        minOut = expectedOut - expectedOut.mulDivDown(OZ.getDefaultSlippage(), 10000);
+    }
 
 
     function _createDataOffchain( 
@@ -590,32 +596,36 @@ contract ozTokenFactoryTest is Setup {
         RequestType memory req,
         uint8 v, bytes32 r, bytes32 s
     ) {
-        uint[] memory minAmountsOut;
-        uint bptAmountIn;
+        // uint[] memory minAmountsOut;
+        // uint bptAmountIn;
 
-        if (reqType_ == Type.OUT) {
-            bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
+        HelpersTests.calculateMinAmountsOut(
+            [ethUsdChainlink, rEthEthChainlink], amountIn_, 
+        );
 
-            (
-                RequestType memory reqInternal,
-                uint[] memory minAmountsOutInternal,
-                uint bptAmountInternal
-            ) = HelpersTests.handleRequestOut(data);
+        // if (reqType_ == Type.OUT) {
+        //     bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
 
-            minAmountsOut = minAmountsOutInternal;
-            req = reqInternal;
-            bptAmountIn = bptAmountInternal;
-        } else if (reqType_ == Type.IN) { 
-            bytes memory data = _getBytesReqIn(address(ozERC20_), amountIn_);
+        //     (
+        //         RequestType memory reqInternal,
+        //         uint[] memory minAmountsOutInternal,
+        //         uint bptAmountInternal
+        //     ) = HelpersTests.handleRequestOut(data);
 
-            (
-                RequestType memory reqInternal,
-                uint[] memory minAmountsOutInternal
-            ) = HelpersTests.handleRequestIn(data);
+        //     minAmountsOut = minAmountsOutInternal;
+        //     req = reqInternal;
+        //     bptAmountIn = bptAmountInternal;
+        // } else if (reqType_ == Type.IN) { 
+        //     bytes memory data = _getBytesReqIn(address(ozERC20_), amountIn_);
 
-            minAmountsOut = minAmountsOutInternal;
-            req = reqInternal;
-        }
+        //     (
+        //         RequestType memory reqInternal,
+        //         uint[] memory minAmountsOutInternal
+        //     ) = HelpersTests.handleRequestIn(data);
+
+        //     minAmountsOut = minAmountsOutInternal;
+        //     req = reqInternal;
+        // }
 
         (uint amountOut, bytes32 permitHash) = _getHashNAmountOut(sender_, req, amountIn_);
 

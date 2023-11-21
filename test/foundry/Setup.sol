@@ -380,6 +380,7 @@ contract Setup is Test {
         vm.label(fraxAddr, "FRAX");
         vm.label(address(cutOz), "ozCut");
         vm.label(rocketPoolStorage, "rocketPoolStorage");
+        vm.label(rEthEthChainlink, 'rEthEthChainlink');
     }
 
 

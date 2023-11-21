@@ -212,46 +212,46 @@ contract ROImoduleL1 {
     }
 
 
-    function _addLiquidityBalancer(uint minBptOutOffchain_, bytes32 poolId_) private {
-        uint amountIn = IERC20Permit(s.WETH).balanceOf(address(this));
-        s.WETH.safeApprove(s.vaultBalancer, amountIn);
+    // function _addLiquidityBalancer(uint minBptOutOffchain_, bytes32 poolId_) private {
+    //     uint amountIn = IERC20Permit(s.WETH).balanceOf(address(this));
+    //     s.WETH.safeApprove(s.vaultBalancer, amountIn);
 
-        address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
-        uint[] memory maxAmountsIn = Helpers.convertToDynamic([amountIn, 0, 0]);
-        uint[] memory amountsIn = Helpers.convertToDynamic([amountIn, 0]);
+    //     address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
+    //     uint[] memory maxAmountsIn = Helpers.convertToDynamic([amountIn, 0, 0]);
+    //     uint[] memory amountsIn = Helpers.convertToDynamic([amountIn, 0]);
 
-        IVault.JoinPoolRequest memory request = Helpers.createRequest(
-            assets, maxAmountsIn, Helpers.createUserData(
-                IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, minBptOutOffchain_
-            )
-        );
+    //     IVault.JoinPoolRequest memory request = Helpers.createRequest(
+    //         assets, maxAmountsIn, Helpers.createUserData(
+    //             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, minBptOutOffchain_
+    //         )
+    //     );
 
-        (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
-            poolId_,
-            address(this),
-            address(this),
-            request
-        );
+    //     (uint bptOut,) = IQueries(s.queriesBalancer).queryJoin(
+    //         poolId_,
+    //         address(this),
+    //         address(this),
+    //         request
+    //     );
 
-        //Re-do request with actual bptOut
-        uint minBptOut = Helpers.calculateMinAmountOut(
-            bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_, 
-            s.defaultSlippage
-        );
+    //     //Re-do request with actual bptOut
+    //     uint minBptOut = Helpers.calculateMinAmountOut(
+    //         bptOut > minBptOutOffchain_ ? bptOut : minBptOutOffchain_, 
+    //         s.defaultSlippage
+    //     );
 
-        request = Helpers.createRequest(
-            assets, maxAmountsIn, Helpers.createUserData(
-                IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, minBptOut
-            )
-        );
+    //     request = Helpers.createRequest(
+    //         assets, maxAmountsIn, Helpers.createUserData(
+    //             IVault.JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amountsIn, minBptOut
+    //         )
+    //     );
 
-        IVault(s.vaultBalancer).joinPool(
-            poolId_,
-            address(this),
-            address(this),
-            request
-        );
-    }
+    //     IVault(s.vaultBalancer).joinPool(
+    //         poolId_,
+    //         address(this),
+    //         address(this),
+    //         request
+    //     );
+    // }
 
 
 
