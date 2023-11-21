@@ -178,6 +178,12 @@ contract Setup is Test {
         deal(testToken, charlie, baseAmount * 3 * (10 ** IERC20Permit(testToken).decimals()));
     }
 
+    function _changeSlippage(uint basisPoints_) internal {
+        vm.prank(owner);
+        OZ.changeDefaultSlippage(basisPoints_);
+        assertTrue(OZ.getDefaultSlippage() == basisPoints_);
+    }
+
 
     function _runSetup() internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/

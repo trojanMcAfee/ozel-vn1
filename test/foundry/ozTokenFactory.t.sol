@@ -91,17 +91,6 @@ contract ozTokenFactoryTest is Setup {
 
     
 
-    function test_computeAddress() public {
-        bytes32 salt = bytes32(uint(123));
-        address computedOzToken = address(new ozToken{salt: salt}());
-        console.log('computedOzToken: ', computedOzToken);
-
-        address oz = address(new ozToken());
-        console.log('oz: ', oz);
-
-
-    }
-
 
     /**
      * Mints a small quantity of ozTokens using EIP2612
@@ -500,11 +489,11 @@ contract ozTokenFactoryTest is Setup {
 
 
     /************ HELPERS ***********/
-    function _changeSlippage(uint basisPoints_) private {
-        vm.prank(owner);
-        OZ.changeDefaultSlippage(basisPoints_);
-        assertTrue(OZ.getDefaultSlippage() == basisPoints_);
-    }
+    // function _changeSlippage(uint basisPoints_) private {
+    //     vm.prank(owner);
+    //     OZ.changeDefaultSlippage(basisPoints_);
+    //     assertTrue(OZ.getDefaultSlippage() == basisPoints_);
+    // }
 
    function _createRequestType(
         Type reqType_,

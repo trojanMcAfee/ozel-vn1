@@ -50,15 +50,13 @@ contract ozTokenTest is Setup {
         //Action
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20"));
         
+        //----
         vm.startPrank(alice);
-
         bytes memory data = abi.encode(amountIn, _calculateMinWethOut(amountIn), alice);
-
         IERC20Permit(testToken).approve(address(ozDiamond), amountIn);
         ozERC20.mint(data); 
-
         vm.stopPrank();
-
+        //------
 
         //Post-conditions
         uint sharesAlice = ozERC20.sharesOf(alice);
@@ -66,6 +64,31 @@ contract ozTokenTest is Setup {
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
     }
+
+
+    function test_minting_approve_bigMint() public {
+        //Pre-condition
+        uint rawAmount = _dealUnderlying(Quantity.BIG);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _changeSlippage(9900);
+        _modifyMaxLimit();
+
+        //Action
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20"));
+
+        vm.startPrank(alice);
+        bytes memory data = abi.encode(amountIn, _calculateMinWethOut(amountIn), alice);
+        IERC20Permit(testToken).approve(address(ozDiamond), amountIn);
+        ozERC20.mint(data); 
+        vm.stopPrank();
+
+        //Post-conditions
+        uint sharesAlice = ozERC20.sharesOf(alice);
+        assertTrue(address(ozERC20) != address(0));
+        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+    }
+
+
 
 
     /**
