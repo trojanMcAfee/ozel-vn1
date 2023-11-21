@@ -192,10 +192,10 @@ contract ozTokenFactoryTest is Setup {
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
 
-        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
+        (ozIToken ozERC20,) = _createAndMintOzTokens2(testToken, amountIn, alice, ALICE_PK, true, true);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
         assertTrue(balanceOzUsdcAlice > 990_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
-
+        
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
 
