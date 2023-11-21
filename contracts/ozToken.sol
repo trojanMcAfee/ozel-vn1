@@ -19,6 +19,8 @@ import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 
+import {AmountsIn} from "./AppStorage.sol";
+
 import "forge-std/console.sol";
 
 
@@ -222,14 +224,17 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
 
     function mint( 
-        AmountsIn memory amounts_,
-        address receiver_
+        // AmountsIn memory amounts_,
+        // address receiver_
+        bytes memory data_
     ) external returns(uint) { 
-        uint assets = amounts_.amountIn;
+        (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address))
+
+        uint assets = amounts.amountIn;
 
         require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max");
 
-        ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts_); 
+        ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
 
         uint shares = totalShares() == 0 ? assets : previewDeposit(assets);
 

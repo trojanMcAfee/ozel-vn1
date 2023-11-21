@@ -44,15 +44,16 @@ contract ROImoduleL1 {
 
     function useUnderlying( 
         address underlying_, 
-        address user_,
-        uint amountIn_,
-        uint minWethOut_
+        address owner_,
+        // uint amountIn_,
+        // uint minWethOut_,
+        AmountsIn memory amounts_
     ) external {
-        underlying_.safeTransferFrom(user_, address(this), amountIn_);
+        underlying_.safeTransferFrom(owner_, address(this), amountIn_);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
-            amountIn_, minWethOut_, underlying_, s.WETH, address(this)
+            amounts_.amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
         );
 
         if (_checkRocketCapacity(amountOut)) {
@@ -63,7 +64,15 @@ contract ROImoduleL1 {
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID);
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         } else {
-            _swapBalancer(poolId, amounts_.minRethOut);
+            (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
+            if (paused) {
+                //do something else or throw error and return
+            }
+
+            _swapBalancer(
+                IPool(s.rEthWethPoolBalancer).getPoolId(), 
+                amounts_.minRethOut
+            );
         }
     }
 

@@ -641,8 +641,11 @@ contract ozTokenFactoryTest is Setup {
             IERC20Permit(testToken).approve(address(ozDiamond), req.amtsIn.amountIn);
         }
 
-        shares = ozERC20.mint(req.amtsIn, user_); 
-        // shares = ozERC20.mint(data); 
+        // shares = ozERC20.mint(req.amtsIn, user_); 
+
+        bytes memory data = abi.encode(req.amtsIn, user_);
+
+        shares = ozERC20.mint(data); 
         vm.stopPrank();
     }
 

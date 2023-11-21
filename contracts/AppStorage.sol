@@ -44,7 +44,7 @@ struct AmountsIn {
     uint amountIn;
     uint minWethOut;
     uint minRethOut;
-    uint minBptOut;
+    uint minBptOut; //remove this one only
 }
 
 // struct MintData {
