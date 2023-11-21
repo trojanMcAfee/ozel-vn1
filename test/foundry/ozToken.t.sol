@@ -58,6 +58,9 @@ contract ozTokenTest is Setup {
         vm.stopPrank();
         //------
 
+        uint bal = ozERC20.balanceOf(alice);
+        console.log('bal oz alice: ', bal);
+
         //Post-conditions
         uint sharesAlice = ozERC20.sharesOf(alice);
 
@@ -65,7 +68,9 @@ contract ozTokenTest is Setup {
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
     }
 
-
+    /**
+     * Mints a big quantity of ozUSDC (~1M)
+     */
     function test_minting_approve_bigMint() public {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.BIG);
@@ -76,16 +81,55 @@ contract ozTokenTest is Setup {
         //Action
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20"));
 
+        //----
         vm.startPrank(alice);
         bytes memory data = abi.encode(amountIn, _calculateMinWethOut(amountIn), alice);
         IERC20Permit(testToken).approve(address(ozDiamond), amountIn);
         ozERC20.mint(data); 
         vm.stopPrank();
+        //------
 
         //Post-conditions
         uint sharesAlice = ozERC20.sharesOf(alice);
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+    }
+
+    function test_transfer() public {
+        //Pre-conditions
+        uint rawAmount = _dealUnderlying(Quantity.SMALL);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _modifyMaxLimit();
+
+        // (ozIToken ozERC20,) = _createAndMintOzTokens(
+        //     testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true, true
+        // );
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20"));
+
+        //----
+        vm.startPrank(alice);
+        bytes memory data = abi.encode(amountIn, _calculateMinWethOut(amountIn), alice);
+        IERC20Permit(testToken).approve(address(ozDiamond), amountIn);
+        ozERC20.mint(data); 
+        vm.stopPrank();
+        //------
+
+        uint balAlice = ozERC20.balanceOf(alice);
+        assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
+
+        uint balBob = ozERC20.balanceOf(bob);
+        assertTrue(balBob == 0);
+
+        //Action
+        vm.prank(alice);
+        ozERC20.transfer(bob, balAlice);
+
+        //Post-conditions
+        balAlice = ozERC20.balanceOf(alice);
+        assertTrue(balAlice > 0 && balAlice < 0.000001 * 1 ether);
+
+        balBob = ozERC20.balanceOf(bob);
+        assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
     }
 
 
