@@ -44,7 +44,7 @@ contract ozTokenFactoryTest is Setup {
     /**
      * Mints a small quantity of ozUSDC (~100)
      */
-    function test_minting_approve_smallMint2() public {
+    function test_minting_approve_smallMint2() internal {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();

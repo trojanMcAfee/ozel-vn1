@@ -49,11 +49,12 @@ contract ROImoduleL1 {
         // uint minWethOut_,
         AmountsIn memory amounts_
     ) external {
-        underlying_.safeTransferFrom(owner_, address(this), amountIn_);
+        uint amountIn = amounts_.amountIn;
+        underlying_.safeTransferFrom(owner_, address(this), amountIn);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
-            amounts_.amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
+            amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
         );
 
         if (_checkRocketCapacity(amountOut)) {
