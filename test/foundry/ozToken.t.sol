@@ -133,6 +133,51 @@ contract ozTokenTest is Setup {
     }
 
 
+    // function test_minting_eip2612() public {
+    //     /**
+    //      * Pre-conditions + Actions (creating of ozTokens)
+    //      */
+    //     uint rawAmount = _dealUnderlying(Quantity.SMALL);
+    //     // _compressMintData(rawAmount_);
+
+    //     uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+    //     (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+    //         testToken, amountIn, alice, ALICE_PK, true, true
+    //     );
+
+    //     amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
+    //     (, uint sharesBob) = _createAndMintOzTokens(
+    //         address(ozERC20), amountIn, bob, BOB_PK, false, true
+    //     ); //try to join this 3 funcs in one
+
+    //     amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
+    //     (, uint sharesCharlie) = _createAndMintOzTokens(
+    //         address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true
+    //     );
+
+    //     //Post-conditions
+    //     assertTrue(address(ozERC20) != address(0));
+    //     assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+    //     assertTrue(sharesAlice / 2 == sharesBob);
+    //     assertTrue(sharesAlice / 4 == sharesCharlie);
+    //     assertTrue(sharesBob == sharesCharlie * 2);
+    //     assertTrue(sharesBob / 2 == sharesCharlie);
+
+    //     uint balanceAlice = ozERC20.balanceOf(alice);
+    //     uint balanceBob = ozERC20.balanceOf(bob);
+    //     uint balanceCharlie = ozERC20.balanceOf(charlie);
+
+    //     assertTrue(balanceAlice / 2 == balanceBob);
+    //     assertTrue(balanceAlice / 4 == balanceCharlie);
+    //     assertTrue(balanceBob == balanceCharlie * 2);
+    //     assertTrue(balanceBob / 2 == balanceCharlie);
+
+    //     assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
+    //     assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + rawAmount / 2 + rawAmount / 4);
+    //     assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
+    // }  
+
+
 
 
     /**

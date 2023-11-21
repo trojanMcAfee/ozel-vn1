@@ -20,6 +20,7 @@ import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {stdStorage, StdStorage} from "forge-std/Test.sol";
 import {ozToken} from "../../contracts/ozToken.sol";
 import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 
 import "forge-std/console.sol";
 
@@ -31,6 +32,22 @@ contract ozTokenFactoryTest is Setup {
 
     uint constant ONE_ETHER = 1 ether;
 
+    function _modifyMaxLimit() private {
+        address rocketDAOProtocolProposals = 
+            IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
+
+        DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
+
+        vm.prank(rocketDAOProtocolProposals);
+        settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
+    }
+
+    function _calculateMinWethOut(uint amountIn_) internal view returns(uint minOut) {
+        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
+        uint expectedOut = amountIn_.mulDiv(uint(price) * 1e10, ONE_ETHER);
+        minOut = expectedOut - expectedOut.mulDiv(OZ.getDefaultSlippage(), 10000);
+    }
+
 
     /**
      * Mints a small quantity of ozUSDC (~100)
@@ -39,9 +56,13 @@ contract ozTokenFactoryTest is Setup {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _modifyMaxLimit();
 
         //Action
-        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+        // (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+        //     testToken, amountIn, alice, ALICE_PK, true, false
+        // );
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens2(
             testToken, amountIn, alice, ALICE_PK, true, false
         );
 
@@ -523,6 +544,48 @@ contract ozTokenFactoryTest is Setup {
             });
         }
    }
+
+   
+   function _createAndMintOzTokens2(
+        address testToken_,
+        uint amountIn_, 
+        address user_, 
+        uint userPk_,
+        bool create_,
+        bool is2612_
+    ) private returns(ozIToken ozERC20, uint shares) {
+        if (create_) {
+            ozERC20 = ozIToken(OZ.createOzToken(
+                testToken_, "Ozel-ERC20", "ozERC20"
+            ));
+        } else {
+            ozERC20 = ozIToken(testToken_);
+        }
+
+        // (
+        //     RequestType memory req,
+        //     uint8 v, bytes32 r, bytes32 s
+        // ) = _createDataOffchain(ozERC20, amountIn_, userPk_, user_, Type.IN);
+
+        vm.startPrank(user_);
+
+        if (is2612_) {
+            // IERC20Permit(testToken).permit(
+            //     user_, 
+            //     address(ozDiamond), 
+            //     req.amtsIn.amountIn, 
+            //     block.timestamp, 
+            //     v, r, s
+            // );
+        } else {
+            IERC20Permit(testToken).approve(address(ozDiamond), amountIn_);
+        }
+
+        bytes memory data = abi.encode(amountIn_, _calculateMinWethOut(amountIn_), user_);
+
+        shares = ozERC20.mint(data); 
+        vm.stopPrank();
+    }
  
 
     function _createAndMintOzTokens(
@@ -539,7 +602,6 @@ contract ozTokenFactoryTest is Setup {
             ));
         } else {
             ozERC20 = ozIToken(testToken_);
-            
         }
 
         (

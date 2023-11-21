@@ -65,3 +65,7 @@ interface IRocketVault {
 interface IRocketDAOProtocolSettingsDeposit {
     function getMaximumDepositPoolSize() external view returns(uint);
 }
+
+interface DAOdepositSettings {
+    function setSettingUint(string memory _settingPath, uint256 _value) external;
+}
