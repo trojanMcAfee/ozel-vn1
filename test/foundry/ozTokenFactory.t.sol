@@ -32,15 +32,7 @@ contract ozTokenFactoryTest is Setup {
 
     uint constant ONE_ETHER = 1 ether;
 
-    function _modifyMaxLimit() private {
-        address rocketDAOProtocolProposals = 
-            IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
 
-        DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
-
-        vm.prank(rocketDAOProtocolProposals);
-        settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
-    }
 
     function _calculateMinWethOut(uint amountIn_) internal view returns(uint minOut) {
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
@@ -56,7 +48,6 @@ contract ozTokenFactoryTest is Setup {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        _modifyMaxLimit();
 
         //Action
         // (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(

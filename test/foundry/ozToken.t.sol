@@ -192,15 +192,15 @@ contract ozTokenTest is Setup {
     }
 
     //Modifies maxDepositPoolSize in RocketDepositPool.sol
-    function _modifyMaxLimit() private {
-        address rocketDAOProtocolProposals = 
-            IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
+    // function _modifyMaxLimit() private {
+    //     address rocketDAOProtocolProposals = 
+    //         IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
 
-        DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
+    //     DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
 
-        vm.prank(rocketDAOProtocolProposals);
-        settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
-    }
+    //     vm.prank(rocketDAOProtocolProposals);
+    //     settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
+    // }
 
 
     //  function _createAndMintOzTokens(

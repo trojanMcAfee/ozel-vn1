@@ -29,6 +29,7 @@ import {
 } from "../../contracts/AppStorage.sol";
 import {ReqOut, ReqIn} from "./AppStorageTests.sol";
 import {ozCut} from "../../contracts/facets/ozCut.sol";
+import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 
 // import "forge-std/console.sol";
 
@@ -117,6 +118,7 @@ contract Setup is Test {
         (string memory network, uint blockNumber) = _chooseNetwork(Network.ETHEREUM);
         vm.createSelectFork(vm.rpcUrl(network), blockNumber);
         _runSetup();
+        _modifyMaxLimit();
     }
 
     function _chooseNetwork(Network chain_) private returns(string memory network, uint blockNumber) {
@@ -182,6 +184,16 @@ contract Setup is Test {
         vm.prank(owner);
         OZ.changeDefaultSlippage(basisPoints_);
         assertTrue(OZ.getDefaultSlippage() == basisPoints_);
+    }
+
+    function _modifyMaxLimit() internal {
+        address rocketDAOProtocolProposals = 
+            IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
+
+        DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
+
+        vm.prank(rocketDAOProtocolProposals);
+        settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
     }
 
 
