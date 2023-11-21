@@ -115,17 +115,17 @@ contract ozTokenFactoryTest is Setup {
         // _compressMintData(rawAmount_);
 
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens2(
             testToken, amountIn, alice, ALICE_PK, true, true
         );
 
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
-        (, uint sharesBob) = _createAndMintOzTokens(
+        (, uint sharesBob) = _createAndMintOzTokens2(
             address(ozERC20), amountIn, bob, BOB_PK, false, true
         ); //try to join this 3 funcs in one
 
         amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
-        (, uint sharesCharlie) = _createAndMintOzTokens(
+        (, uint sharesCharlie) = _createAndMintOzTokens2(
             address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true
         );
 
@@ -558,16 +558,29 @@ contract ozTokenFactoryTest is Setup {
         //     uint8 v, bytes32 r, bytes32 s
         // ) = _createDataOffchain(ozERC20, amountIn_, userPk_, user_, Type.IN);
 
+        //---------
+        bytes32 permitHash = HelpersTests.getPermitHash(
+            testToken,
+            user_,
+            address(ozDiamond),
+            amountIn_,
+            IERC20Permit(testToken).nonces(user_),
+            block.timestamp
+        );
+
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPk_, permitHash);
+        //------------
+
         vm.startPrank(user_);
 
         if (is2612_) {
-            // IERC20Permit(testToken).permit(
-            //     user_, 
-            //     address(ozDiamond), 
-            //     req.amtsIn.amountIn, 
-            //     block.timestamp, 
-            //     v, r, s
-            // );
+            IERC20Permit(testToken).permit(
+                user_, 
+                address(ozDiamond), 
+                amountIn_, 
+                block.timestamp, 
+                v, r, s
+            );
         } else {
             IERC20Permit(testToken).approve(address(ozDiamond), amountIn_);
         }
