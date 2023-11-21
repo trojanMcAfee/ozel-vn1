@@ -82,6 +82,7 @@ contract Setup is Test {
     address internal rEthEthChainlink;
     //-- L1----
     address internal rocketPoolStorage;
+    address internal rocketDAOProtocolSettingsDeposit;
 
     address internal testToken;
 
@@ -162,6 +163,7 @@ contract Setup is Test {
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
             daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
             rocketPoolStorage = 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46;
+            rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
 
             network = "ethereum";
             blockNumber = 18513614; //throws error in RocketPool - 18284413

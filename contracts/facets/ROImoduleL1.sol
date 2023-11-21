@@ -61,26 +61,11 @@ contract ROImoduleL1 {
         //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
         address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID);
 
-        console.log('rETH pre: ', IWETH(0xae78736Cd615f374D3085123A210448E74Fc6393).balanceOf(address(this)));
-        console.log('checkCapacity: ', _checkRocketCapacity(amountOut));
         IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
-        console.log('rETH ppost: ', IWETH(0xae78736Cd615f374D3085123A210448E74Fc6393).balanceOf(address(this)));
         
     }
 
 
-
-    function _checkRocketCapacity(uint amountIn_) private view returns(bool) {
-        uint poolBalance = IRocketVault(s.rocketVault).balanceOf('rocketDepositPool');
-        uint capacityNeeded = poolBalance + amountIn_;
-
-        IRocketDAOProtocolSettingsDeposit settingsDeposit = IRocketDAOProtocolSettingsDeposit(IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDAOProtocolSettingsDepositID));
-        uint maxDepositSize = settingsDeposit.getMaximumDepositPoolSize();
-
-        console.log('maxDepositSize ****: ', maxDepositSize);
-
-        return capacityNeeded < maxDepositSize;
-    }
 
 
 
