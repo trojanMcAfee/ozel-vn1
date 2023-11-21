@@ -21,9 +21,14 @@ import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {stdStorage, StdStorage} from "forge-std/Test.sol";
 import {ozToken} from "../../contracts/ozToken.sol";
 import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {IRocketStorage} from "../../contracts/interfaces/IRocketPool.sol";
 
 import "forge-std/console.sol";
 
+
+interface DAOdepositSettings {
+    function setSettingUint(string memory _settingPath, uint256 _value) external;
+}
 
 
 contract ozTokenTest is Setup {
@@ -40,6 +45,7 @@ contract ozTokenTest is Setup {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _modifyMaxLimit();
 
         //Action
         // (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
@@ -58,10 +64,7 @@ contract ozTokenTest is Setup {
         // vm.store(rocketDAOProtocolSettingsDeposit, bytes32(1), );
 
 
-        //modify the value where the maxDeposit is so i can run tests 
-
         //-------
-
 
         IERC20Permit(testToken).approve(address(ozDiamond), amountIn);
         ozERC20.mint(data); 
@@ -84,6 +87,18 @@ contract ozTokenTest is Setup {
         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
         uint expectedOut = amountIn_.mulDivDown(uint(price) * 1e10, ONE_ETHER);
         minOut = expectedOut - expectedOut.mulDivDown(OZ.getDefaultSlippage(), 10000);
+    }
+
+    //Modifies maxDepositPoolSize in RocketDepositPool.sol
+    function _modifyMaxLimit() private {
+        address rocketDAOProtocolProposals = 
+            IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
+
+        address rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
+        DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
+
+        vm.prank(rocketDAOProtocolProposals);
+        settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
     }
 
 

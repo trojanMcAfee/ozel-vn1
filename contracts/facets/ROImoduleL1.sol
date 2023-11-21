@@ -65,8 +65,9 @@ contract ROImoduleL1 {
         console.log('checkCapacity: ', _checkRocketCapacity(amountOut));
         IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         console.log('rETH ppost: ', IWETH(0xae78736Cd615f374D3085123A210448E74Fc6393).balanceOf(address(this)));
-
+        
     }
+
 
 
     function _checkRocketCapacity(uint amountIn_) private view returns(bool) {
@@ -75,6 +76,8 @@ contract ROImoduleL1 {
 
         IRocketDAOProtocolSettingsDeposit settingsDeposit = IRocketDAOProtocolSettingsDeposit(IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDAOProtocolSettingsDepositID));
         uint maxDepositSize = settingsDeposit.getMaximumDepositPoolSize();
+
+        console.log('maxDepositSize ****: ', maxDepositSize);
 
         return capacityNeeded < maxDepositSize;
     }
