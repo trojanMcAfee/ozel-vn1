@@ -101,7 +101,6 @@ contract ozTokenFactoryTest is Setup {
         charlieData = abi.encode(address(0), amountIn, charlie, CHARLIE_PK, false, true);
     }
 
-    
 
 
     /**
@@ -159,7 +158,7 @@ contract ozTokenFactoryTest is Setup {
         //Pre-conditions
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
 
-        (ozIToken ozERC20,) = _createAndMintOzTokens(
+        (ozIToken ozERC20,) = _createAndMintOzTokens2(
             testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true, true
         );
 
