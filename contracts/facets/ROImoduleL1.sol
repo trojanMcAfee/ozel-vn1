@@ -55,17 +55,28 @@ contract ROImoduleL1 {
             amountIn_, minWethOut_, underlying_, s.WETH, address(this)
         );
 
-        //Withdraws ETH from WETH contract
-        IWETH(s.WETH).withdraw(amountOut);
+        if (_checkRocketCapacity(amountOut)) {
+            //Withdraws ETH from WETH contract
+            IWETH(s.WETH).withdraw(amountOut);
 
-        //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
-        address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID);
-
-        IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
+            //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
+            address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID);
+            IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
+        } else {
+            _swapBalancer(poolId, amounts_.minRethOut);
+        }
     }
 
 
+    function _checkRocketCapacity(uint amountIn_) private view returns(bool) {
+        uint poolBalance = IRocketVault(s.rocketVault).balanceOf('rocketDepositPool');
+        uint capacityNeeded = poolBalance + amountIn_;
 
+        IRocketDAOProtocolSettingsDeposit settingsDeposit = IRocketDAOProtocolSettingsDeposit(IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDAOProtocolSettingsDepositID));
+        uint maxDepositSize = settingsDeposit.getMaximumDepositPoolSize();
+
+        return capacityNeeded < maxDepositSize;
+    }
 
 
     function useOzTokens(

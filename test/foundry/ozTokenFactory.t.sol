@@ -44,7 +44,7 @@ contract ozTokenFactoryTest is Setup {
     /**
      * Mints a small quantity of ozUSDC (~100)
      */
-    function test_minting_approve_smallMint() public {
+    function test_minting_approve_smallMint2() public {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -54,6 +54,21 @@ contract ozTokenFactoryTest is Setup {
         //     testToken, amountIn, alice, ALICE_PK, true, false
         // );
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens2(
+            testToken, amountIn, alice, ALICE_PK, true, false
+        );
+
+        //Post-conditions
+        assertTrue(address(ozERC20) != address(0));
+        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+    }
+
+    function test_minting_approve_smallMint() public {
+        //Pre-condition
+        uint rawAmount = _dealUnderlying(Quantity.SMALL);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        //Action
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
             testToken, amountIn, alice, ALICE_PK, true, false
         );
 
@@ -627,6 +642,7 @@ contract ozTokenFactoryTest is Setup {
         }
 
         shares = ozERC20.mint(req.amtsIn, user_); 
+        // shares = ozERC20.mint(data); 
         vm.stopPrank();
     }
 
