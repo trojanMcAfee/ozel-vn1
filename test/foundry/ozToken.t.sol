@@ -48,9 +48,6 @@ contract ozTokenTest is Setup {
         _modifyMaxLimit();
 
         //Action
-        // (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
-        //     testToken, amountIn, alice, ALICE_PK, true, false
-        // );
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20"));
         
         vm.startPrank(alice);
@@ -64,8 +61,10 @@ contract ozTokenTest is Setup {
 
 
         //Post-conditions
-        // assertTrue(address(ozERC20) != address(0));
-        // assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        uint sharesAlice = ozERC20.sharesOf(alice);
+
+        assertTrue(address(ozERC20) != address(0));
+        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
     }
 
 

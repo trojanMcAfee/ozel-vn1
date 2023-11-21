@@ -6,6 +6,7 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/Ag
 import {AppStorage} from "../AppStorage.sol";
 import {IPool} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 
 import "forge-std/console.sol";
 
@@ -20,13 +21,21 @@ contract ozOracle {
         return uint(price);
     }
 
+    // function getUnderlyingValue() external view returns(uint) {
+    //     uint amountBpt = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));        
+    //     uint bptPrice = IPool(s.rEthWethPoolBalancer).getRate(); 
+    //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+
+    //     return ( ((bptPrice * amountBpt) / 1 ether) * (uint(price) * 1e10) ) / 1 ether; 
+    // } 
+
     function getUnderlyingValue() external view returns(uint) {
-        uint amountBpt = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));        
-        uint bptPrice = IPool(s.rEthWethPoolBalancer).getRate(); 
+        uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
+        uint rate = IRocketTokenRETH(s.rETH).getExchangeRate();    
         (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
 
-        return ( ((bptPrice * amountBpt) / 1 ether) * (uint(price) * 1e10) ) / 1 ether; 
-    } 
+        return ( ((rate * amountReth) / 1 ether) * (uint(price) * 1e10) ) / 1 ether; 
+    }
 
 
 }

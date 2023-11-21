@@ -62,7 +62,6 @@ contract ROImoduleL1 {
         address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID);
 
         IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
-        
     }
 
 

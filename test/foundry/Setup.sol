@@ -166,7 +166,7 @@ contract Setup is Test {
             rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
 
             network = "ethereum";
-            blockNumber = 18513614; //throws error in RocketPool - 18284413
+            blockNumber = 18513614; 
         }
     }
 
