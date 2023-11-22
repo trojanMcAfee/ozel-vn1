@@ -50,6 +50,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
     }
 
+    //--------
     function test_minting_approve_smallMint_rocketPool() public {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
@@ -65,6 +66,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
     }
+    //---------
 
 
     /**
@@ -87,36 +89,36 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    enum User {
-        ALICE,
-        BOB,
-        CHARLIE
-    }
+    // enum User {
+    //     ALICE,
+    //     BOB,
+    //     CHARLIE
+    // }
 
-    function _compressMintData(uint rawAmount_) private view returns(
-        bytes memory aliceData,
-        bytes memory bobData,
-        bytes memory charlieData
-    ) {
-        uint amountIn = rawAmount_ * 10 ** IERC20Permit(testToken).decimals();
+    // function _compressMintData(uint rawAmount_) private view returns(
+    //     bytes memory aliceData,
+    //     bytes memory bobData,
+    //     bytes memory charlieData
+    // ) {
+    //     uint amountIn = rawAmount_ * 10 ** IERC20Permit(testToken).decimals();
 
-        aliceData = abi.encode(testToken, amountIn, alice, ALICE_PK, true, true);
-        bobData = abi.encode(address(0), amountIn, bob, BOB_PK, false, true);
-        charlieData = abi.encode(address(0), amountIn, charlie, CHARLIE_PK, false, true);
-    }
+    //     aliceData = abi.encode(testToken, amountIn, alice, ALICE_PK, true, true);
+    //     bobData = abi.encode(address(0), amountIn, bob, BOB_PK, false, true);
+    //     charlieData = abi.encode(address(0), amountIn, charlie, CHARLIE_PK, false, true);
+    // }
 
     
 
-    function test_computeAddress() public {
-        bytes32 salt = bytes32(uint(123));
-        address computedOzToken = address(new ozToken{salt: salt}());
-        console.log('computedOzToken: ', computedOzToken);
+    // function test_computeAddress() public {
+    //     bytes32 salt = bytes32(uint(123));
+    //     address computedOzToken = address(new ozToken{salt: salt}());
+    //     console.log('computedOzToken: ', computedOzToken);
 
-        address oz = address(new ozToken());
-        console.log('oz: ', oz);
+    //     address oz = address(new ozToken());
+    //     console.log('oz: ', oz);
 
 
-    }
+    // }
 
 
     /**
