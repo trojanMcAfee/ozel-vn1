@@ -560,9 +560,9 @@ contract ozTokenFactoryTest is Setup {
         Type flowType_
     ) private returns(ozIToken ozERC20, uint shares) {
         uint[] memory minAmountsOut;
-        uint8 v;
-        bytes32 r; 
-        bytes32 s;
+        // uint8 v;
+        // bytes32 r; 
+        // bytes32 s;
 
         if (create_) {
             ozERC20 = ozIToken(OZ.createOzToken(
@@ -580,10 +580,7 @@ contract ozTokenFactoryTest is Setup {
         ) = _createDataOffchain(ozERC20, amountIn_, userPk_, user_, flowType_);
 
         if (flowType_ == Type.IN) {
-            (minAmountsOut, v, r, s) = abi.decode(
-                data, 
-                (uint[], uint8, bytes32, bytes32)
-            );
+            (minAmountsOut,,,) = HelpersTests.extract(data);
         } else {
             //decode for redeeming
         }
@@ -591,13 +588,14 @@ contract ozTokenFactoryTest is Setup {
         vm.startPrank(user_);
 
         if (is2612_) {
-            IERC20Permit(testToken).permit(
-                user_, 
-                address(ozDiamond), 
-                amountIn_, 
-                block.timestamp, 
-                v, r, s
-            );
+            // IERC20Permit(testToken).permit(
+            //     user_, 
+            //     address(ozDiamond), 
+            //     amountIn_, 
+            //     block.timestamp, 
+            //     v, r, s
+            // );
+            _sendPermit(user_, amountIn_, data);
         } else {
             IERC20Permit(testToken).approve(address(ozDiamond), amountIn_);
         }
@@ -622,6 +620,18 @@ contract ozTokenFactoryTest is Setup {
 //         minOut = expectedOut - expectedOut.mulDivDown(OZ.getDefaultSlippage(), 10000);
 //     }
 
+    function _sendPermit(address user_, uint amountIn_, bytes memory data_) private {
+        (,uint8 v, bytes32 r, bytes32 s) = HelpersTests.extract(data_);
+
+        IERC20Permit(testToken).permit(
+            user_, 
+            address(ozDiamond), 
+            amountIn_, 
+            block.timestamp, 
+            v, r, s
+        );
+    }
+
 
     function _createDataOffchain( 
         ozIToken ozERC20_, 
@@ -629,40 +639,18 @@ contract ozTokenFactoryTest is Setup {
         uint SENDER_PK_,
         address sender_,
         Type reqType_
-    ) private returns( 
-        // uint[] memory minAmountsOut,
-        // uint8 v, bytes32 r, bytes32 s
-        bytes memory data
-    ) {
+    ) private returns(bytes memory data) {
         
         if (reqType_ == Type.OUT) {
 
             uint shares = ozERC20_.previewWithdraw(amountIn_); //ozAmountIn_
             uint amountInReth = ozERC20_.convertToUnderlying(shares);
 
-            uint amountOutWeth = amountInReth.mulDiv(OZ.rETH_ETH(), ONE_ETHER);
-            uint minAmountOutWeth = HelpersTests.calculateMinAmountsOut(amountOutWeth, OZ.getDefaultSlippage());
+            data = HelpersTests.encodeOutData(amountInReth, OZ);
 
-            uint amountOutUnderlying = minAmountOutWeth.mulDiv(OZ.ETH_USD(), ONE_ETHER);
-            uint minAmountOutUnderlying = HelpersTests.calculateMinAmountsOut(amountOutUnderlying, OZ.getDefaultSlippage());
-
-            data = abi.encode(amountInReth, minAmountOutWeth, minAmountOutUnderlying);
-
-
-            // bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
-
-            // (
-            //     RequestType memory reqInternal,
-            //     uint[] memory minAmountsOutInternal,
-            //     uint bptAmountInternal
-            // ) = HelpersTests.handleRequestOut(data);
-
-            // minAmountsOut = minAmountsOutInternal;
-            // req = reqInternal;
-            // bptAmountIn = bptAmountInternal;
         } else if (reqType_ == Type.IN) { 
             uint[] memory minAmountsOut = HelpersTests.calculateMinAmountsOut(
-                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
+                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), defaultSlippage
             );
 
             bytes32 permitHash = _getHashNAmountOut(sender_, amountIn_);
@@ -673,38 +661,14 @@ contract ozTokenFactoryTest is Setup {
 
     
     }
+
     
 
     function _getHashNAmountOut(
         address sender_,
-        // RequestType memory request_, 
         uint amountIn_
     ) internal returns(bytes32) {
-        // uint bptOut;
-        // uint[] memory amountsOut;
-        // uint paramOut;
-
-        // if (request_.req == Type.IN) {
-        //     (bptOut,) = IQueries(queriesBalancer).queryJoin(
-        //         IPool(rEthWethPoolBalancer).getPoolId(),
-        //         sender_,
-        //         address(ozDiamond),
-        //         request_.join
-        //     );
-
-        //     paramOut = bptOut;
-        // } else if (request_.req == Type.OUT) {
-        //     (,amountsOut) = IQueries(queriesBalancer).queryExit(
-        //         IPool(rEthWethPoolBalancer).getPoolId(),
-        //         alice,
-        //         address(ozDiamond),
-        //         request_.exit
-        //     );
-
-        //     paramOut = amountsOut[0];
-        // }
-
-        bytes32 permitHash = HelpersTests.getPermitHash(
+        return HelpersTests.getPermitHash(
             testToken,
             sender_,
             address(ozDiamond),
@@ -712,8 +676,6 @@ contract ozTokenFactoryTest is Setup {
             IERC20Permit(testToken).nonces(sender_),
             block.timestamp
         );
-
-        return permitHash;
     }
 
 

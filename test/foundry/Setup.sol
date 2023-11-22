@@ -2,7 +2,7 @@
 pragma solidity 0.8.21;
 
 
-import "../../contracts/interfaces/ozIDiamond.sol";
+import {ozIDiamond} from "../../contracts/interfaces/ozIDiamond.sol";
 import "../../contracts/upgradeInitializers/DiamondInit.sol";
 import {Test} from "forge-std/Test.sol";
 // import "../../lib/forge-std/src/interfaces/IERC20.sol";
