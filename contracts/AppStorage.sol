@@ -55,11 +55,18 @@ struct AmountsIn {
 
 
 struct AmountsOut {
-    uint ozAmountIn;
-    uint minWethOut;
+    uint128 ozAmountIn;
+    uint128 minWethOut;
     uint bptAmountIn;
     uint minUsdcOut;
 }
+
+// struct AmountsOut {
+//     uint ozAmountIn;
+//     uint minWethOut;
+//     uint bptAmountIn;
+//     uint minUsdcOut;
+// }
 
 enum Asset {
     USD,

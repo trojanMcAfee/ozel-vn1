@@ -626,35 +626,29 @@ contract ozTokenFactoryTest is Setup {
             [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
         );
 
-        // if (reqType_ == Type.OUT) {
-        //     bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
+        if (reqType_ == Type.OUT) {
+            // bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
 
-        //     (
-        //         RequestType memory reqInternal,
-        //         uint[] memory minAmountsOutInternal,
-        //         uint bptAmountInternal
-        //     ) = HelpersTests.handleRequestOut(data);
+            // (
+            //     RequestType memory reqInternal,
+            //     uint[] memory minAmountsOutInternal,
+            //     uint bptAmountInternal
+            // ) = HelpersTests.handleRequestOut(data);
 
-        //     minAmountsOut = minAmountsOutInternal;
-        //     req = reqInternal;
-        //     bptAmountIn = bptAmountInternal;
-        // } else if (reqType_ == Type.IN) { 
-        //     bytes memory data = _getBytesReqIn(address(ozERC20_), amountIn_);
+            // minAmountsOut = minAmountsOutInternal;
+            // req = reqInternal;
+            // bptAmountIn = bptAmountInternal;
+        } else if (reqType_ == Type.IN) { 
+            minAmountsOut = HelpersTests.calculateMinAmountsOut(
+                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
+            );
 
-        //     (
-        //         RequestType memory reqInternal,
-        //         uint[] memory minAmountsOutInternal
-        //     ) = HelpersTests.handleRequestIn(data);
+            bytes32 permitHash = _getHashNAmountOut(sender_, amountIn_);
 
-        //     minAmountsOut = minAmountsOutInternal;
-        //     req = reqInternal;
-        // }
+            (v, r, s) = vm.sign(SENDER_PK_, permitHash);
+        }
 
-        bytes32 permitHash = _getHashNAmountOut(sender_, amountIn_);
-
-        (v, r, s) = vm.sign(SENDER_PK_, permitHash);
-
-        // req = _createRequestType(reqType_, amountOut, amountIn_, bptAmountIn, minAmountsOut);
+    
     }
     
 
