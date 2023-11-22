@@ -70,7 +70,7 @@ contract ROImoduleL1 {
                 s.WETH,
                 s.rETH,
                 IWETH(s.WETH).balanceOf(address(this)),
-                amounts_.minRethOut,
+                amounts_.minRethOut
             );
         }
     }
@@ -101,23 +101,23 @@ contract ROImoduleL1 {
         //     amts_.minWethOut, amts_.bptAmountIn, poolId
         // ); 
 
-        //convert rETH to WETH or ETH
-        _swapBalancer(
-            s.rETH,
-            s.WETH,
-            amountIn_of_rETH_from_user,
-            minWethOut
-        );
+        // //convert rETH to WETH or ETH
+        // _swapBalancer(
+        //     s.rETH,
+        //     s.WETH,
+        //     amountIn_of_rETH_from_user,
+        //     minWethOut
+        // );
         
-        //swap WETH/ETH to underlying
+        // //swap WETH/ETH to underlying
 
-        amountOut =_swapUni(
-            IERC20Permit(s.WETH).balanceOf(address(this)),
-            amts_.minUsdcOut,
-            s.WETH,
-            s.USDC,
-            receiver_
-        );
+        // amountOut =_swapUni(
+        //     IERC20Permit(s.WETH).balanceOf(address(this)),
+        //     amts_.minUsdcOut,
+        //     s.WETH,
+        //     s.USDC,
+        //     receiver_
+        // );
     }
 
 
@@ -199,7 +199,7 @@ contract ROImoduleL1 {
         address assetIn_, 
         address assetOut_, 
         uint amountIn_,
-        uint minRethOutOffchain_,
+        uint minRethOutOffchain_
     ) private {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
