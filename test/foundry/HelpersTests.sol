@@ -61,12 +61,12 @@ library HelpersTests {
 
     }
 
-    function encodeOutData(uint amountInReth_, ozIDiamond oz_) internal returns(bytes memory data) {
+    function encodeOutData(uint amountInReth_, ozIDiamond oz_, address receiver_) internal returns(bytes memory data) {
         uint slippage = oz_.getDefaultSlippage();
         uint minAmountOutWeth = _calculateMinAmountOut(amountInReth_, oz_.rETH_ETH(), slippage);
         uint minAmountOutUnderlying = _calculateMinAmountOut(minAmountOutWeth, oz_.ETH_USD(), slippage);
         
-        data = abi.encode(amountInReth_, minAmountOutWeth, minAmountOutUnderlying);
+        data = abi.encode(amountInReth_, minAmountOutWeth, minAmountOutUnderlying, receiver_);
     }
 
 
