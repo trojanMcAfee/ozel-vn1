@@ -519,35 +519,6 @@ contract ozTokenFactoryTest is Setup {
 
     /************ HELPERS ***********/
   
-
-   function _createRequestType(
-        Type reqType_,
-        uint amountOut_,
-        uint amountIn_,
-        uint bptAmountIn_,
-        uint[] memory minAmountsOut_
-    ) private view returns(RequestType memory req) {
-        // if (reqType_ == Type.OUT) { 
-        //     uint minWethOut = Helpers.calculateMinAmountOut(amountOut_, OZ.getDefaultSlippage());
-
-        //     (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        //     uint minUsdcOut = uint(price).mulDiv(minWethOut, 1e8);
-
-        //     req.amtsOut = AmountsOut({
-        //         ozAmountIn: amountIn_,
-        //         minWethOut: minWethOut,
-        //         bptAmountIn: bptAmountIn_,
-        //         minUsdcOut: minUsdcOut
-        //     });
-        // } else if (reqType_ == Type.IN) {
-        //     req.amtsIn = AmountsIn({
-        //         amountIn: amountIn_,
-        //         minWethOut: minAmountsOut_[0],
-        //         minRethOut: minAmountsOut_[1],
-        //         minBptOut: HelpersTests.calculateMinAmountsOut(amountOut_, OZ.getDefaultSlippage())
-        //     });
-        // }
-   }
  
 
     function _createAndMintOzTokens(
@@ -560,10 +531,7 @@ contract ozTokenFactoryTest is Setup {
         Type flowType_
     ) private returns(ozIToken ozERC20, uint shares) {
         uint[] memory minAmountsOut;
-        // uint8 v;
-        // bytes32 r; 
-        // bytes32 s;
-
+       
         if (create_) {
             ozERC20 = ozIToken(OZ.createOzToken(
                 testToken_, "Ozel-ERC20", "ozERC20"
@@ -573,11 +541,9 @@ contract ozTokenFactoryTest is Setup {
             
         }
 
-        (
-            // uint[] memory minAmountsOut,
-            // uint8 v, bytes32 r, bytes32 s
-            bytes memory data
-        ) = _createDataOffchain(ozERC20, amountIn_, userPk_, user_, flowType_);
+        (bytes memory data) = _createDataOffchain(
+            ozERC20, amountIn_, userPk_, user_, flowType_
+        );
 
         if (flowType_ == Type.IN) {
             (minAmountsOut,,,) = HelpersTests.extract(data);
@@ -588,19 +554,10 @@ contract ozTokenFactoryTest is Setup {
         vm.startPrank(user_);
 
         if (is2612_) {
-            // IERC20Permit(testToken).permit(
-            //     user_, 
-            //     address(ozDiamond), 
-            //     amountIn_, 
-            //     block.timestamp, 
-            //     v, r, s
-            // );
             _sendPermit(user_, amountIn_, data);
         } else {
             IERC20Permit(testToken).approve(address(ozDiamond), amountIn_);
         }
-
-        // shares = ozERC20.mint(req.amtsIn, user_); 
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
@@ -608,7 +565,8 @@ contract ozTokenFactoryTest is Setup {
             minAmountsOut[1]
         );
 
-        shares = ozERC20.mint(abi.encode(amounts, user_)); 
+        bytes memory mintData = abi.encode(amounts, user_);
+        shares = ozERC20.mint(mintData); 
         
         vm.stopPrank();
     }
@@ -653,7 +611,7 @@ contract ozTokenFactoryTest is Setup {
                 [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), defaultSlippage
             );
 
-            bytes32 permitHash = _getHashNAmountOut(sender_, amountIn_);
+            bytes32 permitHash = _getPermitHash(sender_, amountIn_);
             (uint8 v, bytes32 r, bytes32 s) = vm.sign(SENDER_PK_, permitHash);
 
             data = abi.encode(minAmountsOut, v, r, s);
@@ -663,11 +621,10 @@ contract ozTokenFactoryTest is Setup {
     }
 
     
-
-    function _getHashNAmountOut(
+    function _getPermitHash(
         address sender_,
         uint amountIn_
-    ) internal returns(bytes32) {
+    ) internal view returns(bytes32) {
         return HelpersTests.getPermitHash(
             testToken,
             sender_,
@@ -679,34 +636,6 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    function _getBytesReqOut(address ozERC20Addr_, uint amountIn_) private view returns(bytes memory) {
-        ReqOut memory reqOut = ReqOut(
-        ozERC20Addr_,
-        wethAddr,
-        rEthWethPoolBalancer,
-        rEthAddr,
-        amountIn_,
-        OZ.getDefaultSlippage()
-    );
-
-        return abi.encode(reqOut);
-    }
-
-    function _getBytesReqIn(address ozERC20Addr_, uint amountIn_) private view returns(bytes memory) {
-        ReqIn memory reqIn = ReqIn(
-            ozERC20Addr_,
-            ethUsdChainlink,
-            rEthEthChainlink,
-            testToken,
-            wethAddr,
-            rEthWethPoolBalancer,
-            rEthAddr,
-            OZ.getDefaultSlippage(),
-            amountIn_
-        );
-
-        return abi.encode(reqIn);
-    }
 
 
     //---- Reset pools helpers ----

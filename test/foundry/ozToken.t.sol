@@ -280,7 +280,7 @@ contract ozTokenTest is Setup {
     //         req = reqInternal;
     //     }
 
-    //     (uint amountOut, bytes32 permitHash) = _getHashNAmountOut(sender_, req, amountIn_);
+    //     (uint amountOut, bytes32 permitHash) = _getPermitHash(sender_, req, amountIn_);
 
     //     (v, r, s) = vm.sign(SENDER_PK_, permitHash);
 
