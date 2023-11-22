@@ -33,12 +33,28 @@ contract ozTokenFactoryTest is Setup {
 
 
     /**
-     * Mints a small quantity of ozUSDC (~100)
+     * Mints a small quantity of ozUSDC (~100) through a Balancer swap
      */
-    function test_minting_approve_smallMint() public {
+    function test_minting_approve_smallMint_swapBalancer() public {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        //Action
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, false
+        );
+
+        //Post-conditions
+        assertTrue(address(ozERC20) != address(0));
+        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+    }
+
+    function test_minting_approve_smallMint_rocketPool() public {
+        //Pre-condition
+        uint rawAmount = _dealUnderlying(Quantity.SMALL);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _modifyRocketPoolDepositMaxLimit();
 
         //Action
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(

@@ -45,7 +45,7 @@ contract ozTokenTest is Setup {
         //Pre-condition
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        _modifyMaxLimit();
+        _modifyRocketPoolDepositMaxLimit();
 
         //Action
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20"));
@@ -76,7 +76,7 @@ contract ozTokenTest is Setup {
         uint rawAmount = _dealUnderlying(Quantity.BIG);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         _changeSlippage(9900);
-        _modifyMaxLimit();
+        _modifyRocketPoolDepositMaxLimit();
 
         //Action
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20"));
@@ -99,7 +99,7 @@ contract ozTokenTest is Setup {
         //Pre-conditions
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        _modifyMaxLimit();
+        _modifyRocketPoolDepositMaxLimit();
 
         // (ozIToken ozERC20,) = _createAndMintOzTokens(
         //     testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true, true
@@ -192,7 +192,7 @@ contract ozTokenTest is Setup {
     }
 
     //Modifies maxDepositPoolSize in RocketDepositPool.sol
-    // function _modifyMaxLimit() private {
+    // function _modifyRocketPoolDepositMaxLimit() private {
     //     address rocketDAOProtocolProposals = 
     //         IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
 

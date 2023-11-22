@@ -58,13 +58,13 @@ contract ROImoduleL1 {
         );
 
         if (_checkRocketCapacity(amountOut)) {
-            //Withdraws ETH from WETH contract
+            console.log(1);
             IWETH(s.WETH).withdraw(amountOut);
-
-            //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
-            address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID);
+            address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
+            
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         } else {
+            console.log(2);
             (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
             if (paused) {
                 //do something else or throw error and return

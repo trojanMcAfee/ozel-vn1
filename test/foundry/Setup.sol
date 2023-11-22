@@ -118,7 +118,7 @@ contract Setup is Test {
         (string memory network, uint blockNumber) = _chooseNetwork(Network.ETHEREUM);
         vm.createSelectFork(vm.rpcUrl(network), blockNumber);
         _runSetup();
-        _modifyMaxLimit();
+        // _modifyRocketPoolDepositMaxLimit();
     }
 
     function _chooseNetwork(Network chain_) private returns(string memory network, uint blockNumber) {
@@ -186,7 +186,7 @@ contract Setup is Test {
         assertTrue(OZ.getDefaultSlippage() == basisPoints_);
     }
 
-    function _modifyMaxLimit() internal {
+    function _modifyRocketPoolDepositMaxLimit() internal {
         address rocketDAOProtocolProposals = 
             IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
 
