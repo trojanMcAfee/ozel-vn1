@@ -45,8 +45,6 @@ contract ROImoduleL1 {
     function useUnderlying( 
         address underlying_, 
         address owner_,
-        // uint amountIn_,
-        // uint minWethOut_,
         AmountsIn memory amounts_
     ) external {
         uint amountIn = amounts_.amountIn;
@@ -97,9 +95,15 @@ contract ROImoduleL1 {
 
         ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
 
-        _removeLiquidityBalancer(
-            amts_.minWethOut, amts_.bptAmountIn, poolId
-        ); 
+        // _removeLiquidityBalancer(
+        //     amts_.minWethOut, amts_.bptAmountIn, poolId
+        // ); 
+
+        //convert rETH to WETH or ETH
+        
+        //swap WETH/ETH to underlying
+
+        //send underlying to user
 
         amountOut =_swapUni(
             IERC20Permit(s.WETH).balanceOf(address(this)),

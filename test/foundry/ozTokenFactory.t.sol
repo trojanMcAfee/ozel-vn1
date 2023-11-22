@@ -201,36 +201,36 @@ contract ozTokenFactoryTest is Setup {
     /**
      * From 1M USDC balance, mint 1M and redeem 1M
      */
-    // function test_redeeming_bigBalance_bigMint_bigRedeem() public {
-    //     //Pre-conditions
-    //     _changeSlippage(9900);
-    //     _dealUnderlying(Quantity.BIG);
+    function test_redeeming_bigBalance_bigMint_bigRedeem() public {
+        //Pre-conditions
+        _changeSlippage(9900);
+        _dealUnderlying(Quantity.BIG);
 
-    //     uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
-    //     uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-    //     assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
+        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
 
-    //     (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-    //     uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-    //     assertTrue(balanceOzUsdcAlice > 990_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
+        uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
+        assertTrue(balanceOzUsdcAlice > 990_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
 
-    //     uint ozAmountIn = ozERC20.balanceOf(alice);
-    //     testToken = address(ozERC20);
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+        testToken = address(ozERC20);
 
-    //     (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-    //     //Action
-    //     vm.startPrank(alice);
-    //     ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
-    //     ozERC20.burn(req.amtsOut, alice); 
+        //Action
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
+        ozERC20.burn(req.amtsOut, alice); 
 
-    //     //Post-conditions
-    //     testToken = usdcAddr;
-    //     uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
+        //Post-conditions
+        testToken = usdcAddr;
+        uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
        
-    //     assertTrue(balanceUnderlyingAlice > 998_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
-    //     assertTrue(ozERC20.balanceOf(alice) == 0);
-    // }
+        assertTrue(balanceUnderlyingAlice > 998_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
+        assertTrue(ozERC20.balanceOf(alice) == 0);
+    }
 
 
     /**

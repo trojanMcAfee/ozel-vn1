@@ -118,7 +118,6 @@ contract Setup is Test {
         (string memory network, uint blockNumber) = _chooseNetwork(Network.ETHEREUM);
         vm.createSelectFork(vm.rpcUrl(network), blockNumber);
         _runSetup();
-        // _modifyRocketPoolDepositMaxLimit();
     }
 
     function _chooseNetwork(Network chain_) private returns(string memory network, uint blockNumber) {
