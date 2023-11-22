@@ -43,4 +43,5 @@ interface ozIDiamond {
     function getUnderlyingValue() external view returns(uint);
     function totalUnderlying(Asset) external view returns(uint);
     function changeDefaultSlippage(uint newBasisPoints_) external;
+    function ETH_USD() external view returns(uint);
 }

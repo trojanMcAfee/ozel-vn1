@@ -21,6 +21,11 @@ contract ozOracle {
         return uint(price);
     }
 
+    function ETH_USD() public view returns(uint) {
+        (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+        return uint(price);
+    }
+
     // function getUnderlyingValue() external view returns(uint) {
     //     uint amountBpt = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));        
     //     uint bptPrice = IPool(s.rEthWethPoolBalancer).getRate(); 

@@ -66,9 +66,11 @@ contract ROImoduleL1 {
                 //do something else or throw error and return
             }
 
-            _swapBalancer(
-                IPool(s.rEthWethPoolBalancer).getPoolId(), 
-                amounts_.minRethOut
+            _swapBalancer( //check if both balancer and uni swaps can be done with multicall
+                s.WETH,
+                s.rETH,
+                IWETH(s.WETH).balanceOf(address(this)),
+                amounts_.minRethOut,
             );
         }
     }
@@ -99,13 +101,15 @@ contract ROImoduleL1 {
         //     amts_.minWethOut, amts_.bptAmountIn, poolId
         // ); 
 
-        //convert ozToken to rETH
-
         //convert rETH to WETH or ETH
+        _swapBalancer(
+            s.rETH,
+            s.WETH,
+            amountIn_of_rETH_from_user,
+            minWethOut
+        );
         
         //swap WETH/ETH to underlying
-
-        //send underlying to user
 
         amountOut =_swapUni(
             IERC20Permit(s.WETH).balanceOf(address(this)),
@@ -118,7 +122,7 @@ contract ROImoduleL1 {
 
 
     function totalUnderlying(Asset type_) public view returns(uint total) {
-        total = IERC20Permit(s.rEthWethPoolBalancer).balanceOf(address(this));
+        total = IERC20Permit(s.rETH).balanceOf(address(this));
 
         if (type_ == Asset.USD) {
             (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
@@ -191,24 +195,29 @@ contract ROImoduleL1 {
     }
 
 
-    function _swapBalancer(bytes32 poolId_, uint minRethOutOffchain_) private {
+    function _swapBalancer(
+        address assetIn_, 
+        address assetOut_, 
+        uint amountIn_,
+        uint minRethOutOffchain_,
+    ) private {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: poolId_,
+            poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(s.WETH),
-            assetOut: IAsset(s.rETH),
-            amount: IWETH(s.WETH).balanceOf(address(this)),
+            assetIn: IAsset(assetIn_),
+            assetOut: IAsset(assetOut_),
+            amount: amountIn_,
             userData: new bytes(0)
         });
 
         IVault.FundManagement memory funds = IVault.FundManagement({
             sender: address(this),
-            fromInternalBalance: false,
+            fromInternalBalance: false, //check if i can do something with internalBalance instead of external swap
             recipient: payable(address(this)),
             toInternalBalance: false
         });
 
-        uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds);
+        uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds); //remove this querySwap to save gas
         uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
 
         s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);

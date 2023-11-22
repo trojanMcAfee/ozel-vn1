@@ -616,17 +616,26 @@ contract ozTokenFactoryTest is Setup {
         address sender_,
         Type reqType_
     ) private returns( 
-        uint[] memory minAmountsOut,
-        uint8 v, bytes32 r, bytes32 s
+        // uint[] memory minAmountsOut,
+        // uint8 v, bytes32 r, bytes32 s
+        bytes memory data
     ) {
-        // uint[] memory minAmountsOut;
-        // uint bptAmountIn;
-
-        minAmountsOut = HelpersTests.calculateMinAmountsOut(
-            [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
-        );
-
+        
         if (reqType_ == Type.OUT) {
+
+            uint shares = ozERC20_.previewWithdraw(ozAmountIn_);
+            uint amountInReth = ozERC20_.convertToUnderlying(shares);
+
+            uint amountOutWeth = amountInrEth.mulDiv(OZ.rETH_ETH(), ONE_ETHER);
+            uint minAmountOutWeth = HelpersTests.calculateMinAmountsOut(amountOutWeth, OZ.getDefaultSlippage());
+
+            uint amountOutUnderlying = minAmountOutWeth.mulDiv(OZ.ETH_USD(), ONE_ETHER);
+            uint minAmountOutUnderlying = HelpersTests.calculateMinAmountsOut(amountOutUnderlying, OZ.getDefaultSlippage());
+
+            data = abi.encode(amountInReth, minAmountWeth, minAmountOutUnderlying);
+
+            //decode these two data in the test and check that it works
+
             // bytes memory data = _getBytesReqOut(address(ozERC20_), amountIn_);
 
             // (
@@ -639,13 +648,14 @@ contract ozTokenFactoryTest is Setup {
             // req = reqInternal;
             // bptAmountIn = bptAmountInternal;
         } else if (reqType_ == Type.IN) { 
-            minAmountsOut = HelpersTests.calculateMinAmountsOut(
+            uint[] memory minAmountsOut = HelpersTests.calculateMinAmountsOut(
                 [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), ozERC20_.decimals(), defaultSlippage
             );
 
             bytes32 permitHash = _getHashNAmountOut(sender_, amountIn_);
+            (uint8 v, bytes32 r, bytes32 s) = vm.sign(SENDER_PK_, permitHash);
 
-            (v, r, s) = vm.sign(SENDER_PK_, permitHash);
+            data = abi.encode(minAmountsOut, v, r, s);
         }
 
     
