@@ -98,24 +98,6 @@ contract ozTokenFactoryTest is Setup {
          */
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
 
-        for (uint i=0; i < 3; i++) {
-
-
-            uint amountIn = (rawAmount / i == 0 ? i : i + 1 + (i - 1) ) * 10 ** IERC20Permit(testToken).decimals();
-            (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
-                testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
-            );
-
-            
-
-
-        }
-
-        // 0 --- 0 + 1 + (0-1) = 0
-        // 1 --- 1 + (1 ** 2) + (1 - 1) = 2 
-        // 2 --- 2 + (1 ** 2+1) + (2 - 1) = 4
-        // 3 --- 3 + (1 ** 2+3) + (3-1) = 6
-
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
             testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
@@ -124,7 +106,7 @@ contract ozTokenFactoryTest is Setup {
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
         (, uint sharesBob) = _createAndMintOzTokens(
             address(ozERC20), amountIn, bob, BOB_PK, false, true, Type.IN
-        ); //try to join this 3 funcs in one
+        );
 
         amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
         (, uint sharesCharlie) = _createAndMintOzTokens(
