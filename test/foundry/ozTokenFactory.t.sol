@@ -89,47 +89,32 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    // enum User {
-    //     ALICE,
-    //     BOB,
-    //     CHARLIE
-    // }
-
-    // function _compressMintData(uint rawAmount_) private view returns(
-    //     bytes memory aliceData,
-    //     bytes memory bobData,
-    //     bytes memory charlieData
-    // ) {
-    //     uint amountIn = rawAmount_ * 10 ** IERC20Permit(testToken).decimals();
-
-    //     aliceData = abi.encode(testToken, amountIn, alice, ALICE_PK, true, true);
-    //     bobData = abi.encode(address(0), amountIn, bob, BOB_PK, false, true);
-    //     charlieData = abi.encode(address(0), amountIn, charlie, CHARLIE_PK, false, true);
-    // }
-
-    
-
-    // function test_computeAddress() public {
-    //     bytes32 salt = bytes32(uint(123));
-    //     address computedOzToken = address(new ozToken{salt: salt}());
-    //     console.log('computedOzToken: ', computedOzToken);
-
-    //     address oz = address(new ozToken());
-    //     console.log('oz: ', oz);
-
-
-    // }
-
-
     /**
      * Mints a small quantity of ozTokens using EIP2612
      */
-    function test_minting_eip2612() public {
+    function test_minting_eip2612() public { 
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
         uint rawAmount = _dealUnderlying(Quantity.SMALL);
-        // _compressMintData(rawAmount_);
+
+        for (uint i=0; i < 3; i++) {
+
+
+            uint amountIn = (rawAmount / i == 0 ? i : i + 1 + (i - 1) ) * 10 ** IERC20Permit(testToken).decimals();
+            (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+                testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
+            );
+
+            
+
+
+        }
+
+        // 0 --- 0 + 1 + (0-1) = 0
+        // 1 --- 1 + (1 ** 2) + (1 - 1) = 2 
+        // 2 --- 2 + (1 ** 2+1) + (2 - 1) = 4
+        // 3 --- 3 + (1 ** 2+3) + (3-1) = 6
 
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
