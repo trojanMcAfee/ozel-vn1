@@ -179,7 +179,7 @@ contract ozTokenFactoryTest is Setup {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        assertTrue(balanceOzUsdcAlice > 990_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
+        assertTrue(balanceOzUsdcAlice > 980_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);

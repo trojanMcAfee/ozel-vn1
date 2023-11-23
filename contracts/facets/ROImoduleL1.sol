@@ -209,7 +209,7 @@ contract ROImoduleL1 {
         address assetIn_, 
         address assetOut_, 
         uint amountIn_,
-        uint minRethOutOffchain_
+        uint minAmountOutOffchain_
     ) private {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -227,11 +227,11 @@ contract ROImoduleL1 {
             toInternalBalance: false
         });
 
-        uint minRethOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds); //remove this querySwap to save gas
-        uint minRethOut = minRethOutOffchain_ > minRethOutOnchain ? minRethOutOffchain_ : minRethOutOnchain;
+        uint minOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds); //remove this querySwap to save gas
+        uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
 
-        s.WETH.safeApprove(s.vaultBalancer, singleSwap.amount);
-        uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minRethOut, block.timestamp);
+        assetIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
+        uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
         if (amountOut == 0) revert InvalidBalancerSwap();
     }
 
