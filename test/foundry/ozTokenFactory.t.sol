@@ -237,7 +237,7 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
-    function test_slot() public {
+    function _getSharedCashBalancer() private returns(bytes32, bytes32) {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
         bytes32 twoTokenPoolTokensSlot = bytes32(uint(9));
 
@@ -247,16 +247,18 @@ contract ozTokenFactoryTest is Setup {
         bytes32 cashSlot = _extractSlot(pairHash, balancesSlot, 0);
         bytes32 sharedCash = vm.load(vaultBalancer, cashSlot);
 
-        uint cash = cash(sharedCash);
-
-        console.log('sharedCash: ', cash);
-
+        return (sharedCash, cashSlot);
     }
 
-    function cash(bytes32 balance) internal pure returns (uint256) {
-        uint256 mask = 2**(112) - 1;
-        return uint256(balance) & mask;
+    function _setSharedCashBalancer(bytes32 oldSharedCash_, bytes32 cashSlot_) private {
+        vm.store(vaultBalancer, cashSlot_, oldSharedCash_);
     }
+    
+
+    // function cash(bytes32 balance) internal pure returns (uint256) {
+    //     uint256 mask = 2**(112) - 1;
+    //     return uint256(balance) & mask;
+    // }
     
 
     /** REFERENCE
@@ -278,7 +280,8 @@ contract ozTokenFactoryTest is Setup {
 
         //Gets the pre-swap pool values.
         bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
-        (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
+        // (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
+        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
         //Creates an ozToken and mints some.
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
@@ -286,7 +289,8 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(balanceUsdcAlicePostMint == 0);
 
         //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
-        _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
+        // _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
         // _resetPools((rawAmount * 1 ether) / OZ.ETH_USD());
 
        
@@ -567,11 +571,6 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-//    function _calculateMinWethOut(uint amountIn_) internal view returns(uint minOut) {
-//         (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-//         uint expectedOut = amountIn_.mulDivDown(uint(price) * 1e10, ONE_ETHER);
-//         minOut = expectedOut - expectedOut.mulDivDown(OZ.getDefaultSlippage(), 10000);
-//     }
 
     function _sendPermit(address user_, uint amountIn_, bytes memory data_) private {
         (,uint8 v, bytes32 r, bytes32 s) = HelpersTests.extract(data_);
@@ -692,11 +691,12 @@ contract ozTokenFactoryTest is Setup {
 
     function _resetPoolBalances(
         bytes32 slot0data_, 
-        address token_, 
-        bytes32 oldTokenBalance_
+        bytes32 oldSharedCash_,
+        bytes32 cashSlot_
     ) private {
-        _setTokenBalanceFromSlot(token_, oldTokenBalance_);
-        _modifySqrtPriceX96(slot0data_);
+        // _setTokenBalanceFromSlot(token_, oldTokenBalance_);
+        _setSharedCashBalancer(oldSharedCash_, cashSlot_); //this had a positive change
+        _modifySqrtPriceX96(slot0data_); //check this (uniswap slot)
     }
 
     function _modifySqrtPriceX96(bytes32 slot0data_) private {
