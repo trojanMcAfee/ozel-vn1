@@ -89,36 +89,45 @@ contract ROImoduleL1 {
 
 
     function useOzTokens(
-        AmountsOut memory amts_,
+        // AmountsOut memory amts_,
         address ozToken_,
         address owner_,
-        address receiver_
+        // address receiver_
+        bytes memory data_
     ) external returns(uint amountOut) {
+        (
+            uint ozAmountIn,
+            uint amountInReth,
+            uint minAmountOutWeth,
+            uint minAmountOutUnderlying, 
+            address receiver
+        ) = abi.decode(data_, (uint, uint, uint, uint, address));
+
         bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
 
-        ozToken_.safeTransferFrom(owner_, address(this), amts_.ozAmountIn);
+        ozToken_.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         // _removeLiquidityBalancer(
         //     amts_.minWethOut, amts_.bptAmountIn, poolId
         // ); 
 
         // //convert rETH to WETH or ETH
-        // _swapBalancer(
-        //     s.rETH,
-        //     s.WETH,
-        //     amountIn_of_rETH_from_user,
-        //     minWethOut
-        // );
+        _swapBalancer(
+            s.rETH,
+            s.WETH,
+            amountInReth,
+            minAmountOutWeth
+        );
         
         // //swap WETH/ETH to underlying
 
-        // amountOut =_swapUni(
-        //     IERC20Permit(s.WETH).balanceOf(address(this)),
-        //     amts_.minUsdcOut,
-        //     s.WETH,
-        //     s.USDC,
-        //     receiver_
-        // );
+        amountOut =_swapUni(
+            IERC20Permit(s.WETH).balanceOf(address(this)),
+            minAmountOutUnderlying,
+            s.WETH,
+            s.USDC,
+            receiver
+        );
     }
 
 

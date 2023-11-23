@@ -35,6 +35,12 @@ interface ozIDiamond {
         address ozToken_,
         address owner_,
         address receiver_
+    ) external returns(uint); //remove
+
+    function useOzTokens(
+        address ozToken_,
+        address owner_,
+        bytes memory data_
     ) external returns(uint);
 
     function getDiamondAddr() external view returns(address);

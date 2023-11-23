@@ -63,6 +63,10 @@ interface ozIToken {
     function burn(
         AmountsOut memory amts_,
         address receiver_
+    ) external returns(uint); //remove this
+
+    function burn(
+        bytes memory data_
     ) external returns(uint);
 
 

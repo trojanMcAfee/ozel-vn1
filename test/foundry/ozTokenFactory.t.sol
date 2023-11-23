@@ -571,7 +571,7 @@ contract ozTokenFactoryTest is Setup {
             uint shares = ozERC20_.previewWithdraw(amountIn_); //ozAmountIn_
             uint amountInReth = ozERC20_.convertToUnderlying(shares);
 
-            data = HelpersTests.encodeOutData(amountInReth, OZ, sender_);
+            data = HelpersTests.encodeOutData(amountIn_, amountInReth, OZ, sender_);
 
         } else if (reqType_ == Type.IN) { 
             uint[] memory minAmountsOut = HelpersTests.calculateMinAmountsOut(
