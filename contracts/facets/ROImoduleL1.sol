@@ -89,10 +89,8 @@ contract ROImoduleL1 {
 
 
     function useOzTokens(
-        // AmountsOut memory amts_,
         address ozToken_,
         address owner_,
-        // address receiver_
         bytes memory data_
     ) external returns(uint amountOut) {
         (
@@ -107,11 +105,7 @@ contract ROImoduleL1 {
 
         ozToken_.safeTransferFrom(owner_, address(this), ozAmountIn);
 
-        // _removeLiquidityBalancer(
-        //     amts_.minWethOut, amts_.bptAmountIn, poolId
-        // ); 
-
-        // //convert rETH to WETH or ETH
+        //Swap rETH to WETH
         _swapBalancer(
             s.rETH,
             s.WETH,
@@ -119,8 +113,7 @@ contract ROImoduleL1 {
             minAmountOutWeth
         );
         
-        // //swap WETH/ETH to underlying
-
+        //swap WETH to underlying
         amountOut =_swapUni(
             IERC20Permit(s.WETH).balanceOf(address(this)),
             minAmountOutUnderlying,
@@ -141,35 +134,7 @@ contract ROImoduleL1 {
     }
 
     
-    function _removeLiquidityBalancer(
-        uint minWethOut_, 
-        uint bptAmountIn_, 
-        bytes32 poolId_
-    ) private {
-        address[] memory assets = Helpers.convertToDynamic([s.WETH, s.rEthWethPoolBalancer, s.rETH]);
-        uint[] memory minAmountsOut = Helpers.convertToDynamic([minWethOut_, uint(0), uint(0)]);
-
-        bytes memory userData = Helpers.createUserData(
-            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, bptAmountIn_, 0 //exitTokenIndex
-        );
-
-        IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
-            assets: assets,
-            minAmountsOut: minAmountsOut,
-            userData: userData,
-            toInternalBalance: false
-        });
-
-        IVault(s.vaultBalancer).exitPool( 
-            poolId_, 
-            address(this), 
-            payable(address(this)), 
-            request
-        );
-
-    }
-
-
+    
 
 
     //**** HELPERS */
