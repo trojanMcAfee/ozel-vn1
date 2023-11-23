@@ -242,54 +242,54 @@ contract ozTokenFactoryTest is Setup {
      * Mints 1M of ozTokens, then rebalances Uniswap and Balancer pools, 
      * and redeems a small portio of ozUSDC. 
      */
-    // function test_redeeming_bigBalance_bigMint_smallRedeem() public {
-    //     /**
-    //      * Pre-conditions
-    //      */
-    //     //Deals big amounts of USDC to testers.
-    //     _dealUnderlying(Quantity.BIG);
-    //     uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-    //     uint rawAmount = 100;
-    //     assertTrue(amountIn == 1_000_000 * 1e6);
+    function test_redeeming_bigBalance_bigMint_smallRedeem() public {
+        /**
+         * Pre-conditions
+         */
+        //Deals big amounts of USDC to testers.
+        _dealUnderlying(Quantity.BIG);
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        uint rawAmount = 100;
+        assertTrue(amountIn == 1_000_000 * 1e6);
 
-    //     //Changes the default slippage to 99% so the swaps don't fail.
-    //     _changeSlippage(9900);
+        //Changes the default slippage to 99% so the swaps don't fail.
+        _changeSlippage(9900);
 
-    //     //Gets the pre-swap pool values.
-    //     bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
-    //     (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
+        //Gets the pre-swap pool values.
+        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
 
-    //     //Creates an ozToken and mints some.
-    //     (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-    //     uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-    //     assertTrue(balanceUsdcAlicePostMint == 0);
+        //Creates an ozToken and mints some.
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
+        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceUsdcAlicePostMint == 0);
 
-    //     //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
-    //     _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
+        //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
+        _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
 
-    //     uint ozAmountIn = rawAmount * 1 ether;
-    //     testToken = address(ozERC20);
+        uint ozAmountIn = rawAmount * 1 ether;
+        testToken = address(ozERC20);
 
-    //     //Creates offchain the token-amount variables needed for safe protocol execution.
-    //     (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        //Creates offchain the token-amount variables needed for safe protocol execution.
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
     
-    //     /**
-    //      * Action
-    //      */
-    //     vm.startPrank(alice);
-    //     ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
+        /**
+         * Action
+         */
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), ozAmountIn);
 
-    //     //Redeems ozUSDC for USDC.
-    //     uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
+        //Redeems ozUSDC for USDC.
+        uint underlyingOut = ozERC20.burn(redeemData);
 
-    //     /**
-    //      * Post-conditions
-    //      */
-    //     uint balanceAliceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
+        /**
+         * Post-conditions
+         */
+        uint balanceAliceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
 
-    //     assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
-    //     assertTrue(balanceAliceUnderlying == underlyingOut);
-    // }
+        assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
+        assertTrue(balanceAliceUnderlying == underlyingOut);
+    }
 
 
 
@@ -693,9 +693,12 @@ contract ozTokenFactoryTest is Setup {
         uint tokenIndex = uint(vm.load(vaultBalancer, tokenIndexSlot));
 
         bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
+        console.log('tokenIndex: ', tokenIndex);
         bytes32 tokenBalanceSlot = _extractSlot(uint(tokenIndex - 1), entriesSlot, 1);
+        console.log(6);
 
         bytes32 tokenBalanceBytes = vm.load(vaultBalancer, tokenBalanceSlot);
+        console.log(7);
 
         return (tokenBalanceSlot, tokenBalanceBytes);
     }
