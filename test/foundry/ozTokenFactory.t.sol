@@ -22,6 +22,7 @@ import {ozToken} from "../../contracts/ozToken.sol";
 import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
 import "forge-std/console.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol"; //change this to forge IERC20
 
 
 contract ozTokenFactoryTest is Setup {
@@ -236,6 +237,26 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
+    function test_slot() public {
+        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+        bytes32 twoTokenPoolTokensSlot = bytes32(uint(9));
+
+        bytes32 balancesSlot = _extractSlot(poolId, twoTokenPoolTokensSlot, 2);
+        
+        bytes32 pairHash = keccak256(abi.encodePacked(rEthAddr, wethAddr));
+        bytes32 cashSlot = _extractSlot(pairHash, balancesSlot, 0);
+        bytes32 sharedCash = vm.load(vaultBalancer, cashSlot);
+
+        uint cash = cash(sharedCash);
+
+        console.log('sharedCash: ', cash);
+
+    }
+
+    function cash(bytes32 balance) internal pure returns (uint256) {
+        uint256 mask = 2**(112) - 1;
+        return uint256(balance) & mask;
+    }
     
 
     /** REFERENCE
@@ -266,6 +287,9 @@ contract ozTokenFactoryTest is Setup {
 
         //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
         _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
+        // _resetPools((rawAmount * 1 ether) / OZ.ETH_USD());
+
+       
 
         uint ozAmountIn = rawAmount * 1 ether;
         testToken = address(ozERC20);
@@ -287,6 +311,10 @@ contract ozTokenFactoryTest is Setup {
          */
         uint balanceAliceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
 
+        console.log('---');
+        console.log('balanceAliceUnderlying: ', balanceAliceUnderlying);
+        console.log('underlyingOut: ', underlyingOut);
+        console.log('rawAmount: ', rawAmount);
         assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
@@ -605,16 +633,36 @@ contract ozTokenFactoryTest is Setup {
 
 
     //---- Reset pools helpers ----
-    function _resetPools(uint amountWeth_, bytes32 slot0data_) private {
-        _modifySqrtPriceX96(slot0data_);
+    function _resetPools(uint amountWeth_) private { //bytes32 slot0data_
 
         deal(rEthAddr, owner, _toRETH(amountWeth_));
-        deal(rEthWethPoolBalancer, owner, _toBPT(amountWeth_), true);
+        deal(wethAddr, owner, amountWeth_);
+        // deal(rEthWethPoolBalancer, owner, _toBPT(amountWeth_), true);
 
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
         address deadAddr = 0x000000000000000000000000000000000000dEaD;
 
+        //-------
         vm.startPrank(owner);
+        IERC20Permit(wethAddr).approve(swapRouterUni, type(uint).max);
+        // tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
+
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({ 
+                tokenIn: wethAddr,
+                tokenOut: usdcAddr, 
+                fee: 500, //0.05 - 500 / make this a programatic value
+                recipient: deadAddr,
+                deadline: block.timestamp,
+                amountIn: IERC20Permit(wethAddr).balanceOf(owner),
+                amountOutMinimum: 0,
+                sqrtPriceLimitX96: 0
+            });
+
+        ISwapRouter(swapRouterUni).exactInputSingle(params); 
+        // _modifySqrtPriceX96(slot0data_);
+        //------
+
         IERC20Permit(rEthAddr).approve(vaultBalancer, type(uint).max);
 
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
@@ -637,28 +685,7 @@ contract ozTokenFactoryTest is Setup {
         
         //---------
 
-        address[] memory assets = Helpers.convertToDynamic([wethAddr, rEthWethPoolBalancer, rEthAddr]);
-        uint[] memory minAmountsOut = Helpers.convertToDynamic([uint(1), uint(0), uint(0)]);
-
-        bytes memory userData = Helpers.createUserData(
-            IVault.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT, 
-            IERC20Permit(rEthWethPoolBalancer).balanceOf(owner), 
-            0 
-        );
-
-        IVault.ExitPoolRequest memory request = IVault.ExitPoolRequest({
-            assets: assets,
-            minAmountsOut: minAmountsOut,
-            userData: userData,
-            toInternalBalance: false
-        });
-
-        IVault(vaultBalancer).exitPool( 
-            poolId, 
-            owner, 
-            payable(deadAddr), 
-            request
-        );
+        
 
         vm.stopPrank();
     }
@@ -684,6 +711,10 @@ contract ozTokenFactoryTest is Setup {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
     }
 
+    function _extractSlot(bytes32 key_, bytes32 pos_, uint offset_) private pure returns(bytes32) {
+        return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
+    }
+
     function _getTokenBalanceFromSlot(address token_) private view returns(bytes32, bytes32) {
         bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
         bytes32 balancesSlot = bytes32(uint(1));
@@ -693,7 +724,6 @@ contract ozTokenFactoryTest is Setup {
         uint tokenIndex = uint(vm.load(vaultBalancer, tokenIndexSlot));
 
         bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
-        console.log('tokenIndex: ', tokenIndex);
         bytes32 tokenBalanceSlot = _extractSlot(uint(tokenIndex - 1), entriesSlot, 1);
         console.log(6);
 
