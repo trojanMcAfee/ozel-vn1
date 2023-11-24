@@ -149,7 +149,7 @@ contract Setup is Test {
             usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
             wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
-            wethUsdPoolUni = 0xC6962004f452bE9203591991D15f6b388e09E8D0; //put the same as arb for the moment. Fix this
+            wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
             ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
@@ -167,7 +167,7 @@ contract Setup is Test {
             rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
 
             network = "ethereum";
-            blockNumber = 18513614; 
+            blockNumber = 18513614; //18642180 18513614
         }
     }
 

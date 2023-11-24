@@ -20,15 +20,19 @@ import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {stdStorage, StdStorage} from "forge-std/Test.sol";
 import {ozToken} from "../../contracts/ozToken.sol";
 import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 
 import "forge-std/console.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol"; //change this to forge IERC20
+
+import {SafeMath} from "../../contracts/libraries/SafeMath.sol";
 
 
 contract ozTokenFactoryTest is Setup {
 
     using FixedPointMathLib for uint;
     using stdStorage for StdStorage;
+
+    using SafeMath for uint;
 
     uint constant ONE_ETHER = 1 ether;
 
@@ -259,6 +263,24 @@ contract ozTokenFactoryTest is Setup {
     //     uint256 mask = 2**(112) - 1;
     //     return uint256(balance) & mask;
     // }
+
+    function sqrtPriceX96ToUint(uint160 sqrtPriceX96, uint8 decimalsToken0)
+    internal
+    pure
+    returns (uint256)
+    {
+        uint256 numerator1 = uint256(sqrtPriceX96) * uint256(sqrtPriceX96);
+        uint256 numerator2 = 10**decimalsToken0;
+        return numerator1.mulDiv(numerator2, 1 << 192);
+    }
+
+
+    function _getETHprice() private {
+        IUniswapV3Pool pool = IUniswapV3Pool(wethUsdPoolUni);
+        (uint160 sqrtPriceX96,,,,,,) =  pool.slot0();
+        uint price = 10 ** 12 / (sqrtPriceX96 / 2 ** 96) ** 2;
+        console.log('eht price: ', price);
+    }
     
 
     /** REFERENCE
@@ -283,15 +305,21 @@ contract ozTokenFactoryTest is Setup {
         // (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
+        _getETHprice();
+
         //Creates an ozToken and mints some.
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0);
 
+        _getETHprice();
+
         //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
         // _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
         // _resetPools((rawAmount * 1 ether) / OZ.ETH_USD());
+
+        _getETHprice();
 
        
 
@@ -695,8 +723,8 @@ contract ozTokenFactoryTest is Setup {
         bytes32 cashSlot_
     ) private {
         // _setTokenBalanceFromSlot(token_, oldTokenBalance_);
-        _setSharedCashBalancer(oldSharedCash_, cashSlot_); //this had a positive change
-        _modifySqrtPriceX96(slot0data_); //check this (uniswap slot)
+        _setSharedCashBalancer(oldSharedCash_, cashSlot_); 
+        _modifySqrtPriceX96(slot0data_); 
     }
 
     function _modifySqrtPriceX96(bytes32 slot0data_) private {
