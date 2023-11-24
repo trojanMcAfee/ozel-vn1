@@ -338,6 +338,10 @@ contract ozTokenFactoryTest is Setup {
         //Redeems ozUSDC for USDC.
         uint underlyingOut = ozERC20.burn(redeemData);
 
+        _getETHprice();
+
+        // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+
         /**
          * Post-conditions
          */
