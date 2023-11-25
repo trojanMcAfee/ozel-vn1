@@ -40,7 +40,7 @@ contract ozTokenFactoryTest is Setup {
      */
     function test_minting_approve_smallMint_swapBalancer() public {
         //Pre-condition
-        uint rawAmount = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
         //Action
@@ -56,7 +56,7 @@ contract ozTokenFactoryTest is Setup {
     //--------
     function test_minting_approve_smallMint_rocketPool() public {
         //Pre-condition
-        uint rawAmount = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         _modifyRocketPoolDepositMaxLimit();
 
@@ -77,7 +77,7 @@ contract ozTokenFactoryTest is Setup {
      */
     function test_minting_approve_bigMint() public {
         //Pre-condition
-        uint rawAmount = _dealUnderlying(Quantity.BIG);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         _changeSlippage(9900);
 
@@ -99,7 +99,7 @@ contract ozTokenFactoryTest is Setup {
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
-        uint rawAmount = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
 
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
@@ -144,7 +144,7 @@ contract ozTokenFactoryTest is Setup {
      */
     function test_transfer() public {
         //Pre-conditions
-        uint rawAmount = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(
             testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true, true, Type.IN
@@ -297,16 +297,33 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
+    function _createMintAssertOzTokens(
+        address owner_,
+        ozIToken ozERC20_,
+        uint ownerPK_,
+        uint initMintAmout_
+    ) private returns(uint) {
+        uint amountIn = IERC20Permit(testToken).balanceOf(owner_);
+        _createAndMintOzTokens(address(ozERC20_), amountIn, owner_, ownerPK_, false, false, Type.IN);
+        uint balanceUsdcPostMint = IERC20Permit(testToken).balanceOf(owner_);
+        assertTrue(balanceUsdcPostMint == 0);
+        uint balanceOzPostMint = ozERC20_.balanceOf(owner_);
+        assertTrue(balanceOzPostMint > (initMintAmout_ - 1) * 1 ether && balanceOzPostMint < initMintAmout_ * 1 ether);
+
+        return balanceOzPostMint;
+    }
+
+
 
     /**
      * Used 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
      * be ineligble so the MEV produced would be quite lower, proving the efficacy of the 
-     * rebase algorithm. 
+     * rebase algorithm, without the need of having to rebalance Uniswap and Balancer's pools.
      *
      * In this test, the "bigMint" is in relation to the amount being redeem (100:1)
      */
     function test_redeeming_multipleBigBalances_bigMints_smallRedeem() public {
-        _dealUnderlying(Quantity.SMALL);
+        (,uint initMintAmountBob, uint initMintAmountCharlie) = _dealUnderlying(Quantity.SMALL);
         uint amountToRedeem = 1;
 
         // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
@@ -318,19 +335,22 @@ contract ozTokenFactoryTest is Setup {
         assertTrue(balanceUsdcAlicePostMint == 0); 
 
         //----------
-        amountIn = IERC20Permit(testToken).balanceOf(bob);
-        _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false, Type.IN);
-        uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
-        assertTrue(balanceUsdcBobPostMint == 0);
-        uint balanceOzBobPostMint = ozERC20.balanceOf(bob);
-        assertTrue(balanceOzBobPostMint > 199 * 1 ether && balanceOzBobPostMint < 200 * 1 ether);
+        uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, initMintAmountBob);
+        uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, initMintAmountCharlie);
 
-        amountIn = IERC20Permit(testToken).balanceOf(charlie);
-        _createAndMintOzTokens(address(ozERC20), amountIn, charlie, CHARLIE_PK, false, false, Type.IN);
-        uint balanceUsdcCharliePostMint = IERC20Permit(testToken).balanceOf(charlie);
-        assertTrue(balanceUsdcCharliePostMint == 0);
-        uint balanceOzCharliePostMint = ozERC20.balanceOf(charlie);
-        assertTrue(balanceOzCharliePostMint > 299 * 1 ether && balanceOzCharliePostMint < 300 * 1 ether);
+        // amountIn = IERC20Permit(testToken).balanceOf(bob);
+        // _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false, Type.IN);
+        // uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
+        // assertTrue(balanceUsdcBobPostMint == 0);
+        // uint balanceOzBobPostMint = ozERC20.balanceOf(bob);
+        // assertTrue(balanceOzBobPostMint > 199 * 1 ether && balanceOzBobPostMint < 200 * 1 ether);
+
+        // amountIn = IERC20Permit(testToken).balanceOf(charlie);
+        // _createAndMintOzTokens(address(ozERC20), amountIn, charlie, CHARLIE_PK, false, false, Type.IN);
+        // uint balanceUsdcCharliePostMint = IERC20Permit(testToken).balanceOf(charlie);
+        // assertTrue(balanceUsdcCharliePostMint == 0);
+        // uint balanceOzCharliePostMint = ozERC20.balanceOf(charlie);
+        // assertTrue(balanceOzCharliePostMint > 299 * 1 ether && balanceOzCharliePostMint < 300 * 1 ether);
         //----------
 
         uint ozAmountIn = amountToRedeem * 1 ether;

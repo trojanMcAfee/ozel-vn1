@@ -167,16 +167,20 @@ contract Setup is Test {
             rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
 
             network = "ethereum";
-            blockNumber = 18413614; //18642180 18513614 18513614
+            blockNumber = 18413614; 
         }
     }
 
-    function _dealUnderlying(Quantity qnt_) internal returns(uint baseAmount) {
-        baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
+    function _dealUnderlying(Quantity qnt_) internal returns(uint, uint, uint) {
+        uint baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
+        uint amountBob = baseAmount * 2;
+        uint amountCharlie = baseAmount * 3;
 
         deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, bob, baseAmount * 2 * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, charlie, baseAmount * 3 * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, bob, amountBob * (10 ** IERC20Permit(testToken).decimals()));
+        deal(testToken, charlie, amountCharlie * (10 ** IERC20Permit(testToken).decimals()));
+
+        return (baseAmount, amountBob, amountCharlie);
     }
 
     function _changeSlippage(uint basisPoints_) internal {
