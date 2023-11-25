@@ -24,7 +24,6 @@ import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Po
 
 import "forge-std/console.sol";
 
-import {SafeMath} from "../../contracts/libraries/SafeMath.sol";
 
 
 contract ozTokenFactoryTest is Setup {
@@ -32,7 +31,6 @@ contract ozTokenFactoryTest is Setup {
     using FixedPointMathLib for uint;
     using stdStorage for StdStorage;
 
-    using SafeMath for uint;
 
     uint constant ONE_ETHER = 1 ether;
 
@@ -234,62 +232,21 @@ contract ozTokenFactoryTest is Setup {
         //Post-conditions
         testToken = usdcAddr;
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
+        uint finalUnderlyingNetBalanceAlice = balanceUsdcAlicePostMint + underlyingOut;
+        
         assertTrue(ozERC20.balanceOf(alice) == 0);
         assertTrue(underlyingOut > 99 * decimalsUnderlying && underlyingOut < 100 * decimalsUnderlying);
-
-        uint finalUnderlyingNetBalanceAlice = balanceUsdcAlicePostMint + underlyingOut;
+        assertTrue(balanceUnderlyingAlice == finalUnderlyingNetBalanceAlice);
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
-    function _getSharedCashBalancer() private returns(bytes32, bytes32) {
-        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-        bytes32 twoTokenPoolTokensSlot = bytes32(uint(9));
 
-        bytes32 balancesSlot = _extractSlot(poolId, twoTokenPoolTokensSlot, 2);
-        
-        bytes32 pairHash = keccak256(abi.encodePacked(rEthAddr, wethAddr));
-        bytes32 cashSlot = _extractSlot(pairHash, balancesSlot, 0);
-        bytes32 sharedCash = vm.load(vaultBalancer, cashSlot);
-
-        return (sharedCash, cashSlot);
-    }
-
-    function _setSharedCashBalancer(bytes32 oldSharedCash_, bytes32 cashSlot_) private {
-        vm.store(vaultBalancer, cashSlot_, oldSharedCash_);
-    }
-    
-
-    // function cash(bytes32 balance) internal pure returns (uint256) {
-    //     uint256 mask = 2**(112) - 1;
-    //     return uint256(balance) & mask;
-    // }
-
-    function sqrtPriceX96ToUint(uint160 sqrtPriceX96, uint8 decimalsToken0)
-    internal
-    pure
-    returns (uint256)
-    {
-        uint256 numerator1 = uint256(sqrtPriceX96) * uint256(sqrtPriceX96);
-        uint256 numerator2 = 10**decimalsToken0;
-        return numerator1.mulDiv(numerator2, 1 << 192);
-    }
-
-
-    function _getETHprice() private {
-        IUniswapV3Pool pool = IUniswapV3Pool(wethUsdPoolUni);
-        (uint160 sqrtPriceX96,,,,,,) =  pool.slot0();
-        uint price = 10 ** 12 / (sqrtPriceX96 / 2 ** 96) ** 2;
-        console.log('eht price: ', price);
-    }
-    
 
     /** REFERENCE
      * Mints 1M of ozTokens, then rebalances Uniswap and Balancer pools, 
      * and redeems a small portio of ozUSDC. 
      */
     function test_redeeming_bigBalance_bigMint_smallRedeem() public {
-        // deal(rEthAddr, address(OZ), 1 ether);
-
         /**
          * Pre-conditions
          */
@@ -304,26 +261,15 @@ contract ozTokenFactoryTest is Setup {
 
         //Gets the pre-swap pool values.
         bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
-        // (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
-
-        _getETHprice();
 
         //Creates an ozToken and mints some.
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0);
 
-        _getETHprice();
-
         //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
-        // _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-        // _resetPools((rawAmount * 1 ether) / OZ.ETH_USD());
-
-        _getETHprice();
-
-       
 
         uint ozAmountIn = rawAmount * 1 ether;
         testToken = address(ozERC20);
@@ -340,21 +286,13 @@ contract ozTokenFactoryTest is Setup {
         //Redeems ozUSDC for USDC.
         uint underlyingOut = ozERC20.burn(redeemData);
 
-        _getETHprice();
-
-        // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-
         /**
          * Post-conditions
          */
         uint balanceAliceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
 
-        console.log('---');
-        console.log('balanceAliceUnderlying: ', balanceAliceUnderlying);
-        console.log('underlyingOut: ', underlyingOut);
-        console.log('rawAmount: ', rawAmount);
-        // assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
-        // assertTrue(balanceAliceUnderlying == underlyingOut);
+        assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
+        assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
 
@@ -551,9 +489,6 @@ contract ozTokenFactoryTest is Setup {
 
 
     /************ HELPERS ***********/
-  
- 
-
     function _createAndMintOzTokens(
         address testToken_,
         uint amountIn_, 
@@ -666,70 +601,13 @@ contract ozTokenFactoryTest is Setup {
 
 
     //---- Reset pools helpers ----
-    function _resetPools(uint amountWeth_) private { //bytes32 slot0data_
-
-        deal(rEthAddr, owner, _toRETH(amountWeth_));
-        deal(wethAddr, owner, amountWeth_);
-        // deal(rEthWethPoolBalancer, owner, _toBPT(amountWeth_), true);
-
-        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-        address deadAddr = 0x000000000000000000000000000000000000dEaD;
-
-        //-------
-        vm.startPrank(owner);
-        IERC20Permit(wethAddr).approve(swapRouterUni, type(uint).max);
-        // tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
-
-        ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({ 
-                tokenIn: wethAddr,
-                tokenOut: usdcAddr, 
-                fee: 500, //0.05 - 500 / make this a programatic value
-                recipient: deadAddr,
-                deadline: block.timestamp,
-                amountIn: IERC20Permit(wethAddr).balanceOf(owner),
-                amountOutMinimum: 0,
-                sqrtPriceLimitX96: 0
-            });
-
-        ISwapRouter(swapRouterUni).exactInputSingle(params); 
-        // _modifySqrtPriceX96(slot0data_);
-        //------
-
-        IERC20Permit(rEthAddr).approve(vaultBalancer, type(uint).max);
-
-        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: poolId,
-            kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(rEthAddr),
-            assetOut: IAsset(wethAddr),
-            amount: IERC20Permit(rEthAddr).balanceOf(owner),
-            userData: new bytes(0)
-        });
-
-        IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: owner,
-            fromInternalBalance: false,
-            recipient: payable(deadAddr),
-            toInternalBalance: false
-        });
-
-        IVault(vaultBalancer).swap(singleSwap, funds, 1, block.timestamp);
-        
-        //---------
-
-        
-
-        vm.stopPrank();
-    }
-
+    
     function _resetPoolBalances(
         bytes32 slot0data_, 
         bytes32 oldSharedCash_,
         bytes32 cashSlot_
     ) private {
-        // _setTokenBalanceFromSlot(token_, oldTokenBalance_);
-        _setSharedCashBalancer(oldSharedCash_, cashSlot_); 
+        vm.store(vaultBalancer, cashSlot_, oldSharedCash_);
         _modifySqrtPriceX96(slot0data_); 
     }
 
@@ -741,49 +619,22 @@ contract ozTokenFactoryTest is Setup {
         vm.store(wethUsdPoolUni, bytes32(0), newSlot0Data);
     }
 
-    function _extractSlot(uint key_, bytes32 pos_, uint offset_) private pure returns(bytes32) {
-        return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
+    function _getSharedCashBalancer() private view returns(bytes32, bytes32) {
+        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
+        bytes32 twoTokenPoolTokensSlot = bytes32(uint(9));
+
+        bytes32 balancesSlot = _extractSlot(poolId, twoTokenPoolTokensSlot, 2);
+        
+        bytes32 pairHash = keccak256(abi.encodePacked(rEthAddr, wethAddr));
+        bytes32 cashSlot = _extractSlot(pairHash, balancesSlot, 0);
+        bytes32 sharedCash = vm.load(vaultBalancer, cashSlot);
+
+        return (sharedCash, cashSlot);
     }
+
 
     function _extractSlot(bytes32 key_, bytes32 pos_, uint offset_) private pure returns(bytes32) {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
     }
 
-    function _getTokenBalanceFromSlot(address token_) private view returns(bytes32, bytes32) {
-        bytes32 poolId = IPool(rEthWethPoolBalancer).getPoolId();
-        bytes32 balancesSlot = bytes32(uint(1));
-
-        bytes32 indexesSlot = _extractSlot(uint(poolId), balancesSlot, 2);
-        bytes32 tokenIndexSlot = _extractSlot(uint(uint160(token_)), indexesSlot, 0);
-        uint tokenIndex = uint(vm.load(vaultBalancer, tokenIndexSlot));
-
-        bytes32 entriesSlot = _extractSlot(uint(poolId), balancesSlot, 1);
-        bytes32 tokenBalanceSlot = _extractSlot(uint(tokenIndex - 1), entriesSlot, 1);
-        console.log(6);
-
-        bytes32 tokenBalanceBytes = vm.load(vaultBalancer, tokenBalanceSlot);
-        console.log(7);
-
-        return (tokenBalanceSlot, tokenBalanceBytes);
-    }
-
-    function _setTokenBalanceFromSlot(address token_, bytes32 oldTokenBalance_) private {
-        (bytes32 tokenBalanceSlot,) = _getTokenBalanceFromSlot(token_);
-        vm.store(vaultBalancer, tokenBalanceSlot, oldTokenBalance_);
-    }
-
-    function _toWETH(uint amountUnderlying_) private view returns(uint) {
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        return amountUnderlying_.mulDiv(ONE_ETHER, uint(price * 1e10));
-    }
-
-    function _toRETH(uint amountWeth_) private view returns(uint) {
-        (,int price,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
-        return amountWeth_.mulDiv(uint(price), ONE_ETHER);
-    }
-
-    function _toBPT(uint amountWeth_) private view returns(uint) {
-        uint bptRate = IPool(rEthWethPoolBalancer).getRate();
-        return amountWeth_.mulDiv(bptRate, ONE_ETHER);
-    }
 }

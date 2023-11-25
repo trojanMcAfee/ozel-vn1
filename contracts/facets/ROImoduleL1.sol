@@ -51,15 +51,6 @@ contract ROImoduleL1 {
         uint amountIn = amounts_.amountIn;
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
 
-        // _swapBalancer(
-        //     s.rETH,
-        //     s.WETH, //gotta check that WETH i receive
-        //     48180791113084391,
-        //     0
-        // );
-        // console.log('amountOut ****: ', IWETH(s.WETH).balanceOf(address(this)));
-        // revert('gooddd2');
-
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
             amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
@@ -109,8 +100,6 @@ contract ROImoduleL1 {
             uint minAmountOutUnderlying, 
             address receiver
         ) = abi.decode(data_, (uint, uint, uint, uint, address));
-
-        bytes32 poolId = IPool(s.rEthWethPoolBalancer).getPoolId();
 
         ozToken_.safeTransferFrom(owner_, address(this), ozAmountIn);
 
