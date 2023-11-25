@@ -281,10 +281,11 @@ contract ozTokenFactoryTest is Setup {
          * Action
          */
         vm.startPrank(alice);
-        ozERC20.approve(address(ozDiamond), ozAmountIn);
 
         //Redeems ozUSDC for USDC.
+        ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.burn(redeemData);
+        vm.stopPrank();
 
         /**
          * Post-conditions
@@ -298,60 +299,60 @@ contract ozTokenFactoryTest is Setup {
 
 
     /**
-     * Used quantities like 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
-     * be ineligble so the MEV produced is quite lower, proving the efficacy of the 
+     * Used 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
+     * be ineligble so the MEV produced would be quite lower, proving the efficacy of the 
      * rebase algorithm. 
      *
      * In this test, the "bigMint" is in relation to the amount being redeem (100:1)
      */
-    // function test_redeeming_multipleBigBalances_bigMints_smallRedeem() public {
-    //     _dealUnderlying(Quantity.SMALL);
-    //     // uint amountToRedeem = 1;
+    function test_redeeming_multipleBigBalances_bigMints_smallRedeem() public {
+        _dealUnderlying(Quantity.SMALL);
+        uint amountToRedeem = 1;
 
-    //     uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
-    //     uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-    //     assertTrue(amountIn == 100 * 1e6);
+        // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        // assertTrue(amountIn == 100 * 1e6);
 
-    //     (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-    //     uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-    //     assertTrue(balanceUsdcAlicePostMint == 0); 
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
+        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceUsdcAlicePostMint == 0); 
 
-    //     //----------
-    //     amountIn = IERC20Permit(testToken).balanceOf(bob);
-    //     _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false);
-    //     uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
-    //     assertTrue(balanceUsdcBobPostMint == 0);
-    //     uint balanceOzBobPostMint = ozERC20.balanceOf(bob);
-    //     assertTrue(balanceOzBobPostMint > 199 * 1 ether && balanceOzBobPostMint < 200 * 1 ether);
+        //----------
+        amountIn = IERC20Permit(testToken).balanceOf(bob);
+        _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false, Type.IN);
+        uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
+        assertTrue(balanceUsdcBobPostMint == 0);
+        uint balanceOzBobPostMint = ozERC20.balanceOf(bob);
+        assertTrue(balanceOzBobPostMint > 199 * 1 ether && balanceOzBobPostMint < 200 * 1 ether);
 
-    //     amountIn = IERC20Permit(testToken).balanceOf(charlie);
-    //     _createAndMintOzTokens(address(ozERC20), amountIn, charlie, CHARLIE_PK, false, false);
-    //     uint balanceUsdcCharliePostMint = IERC20Permit(testToken).balanceOf(charlie);
-    //     assertTrue(balanceUsdcCharliePostMint == 0);
-    //     uint balanceOzCharliePostMint = ozERC20.balanceOf(charlie);
-    //     assertTrue(balanceOzCharliePostMint > 299 * 1 ether && balanceOzCharliePostMint < 300 * 1 ether);
-    //     //----------
+        amountIn = IERC20Permit(testToken).balanceOf(charlie);
+        _createAndMintOzTokens(address(ozERC20), amountIn, charlie, CHARLIE_PK, false, false, Type.IN);
+        uint balanceUsdcCharliePostMint = IERC20Permit(testToken).balanceOf(charlie);
+        assertTrue(balanceUsdcCharliePostMint == 0);
+        uint balanceOzCharliePostMint = ozERC20.balanceOf(charlie);
+        assertTrue(balanceOzCharliePostMint > 299 * 1 ether && balanceOzCharliePostMint < 300 * 1 ether);
+        //----------
 
-    //     uint ozAmountIn = 1 * 1 ether; //amountToRedeem = 1
-    //     testToken = address(ozERC20);
-    //     (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        uint ozAmountIn = amountToRedeem * 1 ether;
+        testToken = address(ozERC20);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-    //     //Action
-    //     vm.startPrank(alice);
-    //     ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
-    //     uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
+        //Action
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), ozAmountIn);
+        uint underlyingOut = ozERC20.burn(redeemData);
 
-    //     //Post-conditions
-    //     uint balanceOzBobPostBurn = ozERC20.balanceOf(bob);
-    //     uint balanceOzCharliePostBurn = ozERC20.balanceOf(charlie);
-    //     uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostBurn).mulDiv(10000, balanceOzBobPostMint);
-    //     uint basisPointsDifferenceCharlieMEV = (balanceOzCharliePostMint - balanceOzCharliePostBurn).mulDiv(10000, balanceOzCharliePostMint);
+        //Post-conditions
+        uint balanceOzBobPostBurn = ozERC20.balanceOf(bob);
+        uint balanceOzCharliePostBurn = ozERC20.balanceOf(charlie);
+        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostBurn).mulDiv(10000, balanceOzBobPostMint);
+        uint basisPointsDifferenceCharlieMEV = (balanceOzCharliePostMint - balanceOzCharliePostBurn).mulDiv(10000, balanceOzCharliePostMint);
 
-    //     assertTrue(underlyingOut == IERC20Permit(usdcAddr).balanceOf(alice));
-    //     assertTrue(basisPointsDifferenceBobMEV == 0);
-    //     assertTrue(basisPointsDifferenceCharlieMEV == 0);
-    //     assertTrue(underlyingOut > 999000 && underlyingOut < 1 * 1e6);
-    // }
+        assertTrue(underlyingOut == IERC20Permit(usdcAddr).balanceOf(alice));
+        assertTrue(basisPointsDifferenceBobMEV == 0);
+        assertTrue(basisPointsDifferenceCharlieMEV == 0);
+        assertTrue(underlyingOut > 998000 && underlyingOut < 1 * 1e6);
+    }
 
 
     
