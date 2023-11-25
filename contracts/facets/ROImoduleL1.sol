@@ -51,15 +51,14 @@ contract ROImoduleL1 {
         uint amountIn = amounts_.amountIn;
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
 
-        // uint amountOut2 =_swapUni(
-        //     52842835268770747,
-        //     0,
-        //     s.WETH,
-        //     s.USDC,
-        //     owner_
+        // _swapBalancer(
+        //     s.rETH,
+        //     s.WETH, //gotta check that WETH i receive
+        //     48180791113084391,
+        //     0
         // );
-        // console.log('amountOut ****: ', amountOut2);
-        // revert('gooddd');
+        // console.log('amountOut ****: ', IWETH(s.WETH).balanceOf(address(this)));
+        // revert('gooddd2');
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(

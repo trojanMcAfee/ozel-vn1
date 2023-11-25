@@ -288,7 +288,7 @@ contract ozTokenFactoryTest is Setup {
      * and redeems a small portio of ozUSDC. 
      */
     function test_redeeming_bigBalance_bigMint_smallRedeem() public {
-        deal(wethAddr, address(OZ), 1 ether);
+        // deal(rEthAddr, address(OZ), 1 ether);
 
         /**
          * Pre-conditions
