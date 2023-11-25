@@ -297,24 +297,6 @@ contract ozTokenFactoryTest is Setup {
     }
 
 
-    function _createMintAssertOzTokens(
-        address owner_,
-        ozIToken ozERC20_,
-        uint ownerPK_,
-        uint initMintAmout_
-    ) private returns(uint) {
-        uint amountIn = IERC20Permit(testToken).balanceOf(owner_);
-        _createAndMintOzTokens(address(ozERC20_), amountIn, owner_, ownerPK_, false, false, Type.IN);
-        uint balanceUsdcPostMint = IERC20Permit(testToken).balanceOf(owner_);
-        assertTrue(balanceUsdcPostMint == 0);
-        uint balanceOzPostMint = ozERC20_.balanceOf(owner_);
-        assertTrue(balanceOzPostMint > (initMintAmout_ - 1) * 1 ether && balanceOzPostMint < initMintAmout_ * 1 ether);
-
-        return balanceOzPostMint;
-    }
-
-
-
     /**
      * Used 100 USDC to mint ozUSDC, where redeeming 1 ozUSDC, would
      * be ineligble so the MEV produced would be quite lower, proving the efficacy of the 
@@ -334,24 +316,8 @@ contract ozTokenFactoryTest is Setup {
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0); 
 
-        //----------
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, initMintAmountBob);
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, initMintAmountCharlie);
-
-        // amountIn = IERC20Permit(testToken).balanceOf(bob);
-        // _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false, Type.IN);
-        // uint balanceUsdcBobPostMint = IERC20Permit(testToken).balanceOf(bob);
-        // assertTrue(balanceUsdcBobPostMint == 0);
-        // uint balanceOzBobPostMint = ozERC20.balanceOf(bob);
-        // assertTrue(balanceOzBobPostMint > 199 * 1 ether && balanceOzBobPostMint < 200 * 1 ether);
-
-        // amountIn = IERC20Permit(testToken).balanceOf(charlie);
-        // _createAndMintOzTokens(address(ozERC20), amountIn, charlie, CHARLIE_PK, false, false, Type.IN);
-        // uint balanceUsdcCharliePostMint = IERC20Permit(testToken).balanceOf(charlie);
-        // assertTrue(balanceUsdcCharliePostMint == 0);
-        // uint balanceOzCharliePostMint = ozERC20.balanceOf(charlie);
-        // assertTrue(balanceOzCharliePostMint > 299 * 1 ether && balanceOzCharliePostMint < 300 * 1 ether);
-        //----------
 
         uint ozAmountIn = amountToRedeem * 1 ether;
         testToken = address(ozERC20);
@@ -377,43 +343,45 @@ contract ozTokenFactoryTest is Setup {
 
     
     /**
-     * Minds ~1M of ozUSDC, but redeems a portion of the balance (~700k)
+     * Mints ~1M of ozUSDC, but redeems a portion of the balance (~700k)
      */
-    // function test_redeeming_bigBalance_bigMint_mediumRedeem() public {
-    //     //Pre-conditions
-    //     _changeSlippage(9900);
-    //     _dealUnderlying(Quantity.BIG);
+    function test_redeeming_bigBalance_bigMint_mediumRedeem() public {
+        //Pre-conditions
+        _changeSlippage(9900);
+        _dealUnderlying(Quantity.BIG);
 
-    //     bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
-    //     (,bytes32 wethBalanceBytes) = _getTokenBalanceFromSlot(wethAddr);
+        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
-    //     uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
-    //     uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-    //     assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(amountIn == 1_000_000 * 1e6);
 
-    //     (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true);
-    //     uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-    //     assertTrue(balanceUsdcAlicePostMint == 0);
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
+        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceUsdcAlicePostMint == 0);
 
-    //     _resetPoolBalances(oldSlot0data, wethAddr, wethBalanceBytes);
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
-    //     uint ozAmountIn = ozERC20.balanceOf(alice) / 10;
-    //     testToken = address(ozERC20);
+        uint ozAmountIn = ozERC20.balanceOf(alice) / 10;
+        testToken = address(ozERC20);
 
-    //     (RequestType memory req,,,) = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
 
-    //     //Action
-    //     vm.startPrank(alice);
-    //     ozERC20.approve(address(ozDiamond), req.amtsOut.ozAmountIn);
-    //     uint underlyingOut = ozERC20.burn(req.amtsOut, alice);
+        //Action
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), ozAmountIn);
+        uint underlyingOut = ozERC20.burn(redeemData);
 
-    //     //Post-conditions
-    //     uint balanceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
-    //     uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDiv(10000, ozAmountIn);
+        //Post-conditions
+        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDiv(10000, ozAmountIn);
 
-    //     assertTrue(percentageDiffAmounts < 11);
-    //     vm.stopPrank();
-    // }
+        //Measures that the difference between the amount of ozTokens that went in to
+        //the amount of underlying that went out is less than 0.15%, which translates to
+        //differences between pools balances during swaps. 
+        uint percentageDiff = 15;
+        assertTrue(percentageDiffAmounts < percentageDiff);
+        vm.stopPrank();
+    }
 
 
 
@@ -558,6 +526,22 @@ contract ozTokenFactoryTest is Setup {
         shares = ozERC20.mint(mintData); 
         
         vm.stopPrank();
+    }
+
+    function _createMintAssertOzTokens(
+        address owner_,
+        ozIToken ozERC20_,
+        uint ownerPK_,
+        uint initMintAmout_
+    ) private returns(uint) {
+        uint amountIn = IERC20Permit(testToken).balanceOf(owner_);
+        _createAndMintOzTokens(address(ozERC20_), amountIn, owner_, ownerPK_, false, false, Type.IN);
+        uint balanceUsdcPostMint = IERC20Permit(testToken).balanceOf(owner_);
+        assertTrue(balanceUsdcPostMint == 0);
+        uint balanceOzPostMint = ozERC20_.balanceOf(owner_);
+        assertTrue(balanceOzPostMint > (initMintAmout_ - 1) * 1 ether && balanceOzPostMint < initMintAmout_ * 1 ether);
+
+        return balanceOzPostMint;
     }
 
 
