@@ -11,7 +11,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
 
 
-contract HelpersTests is Setup {
+contract BaseMethods is Setup {
 
     function _createAndMintOzTokens(
         address testToken_,

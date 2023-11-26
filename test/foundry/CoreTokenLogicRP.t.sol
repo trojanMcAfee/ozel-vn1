@@ -5,12 +5,12 @@ pragma solidity 0.8.21;
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {Setup} from "./Setup.sol";
-import {HelpersTests} from "./HelpersTests.sol";
+import {BaseMethods} from "./BaseMethods.sol";
 import {Type} from "./AppStorageTests.sol";
 
 
 
-contract CoreTokenLogicRPtest is HelpersTests {
+contract CoreTokenLogicRPtest is BaseMethods {
 
 
 
