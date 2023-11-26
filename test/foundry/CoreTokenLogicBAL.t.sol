@@ -35,6 +35,31 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
     using FixedPointMathLib for uint;
 
+    function test_dai() public {
+        uint amountIn = 10_000 * 10 ** 18;
+
+        bytes32 permitHash = HelpersLib.getPermitHash(
+            daiAddr,
+            alice,
+            bob,
+            amountIn,
+            IERC20Permit(daiAddr).nonces(alice),
+            block.timestamp
+        );
+
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
+
+        IERC20Permit(daiAddr).permit(
+            alice,
+            bob,
+            amountIn,
+            block.timestamp,
+            v, r, s
+        );
+
+
+    }
+
 
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
@@ -53,7 +78,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
     }
-
 
 
     /**

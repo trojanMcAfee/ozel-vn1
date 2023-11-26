@@ -186,7 +186,7 @@ contract Setup is Test {
 
     function _runSetup() internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
-        testToken = daiAddr;
+        testToken = usdcAddr;
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
 
         //Initial users config
@@ -370,6 +370,7 @@ contract Setup is Test {
         vm.label(address(cutOz), "ozCut");
         vm.label(rocketPoolStorage, "rocketPoolStorage");
         vm.label(rEthEthChainlink, 'rEthEthChainlink');
+        vm.label(daiAddr, 'DAI');
     }
 
 

@@ -34,7 +34,6 @@ contract BaseMethods is Setup {
             ));
         } else {
             ozERC20 = ozIToken(testToken_);
-            
         }
 
         (bytes memory data) = _createDataOffchain(
@@ -101,7 +100,7 @@ contract BaseMethods is Setup {
     function _createDataOffchain( 
         ozIToken ozERC20_, 
         uint amountIn_,
-        uint SENDER_PK_,
+        uint userPK_,
         address sender_,
         Type reqType_
     ) internal returns(bytes memory data) {
@@ -118,7 +117,7 @@ contract BaseMethods is Setup {
             );
 
             bytes32 permitHash = _getPermitHash(sender_, amountIn_);
-            (uint8 v, bytes32 r, bytes32 s) = vm.sign(SENDER_PK_, permitHash);
+            (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPK_, permitHash);
 
             data = abi.encode(minAmountsOut, v, r, s);
         }
