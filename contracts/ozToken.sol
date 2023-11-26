@@ -266,13 +266,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         uint assets = previewRedeem(shares);
 
-        uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(
-            // amts_,
-            address(this),
-            msg.sender,
-            // receiver_
-            data_
-        );
+        uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(msg.sender, data_);
 
         accountShares = sharesOf(_ozDiamond);
 

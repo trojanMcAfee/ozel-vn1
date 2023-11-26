@@ -89,7 +89,6 @@ contract ROImoduleL1 {
 
 
     function useOzTokens(
-        address ozToken_,
         address owner_,
         bytes memory data_
     ) external returns(uint amountOut) {
@@ -101,7 +100,7 @@ contract ROImoduleL1 {
             address receiver
         ) = abi.decode(data_, (uint, uint, uint, uint, address));
 
-        ozToken_.safeTransferFrom(owner_, address(this), ozAmountIn);
+        msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         //Swap rETH to WETH
         _swapBalancer(

@@ -31,14 +31,6 @@ interface ozIDiamond {
     ) external;
 
     function useOzTokens(
-        AmountsOut memory amts_,
-        address ozToken_,
-        address owner_,
-        address receiver_
-    ) external returns(uint); //remove
-
-    function useOzTokens(
-        address ozToken_,
         address owner_,
         bytes memory data_
     ) external returns(uint);
