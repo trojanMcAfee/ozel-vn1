@@ -14,7 +14,8 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import {AmountsIn, AmountsOut} from "../../contracts/AppStorage.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersTests} from "./HelpersTests.sol";
-import "solady/src/utils/FixedPointMathLib.sol";
+// import "solady/src/utils/FixedPointMathLib.sol";
+import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import {Type, RequestType, ReqIn, ReqOut} from "./AppStorageTests.sol";
 import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {stdStorage, StdStorage} from "forge-std/Test.sol";
@@ -26,13 +27,9 @@ import "forge-std/console.sol";
 
 
 
-contract ozTokenFactoryTest is Setup {
+contract MintingRedeemingRebasingTest is Setup {
 
     using FixedPointMathLib for uint;
-    using stdStorage for StdStorage;
-
-
-    uint constant ONE_ETHER = 1 ether;
 
 
     /**
@@ -330,8 +327,8 @@ contract ozTokenFactoryTest is Setup {
         //Post-conditions
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
         uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
-        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDiv(10000, balanceOzBobPostMint);
-        uint basisPointsDifferenceCharlieMEV = (balanceOzCharliePostMint - balanceOzCharliePostRedeem).mulDiv(10000, balanceOzCharliePostMint);
+        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
+        uint basisPointsDifferenceCharlieMEV = (balanceOzCharliePostMint - balanceOzCharliePostRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
         assertTrue(underlyingOut == IERC20Permit(usdcAddr).balanceOf(alice));
         assertTrue(basisPointsDifferenceBobMEV == 0);
@@ -372,7 +369,7 @@ contract ozTokenFactoryTest is Setup {
         uint underlyingOut = ozERC20.redeem(redeemData);
 
         //Post-conditions
-        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDiv(10000, ozAmountIn);
+        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDivDown(10000, ozAmountIn);
 
         //Measures that the difference between the amount of ozTokens that went in to
         //the amount of underlying that went out is less than 0.15%, which translates to
@@ -456,7 +453,7 @@ contract ozTokenFactoryTest is Setup {
 
         // //Post-conditions
         uint percentageDiff = 15;
-        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDiv(10000, ozAmountIn);
+        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDivDown(10000, ozAmountIn);
         assertTrue(percentageDiffAmounts < percentageDiff);
     }
      
