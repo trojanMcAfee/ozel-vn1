@@ -224,17 +224,17 @@
   },
   "ast": {
     "absolutePath": "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
-    "id": 38340,
+    "id": 38330,
     "exportedSymbols": {
       "IUniswapV3PoolDerivedState": [
-        38339
+        38329
       ]
     },
     "nodeType": "SourceUnit",
     "src": "45:2557:76",
     "nodes": [
       {
-        "id": 38310,
+        "id": 38300,
         "nodeType": "PragmaDirective",
         "src": "45:24:76",
         "nodes": [],
@@ -246,17 +246,17 @@
         ]
       },
       {
-        "id": 38339,
+        "id": 38329,
         "nodeType": "ContractDefinition",
         "src": "293:2308:76",
         "nodes": [
           {
-            "id": 38324,
+            "id": 38314,
             "nodeType": "FunctionDefinition",
             "src": "1386:180:76",
             "nodes": [],
             "documentation": {
-              "id": 38312,
+              "id": 38302,
               "nodeType": "StructuredDocumentation",
               "src": "336:1045:76",
               "text": "@notice Returns the cumulative tick and liquidity as of each timestamp `secondsAgo` from the current block timestamp\n @dev To get a time weighted average tick or liquidity-in-range, you must call this with two values, one representing\n the beginning of the period and another for the end of the period. E.g., to get the last hour time-weighted average tick,\n you must call it with secondsAgos = [3600, 0].\n @dev The time weighted average tick represents the geometric time weighted average price of the pool, in\n log base sqrt(1.0001) of token1 / token0. The TickMath library can be used to go from a tick value to a ratio.\n @param secondsAgos From how long ago each cumulative tick and liquidity value should be returned\n @return tickCumulatives Cumulative tick values as of each `secondsAgos` from the current block timestamp\n @return secondsPerLiquidityCumulativeX128s Cumulative seconds per liquidity-in-range value as of each `secondsAgos` from the current block\n timestamp"
@@ -268,17 +268,17 @@
             "name": "observe",
             "nameLocation": "1395:7:76",
             "parameters": {
-              "id": 38316,
+              "id": 38306,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 38315,
+                  "id": 38305,
                   "mutability": "mutable",
                   "name": "secondsAgos",
                   "nameLocation": "1421:11:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 38324,
+                  "scope": 38314,
                   "src": "1403:29:76",
                   "stateVariable": false,
                   "storageLocation": "calldata",
@@ -288,7 +288,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 38313,
+                      "id": 38303,
                       "name": "uint32",
                       "nodeType": "ElementaryTypeName",
                       "src": "1403:6:76",
@@ -297,7 +297,7 @@
                         "typeString": "uint32"
                       }
                     },
-                    "id": 38314,
+                    "id": 38304,
                     "nodeType": "ArrayTypeName",
                     "src": "1403:8:76",
                     "typeDescriptions": {
@@ -311,17 +311,17 @@
               "src": "1402:31:76"
             },
             "returnParameters": {
-              "id": 38323,
+              "id": 38313,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 38319,
+                  "id": 38309,
                   "mutability": "mutable",
                   "name": "tickCumulatives",
                   "nameLocation": "1496:15:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 38324,
+                  "scope": 38314,
                   "src": "1481:30:76",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -331,7 +331,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 38317,
+                      "id": 38307,
                       "name": "int56",
                       "nodeType": "ElementaryTypeName",
                       "src": "1481:5:76",
@@ -340,7 +340,7 @@
                         "typeString": "int56"
                       }
                     },
-                    "id": 38318,
+                    "id": 38308,
                     "nodeType": "ArrayTypeName",
                     "src": "1481:7:76",
                     "typeDescriptions": {
@@ -352,12 +352,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 38322,
+                  "id": 38312,
                   "mutability": "mutable",
                   "name": "secondsPerLiquidityCumulativeX128s",
                   "nameLocation": "1530:34:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 38324,
+                  "scope": 38314,
                   "src": "1513:51:76",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -367,7 +367,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 38320,
+                      "id": 38310,
                       "name": "uint160",
                       "nodeType": "ElementaryTypeName",
                       "src": "1513:7:76",
@@ -376,7 +376,7 @@
                         "typeString": "uint160"
                       }
                     },
-                    "id": 38321,
+                    "id": 38311,
                     "nodeType": "ArrayTypeName",
                     "src": "1513:9:76",
                     "typeDescriptions": {
@@ -389,18 +389,18 @@
               ],
               "src": "1480:85:76"
             },
-            "scope": 38339,
+            "scope": 38329,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 38338,
+            "id": 38328,
             "nodeType": "FunctionDefinition",
             "src": "2348:251:76",
             "nodes": [],
             "documentation": {
-              "id": 38325,
+              "id": 38315,
               "nodeType": "StructuredDocumentation",
               "src": "1572:771:76",
               "text": "@notice Returns a snapshot of the tick cumulative, seconds per liquidity and seconds inside a tick range\n @dev Snapshots must only be compared to other snapshots, taken over a period for which a position existed.\n I.e., snapshots cannot be compared if a position is not held for the entire period between when the first\n snapshot is taken and the second snapshot is taken.\n @param tickLower The lower tick of the range\n @param tickUpper The upper tick of the range\n @return tickCumulativeInside The snapshot of the tick accumulator for the range\n @return secondsPerLiquidityInsideX128 The snapshot of seconds per liquidity for the range\n @return secondsInside The snapshot of seconds per liquidity for the range"
@@ -412,17 +412,17 @@
             "name": "snapshotCumulativesInside",
             "nameLocation": "2357:25:76",
             "parameters": {
-              "id": 38330,
+              "id": 38320,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 38327,
+                  "id": 38317,
                   "mutability": "mutable",
                   "name": "tickLower",
                   "nameLocation": "2389:9:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 38338,
+                  "scope": 38328,
                   "src": "2383:15:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -431,7 +431,7 @@
                     "typeString": "int24"
                   },
                   "typeName": {
-                    "id": 38326,
+                    "id": 38316,
                     "name": "int24",
                     "nodeType": "ElementaryTypeName",
                     "src": "2383:5:76",
@@ -444,12 +444,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 38329,
+                  "id": 38319,
                   "mutability": "mutable",
                   "name": "tickUpper",
                   "nameLocation": "2406:9:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 38338,
+                  "scope": 38328,
                   "src": "2400:15:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -458,7 +458,7 @@
                     "typeString": "int24"
                   },
                   "typeName": {
-                    "id": 38328,
+                    "id": 38318,
                     "name": "int24",
                     "nodeType": "ElementaryTypeName",
                     "src": "2400:5:76",
@@ -473,17 +473,17 @@
               "src": "2382:34:76"
             },
             "returnParameters": {
-              "id": 38337,
+              "id": 38327,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 38332,
+                  "id": 38322,
                   "mutability": "mutable",
                   "name": "tickCumulativeInside",
                   "nameLocation": "2483:20:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 38338,
+                  "scope": 38328,
                   "src": "2477:26:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -492,7 +492,7 @@
                     "typeString": "int56"
                   },
                   "typeName": {
-                    "id": 38331,
+                    "id": 38321,
                     "name": "int56",
                     "nodeType": "ElementaryTypeName",
                     "src": "2477:5:76",
@@ -505,12 +505,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 38334,
+                  "id": 38324,
                   "mutability": "mutable",
                   "name": "secondsPerLiquidityInsideX128",
                   "nameLocation": "2525:29:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 38338,
+                  "scope": 38328,
                   "src": "2517:37:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -519,7 +519,7 @@
                     "typeString": "uint160"
                   },
                   "typeName": {
-                    "id": 38333,
+                    "id": 38323,
                     "name": "uint160",
                     "nodeType": "ElementaryTypeName",
                     "src": "2517:7:76",
@@ -532,12 +532,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 38336,
+                  "id": 38326,
                   "mutability": "mutable",
                   "name": "secondsInside",
                   "nameLocation": "2575:13:76",
                   "nodeType": "VariableDeclaration",
-                  "scope": 38338,
+                  "scope": 38328,
                   "src": "2568:20:76",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -546,7 +546,7 @@
                     "typeString": "uint32"
                   },
                   "typeName": {
-                    "id": 38335,
+                    "id": 38325,
                     "name": "uint32",
                     "nodeType": "ElementaryTypeName",
                     "src": "2568:6:76",
@@ -560,7 +560,7 @@
               ],
               "src": "2463:135:76"
             },
-            "scope": 38339,
+            "scope": 38329,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -572,18 +572,18 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 38311,
+          "id": 38301,
           "nodeType": "StructuredDocumentation",
           "src": "71:222:76",
           "text": "@title Pool state that is not stored\n @notice Contains view functions to provide information about the pool that is computed rather than stored on the\n blockchain. The functions here may have variable gas costs."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          38339
+          38329
         ],
         "name": "IUniswapV3PoolDerivedState",
         "nameLocation": "303:26:76",
-        "scope": 38340,
+        "scope": 38330,
         "usedErrors": [],
         "usedEvents": []
       }

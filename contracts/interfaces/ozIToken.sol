@@ -60,14 +60,8 @@ interface ozIToken {
     function totalShares() external view returns(uint);
     function totalAssets() external view returns(uint);
 
-    function burn(
-        AmountsOut memory amts_,
-        address receiver_
-    ) external returns(uint); //remove this
 
-    function burn(
-        bytes memory data_
-    ) external returns(uint);
+    function redeem(bytes memory data_) external returns(uint);
 
 
     function previewWithdraw(uint256 assets) external view returns (uint256 shares);

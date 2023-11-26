@@ -192,7 +192,7 @@ contract ozTokenFactoryTest is Setup {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        ozERC20.burn(redeemData); 
+        ozERC20.redeem(redeemData); 
 
         //Post-conditions
         testToken = usdcAddr;
@@ -227,7 +227,7 @@ contract ozTokenFactoryTest is Setup {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.burn(redeemData); 
+        uint underlyingOut = ozERC20.redeem(redeemData); 
 
         //Post-conditions
         testToken = usdcAddr;
@@ -283,7 +283,7 @@ contract ozTokenFactoryTest is Setup {
 
         //Redeems ozUSDC for USDC.
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.burn(redeemData);
+        uint underlyingOut = ozERC20.redeem(redeemData);
         vm.stopPrank();
 
         /**
@@ -325,13 +325,13 @@ contract ozTokenFactoryTest is Setup {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.burn(redeemData);
+        uint underlyingOut = ozERC20.redeem(redeemData);
 
         //Post-conditions
-        uint balanceOzBobPostBurn = ozERC20.balanceOf(bob);
-        uint balanceOzCharliePostBurn = ozERC20.balanceOf(charlie);
-        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostBurn).mulDiv(10000, balanceOzBobPostMint);
-        uint basisPointsDifferenceCharlieMEV = (balanceOzCharliePostMint - balanceOzCharliePostBurn).mulDiv(10000, balanceOzCharliePostMint);
+        uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
+        uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
+        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDiv(10000, balanceOzBobPostMint);
+        uint basisPointsDifferenceCharlieMEV = (balanceOzCharliePostMint - balanceOzCharliePostRedeem).mulDiv(10000, balanceOzCharliePostMint);
 
         assertTrue(underlyingOut == IERC20Permit(usdcAddr).balanceOf(alice));
         assertTrue(basisPointsDifferenceBobMEV == 0);
@@ -369,7 +369,7 @@ contract ozTokenFactoryTest is Setup {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.burn(redeemData);
+        uint underlyingOut = ozERC20.redeem(redeemData);
 
         //Post-conditions
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDiv(10000, ozAmountIn);
@@ -407,7 +407,7 @@ contract ozTokenFactoryTest is Setup {
             v, r, s
         );
 
-        ozERC20.burn(redeemData); 
+        ozERC20.redeem(redeemData); 
 
         //Post-conditions
         testToken = usdcAddr;
@@ -451,7 +451,7 @@ contract ozTokenFactoryTest is Setup {
         // //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.burn(redeemData);
+        uint underlyingOut = ozERC20.redeem(redeemData);
         vm.stopPrank();
 
         // //Post-conditions
