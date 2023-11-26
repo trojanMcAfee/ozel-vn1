@@ -26,8 +26,11 @@ import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Po
 import "forge-std/console.sol";
 
 
-
-contract MintingRedeemingRebasingTest is Setup {
+/**
+ * Tests the minting, redeeming, and rebasing logic of the ozToken contract
+ * when using Balancer as the logic mechanism. 
+ */
+contract CoreTokenLogicBALtest is Setup {
 
     using FixedPointMathLib for uint;
 
