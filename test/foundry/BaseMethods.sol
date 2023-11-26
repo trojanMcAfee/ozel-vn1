@@ -62,9 +62,7 @@ contract BaseMethods is Setup {
         );
 
         bytes memory mintData = abi.encode(amounts, user_);
-        console.log(1);
         shares = ozERC20.mint(mintData); 
-        console.log(2);
         
         vm.stopPrank();
     }
@@ -116,7 +114,7 @@ contract BaseMethods is Setup {
 
         } else if (reqType_ == Type.IN) { 
             uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), defaultSlippage
+                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), OZ.getDefaultSlippage()
             );
 
             bytes32 permitHash = _getPermitHash(sender_, amountIn_);

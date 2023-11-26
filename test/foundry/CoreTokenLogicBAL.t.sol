@@ -57,7 +57,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
 
     /**
-     * Mints a big quantity of ozUSDC (~1M)
+     * Mints a big quantity of ozTokens (~1M)
      */
     function test_minting_approve_bigMint_balancer() public {
         //Pre-condition

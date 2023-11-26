@@ -35,7 +35,7 @@ import "forge-std/console.sol";
 error TokenInNotValid(address token);
 error InvalidBalancerSwap();
 
-error OZError01();
+error OZError01(string errorMsg);
 
 
 contract ROImoduleL1 {
@@ -114,7 +114,7 @@ contract ROImoduleL1 {
         );
 
         //swap WETH to underlying
-        amountOut =_swapUni(
+        amountOut = _swapUni(
             IERC20Permit(s.WETH).balanceOf(address(this)),
             minAmountOutUnderlying,
             s.WETH,
@@ -161,8 +161,8 @@ contract ROImoduleL1 {
 
         try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) { 
             return amountOut;
-        } catch {
-            revert OZError01();
+        } catch Error(string memory reason) {
+            revert OZError01(reason);
         }
     }
 

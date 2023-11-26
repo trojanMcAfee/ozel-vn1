@@ -44,14 +44,9 @@ struct AmountsIn {
     uint amountIn;
     uint minWethOut;
     uint minRethOut;
-    // uint minBptOut; //remove this one only
 }
 
-// struct MintData {
-//     uint112 amountIn;
-//     uint112 minWethOut;
-//     address receiver;
-// }
+
 
 
 struct AmountsOut {
@@ -61,12 +56,7 @@ struct AmountsOut {
     uint minUsdcOut;
 }
 
-// struct AmountsOut {
-//     uint ozAmountIn;
-//     uint minWethOut;
-//     uint bptAmountIn;
-//     uint minUsdcOut;
-// }
+
 
 enum Asset {
     USD,
