@@ -183,22 +183,6 @@ contract Setup is Test {
         return (baseAmount, amountBob, amountCharlie);
     }
 
-    function _changeSlippage(uint basisPoints_) internal {
-        vm.prank(owner);
-        OZ.changeDefaultSlippage(basisPoints_);
-        assertTrue(OZ.getDefaultSlippage() == basisPoints_);
-    }
-
-    function _modifyRocketPoolDepositMaxLimit() internal {
-        address rocketDAOProtocolProposals = 
-            IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
-
-        DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
-
-        vm.prank(rocketDAOProtocolProposals);
-        settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
-    }
-
 
     function _runSetup() internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/

@@ -13,8 +13,15 @@ import {Type} from "./AppStorageTests.sol";
 contract CoreTokenLogicRPtest is BaseMethods {
 
 
+    modifier confirmRethSupplyIncrease() {
+        uint preSupply = IERC20Permit(rEthAddr).totalSupply();
+        _;
+        uint postSupply = IERC20Permit(rEthAddr).totalSupply();
+        assertTrue(postSupply > preSupply);
+    }
 
-    function test_minting_approve_smallMint_rocketPool() public {
+
+    function test_minting_approve_smallMint_rocketPool() public confirmRethSupplyIncrease {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();

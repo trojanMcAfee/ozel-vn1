@@ -9,6 +9,7 @@ import {Setup} from "./Setup.sol";
 import {Type} from "./AppStorageTests.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
+import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 
 
 contract BaseMethods is Setup {
@@ -135,6 +136,22 @@ contract BaseMethods is Setup {
         );
     }
 
+    function _changeSlippage(uint basisPoints_) internal {
+        vm.prank(owner);
+        OZ.changeDefaultSlippage(basisPoints_);
+        assertTrue(OZ.getDefaultSlippage() == basisPoints_);
+    }
+
+    function _modifyRocketPoolDepositMaxLimit() internal {
+        address rocketDAOProtocolProposals = 
+            IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
+
+        DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
+
+        vm.prank(rocketDAOProtocolProposals);
+        settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
+    }
+
 
     //---- Reset pools helpers ----
     
@@ -167,7 +184,6 @@ contract BaseMethods is Setup {
 
         return (sharedCash, cashSlot);
     }
-
 
     function _extractSlot(bytes32 key_, bytes32 pos_, uint offset_) internal pure returns(bytes32) {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);

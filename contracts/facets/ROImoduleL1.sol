@@ -12,7 +12,8 @@ import {
     AmountsOut, 
     Asset
 } from "../AppStorage.sol";
-import "solady/src/utils/FixedPointMathLib.sol";
+// import "solady/src/utils/FixedPointMathLib.sol";
+import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
 // import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
@@ -126,7 +127,7 @@ contract ROImoduleL1 {
 
         if (type_ == Asset.USD) {
             (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-            total = uint(price).mulDiv(total, 1e8);
+            total = uint(price).mulDivDown(total, 1e8);
         }
     }
 
@@ -208,9 +209,9 @@ contract ROImoduleL1 {
      */
     // function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
     //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-    //     uint expectedOut = erc20Balance_.fullMulDiv(uint(price) * 10 ** 10, 1 ether);
+    //     uint expectedOut = erc20Balance_.fullmulDivDown(uint(price) * 10 ** 10, 1 ether);
     //     uint minOutUnprocessed = 
-    //         expectedOut - expectedOut.fullMulDiv(s.defaultSlippage * 100, 1000000); 
+    //         expectedOut - expectedOut.fullmulDivDown(s.defaultSlippage * 100, 1000000); 
     //     minOut = minOutUnprocessed.mulWad(10 ** 6);
     // }
 

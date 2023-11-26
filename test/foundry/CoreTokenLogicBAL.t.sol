@@ -39,7 +39,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
      */
-    function test_minting_approve_smallMint_swapBalancer() public {
+    function test_minting_approve_smallMint_balancer() public {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -54,29 +54,12 @@ contract CoreTokenLogicBALtest is BaseMethods {
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
     }
 
-    //--------
-    function test_minting_approve_smallMint_rocketPool() public {
-        //Pre-condition
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        _modifyRocketPoolDepositMaxLimit();
-
-        //Action
-        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
-            testToken, amountIn, alice, ALICE_PK, true, false, Type.IN
-        );
-
-        //Post-conditions
-        assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
-    }
-    //---------
 
 
     /**
      * Mints a big quantity of ozUSDC (~1M)
      */
-    function test_minting_approve_bigMint() public {
+    function test_minting_approve_bigMint_balancer() public {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -96,7 +79,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     /**
      * Mints a small quantity of ozTokens using EIP2612
      */
-    function test_minting_eip2612() public { 
+    function test_minting_eip2612_balancer() public { 
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
@@ -143,7 +126,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     /**
      * Transfer ozTokens between accounts
      */
-    function test_transfer() public {
+    function test_transfer_balancer() public {
         //Pre-conditions
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
 
@@ -172,7 +155,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     /**
      * From 1M USDC balance, mint 1M and redeem 1M
      */
-    function test_redeeming_bigBalance_bigMint_bigRedeem() public {
+    function test_redeeming_bigBalance_bigMint_bigRedeem_balancer() public {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
@@ -207,7 +190,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     /**
      * From 1M USDC balance, mint and redeem a small part (100 USDC)
      */
-    function test_redeeming_bigBalance_smallMint_smallRedeem() public {
+    function test_redeeming_bigBalance_smallMint_smallRedeem_balancer() public {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
@@ -246,7 +229,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
      * Mints 1M of ozTokens, then rebalances Uniswap and Balancer pools, 
      * and redeems a small portio of ozUSDC. 
      */
-    function test_redeeming_bigBalance_bigMint_smallRedeem() public {
+    function test_redeeming_bigBalance_bigMint_smallRedeem_balancer() public {
         /**
          * Pre-conditions
          */
@@ -304,7 +287,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
      *
      * In this test, the "bigMint" is in relation to the amount being redeem (100:1)
      */
-    function test_redeeming_multipleBigBalances_bigMints_smallRedeem() public {
+    function test_redeeming_multipleBigBalances_bigMints_smallRedeem_balancer() public {
         (,uint initMintAmountBob, uint initMintAmountCharlie) = _dealUnderlying(Quantity.SMALL);
         uint amountToRedeem = 1;
 
@@ -345,7 +328,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     /**
      * Mints ~1M of ozUSDC, but redeems a portion of the balance (~700k)
      */
-    function test_redeeming_bigBalance_bigMint_mediumRedeem() public {
+    function test_redeeming_bigBalance_bigMint_mediumRedeem_balancer() public {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
@@ -384,7 +367,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     }
 
 
-    function test_redeeming_eip2612() public {
+    function test_redeeming_eip2612_balancer() public {
         //Pre-conditions
         _dealUnderlying(Quantity.SMALL);
         uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
@@ -428,7 +411,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
      * This test proves that the rebasing algorithm works, and that the difference
      * between token balances is due to imbalanced pools after the test swaps
      */
-    function test_redeeming_multipleBigBalances_bigMint_mediumRedeem() public {
+    function test_redeeming_multipleBigBalances_bigMint_mediumRedeem_balancer() public {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
