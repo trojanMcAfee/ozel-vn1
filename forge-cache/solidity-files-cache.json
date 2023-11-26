@@ -1332,8 +1332,8 @@
       }
     },
     "contracts/ozToken.sol": {
-      "lastModificationDate": 1701005590849,
-      "contentHash": "3296ae4b1f73669b2d28065218cc93e1",
+      "lastModificationDate": 1701006630348,
+      "contentHash": "874640b54247e89bb8e06166117da8bc",
       "sourceName": "contracts/ozToken.sol",
       "solcConfig": {
         "settings": {
@@ -4193,10 +4193,264 @@
         }
       }
     },
-    "test/foundry/HelpersTests.sol": {
-      "lastModificationDate": 1700760508641,
-      "contentHash": "22b15d8c40f6462ba881e8adf405eb10",
-      "sourceName": "test/foundry/HelpersTests.sol",
+    "test/foundry/CoreTokenLogicBAL.t.sol": {
+      "lastModificationDate": 1701007957116,
+      "contentHash": "e862d8018b56332a861c7316b5642355",
+      "sourceName": "test/foundry/CoreTokenLogicBAL.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Diamond.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
+        "contracts/facets/ROImoduleL1.sol",
+        "contracts/facets/ozBeacon.sol",
+        "contracts/facets/ozCut.sol",
+        "contracts/facets/ozLoupe.sol",
+        "contracts/facets/ozOracle.sol",
+        "contracts/facets/ozTokenFactory.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IRocketPool.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/ozToken.sol",
+        "contracts/ozTokenProxy.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
+        "node_modules/solady/src/utils/FixedPointMathLib.sol",
+        "test/foundry/AppStorageTests.sol",
+        "test/foundry/HelpersLib.sol",
+        "test/foundry/HelpersTests.sol",
+        "test/foundry/Setup.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "CoreTokenLogicBALtest": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "CoreTokenLogicBAL.t.sol/CoreTokenLogicBALtest.json"
+        }
+      }
+    },
+    "test/foundry/CoreTokenLogicRP.t.sol": {
+      "lastModificationDate": 1701008238726,
+      "contentHash": "1345cfbe901febd8139facf867b0de23",
+      "sourceName": "test/foundry/CoreTokenLogicRP.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Diamond.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
+        "contracts/facets/ROImoduleL1.sol",
+        "contracts/facets/ozBeacon.sol",
+        "contracts/facets/ozCut.sol",
+        "contracts/facets/ozLoupe.sol",
+        "contracts/facets/ozOracle.sol",
+        "contracts/facets/ozTokenFactory.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IRocketPool.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/ozToken.sol",
+        "contracts/ozTokenProxy.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
+        "node_modules/solady/src/utils/FixedPointMathLib.sol",
+        "test/foundry/AppStorageTests.sol",
+        "test/foundry/HelpersLib.sol",
+        "test/foundry/HelpersTests.sol",
+        "test/foundry/Setup.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "CoreTokenLogicRPtest": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "CoreTokenLogicRP.t.sol/CoreTokenLogicRPtest.json"
+        }
+      }
+    },
+    "test/foundry/HelpersLib.sol": {
+      "lastModificationDate": 1701007207698,
+      "contentHash": "633c458c226402fee939983b862553af",
+      "sourceName": "test/foundry/HelpersLib.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -4240,6 +4494,128 @@
         "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
         "node_modules/solady/src/utils/FixedPointMathLib.sol",
         "test/foundry/AppStorageTests.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "HelpersLib": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "HelpersLib.sol/HelpersLib.json"
+        }
+      }
+    },
+    "test/foundry/HelpersTests.sol": {
+      "lastModificationDate": 1701008137887,
+      "contentHash": "359622fb003ddc300a7da1ff5bc6278c",
+      "sourceName": "test/foundry/HelpersTests.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Diamond.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
+        "contracts/facets/ROImoduleL1.sol",
+        "contracts/facets/ozBeacon.sol",
+        "contracts/facets/ozCut.sol",
+        "contracts/facets/ozLoupe.sol",
+        "contracts/facets/ozOracle.sol",
+        "contracts/facets/ozTokenFactory.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IRocketPool.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/ozToken.sol",
+        "contracts/ozTokenProxy.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
+        "node_modules/solady/src/utils/FixedPointMathLib.sol",
+        "test/foundry/AppStorageTests.sol",
+        "test/foundry/HelpersLib.sol",
+        "test/foundry/Setup.sol"
       ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
@@ -4365,2504 +4741,6 @@
       "artifacts": {
         "Setup": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "Setup.sol/Setup.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol": {
-      "lastModificationDate": 1700774960324,
-      "contentHash": "1fa030c78b773ddabe0d8ba6c26ded79",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "AssetHelpers": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "AssetHelpers.sol/AssetHelpers.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/Authentication.sol": {
-      "lastModificationDate": 1700774960335,
-      "contentHash": "afc6674b750c2a2bce9e9a1e1d47b7aa",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "Authentication": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "Authentication.sol/Authentication.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol": {
-      "lastModificationDate": 1700774960335,
-      "contentHash": "828a332cc6c7301d23bf14e9a9c8f83f",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "Errors": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "BalancerErrors.sol/Errors.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol": {
-      "lastModificationDate": 1700774960328,
-      "contentHash": "6bf425ca65051509b82564fa5cd3f414",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IAuthentication": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IAuthentication.sol/IAuthentication.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol": {
-      "lastModificationDate": 1700774960327,
-      "contentHash": "002c3583802f967e1e243a26f27935c8",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "ISignaturesValidator": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "ISignaturesValidator.sol/ISignaturesValidator.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol": {
-      "lastModificationDate": 1700774960323,
-      "contentHash": "83e8d029f44d2989a7d5575fc6784826",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "ITemporarilyPausable": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "ITemporarilyPausable.sol/ITemporarilyPausable.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol": {
-      "lastModificationDate": 1700774960329,
-      "contentHash": "a6e2ea3647e7ec33ae310679b189e1c4",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "InputHelpers": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "InputHelpers.sol/InputHelpers.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol": {
-      "lastModificationDate": 1700774960325,
-      "contentHash": "f948e1faa3443d183ae302b872e9d067",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "SignaturesValidator": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "SignaturesValidator.sol/SignaturesValidator.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol": {
-      "lastModificationDate": 1700774960337,
-      "contentHash": "f5ca7970aa1f94cece6934d34fbf72e3",
-      "sourceName": "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "TemporarilyPausable": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "TemporarilyPausable.sol/TemporarilyPausable.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/math/FixedPoint.sol": {
-      "lastModificationDate": 1700774960333,
-      "contentHash": "3a55c7ebf88bce8af5f838a442aedc71",
-      "sourceName": "test/foundry/Vault/contracts/lib/math/FixedPoint.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/math/LogExpMath.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "FixedPoint": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "FixedPoint.sol/FixedPoint.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/math/LogExpMath.sol": {
-      "lastModificationDate": 1700774960321,
-      "contentHash": "006e4aed980073aeea3bbdc9b6103194",
-      "sourceName": "test/foundry/Vault/contracts/lib/math/LogExpMath.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "LogExpMath": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "LogExpMath.sol/LogExpMath.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/math/Math.sol": {
-      "lastModificationDate": 1700774960336,
-      "contentHash": "1e25b19486f982297eed72ee9a0386f2",
-      "sourceName": "test/foundry/Vault/contracts/lib/math/Math.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "Math": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "Math.sol/Math.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol": {
-      "lastModificationDate": 1700774960326,
-      "contentHash": "832fc79f2bdae97fa15136eb6b7c9b50",
-      "sourceName": "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "Address": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "openzeppelin/Address.sol/Address.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol": {
-      "lastModificationDate": 1700774960329,
-      "contentHash": "3f72f246d20ae70c8162f0d42647963a",
-      "sourceName": "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "EIP712": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "EIP712.sol/EIP712.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableMap.sol": {
-      "lastModificationDate": 1700774960332,
-      "contentHash": "82730ac00b1885fda3e35618f6c9ead5",
-      "sourceName": "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableMap.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "EnumerableMap": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "EnumerableMap.sol/EnumerableMap.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableSet.sol": {
-      "lastModificationDate": 1700774960332,
-      "contentHash": "59417b05646bc0874807c1f1fa29d7fc",
-      "sourceName": "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableSet.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "EnumerableSet": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "EnumerableSet.sol/EnumerableSet.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol": {
-      "lastModificationDate": 1700774960326,
-      "contentHash": "227d410099f794483090324d1492bc09",
-      "sourceName": "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IERC20": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "openzeppelin/IERC20.sol/IERC20.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol": {
-      "lastModificationDate": 1700774960332,
-      "contentHash": "0856b197d97958245c3c3d97020e68f1",
-      "sourceName": "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "ReentrancyGuard": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "ReentrancyGuard.sol/ReentrancyGuard.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/openzeppelin/SafeCast.sol": {
-      "lastModificationDate": 1700774960323,
-      "contentHash": "4a820d1981f326ae8b722220514c3f26",
-      "sourceName": "test/foundry/Vault/contracts/lib/openzeppelin/SafeCast.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "SafeCast": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "SafeCast.sol/SafeCast.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol": {
-      "lastModificationDate": 1700774960331,
-      "contentHash": "c3b64e6add16dde341955303cb6837dd",
-      "sourceName": "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "SafeERC20": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "SafeERC20.sol/SafeERC20.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/AssetManagers.sol": {
-      "lastModificationDate": 1700774960333,
-      "contentHash": "b12b8b9fe5ff79d72f2989980ef4534c",
-      "sourceName": "test/foundry/Vault/contracts/vault/AssetManagers.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableMap.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableSet.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeCast.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/AssetTransfersHandler.sol",
-        "test/foundry/Vault/contracts/vault/PoolRegistry.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/UserBalance.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol",
-        "test/foundry/Vault/contracts/vault/balances/GeneralPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/MinimalSwapInfoPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/TwoTokenPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "AssetManagers": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "AssetManagers.sol/AssetManagers.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/AssetTransfersHandler.sol": {
-      "lastModificationDate": 1700774960322,
-      "contentHash": "2b24bd759ac490c97ecf0db230c8b470",
-      "sourceName": "test/foundry/Vault/contracts/vault/AssetTransfersHandler.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "AssetTransfersHandler": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "AssetTransfersHandler.sol/AssetTransfersHandler.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/Fees.sol": {
-      "lastModificationDate": 1700774960329,
-      "contentHash": "74c12702fadd69e1e4f03e24b1b84f5c",
-      "sourceName": "test/foundry/Vault/contracts/vault/Fees.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/FixedPoint.sol",
-        "test/foundry/Vault/contracts/lib/math/LogExpMath.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "Fees": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "Fees.sol/Fees.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/FlashLoans.sol": {
-      "lastModificationDate": 1700774960334,
-      "contentHash": "79aba614795ddfc6a836b7bf2c52bed5",
-      "sourceName": "test/foundry/Vault/contracts/vault/FlashLoans.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/FixedPoint.sol",
-        "test/foundry/Vault/contracts/lib/math/LogExpMath.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/Fees.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "FlashLoans": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "FlashLoans.sol/FlashLoans.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/PoolBalances.sol": {
-      "lastModificationDate": 1700774960333,
-      "contentHash": "36c434ce65da073a50aecc4755fe2fdb",
-      "sourceName": "test/foundry/Vault/contracts/vault/PoolBalances.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/FixedPoint.sol",
-        "test/foundry/Vault/contracts/lib/math/LogExpMath.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableMap.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableSet.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeCast.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/AssetManagers.sol",
-        "test/foundry/Vault/contracts/vault/AssetTransfersHandler.sol",
-        "test/foundry/Vault/contracts/vault/Fees.sol",
-        "test/foundry/Vault/contracts/vault/PoolRegistry.sol",
-        "test/foundry/Vault/contracts/vault/PoolTokens.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/UserBalance.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol",
-        "test/foundry/Vault/contracts/vault/balances/GeneralPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/MinimalSwapInfoPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/TwoTokenPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IBasePool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IPoolSwapStructs.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "PoolBalances": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "PoolBalances.sol/PoolBalances.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/PoolRegistry.sol": {
-      "lastModificationDate": 1700774960322,
-      "contentHash": "eb1f98d0e4cc3aca2401d80ccfddf3e7",
-      "sourceName": "test/foundry/Vault/contracts/vault/PoolRegistry.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "PoolRegistry": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "PoolRegistry.sol/PoolRegistry.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/PoolTokens.sol": {
-      "lastModificationDate": 1700774960324,
-      "contentHash": "e25d117fb4201f6291a97df4f3facb8c",
-      "sourceName": "test/foundry/Vault/contracts/vault/PoolTokens.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableMap.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableSet.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeCast.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/AssetManagers.sol",
-        "test/foundry/Vault/contracts/vault/AssetTransfersHandler.sol",
-        "test/foundry/Vault/contracts/vault/PoolRegistry.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/UserBalance.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol",
-        "test/foundry/Vault/contracts/vault/balances/GeneralPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/MinimalSwapInfoPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/TwoTokenPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "PoolTokens": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "PoolTokens.sol/PoolTokens.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol": {
-      "lastModificationDate": 1700774960335,
-      "contentHash": "1fcc9239473581f505d51843ce12ea30",
-      "sourceName": "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "ProtocolFeesCollector": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "ProtocolFeesCollector.sol/ProtocolFeesCollector.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/Swaps.sol": {
-      "lastModificationDate": 1700774960330,
-      "contentHash": "953cceee0d7f001a6f8bde2569048640",
-      "sourceName": "test/foundry/Vault/contracts/vault/Swaps.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/FixedPoint.sol",
-        "test/foundry/Vault/contracts/lib/math/LogExpMath.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableMap.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableSet.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeCast.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/AssetManagers.sol",
-        "test/foundry/Vault/contracts/vault/AssetTransfersHandler.sol",
-        "test/foundry/Vault/contracts/vault/Fees.sol",
-        "test/foundry/Vault/contracts/vault/PoolBalances.sol",
-        "test/foundry/Vault/contracts/vault/PoolRegistry.sol",
-        "test/foundry/Vault/contracts/vault/PoolTokens.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/UserBalance.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol",
-        "test/foundry/Vault/contracts/vault/balances/GeneralPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/MinimalSwapInfoPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/TwoTokenPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IBasePool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IGeneralPool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IMinimalSwapInfoPool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IPoolSwapStructs.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "Swaps": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "Swaps.sol/Swaps.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/UserBalance.sol": {
-      "lastModificationDate": 1700774960328,
-      "contentHash": "3aa682e8a166ea7c45336fc705bfe1c0",
-      "sourceName": "test/foundry/Vault/contracts/vault/UserBalance.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeCast.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/AssetTransfersHandler.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "UserBalance": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "UserBalance.sol/UserBalance.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/Vault.sol": {
-      "lastModificationDate": 1700774960323,
-      "contentHash": "ac0d7d5751ec76386748f2fad702dddf",
-      "sourceName": "test/foundry/Vault/contracts/vault/Vault.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/AssetHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/FixedPoint.sol",
-        "test/foundry/Vault/contracts/lib/math/LogExpMath.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/Address.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableMap.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableSet.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeCast.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/AssetManagers.sol",
-        "test/foundry/Vault/contracts/vault/AssetTransfersHandler.sol",
-        "test/foundry/Vault/contracts/vault/Fees.sol",
-        "test/foundry/Vault/contracts/vault/FlashLoans.sol",
-        "test/foundry/Vault/contracts/vault/PoolBalances.sol",
-        "test/foundry/Vault/contracts/vault/PoolRegistry.sol",
-        "test/foundry/Vault/contracts/vault/PoolTokens.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/Swaps.sol",
-        "test/foundry/Vault/contracts/vault/UserBalance.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol",
-        "test/foundry/Vault/contracts/vault/balances/GeneralPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/MinimalSwapInfoPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/balances/TwoTokenPoolsBalance.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IBasePool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IGeneralPool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IMinimalSwapInfoPool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IPoolSwapStructs.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "Vault": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "Vault.sol/Vault.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/VaultAuthorization.sol": {
-      "lastModificationDate": 1700774960330,
-      "contentHash": "6624110e07b01f5c48e13565794ef20f",
-      "sourceName": "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "VaultAuthorization": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "VaultAuthorization.sol/VaultAuthorization.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol": {
-      "lastModificationDate": 1700774960325,
-      "contentHash": "20420266c17acf0dc69c8a52989034f9",
-      "sourceName": "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "BalanceAllocation": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "BalanceAllocation.sol/BalanceAllocation.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/balances/GeneralPoolsBalance.sol": {
-      "lastModificationDate": 1700774960326,
-      "contentHash": "004cd6edcc2edaa70f99c2aacd9ca6c7",
-      "sourceName": "test/foundry/Vault/contracts/vault/balances/GeneralPoolsBalance.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableMap.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "GeneralPoolsBalance": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "GeneralPoolsBalance.sol/GeneralPoolsBalance.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/balances/MinimalSwapInfoPoolsBalance.sol": {
-      "lastModificationDate": 1700774960327,
-      "contentHash": "c983669c800b0b982e46a0c26887e3c9",
-      "sourceName": "test/foundry/Vault/contracts/vault/balances/MinimalSwapInfoPoolsBalance.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EnumerableSet.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/PoolRegistry.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "MinimalSwapInfoPoolsBalance": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "MinimalSwapInfoPoolsBalance.sol/MinimalSwapInfoPoolsBalance.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/balances/TwoTokenPoolsBalance.sol": {
-      "lastModificationDate": 1700774960325,
-      "contentHash": "d8ca8c2a0b1f93c009992206c665f56e",
-      "sourceName": "test/foundry/Vault/contracts/vault/balances/TwoTokenPoolsBalance.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/helpers/SignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/TemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/math/Math.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/EIP712.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/PoolRegistry.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/VaultAuthorization.sol",
-        "test/foundry/Vault/contracts/vault/balances/BalanceAllocation.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "TwoTokenPoolsBalance": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "TwoTokenPoolsBalance.sol/TwoTokenPoolsBalance.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol": {
-      "lastModificationDate": 1700774960331,
-      "contentHash": "8571bd894a72974d092d8bb0d510213d",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IAsset": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IAsset.sol/IAsset.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol": {
-      "lastModificationDate": 1700774960329,
-      "contentHash": "2135974a65cc60746c01cfc589794f9f",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IAuthorizer": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IAuthorizer.sol/IAuthorizer.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IBasePool.sol": {
-      "lastModificationDate": 1700774960322,
-      "contentHash": "cd8fec3ac8ba9cf7299c762426f810d0",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IBasePool.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IPoolSwapStructs.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IBasePool": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IBasePool.sol/IBasePool.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol": {
-      "lastModificationDate": 1700774960322,
-      "contentHash": "c579e034c09706f7fd5e5611935cea0d",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IFlashLoanRecipient": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IFlashLoanRecipient.sol/IFlashLoanRecipient.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IGeneralPool.sol": {
-      "lastModificationDate": 1700774960327,
-      "contentHash": "e1d289b160302cce2c3282b4122912f5",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IGeneralPool.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IBasePool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IPoolSwapStructs.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IGeneralPool": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IGeneralPool.sol/IGeneralPool.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IMinimalSwapInfoPool.sol": {
-      "lastModificationDate": 1700774960328,
-      "contentHash": "a23fccea796b26f00ddc81ae586fbc52",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IMinimalSwapInfoPool.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IBasePool.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IPoolSwapStructs.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IMinimalSwapInfoPool": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IMinimalSwapInfoPool.sol/IMinimalSwapInfoPool.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IPoolSwapStructs.sol": {
-      "lastModificationDate": 1700774960337,
-      "contentHash": "bffce73a97d9cb8fe1770d633e38e6c2",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IPoolSwapStructs.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IPoolSwapStructs": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IPoolSwapStructs.sol/IPoolSwapStructs.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IVault.sol": {
-      "lastModificationDate": 1700774960331,
-      "contentHash": "ea3a79f898a8af7b3407ba94b1635ac9",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/helpers/Authentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/BalancerErrors.sol",
-        "test/foundry/Vault/contracts/lib/helpers/IAuthentication.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ISignaturesValidator.sol",
-        "test/foundry/Vault/contracts/lib/helpers/ITemporarilyPausable.sol",
-        "test/foundry/Vault/contracts/lib/helpers/InputHelpers.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/ReentrancyGuard.sol",
-        "test/foundry/Vault/contracts/lib/openzeppelin/SafeERC20.sol",
-        "test/foundry/Vault/contracts/vault/ProtocolFeesCollector.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAsset.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IAuthorizer.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IFlashLoanRecipient.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IVault.sol",
-        "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IVault": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "IVault.sol/IVault.json"
-        }
-      }
-    },
-    "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol": {
-      "lastModificationDate": 1700774960334,
-      "contentHash": "63e5c8296f9f483d4fea4eb00c93492e",
-      "sourceName": "test/foundry/Vault/contracts/vault/interfaces/IWETH.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "test/foundry/Vault/contracts/lib/openzeppelin/IERC20.sol"
-      ],
-      "versionRequirement": "^0.7.0",
-      "artifacts": {
-        "IWETH": {
-          "0.7.6+commit.7338295f.Darwin.appleclang": "interfaces/IWETH.sol/IWETH.json"
-        }
-      }
-    },
-    "test/foundry/ozTokenFactory.t.sol": {
-      "lastModificationDate": 1701006247563,
-      "contentHash": "559d1819fd49298134ffccc67e2dfbf3",
-      "sourceName": "test/foundry/ozTokenFactory.t.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "contracts/AppStorage.sol",
-        "contracts/Diamond.sol",
-        "contracts/facets/DiamondCutFacet.sol",
-        "contracts/facets/DiamondLoupeFacet.sol",
-        "contracts/facets/MirrorExchange.sol",
-        "contracts/facets/OwnershipFacet.sol",
-        "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
-        "contracts/facets/ozBeacon.sol",
-        "contracts/facets/ozCut.sol",
-        "contracts/facets/ozLoupe.sol",
-        "contracts/facets/ozOracle.sol",
-        "contracts/facets/ozTokenFactory.sol",
-        "contracts/interfaces/IBalancer.sol",
-        "contracts/interfaces/IDiamondCut.sol",
-        "contracts/interfaces/IDiamondLoupe.sol",
-        "contracts/interfaces/IERC165.sol",
-        "contracts/interfaces/IERC173.sol",
-        "contracts/interfaces/IERC20Permit.sol",
-        "contracts/interfaces/IRocketPool.sol",
-        "contracts/interfaces/IWETH.sol",
-        "contracts/interfaces/ozIDiamond.sol",
-        "contracts/interfaces/ozIToken.sol",
-        "contracts/libraries/FixedPointMathLib.sol",
-        "contracts/libraries/Helpers.sol",
-        "contracts/libraries/LibDiamond.sol",
-        "contracts/ozToken.sol",
-        "contracts/ozTokenProxy.sol",
-        "contracts/upgradeInitializers/DiamondInit.sol",
-        "lib/forge-std/lib/ds-test/src/test.sol",
-        "lib/forge-std/src/Base.sol",
-        "lib/forge-std/src/StdAssertions.sol",
-        "lib/forge-std/src/StdChains.sol",
-        "lib/forge-std/src/StdCheats.sol",
-        "lib/forge-std/src/StdError.sol",
-        "lib/forge-std/src/StdInvariant.sol",
-        "lib/forge-std/src/StdJson.sol",
-        "lib/forge-std/src/StdMath.sol",
-        "lib/forge-std/src/StdStorage.sol",
-        "lib/forge-std/src/StdStyle.sol",
-        "lib/forge-std/src/StdUtils.sol",
-        "lib/forge-std/src/Test.sol",
-        "lib/forge-std/src/Vm.sol",
-        "lib/forge-std/src/console.sol",
-        "lib/forge-std/src/console2.sol",
-        "lib/forge-std/src/interfaces/IMulticall3.sol",
-        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
-        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
-        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "node_modules/@openzeppelin/contracts/utils/Address.sol",
-        "node_modules/@openzeppelin/contracts/utils/Context.sol",
-        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
-        "node_modules/solady/src/utils/FixedPointMathLib.sol",
-        "test/foundry/AppStorageTests.sol",
-        "test/foundry/HelpersTests.sol",
-        "test/foundry/Setup.sol"
-      ],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "MintingRedeemingRebasingTest": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozTokenFactory.t.sol/MintingRedeemingRebasingTest.json"
         }
       }
     }
