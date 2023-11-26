@@ -35,6 +35,8 @@ import "forge-std/console.sol";
 error TokenInNotValid(address token);
 error InvalidBalancerSwap();
 
+error OZError01();
+
 
 contract ROImoduleL1 {
 
@@ -142,7 +144,7 @@ contract ROImoduleL1 {
         address tokenIn_,
         address tokenOut_,
         address receiver_
-    ) private returns(uint amountOut) {
+    ) private returns(uint) {
         tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
 
         ISwapRouter.ExactInputSingleParams memory params =
@@ -157,8 +159,11 @@ contract ROImoduleL1 {
                 sqrtPriceLimitX96: 0
             });
 
-        amountOut = ISwapRouter(s.swapRouterUni).exactInputSingle(params); 
-        if (amountOut == 0) revert TokenInNotValid(tokenIn_);
+        try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) { 
+            return amountOut;
+        } catch {
+            revert OZError01();
+        }
     }
 
     //This func is in Helpers.sol also ****

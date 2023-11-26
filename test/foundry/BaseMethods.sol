@@ -12,6 +12,9 @@ import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 
 
+import "forge-std/console.sol";
+
+
 contract BaseMethods is Setup {
 
     function _createAndMintOzTokens(
@@ -59,7 +62,9 @@ contract BaseMethods is Setup {
         );
 
         bytes memory mintData = abi.encode(amounts, user_);
+        console.log(1);
         shares = ozERC20.mint(mintData); 
+        console.log(2);
         
         vm.stopPrank();
     }
