@@ -19,6 +19,28 @@ library HelpersLib {
 
     using FixedPointMathLib for uint;
 
+
+    function getPermitHashDAI(
+        address token_,
+        address owner_,
+        address spender_,
+        uint nonce_,
+        uint expiry_,
+        bool allowed_
+    ) internal view returns(bytes32) {
+        return keccak256(abi.encodePacked(
+            "\x19\x01",
+            IERC20Permit(token_).DOMAIN_SEPARATOR(),
+            keccak256(abi.encode(
+                IERC20Permit(token_).PERMIT_TYPEHASH(),
+                owner_,
+                spender_,
+                nonce_,
+                expiry_,
+                allowed_))
+        ));
+    }
+
     function getPermitHash(
         address token_,
         address owner_,

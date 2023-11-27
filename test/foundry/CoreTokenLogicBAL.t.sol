@@ -37,34 +37,20 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
     function test_dai() public {
         uint amountIn = 10_000 * 10 ** 18;
-        bytes32 DOMAIN_SEPARATOR = IERC20Permit(testToken).DOMAIN_SEPARATOR();
-        bytes32 PERMIT_TYPEHASH = IERC20Permit(testToken).PERMIT_TYPEHASH();
         address holder = alice;
         address spender = bob;
         uint expiry = block.timestamp;
         bool allowed = true;
         uint nonce = IERC20Permit(testToken).nonces(holder);
 
-        // bytes32 permitHash = HelpersLib.getPermitHash(
-        //     daiAddr,
-        //     alice,
-        //     bob,
-        //     amountIn,
-        //     IERC20Permit(daiAddr).nonces(alice),
-        //     block.timestamp
-        // );
-
-        bytes32 permitHash =
-            keccak256(abi.encodePacked(
-                "\x19\x01",
-                DOMAIN_SEPARATOR,
-                keccak256(abi.encode(PERMIT_TYPEHASH,
-                                     holder,
-                                     spender,
-                                     nonce,
-                                     expiry,
-                                     allowed))
-        ));
+        bytes32 permitHash = HelpersLib.getPermitHashDAI(
+            testToken,
+            alice,
+            bob,
+            IERC20Permit(testToken).nonces(alice),
+            block.timestamp,
+            true
+        );
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
 

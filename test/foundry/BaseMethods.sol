@@ -87,13 +87,24 @@ contract BaseMethods is Setup {
     function _sendPermit(address user_, uint amountIn_, bytes memory data_) internal {
         (,uint8 v, bytes32 r, bytes32 s) = HelpersLib.extract(data_);
 
-        IERC20Permit(testToken).permit(
-            user_, 
-            address(ozDiamond), //check if this one and OZ are the same variable
-            amountIn_, 
-            block.timestamp, 
-            v, r, s
-        );
+        if (testToken == daiAddr) {
+            IERC20Permit(testToken).permit(
+                user_,
+                address(ozDiamond),
+                IERC20Permit(testToken).nonces(user_),
+                block.timestamp,
+                true,
+                v, r, s
+            );
+        } else {
+            IERC20Permit(testToken).permit(
+                user_, 
+                address(ozDiamond), //check if this one and OZ are the same variable
+                amountIn_, 
+                block.timestamp, 
+                v, r, s
+            );
+        }
     }
 
 
@@ -116,11 +127,22 @@ contract BaseMethods is Setup {
                 [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), OZ.getDefaultSlippage()
             );
 
-            bytes32 permitHash = _getPermitHash(sender_, amountIn_);
+            bytes32 permitHash = testToken == daiAddr ? _getPermitHashDAI(sender_) : _getPermitHash(sender_, amountIn_);
             (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPK_, permitHash);
 
             data = abi.encode(minAmountsOut, v, r, s);
         }
+    }
+
+    function _getPermitHashDAI(address sender_) internal view returns(bytes32) {
+        return HelpersLib.getPermitHashDAI(
+            testToken,
+            sender_,
+            address(ozDiamond),
+            IERC20Permit(testToken).nonces(sender_),
+            block.timestamp,
+            true
+        );
     }
 
 
