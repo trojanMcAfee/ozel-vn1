@@ -159,7 +159,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     }
 
     /**
-     * From 1M USDC balance, mint 1M and redeem 1M
+     * From 1M underlying balance, mint 1M and redeem 1M
      */
     function test_redeeming_bigBalance_bigMint_bigRedeem_balancer() public {
         //Pre-conditions
@@ -194,7 +194,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
 
     /**
-     * From 1M USDC balance, mint and redeem a small part (100 USDC)
+     * From 1M underlying balance, mint and redeem a small part (100 USDC)
      */
     function test_redeeming_bigBalance_smallMint_smallRedeem_balancer() public {
         //Pre-conditions
@@ -203,7 +203,9 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = 100 * decimalsUnderlying;
-        assertTrue(IERC20Permit(usdcAddr).balanceOf(alice) == 1_000_000 * decimalsUnderlying);
+        console.log(7);
+        assertTrue(IERC20Permit(testToken).balanceOf(alice) == 1_000_000 * decimalsUnderlying);
+        console.log(8);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
@@ -220,14 +222,19 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint underlyingOut = ozERC20.redeem(redeemData); 
 
         //Post-conditions
-        testToken = usdcAddr;
+        testToken = ozERC20.asset();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
         uint finalUnderlyingNetBalanceAlice = balanceUsdcAlicePostMint + underlyingOut;
         
+        console.log(1);
         assertTrue(ozERC20.balanceOf(alice) == 0);
+        console.log(2);
         assertTrue(underlyingOut > 99 * decimalsUnderlying && underlyingOut < 100 * decimalsUnderlying);
+        console.log(3);
         assertTrue(balanceUnderlyingAlice == finalUnderlyingNetBalanceAlice);
+        console.log(4);
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
+        console.log(5);
     }
 
 
