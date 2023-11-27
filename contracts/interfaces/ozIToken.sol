@@ -80,4 +80,6 @@ interface ozIToken {
         bytes32 r,
         bytes32 s
     ) external;
+
+    function asset() external view returns(address);
 }

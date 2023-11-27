@@ -103,6 +103,9 @@ contract ROImoduleL1 {
             address receiver
         ) = abi.decode(data_, (uint, uint, uint, uint, address));
 
+        console.log('sender: ', msg.sender);
+        console.log('address(this): ', address(this));
+
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         //Swap rETH to WETH
@@ -118,7 +121,7 @@ contract ROImoduleL1 {
             IERC20Permit(s.WETH).balanceOf(address(this)),
             minAmountOutUnderlying,
             s.WETH,
-            s.USDC,
+            ozIToken(msg.sender).asset(),
             receiver
         );
     }

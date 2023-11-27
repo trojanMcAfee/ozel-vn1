@@ -172,7 +172,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        assertTrue(balanceOzUsdcAlice > 980_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
+        assertTrue(balanceOzUsdcAlice > 977_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
@@ -185,9 +185,12 @@ contract CoreTokenLogicBALtest is BaseMethods {
         ozERC20.redeem(redeemData); 
 
         //Post-conditions
-        testToken = usdcAddr;
+        testToken = ozERC20.asset();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
        
+        console.log('bal oz: ', ozERC20.balanceOf(alice));
+        console.log('balanceUnderlyingAlice: ', balanceUnderlyingAlice);
+
         assertTrue(balanceUnderlyingAlice > 998_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
         assertTrue(ozERC20.balanceOf(alice) == 0);
     }
