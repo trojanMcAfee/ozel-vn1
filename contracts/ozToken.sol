@@ -313,6 +313,15 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
 
     function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) private view returns (uint256 assets) {  
+        console.log('shares: ', shares_);
+        console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        console.log('totalShares: ', totalShares());
+        uint y = ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares();
+        console.log('y: ', y);
+        uint x = shares_ * y;
+        console.log('x: ', x);
+        console.log('total: ', shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_));
+
         return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / totalShares()), 1, rounding_);
     }
 

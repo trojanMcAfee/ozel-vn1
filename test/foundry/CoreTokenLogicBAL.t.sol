@@ -35,37 +35,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
     using FixedPointMathLib for uint;
 
-    function test_dai() public {
-        uint amountIn = 10_000 * 10 ** 18;
-        address holder = alice;
-        address spender = bob;
-        uint expiry = block.timestamp;
-        bool allowed = true;
-        uint nonce = IERC20Permit(testToken).nonces(holder);
-
-        bytes32 permitHash = HelpersLib.getPermitHashDAI(
-            testToken,
-            alice,
-            bob,
-            IERC20Permit(testToken).nonces(alice),
-            block.timestamp,
-            true
-        );
-
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
-
-        IERC20Permit(testToken).permit(
-            holder,
-            spender,
-            nonce,
-            expiry,
-            allowed,
-            v, r, s
-        );
-
-
-    }
-
 
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
@@ -80,9 +49,13 @@ contract CoreTokenLogicBALtest is BaseMethods {
             testToken, amountIn, alice, ALICE_PK, true, false, Type.IN
         );
 
+        uint balAlice = ozERC20.balanceOf(alice);
+        // console.log('bal ****: ', bal);
+
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
 
@@ -160,15 +133,21 @@ contract CoreTokenLogicBALtest is BaseMethods {
         //Pre-conditions
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
 
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20,) = _createAndMintOzTokens(
-            testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true, true, Type.IN
+            testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
         );
 
         uint balAlice = ozERC20.balanceOf(alice);
+        console.log(1);
+        console.log('balAlice: ', balAlice);
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
+        console.log(2);
 
         uint balBob = ozERC20.balanceOf(bob);
+        console.log(3);
         assertTrue(balBob == 0);
+        console.log(4);
 
         //Action
         vm.prank(alice);
@@ -176,10 +155,13 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         //Post-conditions
         balAlice = ozERC20.balanceOf(alice);
+        console.log(5);
         assertTrue(balAlice > 0 && balAlice < 0.000001 * 1 ether);
+        console.log(6);
 
         balBob = ozERC20.balanceOf(bob);
         assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
+        console.log(7);
     }
 
     /**
