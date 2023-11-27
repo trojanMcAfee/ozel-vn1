@@ -187,9 +187,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
         //Post-conditions
         testToken = ozERC20.asset();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
-       
-        console.log('bal oz: ', ozERC20.balanceOf(alice));
-        console.log('balanceUnderlyingAlice: ', balanceUnderlyingAlice);
 
         assertTrue(balanceUnderlyingAlice > 998_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
         assertTrue(ozERC20.balanceOf(alice) == 0);
