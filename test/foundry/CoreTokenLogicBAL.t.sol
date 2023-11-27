@@ -233,7 +233,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
     /** REFERENCE
      * Mints 1M of ozTokens, then rebalances Uniswap and Balancer pools, 
-     * and redeems a small portio of ozUSDC. 
+     * and redeems a small portion of ozTokens. 
      */
     function test_redeeming_bigBalance_bigMint_smallRedeem_balancer() public {
         /**
@@ -241,9 +241,10 @@ contract CoreTokenLogicBALtest is BaseMethods {
          */
         //Deals big amounts of USDC to testers.
         _dealUnderlying(Quantity.BIG);
+        uint underlyingDecimals = IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         uint rawAmount = 100;
-        assertTrue(amountIn == 1_000_000 * 1e6);
+        assertTrue(amountIn == 1_000_000 * 10 ** underlyingDecimals);
 
         //Changes the default slippage to 99% so the swaps don't fail.
         _changeSlippage(9900);
@@ -271,7 +272,11 @@ contract CoreTokenLogicBALtest is BaseMethods {
          */
         vm.startPrank(alice);
 
-        //Redeems ozUSDC for USDC.
+        console.log('bal pre: ', IERC20Permit(daiAddr).balanceOf(alice));
+        console.log('eth usd: ', OZ.ETH_USD());
+        console.log('reth eth: ', OZ.rETH_ETH());
+
+        //Redeems ozTokens for underlying.
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.redeem(redeemData);
         vm.stopPrank();
@@ -279,9 +284,11 @@ contract CoreTokenLogicBALtest is BaseMethods {
         /**
          * Post-conditions
          */
-        uint balanceAliceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
+        testToken = ozERC20.asset();
+        uint balanceAliceUnderlying = IERC20Permit(testToken).balanceOf(alice);
 
-        assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
+        console.log('balanceAliceUnderlying post: ', balanceAliceUnderlying);
+        assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 99 * 10 ** underlyingDecimals);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
