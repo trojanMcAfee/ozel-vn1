@@ -203,9 +203,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = 100 * decimalsUnderlying;
-        console.log(7);
         assertTrue(IERC20Permit(testToken).balanceOf(alice) == 1_000_000 * decimalsUnderlying);
-        console.log(8);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
@@ -226,15 +224,10 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
         uint finalUnderlyingNetBalanceAlice = balanceUsdcAlicePostMint + underlyingOut;
         
-        console.log(1);
         assertTrue(ozERC20.balanceOf(alice) == 0);
-        console.log(2);
         assertTrue(underlyingOut > 99 * decimalsUnderlying && underlyingOut < 100 * decimalsUnderlying);
-        console.log(3);
         assertTrue(balanceUnderlyingAlice == finalUnderlyingNetBalanceAlice);
-        console.log(4);
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
-        console.log(5);
     }
 
 
