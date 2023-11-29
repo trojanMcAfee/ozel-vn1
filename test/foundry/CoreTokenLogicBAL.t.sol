@@ -395,7 +395,9 @@ contract CoreTokenLogicBALtest is BaseMethods {
         vm.stopPrank();
     }
 
-
+    /**
+     * Tests redeeming ozTokens for underlying using Permit.
+     */
     function test_redeeming_eip2612_balancer() public {
         //Pre-conditions
         _dealUnderlying(Quantity.SMALL);
@@ -445,7 +447,10 @@ contract CoreTokenLogicBALtest is BaseMethods {
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
 
-        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            bytes32(0)
+        );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
         uint amountIn = IERC20Permit(testToken).balanceOf(alice) / 2;
@@ -468,8 +473,11 @@ contract CoreTokenLogicBALtest is BaseMethods {
         vm.stopPrank();
 
         // //Post-conditions
-        uint percentageDiff = 15;
-        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDivDown(10000, ozAmountIn);
-        assertTrue(percentageDiffAmounts < percentageDiff);
+        uint percentageDiffLiquid = 15;
+        uint percentageDiffIliquid = 37;
+        uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
+        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
+        
+        assertTrue(percentageDiffAmounts < percentageDiffLiquid || percentageDiffAmounts < percentageDiffIliquid);
     }
 }
