@@ -293,7 +293,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
 
     /**
-     * Used 100 USDC to mint ozTokens, where redeeming 1 ozTokens, would
+     * Used 100 of underlying to mint ozTokens, where redeeming 1 ozTokens, would
      * be ineligble so the MEV produced would be quite lower, proving the efficacy of the 
      * rebase algorithm, without the need of having to rebalance Uniswap and Balancer's pools.
      *
@@ -342,18 +342,22 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
     
     /**
-     * Mints ~1M of ozUSDC, but redeems a portion of the balance (~700k)
+     * Mints ~1M of ozTokens, but redeems a portion of the balance.
      */
     function test_redeeming_bigBalance_bigMint_mediumRedeem_balancer() public {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
 
-        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee),
+            bytes32(0)
+        );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
+        uint underlyingDecimals = IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(amountIn == 1_000_000 * 1e6);
+        assertTrue(amountIn == 1_000_000 * 10 ** underlyingDecimals);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
@@ -372,13 +376,22 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint underlyingOut = ozERC20.redeem(redeemData);
 
         //Post-conditions
-        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * 1e12)).mulDivDown(10000, ozAmountIn);
+        uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
+        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
 
         //Measures that the difference between the amount of ozTokens that went in to
         //the amount of underlying that went out is less than 0.15%, which translates to
         //differences between pools balances during swaps. 
-        uint percentageDiff = 15;
-        assertTrue(percentageDiffAmounts < percentageDiff);
+        /**
+         * Measures that the difference between the amount of ozTokens that went in to
+         * the amount of underlying that went out is less than N, which translates to
+         * differences between pools balances during swaps, where highly liquid pools
+         * like ETH/USDC will derived a percentage difference amount of 0.15% (15 bps)
+         *  and medium liquid pools like ETH/DAI 0.36%.
+         */
+        uint percentageDiffLiquid = 15;
+        uint percentageDiffIliquid = 37;
+        assertTrue(percentageDiffAmounts < percentageDiffLiquid || percentageDiffAmounts < percentageDiffIliquid);
         vm.stopPrank();
     }
 
