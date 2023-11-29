@@ -84,6 +84,7 @@ contract Setup is Test {
     //-- L1----
     address internal rocketPoolStorage;
     address internal rocketDAOProtocolSettingsDeposit;
+    address internal uniFactory;
 
     address internal testToken;
 
@@ -108,6 +109,7 @@ contract Setup is Test {
     ozIDiamond internal OZ;
 
     uint defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
+    uint24 fee = 500;
 
     uint internal constant _BASE = 18;
 
@@ -141,6 +143,7 @@ contract Setup is Test {
             fraxAddr = 0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F; //doesn't have a pool in Uniswap Arb, so it can only be used in L1.
             daiAddr = 0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1;
             rocketPoolStorage = address(0);
+            uniFactory = address(0);
 
             network = "arbitrum";
             blockNumber = 136177703;
@@ -165,6 +168,7 @@ contract Setup is Test {
             daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
             rocketPoolStorage = 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46;
             rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
+            uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
 
             network = "ethereum";
             blockNumber = 18413618; //*18413614* - 18413618
@@ -371,6 +375,7 @@ contract Setup is Test {
         vm.label(rocketPoolStorage, "rocketPoolStorage");
         vm.label(rEthEthChainlink, 'rEthEthChainlink');
         vm.label(daiAddr, 'DAI');
+        vm.label(uniFactory, 'uniFactory');
     }
 
 

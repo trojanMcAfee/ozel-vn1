@@ -23,6 +23,7 @@ import {ozToken} from "../../contracts/ozToken.sol";
 import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import {BaseMethods} from "./BaseMethods.sol";
+import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 
 import "forge-std/console.sol";
 
@@ -250,7 +251,11 @@ contract CoreTokenLogicBALtest is BaseMethods {
         _changeSlippage(9900);
 
         //Gets the pre-swap pool values.
-        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        // address uniPool = IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee);
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), //IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee) 
+            bytes32(0)
+        );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
         //Creates an ozToken and mints some.
@@ -258,8 +263,16 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0);
 
+        
+        // IUniswapV3Pool pool = IUniswapV3Pool(0x60594a405d53811d3BC4766596EFD80fd545A270);
+        // (uint sqrtPriceX96,,,,,,) = pool.slot0();
+        // console.log('sqrtPriceX96 pre-reset: ', uint(sqrtPriceX96));
+
         //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+
+        // (sqrtPriceX96,,,,,,) = pool.slot0();
+        // console.log('sqrtPriceX96 post-reset: ', uint(sqrtPriceX96));
 
         uint ozAmountIn = rawAmount * 1 ether;
         testToken = address(ozERC20);
