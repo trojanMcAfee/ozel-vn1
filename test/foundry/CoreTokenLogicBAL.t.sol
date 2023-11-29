@@ -423,7 +423,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         ozERC20.redeem(redeemData); 
 
         //Post-conditions
-        testToken = usdcAddr;
+        testToken = ozERC20.asset();
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
 
