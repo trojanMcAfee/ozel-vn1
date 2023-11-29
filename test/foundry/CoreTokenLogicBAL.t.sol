@@ -251,9 +251,8 @@ contract CoreTokenLogicBALtest is BaseMethods {
         _changeSlippage(9900);
 
         //Gets the pre-swap pool values.
-        // address uniPool = IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee);
         bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), //IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee) 
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
             bytes32(0)
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
@@ -263,16 +262,8 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0);
 
-        
-        // IUniswapV3Pool pool = IUniswapV3Pool(0x60594a405d53811d3BC4766596EFD80fd545A270);
-        // (uint sqrtPriceX96,,,,,,) = pool.slot0();
-        // console.log('sqrtPriceX96 pre-reset: ', uint(sqrtPriceX96));
-
         //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-
-        // (sqrtPriceX96,,,,,,) = pool.slot0();
-        // console.log('sqrtPriceX96 post-reset: ', uint(sqrtPriceX96));
 
         uint ozAmountIn = rawAmount * 1 ether;
         testToken = address(ozERC20);
@@ -285,10 +276,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
          */
         vm.startPrank(alice);
 
-        console.log('bal pre: ', IERC20Permit(daiAddr).balanceOf(alice));
-        console.log('eth usd: ', OZ.ETH_USD());
-        console.log('reth eth: ', OZ.rETH_ETH());
-
         //Redeems ozTokens for underlying.
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.redeem(redeemData);
@@ -300,7 +287,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
         testToken = ozERC20.asset();
         uint balanceAliceUnderlying = IERC20Permit(testToken).balanceOf(alice);
 
-        console.log('balanceAliceUnderlying post: ', balanceAliceUnderlying);
         assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 99 * 10 ** underlyingDecimals);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }

@@ -96,8 +96,6 @@ contract ROImoduleL1 {
         address owner_,
         bytes memory data_
     ) external returns(uint amountOut) {
-        IUniswapV3Pool pool = IUniswapV3Pool(0x60594a405d53811d3BC4766596EFD80fd545A270);
-
         (
             uint ozAmountIn,
             uint amountInReth,
@@ -105,8 +103,6 @@ contract ROImoduleL1 {
             uint minAmountOutUnderlying, 
             address receiver
         ) = abi.decode(data_, (uint, uint, uint, uint, address));
-
-        // console.log('amountInReth in useOz:**** ', amountInReth);
 
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
@@ -118,14 +114,6 @@ contract ROImoduleL1 {
             minAmountOutWeth
         );
 
-        console.log('weth bal useOz: ', IERC20Permit(s.WETH).balanceOf(address(this)));
-
-        //-------
-        // (uint sqrtPriceX96,,,,,,) = pool.slot0();
-        // console.log('sqrtPriceX96 pre-uni: ', uint(sqrtPriceX96));
-        // uint price = 10 ** 18 / (sqrtPriceX96 / 2 ** 96) ** 2;
-        //--------
-
         //swap WETH to underlying
         amountOut = _swapUni(
             IERC20Permit(s.WETH).balanceOf(address(this)),
@@ -134,11 +122,6 @@ contract ROImoduleL1 {
             ozIToken(msg.sender).asset(),
             receiver
         );
-
-        // (sqrtPriceX96,,,,,,) = pool.slot0();
-        // console.log('sqrtPriceX96 post-uni: ', uint(sqrtPriceX96));
-
-        console.log('amountOut in useOz: ', amountOut);
     }
 
 
