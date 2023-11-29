@@ -327,25 +327,16 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
         uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
-        int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
         testToken = ozERC20.asset();
         
+        //If diffBalanceCharlieMintRedeem is negative, it means that it wouldn't be profitable to extract MEV from this tx.
+        int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
         uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
-        console.log(10);
-        console.log('underlyingOut: ', underlyingOut);
-        console.log('testToken: ', testToken);
-        console.log('bal: ', IERC20Permit(testToken).balanceOf(alice));
-
         assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
-        console.log(11);
         assertTrue(basisPointsDifferenceBobMEV == 0);
-        console.log(12);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
-        console.log(13);
         assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
-
-        console.log(8);
     }
 
 
