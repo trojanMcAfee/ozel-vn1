@@ -327,18 +327,22 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
         uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
-        console.log(9);
-        console.log('balanceOzCharliePostMint: ', balanceOzCharliePostMint);
-        console.log('balanceOzCharliePostRedeem: ', balanceOzCharliePostRedeem);
-        uint diffBalanceCharlieMintRedeem = balanceOzCharliePostMint - balanceOzCharliePostRedeem; //balanceOzCharliePostRedeem should be lower
-        console.log('diffBalanceCharlieMintRedeem: ', diffBalanceCharlieMintRedeem);
-        uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem == 0 ? 0 : diffBalanceCharlieMintRedeem.mulDivDown(10000, balanceOzCharliePostMint);
+        int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
+        testToken = ozERC20.asset();
+        
+        uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
         console.log(10);
+        console.log('underlyingOut: ', underlyingOut);
+        console.log('testToken: ', testToken);
+        console.log('bal: ', IERC20Permit(testToken).balanceOf(alice));
 
-        assertTrue(underlyingOut == IERC20Permit(usdcAddr).balanceOf(alice));
+        assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
+        console.log(11);
         assertTrue(basisPointsDifferenceBobMEV == 0);
+        console.log(12);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
+        console.log(13);
         assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
 
         console.log(8);
