@@ -171,7 +171,7 @@ contract Setup is Test {
             uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
 
             network = "ethereum";
-            blockNumber = 18413618; //*18413614* - 18413618
+            blockNumber = 18413614; //*18413614* - 18413618
         }
     }
 
