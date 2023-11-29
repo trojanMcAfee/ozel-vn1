@@ -113,6 +113,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         assertTrue(sharesAlice / 4 == sharesCharlie);
         assertTrue(sharesBob == sharesCharlie * 2);
         assertTrue(sharesBob / 2 == sharesCharlie);
+        console.log(2);
 
         uint balanceAlice = ozERC20.balanceOf(alice);
         uint balanceBob = ozERC20.balanceOf(bob);
@@ -120,12 +121,25 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         assertTrue(balanceAlice / 2 == balanceBob);
         assertTrue(balanceAlice / 4 == balanceCharlie);
+
+        console.log('balanceBob: ', balanceBob);
+        console.log('balanceCharlie: ', balanceCharlie);
+        console.log('is: ', balanceBob == (balanceCharlie * 2));
         assertTrue(balanceBob == balanceCharlie * 2);
+
+        console.log(13);
         assertTrue(balanceBob / 2 == balanceCharlie);
+        console.log(3);
+
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('sum: ', balanceAlice + balanceCharlie + balanceBob);
 
         assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
+        console.log(31);
         assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + rawAmount / 2 + rawAmount / 4);
+        console.log(32);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
+        console.log(4);
     }   
 
     
@@ -477,7 +491,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint percentageDiffIliquid = 37;
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
-        
+
         assertTrue(percentageDiffAmounts < percentageDiffLiquid || percentageDiffAmounts < percentageDiffIliquid);
     }
 }
