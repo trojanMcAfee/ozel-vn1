@@ -37,16 +37,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
     using FixedPointMathLib for uint;
 
 
-    function test_hex() public {
-        bytes32 balAl = bytes32(uint(99937096936275475143));
-        bytes32 balBob = bytes32(uint(49968548468137737571));
-        bytes32 balChar = bytes32(uint(24984274234068868785));
-
-        // console.logBytes32(balAl+balBob);
-        console.logBytes32(balBob);
-
-
-    }
 
 
     /**
@@ -55,7 +45,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     function test_minting_approve_smallMint_balancer() public {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals(); //1e6
 
         //Action
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
@@ -64,6 +54,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         //Post-conditions
         uint balAlice = ozERC20.balanceOf(alice);
+        console.log('oz bal alice: ', balAlice);
 
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));

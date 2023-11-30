@@ -110,24 +110,24 @@ contract BaseMethods is Setup {
 
     function _createDataOffchain( 
         ozIToken ozERC20_, 
-        uint ozAmountIn_,
+        uint amountIn_,
         uint userPK_,
         address sender_,
         Type reqType_
     ) internal returns(bytes memory data) {
         if (reqType_ == Type.OUT) {
 
-            uint shares = ozERC20_.previewWithdraw(ozAmountIn_);
+            uint shares = ozERC20_.previewWithdraw(amountIn_); //ozAmountIn
             uint amountInReth = ozERC20_.convertToUnderlying(shares);
 
-            data = HelpersLib.encodeOutData(ozAmountIn_, amountInReth, OZ, sender_);
+            data = HelpersLib.encodeOutData(amountIn_, amountInReth, OZ, sender_);
 
         } else if (reqType_ == Type.IN) { 
             uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-                [ethUsdChainlink, rEthEthChainlink], ozAmountIn_ / 10 ** IERC20Permit(testToken).decimals(), OZ.getDefaultSlippage()
+                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), OZ.getDefaultSlippage()
             );
 
-            bytes32 permitHash = testToken == daiAddr ? _getPermitHashDAI(sender_) : _getPermitHash(sender_, ozAmountIn_);
+            bytes32 permitHash = testToken == daiAddr ? _getPermitHashDAI(sender_) : _getPermitHash(sender_, amountIn_);
             (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPK_, permitHash);
 
             data = abi.encode(minAmountsOut, v, r, s);

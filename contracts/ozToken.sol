@@ -103,7 +103,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function decimals() public view virtual override returns (uint8) {
-        return 18;
+        return 12;
     }
 
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
@@ -186,10 +186,11 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function totalSupply() public view returns(uint) {
-        console.log('--- starting totalSupply ---');
+        // console.log('--- starting totalSupply ---');
         // return _totalShares == 0 ? 0 : _convertToAssets(_totalShares, MathUpgradeable.Rounding.Down);
         uint x = _totalShares == 0 ? 0 : _convertToAssets(_totalShares);
-        console.log('--- end of totalSupply ---');
+        console.log('totalSupply: ', x);
+        // console.log('--- end of totalSupply ---');
         return x;
     }
 

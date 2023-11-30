@@ -107,20 +107,29 @@ library HelpersLib {
 
     function calculateMinAmountsOut( 
         address[2] memory feeds_, 
-        uint amountIn_, 
+        uint rawAmountIn_, 
         uint slippage_
     ) internal view returns(uint[] memory) {
         uint[] memory minAmountsOut = new uint[](2);
+        // console.log('rawAmountIn: ', rawAmountIn_);
+        // console.log('slip: ', slippage_);
 
-        for (uint i=0; i < feeds_.length; i++) {            
+        for (uint i=0; i < feeds_.length; i++) {    
+            console.log('-- loop --');
             (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
             uint expectedOut = 
-                ( i == 0 ? amountIn_ * 1e18 : minAmountsOut[i - 1] )
+                ( i == 0 ? rawAmountIn_ * 1e18 : minAmountsOut[i - 1] )
                 .fullMulDiv(1 ether, i == 0 ? uint(price) * 1e10 : uint(price));
 
-            uint minOut = expectedOut - expectedOut.fullMulDiv(slippage_, 10000);
-            minAmountsOut[i] = minOut;
+            minAmountsOut[i] = expectedOut - expectedOut.fullMulDiv(slippage_, 10000);
+            
+            // console.log('expectedOut: ', expectedOut);
+            // console.log('price: ', uint(price));
         }
+
+        // console.log('--- mins ---');
+        // console.log('minAmountsOut[0]: ', minAmountsOut[0]);
+        // console.log('minAmountsOut[1]: ', minAmountsOut[1]);
 
         return minAmountsOut;
     }
