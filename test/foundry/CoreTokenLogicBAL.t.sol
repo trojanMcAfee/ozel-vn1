@@ -37,6 +37,18 @@ contract CoreTokenLogicBALtest is BaseMethods {
     using FixedPointMathLib for uint;
 
 
+    function test_hex() public {
+        bytes32 balAl = bytes32(uint(99937096936275475143));
+        bytes32 balBob = bytes32(uint(49968548468137737571));
+        bytes32 balChar = bytes32(uint(24984274234068868785));
+
+        // console.logBytes32(balAl+balBob);
+        console.logBytes32(balBob);
+
+
+    }
+
+
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
      */
@@ -140,10 +152,11 @@ contract CoreTokenLogicBALtest is BaseMethods {
         console.log(3);
 
         //check with other amountsIn if the difference between balances is always 2
-        //do timur's advise --> round some calc up, other down
+        //do timur's advise --> round some calc up, other down - x - can't
         //try with solmate's mulDiv - x
-        //try with hex decimals
-        //try increasing decimals
+        //try with hex decimals - x
+        //try increasing/decreasing decimals
+
         //problem is that with DAI is already top decimals (18 dec)
         //change the precision of ozTokens to 6 instead of 18
 
