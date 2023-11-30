@@ -20,6 +20,7 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/uti
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 
 import {AmountsIn} from "./AppStorage.sol";
+import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 
@@ -48,7 +49,9 @@ error USDMPausedTransfers();
 contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
-    using MathUpgradeable for uint;
+    // using MathUpgradeable for uint;
+
+    using FixedPointMathLib for uint;
 
     address private _ozDiamond;
     address private _underlying;
@@ -170,8 +173,8 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
     //-----------
 
-    function _convertToShares(uint assets_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
-        return assets_.mulDiv(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(), rounding_);
+    function _convertToShares(uint assets_) private view returns(uint) { //grab mulDivDown Up
+        return assets_.mulDivUp(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue());
     }
 
     function totalAssets() public view returns(uint) {
@@ -185,7 +188,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     function totalSupply() public view returns(uint) {
         console.log('--- starting totalSupply ---');
         // return _totalShares == 0 ? 0 : _convertToAssets(_totalShares, MathUpgradeable.Rounding.Down);
-        uint x = _totalShares == 0 ? 0 : _convertToAssets(_totalShares, MathUpgradeable.Rounding.Down);
+        uint x = _totalShares == 0 ? 0 : _convertToAssets(_totalShares);
         console.log('--- end of totalSupply ---');
         return x;
     }
@@ -232,16 +235,16 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     //-------------
 
 
-    function _convertToSharesFromUnderlying(uint assets_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
-        return assets_.mulDiv(totalShares(), totalAssets(), rounding_);
+    function _convertToSharesFromUnderlying(uint assets_) private view returns(uint) {
+        return assets_.mulDivDown(totalShares(), totalAssets());
     }
 
     function previewDeposit(uint assets_) public view returns(uint) {
-        return _convertToSharesFromUnderlying(assets_, MathUpgradeable.Rounding.Down);
+        return _convertToSharesFromUnderlying(assets_);
     }
 
     function previewRedeem(uint shares_) public view returns(uint) {
-        return _convertToAssetsFromUnderlying(shares_, MathUpgradeable.Rounding.Down);
+        return _convertToAssetsFromUnderlying(shares_);
     }
 
 
@@ -316,39 +319,39 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function previewWithdraw(uint256 assets) public view returns (uint256) { //check where this is used and if it can be removed
-        return _convertToShares(assets, MathUpgradeable.Rounding.Up);
+        return _convertToShares(assets); //MathUpgradeable.Rounding.Up
     }
 
-    function _calculateWithDecimals(uint a_, uint b_, uint shares_, MathUpgradeable.Rounding rounding_) private view returns(uint) {
+    function _calculateWithDecimals(uint a_, uint b_, uint shares_) private view returns(uint) {
         console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
         console.log('a: ', a_);
         console.log('b: ', b_);
         console.log('shares: ', shares_);
 
-        return shares_.mulDiv((ozIDiamond(_ozDiamond).getUnderlyingValue() / a_), b_, rounding_);
+        return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue() / a_), b_);
     }
 
 
-    function _convertToAssets(uint256 shares_, MathUpgradeable.Rounding rounding_) private view returns (uint256 assets) {  
+    function _convertToAssets(uint256 shares_) private view returns (uint256 assets) {  
         console.log('totalShares: ', _totalShares);
         uint tS = totalShares() == 0 ? 1: totalShares(); 
         console.log('ts: ', tS);
         
         return IERC20Permit(_underlying).decimals() == 6 ? 
-            _calculateWithDecimals(tS, 1, shares_, rounding_) :
-            _calculateWithDecimals(1, tS, shares_, rounding_);
+            _calculateWithDecimals(tS, 1, shares_) :
+            _calculateWithDecimals(1, tS, shares_);
     }
 
-    function _convertToAssetsFromUnderlying(uint shares_, MathUpgradeable.Rounding rounding_) private view returns(uint){
-        return shares_.mulDiv(ozIDiamond(_ozDiamond).getUnderlyingValue(), totalSupply(), rounding_);
+    function _convertToAssetsFromUnderlying(uint shares_) private view returns(uint){
+        return shares_.mulDivDown(ozIDiamond(_ozDiamond).getUnderlyingValue(), totalSupply());
     }
 
     function convertToAssets(uint256 shares) public view returns (uint256 assets) {
-        return _convertToAssets(shares, MathUpgradeable.Rounding.Down);
+        return _convertToAssets(shares);
     }
 
     function convertToShares(uint256 assets) public view returns (uint256 shares) {
-        return _convertToShares(assets, MathUpgradeable.Rounding.Down);
+        return _convertToShares(assets);
     }
 
 

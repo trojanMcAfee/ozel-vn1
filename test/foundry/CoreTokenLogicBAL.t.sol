@@ -141,7 +141,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         //check with other amountsIn if the difference between balances is always 2
         //do timur's advise --> round some calc up, other down
-        //try with solmate's mulDiv
+        //try with solmate's mulDiv - x
         //try with hex decimals
         //try increasing decimals
         //problem is that with DAI is already top decimals (18 dec)
