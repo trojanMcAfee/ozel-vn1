@@ -187,7 +187,6 @@ contract Setup is Test {
         return (baseAmount, amountBob, amountCharlie);
     }
 
-
     function _runSetup() internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
         testToken = daiAddr;

@@ -122,17 +122,34 @@ contract CoreTokenLogicBALtest is BaseMethods {
         assertTrue(balanceAlice / 2 == balanceBob);
         assertTrue(balanceAlice / 4 == balanceCharlie);
 
+        console.log('balanceAlice: ', balanceAlice);
         console.log('balanceBob: ', balanceBob);
         console.log('balanceCharlie: ', balanceCharlie);
+        console.log('TOTAL: ', balanceAlice + balanceBob + balanceCharlie);
         console.log('is: ', balanceBob == (balanceCharlie * 2));
+        console.log('.');
+        console.log('shares alice: ', ozERC20.sharesOf(alice));
+        console.log('shares bob: ', ozERC20.sharesOf(bob));
+        console.log('shares charlie: ', ozERC20.sharesOf(charlie));
+        console.log('.');
+
         assertTrue(balanceBob == balanceCharlie * 2);
 
         console.log(13);
         assertTrue(balanceBob / 2 == balanceCharlie);
         console.log(3);
 
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('sum: ', balanceAlice + balanceCharlie + balanceBob);
+        //check with other amountsIn if the difference between balances is always 2
+        //do timur's advise --> round some calc up, other down
+        //try with solmate's mulDiv
+        //try with hex decimals
+        //try increasing decimals
+        //problem is that with DAI is already top decimals (18 dec)
+        //change the precision of ozTokens to 6 instead of 18
+
+        //Error ******
+        console.log('totalSupply in test: ', ozERC20.totalSupply());
+        console.log('sum in test: ', balanceAlice + balanceCharlie + balanceBob);
 
         assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
         console.log(31);
