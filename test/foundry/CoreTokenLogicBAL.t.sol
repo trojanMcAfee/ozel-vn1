@@ -146,7 +146,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         //do timur's advise --> round some calc up, other down - x - can't
         //try with solmate's mulDiv - x
         //try with hex decimals - x
-        //try increasing/decreasing decimals
+        //try increasing/decreasing decimals - here
 
         //problem is that with DAI is already top decimals (18 dec)
         //change the precision of ozTokens to 6 instead of 18
