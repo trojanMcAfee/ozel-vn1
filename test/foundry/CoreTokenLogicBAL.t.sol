@@ -85,6 +85,75 @@ contract CoreTokenLogicBALtest is BaseMethods {
     }
 
 
+    function test_supply_offset() public {
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL); //it seems like the diff is alwats 2 wei. Test this with BIG and SMALL
+
+        uint[] memory pks = new uint[](10);
+        pks[0] = BOB_PK;
+        pks[1] = CHARLIE_PK;
+        pks[2] = 23545;
+        pks[3] = 46464;
+        pks[4] = 46345;
+        pks[5] = 875785;
+        pks[6] = 2542;
+        pks[7] = 756346;
+        pks[8] = 36235;
+        pks[9] = 46743;
+
+        address[] memory owners = new address[](10);
+        owners[0] = bob;
+        owners[1] = charlie;
+        owners[2] = vm.addr(pks[2]);
+        owners[3] = vm.addr(pks[3]);
+        owners[4] = vm.addr(pks[4]);
+        owners[5] = vm.addr(pks[5]);
+        owners[6] = vm.addr(pks[6]);
+        owners[7] = vm.addr(pks[7]);
+        owners[8] = vm.addr(pks[8]);
+        owners[9] = vm.addr(pks[9]);
+
+        // uint[] memory balances = new uint[](10);
+
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
+        );
+
+
+        for (uint i=1; i<owners.length+1; i++) {
+            _mintManyOz(address(ozERC20), rawAmount, i, owners[i-1], pks[i-1]);
+        }
+
+        uint totalSupply = ozERC20.totalSupply();
+        uint sum;
+
+        for (uint i=0; i<owners.length; i++) {
+            sum += ozERC20.balanceOf(owners[i]);
+        }
+
+        console.log('********');
+        console.log('totalSupply: ', totalSupply);
+        console.log('sum: ', sum);
+
+
+    }
+
+
+    function _mintManyOz(
+        address ozERC20_, 
+        uint rawAmount_, 
+        uint i_,
+        address owner_,
+        uint ownerPK_
+    ) internal returns(uint) {
+        uint amountIn = (rawAmount_ / i_) * 10 ** IERC20Permit(testToken).decimals();
+        (, uint sharesOwner) = _createAndMintOzTokens(
+            ozERC20_, amountIn, owner_, ownerPK_, false, true, Type.IN
+        );
+        return sharesOwner;
+    }
+
+
     /**
      * Mints a small quantity of ozTokens using EIP2612
      */
