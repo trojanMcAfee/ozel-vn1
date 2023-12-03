@@ -256,12 +256,12 @@ contract CoreTokenLogicBALtest is BaseMethods {
         // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
         //Post-conditions
-        // assertTrue(address(ozERC20) != address(0));
-        // assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
-        // assertTrue(sharesAlice / 2 == sharesBob);
-        // assertTrue(sharesAlice / 4 == sharesCharlie);
-        // assertTrue(sharesBob == sharesCharlie * 2);
-        // assertTrue(sharesBob / 2 == sharesCharlie);
+        assertTrue(address(ozERC20) != address(0));
+        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        assertTrue(sharesAlice / 2 == sharesBob);
+        assertTrue(sharesAlice / 4 == sharesCharlie);
+        assertTrue(sharesBob == sharesCharlie * 2);
+        assertTrue(sharesBob / 2 == sharesCharlie);
 
         uint balanceAlice = ozERC20.balanceOf(alice);
         uint balanceBob = ozERC20.balanceOf(bob);
@@ -269,8 +269,8 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balance4 = ozERC20.balanceOf(owner4);
         // uint balance5 = ozERC20.balanceOf(owner5);
 
-        // assertTrue(balanceAlice / 2 == balanceBob);
-        // assertTrue(balanceAlice / 4 == balanceCharlie);
+        assertTrue(balanceAlice / 2 == balanceBob);
+        assertTrue(balanceAlice / 4 == balanceCharlie);
 
         console.log('balanceAlice: ', balanceAlice);
         console.log('balanceBob: ', balanceBob);
@@ -287,10 +287,10 @@ contract CoreTokenLogicBALtest is BaseMethods {
         // console.log('shares owner5: ', shares5);
         // console.log('.');
 
-        // assertTrue(balanceBob == balanceCharlie * 2);
+        assertTrue(balanceBob == balanceCharlie * 2);
 
         console.log(13);
-        // assertTrue(balanceBob / 2 == balanceCharlie);
+        assertTrue(balanceBob / 2 == balanceCharlie);
         console.log(3);
 
         //check with other amountsIn if the difference between balances is always 2
