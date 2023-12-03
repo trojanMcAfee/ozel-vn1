@@ -214,10 +214,12 @@ contract CoreTokenLogicBALtest is BaseMethods {
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
+        _changeSlippage(9900);
+
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
 
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
