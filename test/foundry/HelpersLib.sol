@@ -115,7 +115,7 @@ library HelpersLib {
         // console.log('slip: ', slippage_);
 
         for (uint i=0; i < feeds_.length; i++) {    
-            console.log('-- loop --');
+            // console.log('-- loop --');
             (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
             uint expectedOut = 
                 ( i == 0 ? rawAmountIn_ * 1e18 : minAmountsOut[i - 1] )

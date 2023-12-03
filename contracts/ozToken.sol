@@ -189,7 +189,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         // console.log('--- starting totalSupply ---');
         // return _totalShares == 0 ? 0 : _convertToAssets(_totalShares, MathUpgradeable.Rounding.Down);
         uint x = _totalShares == 0 ? 0 : _convertToAssets(_totalShares);
-        console.log('totalSupply: ', x);
+        // console.log('totalSupply: ', x);
         // console.log('--- end of totalSupply ---');
         return x;
     }
@@ -203,10 +203,10 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        console.log('-- starting balanceOf ---');
+        // console.log('-- starting balanceOf ---');
         // return convertToAssets(sharesOf(account_));
         uint x = convertToAssets(sharesOf(account_));
-        console.log('--- end of balanceOf ---');
+        // console.log('--- end of balanceOf ---');
         return x;
     }
 
@@ -324,19 +324,20 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function _calculateWithDecimals(uint a_, uint b_, uint shares_) private view returns(uint) {
-        console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-        console.log('a: ', a_);
-        console.log('b: ', b_);
-        console.log('shares: ', shares_);
+        // console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
+        // console.log('a: ', a_);
+        // console.log('b: ', b_);
+        // console.log('shares: ', shares_);
 
         return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue() / a_), b_);
     }
 
 
     function _convertToAssets(uint256 shares_) private view returns (uint256 assets) {  
-        console.log('totalShares: ', _totalShares);
+        // console.log('totalShares: ', _totalShares);
         uint tS = totalShares() == 0 ? 1: totalShares(); 
-        console.log('ts: ', tS);
+        // uint tS = totalShares();
+        // console.log('ts: ', tS);
         
         return IERC20Permit(_underlying).decimals() == 6 ? 
             _calculateWithDecimals(tS, 1, shares_) :

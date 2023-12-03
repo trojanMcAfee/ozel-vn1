@@ -32,12 +32,12 @@ contract ozOracle {
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate();    
         (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
 
-        console.log('--- getUnderlyingValue ---');
-        console.log('rate: ', rate);
-        console.log('amountReth: ', amountReth);
-        console.log('price: ', uint(price));
-        console.log('TOTAL under: ', ( ((rate * amountReth) / 1 ether) * (uint(price) * 1e10) ) / 1 ether);
-        console.log('--- end getUnderlyingValue ---');
+        // console.log('--- getUnderlyingValue ---');
+        // console.log('rate: ', rate);
+        // console.log('amountReth: ', amountReth);
+        // console.log('price: ', uint(price)
+        // console.log('TOTAL under: ', ( ((rate * amountReth) / 1 ether) * (uint(price) * 1e10) ) / 1 ether);
+        // console.log('--- end getUnderlyingValue ---');
 
         return ( ((rate * amountReth) / 1 ether) * (uint(price) * 1e10) ) / 1 ether; 
     }

@@ -53,6 +53,10 @@ contract ROImoduleL1 {
         AmountsIn memory amounts_
     ) external {
         uint amountIn = amounts_.amountIn;
+        // console.log(0);
+        // console.log('under: ', underlying_);
+        // console.log('owner: ', owner_);
+
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
 
         //Swaps underlying to WETH in Uniswap
@@ -195,7 +199,6 @@ contract ROImoduleL1 {
             recipient: payable(address(this)),
             toInternalBalance: false
         });
-
         uint minOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds); //remove this querySwap to save gas
         uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
 
