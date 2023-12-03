@@ -21,6 +21,7 @@ import {ozOracle} from "../../contracts/facets/ozOracle.sol";
 import {ozBeacon} from "../../contracts/facets/ozBeacon.sol";
 import {ozLoupe} from "../../contracts/facets/ozLoupe.sol";
 import {ozToken} from "../../contracts/ozToken.sol";
+import {ozToken18} from "../../contracts/ozToken18.sol";
 import {
     Tokens,
     Dexes,
@@ -95,7 +96,7 @@ contract Setup is Test {
     OwnershipFacet internal ownership;
     Diamond internal ozDiamond;
     ozBeacon internal beacon;
-    ozToken internal tokenOz;
+    ozToken18 internal tokenOz;
 
     //Ozel custom facets
     ozTokenFactory internal factory; 
@@ -204,7 +205,7 @@ contract Setup is Test {
         initDiamond = new DiamondInit();
 
         //Deploys ozToken implementation contract for ozBeacon
-        tokenOz = new ozToken();
+        tokenOz = new ozToken18();
 
         //Deploys facets
         loupe = new ozLoupe();

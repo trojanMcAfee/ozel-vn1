@@ -46,7 +46,7 @@ error USDMInvalidBlockedAccount(address account);
 error USDMPausedTransfers();
 
 
-contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
+contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
     // using MathUpgradeable for uint;
@@ -103,7 +103,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function decimals() public view virtual override returns (uint8) {
-        return 18;
+        return 6;
     }
 
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
@@ -210,13 +210,17 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return x;
     }
 
+    function _formatTo6(uint num) internal returns(uint) {
+        return num / 1e12;
+    }
+
 
     function mint(bytes memory data_) external returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
-        uint assets = amounts.amountIn;
+        uint assets = _formatTo6(amounts.amountIn);
 
-        require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max");
+        // require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max"); //<-- Not necessary , I think. Check
 
         ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
 
@@ -339,7 +343,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         // uint tS = totalShares();
         // console.log('ts: ', tS);
         
-        return IERC20Permit(_underlying).decimals() == 6 ? 
+        return IERC20Permit(_underlying).decimals() == 18 ? 
             _calculateWithDecimals(tS, 1, shares_) :
             _calculateWithDecimals(1, tS, shares_);
     }
