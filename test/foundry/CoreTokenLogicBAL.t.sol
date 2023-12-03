@@ -203,27 +203,52 @@ contract CoreTokenLogicBALtest is BaseMethods {
         return sharesOwner;
     }
 
-    function _getOwners() internal view returns(address[] memory owners, uint[] memory PKs) {
-        uint PK_4 = 4353465;
-        uint PK_5 = 46536;
-        uint PK_6 = 9568396;
-        address owner4 = vm.addr(PK_4);
-        address owner5 = vm.addr(PK_5);
-        address owner6 = vm.addr(PK_6);
+    uint PK_4 = 4353465;
+    uint PK_5 = 46536;
+    uint PK_6 = 9568396;
+    uint PK_7 = 245435;
+    uint PK_8 = 246536;
 
-        owners = new address[](5);
+    address owner4 = vm.addr(PK_4);
+    address owner5 = vm.addr(PK_5);
+    address owner6 = vm.addr(PK_6);
+    address owner7 = vm.addr(PK_7);
+    address owner8 = vm.addr(PK_8);
+
+    function _getOwners(uint rawAmount_) internal returns(address[] memory owners, uint[] memory PKs) {
+        // uint PK_4 = 4353465;
+        // uint PK_5 = 46536;
+        // uint PK_6 = 9568396;
+        // uint PK_7 = 245435;
+        // uint PK_8 = 246536;
+
+        // address owner4 = vm.addr(PK_4);
+        // address owner5 = vm.addr(PK_5);
+        // address owner6 = vm.addr(PK_6);
+        // address owner7 = vm.addr(PK_7);
+        // address owner8 = vm.addr(PK_8);
+
+        owners = new address[](7);
         owners[0] = bob;
         owners[1] = charlie;
         owners[2] = owner4;
         owners[3] = owner5;
         owners[4] = owner6;
+        owners[5] = owner7;
+        owners[6] = owner8;
 
-        PKs = new uint[](5);
+        PKs = new uint[](7);
         PKs[0] = BOB_PK;
         PKs[1] = CHARLIE_PK;
         PKs[2] = PK_4;
         PKs[3] = PK_5;
         PKs[4] = PK_6;
+        PKs[5] = PK_7;
+        PKs[6] = PK_8;
+
+        for (uint i=2; i<owners.length; i++) {
+            deal(testToken, owners[i], rawAmount_ * (10 ** IERC20Permit(testToken).decimals()));
+        }
 
     }
 
@@ -252,11 +277,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
         //------
 
-        (address[] memory owners, uint[] memory PKs) = _getOwners();
-
-        deal(testToken, owners[4-2], rawAmount * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, owners[5-2], rawAmount * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, owners[6-2], rawAmount * (10 ** IERC20Permit(testToken).decimals()));
+        (address[] memory owners, uint[] memory PKs) = _getOwners(rawAmount);
 
         for (uint i=0; i<owners.length; i++) {
             _mintManyOz(address(ozERC20), rawAmount, i+1, owners[i], PKs[i]);
@@ -353,6 +374,102 @@ contract CoreTokenLogicBALtest is BaseMethods {
         // assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
         // console.log(4);
     }   
+
+    function test_ozToken_supply_balancer() public { 
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            bytes32(0)
+        );
+        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+
+        _changeSlippage(9900);
+
+        /**
+         * Pre-conditions + Actions (creating of ozTokens)
+         */
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
+        );
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        //------
+
+        (address[] memory owners, uint[] memory PKs) = _getOwners(rawAmount);
+
+        for (uint i=0; i<owners.length; i++) {
+            _mintManyOz(address(ozERC20), rawAmount, i+1, owners[i], PKs[i]);
+            _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        }
+
+        //Post-conditions
+        assertTrue(address(ozERC20) != address(0));
+        uint sum;
+
+        for (uint i=0; i<owners.length; i++) {
+            console.log('shares ', i, ': ', ozERC20.sharesOf(owners[i]));
+            uint bal = ozERC20.balanceOf(owners[i]);
+            sum += bal;
+            console.log('bal ', i, ': ', bal);
+        }
+
+        uint balanceAlice = ozERC20.balanceOf(alice);
+        sum += balanceAlice;
+        uint balanceBob = ozERC20.balanceOf(bob);
+        uint balanceCharlie = ozERC20.balanceOf(charlie);
+        uint balance4 = ozERC20.balanceOf(owners[4-2]);
+        uint balance5 = ozERC20.balanceOf(owners[5-2]);
+        uint balance6 = ozERC20.balanceOf(owners[6-2]);
+
+        
+
+        // assertTrue(balanceAlice / 2 == balanceBob);
+        // assertTrue(balanceAlice / 4 == balanceCharlie);
+
+        // console.log('balanceAlice: ', balanceAlice);
+        // console.log('balanceBob: ', balanceBob);
+        // console.log('balanceCharlie: ', balanceCharlie);
+        // console.log('balance4: ', balance4);
+        // console.log('balance5: ', balance5);
+        // console.log('balance6: ', balance6);
+        // // console.log('TOTAL: ', balanceAlice + balanceBob + balanceCharlie + balance4 + balance5 + balance6);
+        // console.log('is: ', balanceBob == (balanceCharlie * 2));
+        console.log('.');
+        // console.log('shares alice: ', sharesAlice);
+        // console.log('shares bob: ', sharesBob);
+        // console.log('shares charlie: ', sharesCharlie);
+        // console.log('shares owner4: ', shares4);
+        // console.log('shares owner5: ', shares5);
+        // console.log('.');
+
+        // assertTrue(balanceBob == balanceCharlie * 2);
+
+        console.log(13);
+        // assertTrue(balanceBob / 2 == balanceCharlie);
+        console.log(3);
+
+        //check with other amountsIn if the difference between balances is always 2
+        //do timur's advise --> round some calc up, other down - x - can't
+        //try with solmate's mulDiv - x
+        //try with hex decimals - x
+        //try increasing/decreasing decimals - here
+
+        //problem is that with DAI is already top decimals (18 dec)
+        //change the precision of ozTokens to 6 instead of 18
+
+        //Error ******
+        console.log('totalSupply in test: ', ozERC20.totalSupply());
+        // console.log('sum in test: ', balanceAlice + balanceCharlie + balanceBob + balance4 + balance5 + balance6);
+        console.log('sum in test: ', sum);
+
+        // assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
+        // console.log(31);
+        // assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + rawAmount / 2 + rawAmount / 4);
+        // console.log(32);
+        // assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
+        // console.log(4);
+    } 
 
     
     /**

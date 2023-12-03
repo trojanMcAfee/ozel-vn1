@@ -103,7 +103,7 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
     }
 
     function decimals() public view virtual override returns (uint8) {
-        return 6;
+        return 18;
     }
 
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
@@ -210,8 +210,8 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
         return x;
     }
 
-    function _formatTo6(uint num) internal returns(uint) {
-        return num / 1e12;
+    function _formatTo6(uint num) internal pure returns(uint) {
+        return num / 1e18;
     }
 
 
