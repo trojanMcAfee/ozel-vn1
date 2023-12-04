@@ -211,7 +211,7 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
     }
 
     function _formatTo6(uint num) internal pure returns(uint) {
-        return num / 1e18;
+        return num / 1e12;
     }
 
 
@@ -219,6 +219,7 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
         uint assets = _formatTo6(amounts.amountIn);
+        // uint assets = amounts.amountIn;
 
         // require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max"); //<-- Not necessary , I think. Check
 

@@ -434,16 +434,10 @@ contract CoreTokenLogicBALtest is BaseMethods {
         int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
         uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
-        console.log(1);
         assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
-        console.log(2);
         assertTrue(basisPointsDifferenceBobMEV == 0);
-        console.log(3);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
-        console.log(4);
-        console.log('underlyingOut: ', underlyingOut);
         assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
-        console.log(5);
     }
 
 
