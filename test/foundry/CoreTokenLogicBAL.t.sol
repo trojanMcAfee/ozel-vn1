@@ -161,7 +161,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount);
+        assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
         assertTrue(sharesAlice / 2 == sharesBob);
         assertTrue(sharesAlice / 4 == sharesCharlie);
         assertTrue(sharesBob == sharesCharlie * 2);
@@ -175,8 +175,11 @@ contract CoreTokenLogicBALtest is BaseMethods {
         assertTrue(balanceAlice / 4 == balanceCharlie);
         assertTrue(balanceBob == balanceCharlie * 2);
         assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
+        console.log(2);
         assertTrue(ozERC20.totalAssets() == rawAmount + rawAmount / 2 + rawAmount / 4);
+        console.log(4);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
+        console.log(3);
     }   
 
     /**
