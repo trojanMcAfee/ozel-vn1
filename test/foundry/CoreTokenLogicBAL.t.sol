@@ -414,13 +414,15 @@ contract CoreTokenLogicBALtest is BaseMethods {
             console.log('bal ', i, ': ', bal);
         }
 
-        uint balanceAlice = ozERC20.balanceOf(alice);
-        sum += balanceAlice;
-        uint balanceBob = ozERC20.balanceOf(bob);
-        uint balanceCharlie = ozERC20.balanceOf(charlie);
-        uint balance4 = ozERC20.balanceOf(owners[4-2]);
-        uint balance5 = ozERC20.balanceOf(owners[5-2]);
-        uint balance6 = ozERC20.balanceOf(owners[6-2]);
+        // uint balanceAlice = ozERC20.balanceOf(alice);
+        sum += ozERC20.balanceOf(alice);
+        // uint balanceBob = ozERC20.balanceOf(bob);
+        // uint balanceCharlie = ozERC20.balanceOf(charlie);
+        // uint balance4 = ozERC20.balanceOf(owners[4-2]);
+        // uint balance5 = ozERC20.balanceOf(owners[5-2]);
+        // uint balance6 = ozERC20.balanceOf(owners[6-2]);
+
+        assertTrue(ozERC20.totalSupply() == sum);
 
         
 
@@ -435,7 +437,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         // console.log('balance6: ', balance6);
         // // console.log('TOTAL: ', balanceAlice + balanceBob + balanceCharlie + balance4 + balance5 + balance6);
         // console.log('is: ', balanceBob == (balanceCharlie * 2));
-        console.log('.');
+        // console.log('.');
         // console.log('shares alice: ', sharesAlice);
         // console.log('shares bob: ', sharesBob);
         // console.log('shares charlie: ', sharesCharlie);
@@ -445,9 +447,9 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         // assertTrue(balanceBob == balanceCharlie * 2);
 
-        console.log(13);
+        // console.log(13);
         // assertTrue(balanceBob / 2 == balanceCharlie);
-        console.log(3);
+        // console.log(3);
 
         //check with other amountsIn if the difference between balances is always 2
         //do timur's advise --> round some calc up, other down - x - can't
@@ -459,9 +461,9 @@ contract CoreTokenLogicBALtest is BaseMethods {
         //change the precision of ozTokens to 6 instead of 18
 
         //Error ******
-        console.log('totalSupply in test: ', ozERC20.totalSupply());
+        // console.log('totalSupply in test: ', ozERC20.totalSupply());
         // console.log('sum in test: ', balanceAlice + balanceCharlie + balanceBob + balance4 + balance5 + balance6);
-        console.log('sum in test: ', sum);
+        // console.log('sum in test: ', sum);
 
         // assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
         // console.log(31);
