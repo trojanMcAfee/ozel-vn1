@@ -84,110 +84,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
     }
 
 
-    // function test_supply_offset() public {
-    //     (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL); //it seems like the diff is alwats 2 wei. Test this with BIG and SMALL
-
-    //     uint[] memory pks = new uint[](10);
-    //     pks[0] = BOB_PK;
-    //     pks[1] = CHARLIE_PK;
-    //     pks[2] = 23545;
-    //     pks[3] = 46464;
-    //     pks[4] = 46345;
-    //     pks[5] = 875785;
-    //     pks[6] = 2542;
-    //     pks[7] = 756346;
-    //     pks[8] = 36235;
-    //     pks[9] = 46743;
-
-    //     address[] memory owners = new address[](10);
-    //     owners[0] = bob;
-    //     owners[1] = charlie;
-    //     owners[2] = vm.addr(pks[2]);
-    //     owners[3] = vm.addr(pks[3]);
-    //     owners[4] = vm.addr(pks[4]);
-    //     owners[5] = vm.addr(pks[5]);
-    //     owners[6] = vm.addr(pks[6]);
-    //     owners[7] = vm.addr(pks[7]);
-    //     owners[8] = vm.addr(pks[8]);
-    //     owners[9] = vm.addr(pks[9]);
-
-    //     bytes32 oldSlot0data = vm.load(
-    //         IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
-    //         bytes32(0)
-    //     );
-    //     (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
-
-        
-    //     //----------------------
-    //     uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-    //     (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
-    //         testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
-    //     );
-    //     _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-    //     uint balAlice = ozERC20.balanceOf(alice);
-    //     console.log('bal oz alice: ', balAlice);
-    //     console.log('shares alice: ', ozERC20.sharesOf(alice));
-
-    //     //----------------------
-    //     amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
-    //     (, uint sharesBob) = _createAndMintOzTokens(
-    //         address(ozERC20), amountIn, bob, BOB_PK, false, true, Type.IN
-    //     );
-    //     _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-    //     uint balBob = ozERC20.balanceOf(bob);
-    //     console.log('bal oz bob: ', balBob);
-    //     console.log('shares bob: ', ozERC20.sharesOf(bob));
-
-    //     amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
-    //     (, uint sharesCharlie) = _createAndMintOzTokens(
-    //         address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
-    //     );
-    //     _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-    //     uint balCharlie = ozERC20.balanceOf(charlie);
-    //     console.log('bal oz charlie: ', balCharlie);
-    //     console.log('shares charlie: ', ozERC20.sharesOf(charlie));
-
-    //     uint PK_4 = 4353465;
-    //     address owner4 = vm.addr(PK_4);
-    //     deal(testToken, owner4, 100 * (10 ** IERC20Permit(testToken).decimals()));
-    //     amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
-    //     (, uint shares4) = _createAndMintOzTokens(
-    //         address(ozERC20), amountIn, owner4, PK_4, false, true, Type.IN
-    //     );
-    //     _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-    //     // uint bal4 = ozERC20.balanceOf(owner4);
-    //     // console.log('bal oz owner4: ', bal4);
-    //     // console.log('shares owner4: ', ozERC20.sharesOf(owner4));
-    //     //----------------------_
-
-
-    //     // for (uint i=1; i<5; i++) {
-    //     //     _mintManyOz(address(ozERC20), rawAmount, i, owners[i-1], pks[i-1]);
-    //         // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-    //     // }
-
-    //     // uint sum;
-
-    //     // uint bal0 = ozERC20.balanceOf(owners[0]);
-    //     // console.log('bal0: ', bal0);
-    //     // uint bal1 = ozERC20.balanceOf(owners[1]);
-    //     // console.log('bal1: ', bal1);
-    //     // uint bal2 = ozERC20.balanceOf(owners[2]);
-    //     // console.log('bal2: ', bal2);
-
-    //     // for (uint i=0; i<owners.length; i++) {
-    //     //     sum += ozERC20.balanceOf(owners[i]);
-    //     // }
-
-    //     console.log('********');
-    //     console.log('totalShares: ', ozERC20.totalShares());
-    //     console.log('totalSupply: ', ozERC20.totalSupply());
-    //     console.log('totalSum: ', balAlice + balBob + balCharlie);
-    //     // console.log('sum: ', sum);
-
-
-    // }
-
 
     function _mintManyOz(
         address ozERC20_, 
@@ -202,42 +98,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         );
     }
 
-    // uint PK_4 = 4353465;
-    // uint PK_5 = 46536;
-    // uint PK_6 = 9568396;
-    // uint PK_7 = 245435;
-    // uint PK_8 = 246536;
-
-    // address owner4 = vm.addr(PK_4);
-    // address owner5 = vm.addr(PK_5);
-    // address owner6 = vm.addr(PK_6);
-    // address owner7 = vm.addr(PK_7);
-    // address owner8 = vm.addr(PK_8); 
-
-
-    // function _getOwners() internal returns(address[] memory owners, uint[] memory PKs) {
-    //     uint PK_4 = 4353465;
-    //     uint PK_5 = 46536;
-    //     uint PK_6 = 9568396;
-    //     uint PK_7 = 245435;
-    //     uint PK_8 = 246536;
-
-    //     address owner4 = vm.addr(PK_4);
-    //     address owner5 = vm.addr(PK_5);
-    //     address owner6 = vm.addr(PK_6);
-    //     address owner7 = vm.addr(PK_7);
-    //     address owner8 = vm.addr(PK_8);
-    // }
-
-
-
     function _getOwners(uint rawAmount_) internal returns(address[] memory owners, uint[] memory PKs) {
-        // uint PK_4 = 4353465;
-        // uint PK_5 = 46536;
-        // uint PK_6 = 9568396;
-        // uint PK_7 = 245435;
-        // uint PK_8 = 246536;
-
         owners = new address[](7);
         owners[0] = bob;
         owners[1] = charlie;
@@ -249,40 +110,14 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint macroPK = type(uint).max;
         for (uint i=2; i<7; i++) {
             uint pk = macroPK / 5;
-            console.log('pk: ', pk);
             owners[i] = vm.addr(pk);
             PKs[i] = pk;
             macroPK = pk;
         }
 
-        // address owner4 = vm.addr(PK_4);
-        // address owner5 = vm.addr(PK_5);
-        // address owner6 = vm.addr(PK_6);
-        // address owner7 = vm.addr(PK_7);
-        // address owner8 = vm.addr(PK_8);
-
-        // owners = new address[](7);
-        // owners[0] = bob;
-        // owners[1] = charlie;
-        // owners[2] = owner4;
-        // owners[3] = owner5;
-        // owners[4] = owner6;
-        // owners[5] = owner7;
-        // owners[6] = owner8;
-
-        // PKs = new uint[](7);
-        // PKs[0] = BOB_PK;
-        // PKs[1] = CHARLIE_PK;
-        // PKs[2] = PK_4;
-        // PKs[3] = PK_5;
-        // PKs[4] = PK_6;
-        // PKs[5] = PK_7;
-        // PKs[6] = PK_8;
-
         for (uint i=2; i<owners.length; i++) {
             deal(testToken, owners[i], rawAmount_ * (10 ** IERC20Permit(testToken).decimals()));
         }
-
     }
 
 
