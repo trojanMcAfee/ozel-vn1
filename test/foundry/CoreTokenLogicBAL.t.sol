@@ -202,17 +202,33 @@ contract CoreTokenLogicBALtest is BaseMethods {
         );
     }
 
-    uint PK_4 = 4353465;
-    uint PK_5 = 46536;
-    uint PK_6 = 9568396;
-    uint PK_7 = 245435;
-    uint PK_8 = 246536;
+    // uint PK_4 = 4353465;
+    // uint PK_5 = 46536;
+    // uint PK_6 = 9568396;
+    // uint PK_7 = 245435;
+    // uint PK_8 = 246536;
 
-    address owner4 = vm.addr(PK_4);
-    address owner5 = vm.addr(PK_5);
-    address owner6 = vm.addr(PK_6);
-    address owner7 = vm.addr(PK_7);
-    address owner8 = vm.addr(PK_8);
+    // address owner4 = vm.addr(PK_4);
+    // address owner5 = vm.addr(PK_5);
+    // address owner6 = vm.addr(PK_6);
+    // address owner7 = vm.addr(PK_7);
+    // address owner8 = vm.addr(PK_8); 
+
+
+    // function _getOwners() internal returns(address[] memory owners, uint[] memory PKs) {
+    //     uint PK_4 = 4353465;
+    //     uint PK_5 = 46536;
+    //     uint PK_6 = 9568396;
+    //     uint PK_7 = 245435;
+    //     uint PK_8 = 246536;
+
+    //     address owner4 = vm.addr(PK_4);
+    //     address owner5 = vm.addr(PK_5);
+    //     address owner6 = vm.addr(PK_6);
+    //     address owner7 = vm.addr(PK_7);
+    //     address owner8 = vm.addr(PK_8);
+    // }
+
 
 
     function _getOwners(uint rawAmount_) internal returns(address[] memory owners, uint[] memory PKs) {
@@ -222,29 +238,46 @@ contract CoreTokenLogicBALtest is BaseMethods {
         // uint PK_7 = 245435;
         // uint PK_8 = 246536;
 
+        owners = new address[](7);
+        owners[0] = bob;
+        owners[1] = charlie;
+
+        PKs = new uint[](7);
+        PKs[0] = BOB_PK;
+        PKs[1] = CHARLIE_PK;
+
+        uint macroPK = type(uint).max;
+        for (uint i=2; i<7; i++) {
+            uint pk = macroPK / 5;
+            console.log('pk: ', pk);
+            owners[i] = vm.addr(pk);
+            PKs[i] = pk;
+            macroPK = pk;
+        }
+
         // address owner4 = vm.addr(PK_4);
         // address owner5 = vm.addr(PK_5);
         // address owner6 = vm.addr(PK_6);
         // address owner7 = vm.addr(PK_7);
         // address owner8 = vm.addr(PK_8);
 
-        owners = new address[](7);
-        owners[0] = bob;
-        owners[1] = charlie;
-        owners[2] = owner4;
-        owners[3] = owner5;
-        owners[4] = owner6;
-        owners[5] = owner7;
-        owners[6] = owner8;
+        // owners = new address[](7);
+        // owners[0] = bob;
+        // owners[1] = charlie;
+        // owners[2] = owner4;
+        // owners[3] = owner5;
+        // owners[4] = owner6;
+        // owners[5] = owner7;
+        // owners[6] = owner8;
 
-        PKs = new uint[](7);
-        PKs[0] = BOB_PK;
-        PKs[1] = CHARLIE_PK;
-        PKs[2] = PK_4;
-        PKs[3] = PK_5;
-        PKs[4] = PK_6;
-        PKs[5] = PK_7;
-        PKs[6] = PK_8;
+        // PKs = new uint[](7);
+        // PKs[0] = BOB_PK;
+        // PKs[1] = CHARLIE_PK;
+        // PKs[2] = PK_4;
+        // PKs[3] = PK_5;
+        // PKs[4] = PK_6;
+        // PKs[5] = PK_7;
+        // PKs[6] = PK_8;
 
         for (uint i=2; i<owners.length; i++) {
             deal(testToken, owners[i], rawAmount_ * (10 ** IERC20Permit(testToken).decimals()));
@@ -375,6 +408,10 @@ contract CoreTokenLogicBALtest is BaseMethods {
         // console.log(4);
     }   
 
+    /**
+     * Tests the constraint that the sum of balances between all holders is equal to
+     * calling the totalSupply function of the ozToken contracts.
+     */
     function test_ozToken_supply_balancer() public { 
         //Pre-conditions
         bytes32 oldSlot0data = vm.load(
