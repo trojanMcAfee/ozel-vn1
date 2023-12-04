@@ -218,7 +218,7 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
     function mint(bytes memory data_) external returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
-        uint assets = _formatTo6(amounts.amountIn);
+        uint assets = _formatTo6(amounts.amountIn); 
         // uint assets = amounts.amountIn;
 
         // require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max"); //<-- Not necessary , I think. Check

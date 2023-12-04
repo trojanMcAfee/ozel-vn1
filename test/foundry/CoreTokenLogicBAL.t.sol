@@ -36,7 +36,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
     using FixedPointMathLib for uint;
 
-
+    uint internal constant SHARES_DECIMALS_OFFSET = 1e6;
 
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
@@ -55,7 +55,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balAlice = ozERC20.balanceOf(alice);
 
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount);
+        assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
@@ -78,7 +78,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balAlice = ozERC20.balanceOf(alice);
 
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount);
+        assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
         assertTrue(balAlice > 977_000 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
