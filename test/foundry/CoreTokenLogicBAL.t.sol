@@ -176,7 +176,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         assertTrue(balanceBob == balanceCharlie * 2);
         assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
         console.log(2);
-        assertTrue(ozERC20.totalAssets() == rawAmount + rawAmount / 2 + rawAmount / 4);
+        assertTrue(ozERC20.totalAssets() == (rawAmount + rawAmount / 2 + rawAmount / 4) * 1e6);
         console.log(4);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
         console.log(3);
