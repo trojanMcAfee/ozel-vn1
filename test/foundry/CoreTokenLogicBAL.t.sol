@@ -53,10 +53,9 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
         //Post-conditions
         uint balAlice = ozERC20.balanceOf(alice);
-        console.log('oz bal alice: ', balAlice);
 
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        assertTrue(sharesAlice == rawAmount);
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
@@ -79,7 +78,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         uint balAlice = ozERC20.balanceOf(alice);
 
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        assertTrue(sharesAlice == rawAmount);
         assertTrue(balAlice > 977_000 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
@@ -122,21 +121,25 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
 
     /**
-     * Mints a small quantity of ozTokens using EIP2612
+     * Mints a small quantity of ozTokens using EIP2612 with a few users, and then
+     * cross-check between them the main rebasing variables from the ozToken
+     * (totalSupply, totalShares, totalAssets)
      */
     function test_minting_eip2612_balancer() public { 
+        /**
+         * Pre-conditions + Actions (creating of ozTokens)
+         */
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
             bytes32(0)
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
-
-        /**
-         * Pre-conditions + Actions (creating of ozTokens)
-         */
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
 
+        /**
+         * Actions
+         */
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
             testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
@@ -381,7 +384,11 @@ contract CoreTokenLogicBALtest is BaseMethods {
         testToken = ozERC20.asset();
         uint balanceAliceUnderlying = IERC20Permit(testToken).balanceOf(alice);
 
+        console.log(1);
+        console.log('balanceAliceUnderlying: ', balanceAliceUnderlying);
+        console.log('rawAmount: ', rawAmount);
         assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 99 * 10 ** underlyingDecimals);
+        console.log(2);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
@@ -427,10 +434,16 @@ contract CoreTokenLogicBALtest is BaseMethods {
         int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
         uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
+        console.log(1);
         assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
+        console.log(2);
         assertTrue(basisPointsDifferenceBobMEV == 0);
+        console.log(3);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
+        console.log(4);
+        console.log('underlyingOut: ', underlyingOut);
         assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
+        console.log(5);
     }
 
 
