@@ -346,9 +346,11 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
         // uint tS = totalShares();
         // console.log('ts: ', tS);
         
-        return IERC20Permit(_underlying).decimals() == 18 ? 
-            _calculateWithDecimals(tS, 1, shares_) :
-            _calculateWithDecimals(1, tS, shares_);
+        // return IERC20Permit(_underlying).decimals() == 18 ? 
+        //     _calculateWithDecimals(tS, 1, shares_) :
+        //     _calculateWithDecimals(1, tS, shares_);
+
+        return _calculateWithDecimals(tS, 1, shares_);
     }
 
     function _convertToAssetsFromUnderlying(uint shares_) private view returns(uint){
