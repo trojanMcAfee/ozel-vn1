@@ -71,6 +71,7 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
     bytes32 private constant _PERMIT_TYPEHASH =
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
+    uint public FORMAT_DECIMALS;
 
     constructor() {
         _disableInitializers();
@@ -87,6 +88,7 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
         _ozDiamond = diamond_;
         _underlying = underlying_;
         __EIP712_init(name_, "1");
+        FORMAT_DECIMALS = IERC20Permit(underlying_).decimals() == 18 ? 1e12 : 1;
     }
 
 
@@ -210,8 +212,8 @@ contract ozToken18 is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712
         return x;
     }
 
-    function _formatTo6(uint num) internal pure returns(uint) {
-        return num / 1e12;
+    function _formatTo6(uint num) internal view returns(uint) {
+        return num / FORMAT_DECIMALS;
     }
 
 
