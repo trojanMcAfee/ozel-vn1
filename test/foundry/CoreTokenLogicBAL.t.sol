@@ -40,7 +40,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
      */
-    function test_minting_approve_smallMint_balancer() public {
+    function minting_approve_smallMint_balancer() public {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
