@@ -40,7 +40,7 @@ contract TestMethods is BaseMethods {
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
      */
-    function minting_approve_smallMint_balancer() public {
+    function _minting_approve_smallMint_balancer() internal {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
