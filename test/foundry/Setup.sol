@@ -114,6 +114,8 @@ contract Setup is Test {
 
     uint internal constant _BASE = 18;
 
+    uint internal constant SHARES_DECIMALS_OFFSET = 1e6;
+
    
 
     /** FUNCTIONS **/ 

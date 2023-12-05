@@ -176,6 +176,41 @@ contract BaseMethods is Setup {
         settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
     }
 
+    function _mintManyOz(
+        address ozERC20_, 
+        uint rawAmount_, 
+        uint i_,
+        address owner_,
+        uint ownerPK_
+    ) internal {
+        uint amountIn = (rawAmount_ / (i_ * 2)) * 10 ** IERC20Permit(testToken).decimals();
+        _createAndMintOzTokens(
+            ozERC20_, amountIn, owner_, ownerPK_, false, true, Type.IN
+        );
+    }
+
+    function _getOwners(uint rawAmount_) internal returns(address[] memory owners, uint[] memory PKs) {
+        owners = new address[](7);
+        owners[0] = bob;
+        owners[1] = charlie;
+
+        PKs = new uint[](7);
+        PKs[0] = BOB_PK;
+        PKs[1] = CHARLIE_PK;
+
+        uint macroPK = type(uint).max;
+        for (uint i=2; i<7; i++) {
+            uint pk = macroPK / 5;
+            owners[i] = vm.addr(pk);
+            PKs[i] = pk;
+            macroPK = pk;
+        }
+
+        for (uint i=2; i<owners.length; i++) {
+            deal(testToken, owners[i], rawAmount_ * (10 ** IERC20Permit(testToken).decimals()));
+        }
+    }
+
 
     //---- Reset pools helpers ----
     

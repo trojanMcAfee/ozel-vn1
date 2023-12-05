@@ -36,7 +36,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
 
     using FixedPointMathLib for uint;
 
-    uint internal constant SHARES_DECIMALS_OFFSET = 1e6;
 
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
@@ -44,7 +43,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
     function test_minting_approve_smallMint_balancer() public {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals(); //1e6
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
         //Action
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
@@ -82,42 +81,6 @@ contract CoreTokenLogicBALtest is BaseMethods {
         assertTrue(balAlice > 977_000 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
-
-
-    function _mintManyOz(
-        address ozERC20_, 
-        uint rawAmount_, 
-        uint i_,
-        address owner_,
-        uint ownerPK_
-    ) internal {
-        uint amountIn = (rawAmount_ / (i_ * 2)) * 10 ** IERC20Permit(testToken).decimals();
-        _createAndMintOzTokens(
-            ozERC20_, amountIn, owner_, ownerPK_, false, true, Type.IN
-        );
-    }
-
-    function _getOwners(uint rawAmount_) internal returns(address[] memory owners, uint[] memory PKs) {
-        owners = new address[](7);
-        owners[0] = bob;
-        owners[1] = charlie;
-
-        PKs = new uint[](7);
-        PKs[0] = BOB_PK;
-        PKs[1] = CHARLIE_PK;
-
-        uint macroPK = type(uint).max;
-        for (uint i=2; i<7; i++) {
-            uint pk = macroPK / 5;
-            owners[i] = vm.addr(pk);
-            PKs[i] = pk;
-            macroPK = pk;
-        }
-
-        for (uint i=2; i<owners.length; i++) {
-            deal(testToken, owners[i], rawAmount_ * (10 ** IERC20Permit(testToken).decimals()));
-        }
-    }
 
 
     /**
@@ -384,11 +347,7 @@ contract CoreTokenLogicBALtest is BaseMethods {
         testToken = ozERC20.asset();
         uint balanceAliceUnderlying = IERC20Permit(testToken).balanceOf(alice);
 
-        console.log(1);
-        console.log('balanceAliceUnderlying: ', balanceAliceUnderlying);
-        console.log('rawAmount: ', rawAmount);
         assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 99 * 10 ** underlyingDecimals);
-        console.log(2);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 

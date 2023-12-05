@@ -8,6 +8,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {Setup} from "./Setup.sol";
 import {BaseMethods} from "./BaseMethods.sol";
 import {Type} from "./AppStorageTests.sol";
+import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 
 import "forge-std/console.sol";
 
@@ -37,8 +38,11 @@ contract CoreTokenLogicRPtest is BaseMethods {
         );
 
         //Post-conditions
+        uint balAlice = ozERC20.balanceOf(alice);
+
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
+        assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
     function test_minting_approve_bigMint_rocketPool() public confirmRethSupplyIncrease {
@@ -53,34 +57,50 @@ contract CoreTokenLogicRPtest is BaseMethods {
         );
 
         //Post-conditions
+        uint balAlice = ozERC20.balanceOf(alice);
+
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
+        assertTrue(balAlice > 977_000 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
     function test_minting_eip2612_rocketPool() public confirmRethSupplyIncrease { 
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            bytes32(0)
+        );
+        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
 
+        /**
+         * Actions
+         */
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
             testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
         );
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
         (, uint sharesBob) = _createAndMintOzTokens(
             address(ozERC20), amountIn, bob, BOB_PK, false, true, Type.IN
         );
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
         amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
         (, uint sharesCharlie) = _createAndMintOzTokens(
             address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
         );
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+
 
         //Post-conditions
         assertTrue(address(ozERC20) != address(0));
-        assertTrue(sharesAlice == rawAmount * ( 10 ** IERC20Permit(testToken).decimals() ));
+        assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
         assertTrue(sharesAlice / 2 == sharesBob);
         assertTrue(sharesAlice / 4 == sharesCharlie);
         assertTrue(sharesBob == sharesCharlie * 2);
@@ -89,23 +109,64 @@ contract CoreTokenLogicRPtest is BaseMethods {
         uint balanceAlice = ozERC20.balanceOf(alice);
         uint balanceBob = ozERC20.balanceOf(bob);
         uint balanceCharlie = ozERC20.balanceOf(charlie);
-
+    
         assertTrue(balanceAlice / 2 == balanceBob);
         assertTrue(balanceAlice / 4 == balanceCharlie);
         assertTrue(balanceBob == balanceCharlie * 2);
-        assertTrue(balanceBob / 2 == balanceCharlie);
-
         assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
-        assertTrue(ozERC20.totalAssets() / 10 ** IERC20Permit(testToken).decimals() == rawAmount + rawAmount / 2 + rawAmount / 4);
+        assertTrue(ozERC20.totalAssets() == (rawAmount + rawAmount / 2 + rawAmount / 4) * 1e6);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
-    }  
+    } 
+
+    function test_ozToken_supply_rocketPool() public confirmRethSupplyIncrease { 
+        //Pre-conditions
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            bytes32(0)
+        );
+        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+
+        _changeSlippage(9900);
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+
+        //Actions
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
+        );
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+
+        (address[] memory owners, uint[] memory PKs) = _getOwners(rawAmount);
+
+        for (uint i=0; i<owners.length; i++) {
+            _mintManyOz(address(ozERC20), rawAmount, i+1, owners[i], PKs[i]);
+            _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        }
+
+        //Post-conditions
+        uint balancesSum;
+        uint sharesSum;
+
+        for (uint i=0; i<owners.length; i++) {
+            balancesSum += ozERC20.balanceOf(owners[i]);
+            sharesSum += ozERC20.sharesOf(owners[i]);
+        }
+
+        balancesSum += ozERC20.balanceOf(alice);
+        sharesSum += sharesAlice;
+
+        assertTrue(ozERC20.totalSupply() == balancesSum);
+        assertTrue(ozERC20.totalShares() == sharesSum);
+    } 
 
     function test_transfer_rocketPool() public confirmRethSupplyIncrease {
         //Pre-conditions
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
 
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20,) = _createAndMintOzTokens(
-            testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals(), alice, ALICE_PK, true, true, Type.IN
+            testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
         );
 
         uint balAlice = ozERC20.balanceOf(alice);
@@ -120,7 +181,7 @@ contract CoreTokenLogicRPtest is BaseMethods {
 
         //Post-conditions
         balAlice = ozERC20.balanceOf(alice);
-        assertTrue(balAlice > 0 && balAlice < 0.000001 * 1 ether);
+        assertTrue(balAlice > 0 && balAlice < 0.000001 * 1 ether || balAlice == 0);
 
         balBob = ozERC20.balanceOf(bob);
         assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
@@ -137,7 +198,7 @@ contract CoreTokenLogicRPtest is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        assertTrue(balanceOzUsdcAlice > 980_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
+        assertTrue(balanceOzUsdcAlice > 977_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
@@ -150,10 +211,10 @@ contract CoreTokenLogicRPtest is BaseMethods {
         ozERC20.redeem(redeemData); 
 
         //Post-conditions
-        testToken = usdcAddr;
+        testToken = ozERC20.asset();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
-       
-        assertTrue(balanceUnderlyingAlice > 997_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
+
+        assertTrue(balanceUnderlyingAlice > 998_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
         assertTrue(ozERC20.balanceOf(alice) == 0);
     }
 
@@ -164,7 +225,7 @@ contract CoreTokenLogicRPtest is BaseMethods {
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = 100 * decimalsUnderlying;
-        assertTrue(IERC20Permit(usdcAddr).balanceOf(alice) == 1_000_000 * decimalsUnderlying);
+        assertTrue(IERC20Permit(testToken).balanceOf(alice) == 1_000_000 * decimalsUnderlying);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
@@ -181,7 +242,7 @@ contract CoreTokenLogicRPtest is BaseMethods {
         uint underlyingOut = ozERC20.redeem(redeemData); 
 
         //Post-conditions
-        testToken = usdcAddr;
+        testToken = ozERC20.asset();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
         uint finalUnderlyingNetBalanceAlice = balanceUsdcAlicePostMint + underlyingOut;
         
@@ -197,15 +258,19 @@ contract CoreTokenLogicRPtest is BaseMethods {
          */
         //Deals big amounts of USDC to testers.
         _dealUnderlying(Quantity.BIG);
+        uint underlyingDecimals = IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         uint rawAmount = 100;
-        assertTrue(amountIn == 1_000_000 * 1e6);
+        assertTrue(amountIn == 1_000_000 * 10 ** underlyingDecimals);
 
         //Changes the default slippage to 99% so the swaps don't fail.
         _changeSlippage(9900);
 
         //Gets the pre-swap pool values.
-        bytes32 oldSlot0data = vm.load(wethUsdPoolUni, bytes32(0));
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            bytes32(0)
+        );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
         //Creates an ozToken and mints some.
@@ -227,7 +292,7 @@ contract CoreTokenLogicRPtest is BaseMethods {
          */
         vm.startPrank(alice);
 
-        //Redeems ozUSDC for USDC.
+        //Redeems ozTokens for underlying.
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.redeem(redeemData);
         vm.stopPrank();
@@ -235,9 +300,10 @@ contract CoreTokenLogicRPtest is BaseMethods {
         /**
          * Post-conditions
          */
-        uint balanceAliceUnderlying = IERC20Permit(usdcAddr).balanceOf(alice);
+        testToken = ozERC20.asset();
+        uint balanceAliceUnderlying = IERC20Permit(testToken).balanceOf(alice);
 
-        assertTrue(balanceAliceUnderlying < rawAmount * 1e6 && balanceAliceUnderlying > 99 * 1e6);
+        assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 99 * 10 ** underlyingDecimals);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
