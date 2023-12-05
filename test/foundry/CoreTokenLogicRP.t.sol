@@ -3,6 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {HelpersLib} from "./HelpersLib.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {Setup} from "./Setup.sol";
@@ -12,14 +13,15 @@ import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV
 
 import "forge-std/console.sol";
 
-import {CoreTokenLogicBALtest} from "./CoreTokenLogicBAL.t.sol";
+import {TestMethods} from "./TestMethods.sol";
 
 
 contract CoreTokenLogicRPtest is BaseMethods {
 
     using FixedPointMathLib for uint;
+    using HelpersLib for address;
 
-    CoreTokenLogicBALtest private x;
+    TestMethods private  testMethods;
 
 
     modifier confirmRethSupplyIncrease() {
@@ -29,6 +31,13 @@ contract CoreTokenLogicRPtest is BaseMethods {
         uint postSupply = IERC20Permit(rEthAddr).totalSupply();
         assertTrue(postSupply > preSupply);
     }
+
+    // function _delegatecall(address testMethodsAddr_, string calldata method_) internal {
+    //     (bool success,) = testMethodsAddr_.delegatecall(abi.encodeWithSignature(method_));
+    //     require(success, '_delegatecall() failed');
+    // }
+
+    //-----------------------
 
 
     function test_minting_approve_smallMint_rocketPool() public confirmRethSupplyIncrease {
@@ -48,8 +57,16 @@ contract CoreTokenLogicRPtest is BaseMethods {
         // assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
         // assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
 
-        x = new CoreTokenLogicBALtest();
-        x.minting_approve_smallMint_balancer();
+        testMethods = new TestMethods();
+        // x.minting_approve_smallMint_balancer();
+        // (bool success,) = address(testMethods).delegatecall(abi.encodeWithSelector(
+        //     x.minting_approve_smallMint_balancer.selector
+        // ));
+        // require(success, 'fff');
+
+        address(testMethods).callTest('minting_approve_smallMint_balancer()');
+
+
     }
 
     function test_minting_approve_bigMint_rocketPool() public confirmRethSupplyIncrease {

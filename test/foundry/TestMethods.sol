@@ -32,7 +32,7 @@ import "forge-std/console.sol";
  * Tests the minting, redeeming, and rebasing logic of the ozToken contract
  * when using Balancer as the logic mechanism. 
  */
-contract CoreTokenLogicBALtest is BaseMethods {
+contract TestMethods is BaseMethods {
 
     using FixedPointMathLib for uint;
 
