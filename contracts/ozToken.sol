@@ -71,6 +71,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     bytes32 private constant _PERMIT_TYPEHASH =
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
+    uint public FORMAT_DECIMALS;
 
     constructor() {
         _disableInitializers();
@@ -87,6 +88,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         _ozDiamond = diamond_;
         _underlying = underlying_;
         __EIP712_init(name_, "1");
+        FORMAT_DECIMALS = IERC20Permit(underlying_).decimals() == 18 ? 1e12 : 1;
     }
 
 
@@ -186,12 +188,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function totalSupply() public view returns(uint) {
-        // console.log('--- starting totalSupply ---');
-        // return _totalShares == 0 ? 0 : _convertToAssets(_totalShares, MathUpgradeable.Rounding.Down);
-        uint x = _totalShares == 0 ? 0 : _convertToAssets(_totalShares);
-        // console.log('totalSupply: ', x);
-        // console.log('--- end of totalSupply ---');
-        return x;
+        return _totalShares == 0 ? 0 : _convertToAssets(_totalShares);
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -203,20 +200,21 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        // console.log('-- starting balanceOf ---');
-        // return convertToAssets(sharesOf(account_));
-        uint x = convertToAssets(sharesOf(account_));
-        // console.log('--- end of balanceOf ---');
-        return x;
+        return convertToAssets(sharesOf(account_));
+    }
+
+    function _formatTo6(uint num) internal view returns(uint) {
+        return num / FORMAT_DECIMALS;
     }
 
 
     function mint(bytes memory data_) external returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
-        uint assets = amounts.amountIn;
+        uint assets = _formatTo6(amounts.amountIn); 
+        // uint assets = amounts.amountIn;
 
-        require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max");
+        // require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max"); //<-- Not necessary , I think. Check
 
         ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
 
@@ -323,25 +321,9 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return _convertToShares(assets); //MathUpgradeable.Rounding.Up
     }
 
-    function _calculateWithDecimals(uint a_, uint b_, uint shares_) private view returns(uint) {
-        // console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue());
-        // console.log('a: ', a_);
-        // console.log('b: ', b_);
-        // console.log('shares: ', shares_);
-
-        return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue() / a_), b_);
-    }
-
-
+   
     function _convertToAssets(uint256 shares_) private view returns (uint256 assets) {  
-        // console.log('totalShares: ', _totalShares);
-        uint tS = totalShares() == 0 ? 1: totalShares(); 
-        // uint tS = totalShares();
-        // console.log('ts: ', tS);
-        
-        return IERC20Permit(_underlying).decimals() == 6 ? 
-            _calculateWithDecimals(tS, 1, shares_) :
-            _calculateWithDecimals(1, tS, shares_);
+        return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue() / (totalShares() == 0 ? 1: totalShares())), 1);
     }
 
     function _convertToAssetsFromUnderlying(uint shares_) private view returns(uint){

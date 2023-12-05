@@ -173,19 +173,10 @@ contract CoreTokenLogicBALtest is BaseMethods {
     
         assertTrue(balanceAlice / 2 == balanceBob);
         assertTrue(balanceAlice / 4 == balanceCharlie);
-        console.log(5);
-        console.log('balanceBob: ', balanceBob);
-        console.log('balanceCharlie * 2: ', balanceCharlie*2);
         assertTrue(balanceBob == balanceCharlie * 2);
-        console.log(6);
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('sum: ' , balanceAlice + balanceCharlie + balanceBob);
         assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
-        console.log(7);
         assertTrue(ozERC20.totalAssets() == (rawAmount + rawAmount / 2 + rawAmount / 4) * 1e6);
-        console.log(8);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
-        console.log(9);
     }   
 
     /**
