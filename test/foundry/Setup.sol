@@ -66,6 +66,7 @@ contract Setup is Test {
     address internal rEthAddr;
     address internal fraxAddr;
     address internal daiAddr;
+    address internal sfrxEthAddr;
 
     //For debugging purposes
     address internal usdcAddrImpl;
@@ -86,7 +87,9 @@ contract Setup is Test {
     address internal rocketPoolStorage;
     address internal rocketDAOProtocolSettingsDeposit;
     address internal uniFactory;
+    address internal frxEthMinterAddr;
 
+    //For testing
     address internal testToken;
 
 
@@ -172,6 +175,9 @@ contract Setup is Test {
             rocketPoolStorage = 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46;
             rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
             uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
+            //----
+            frxEthMinterAddr = 0xbAFA44EFE7901E04E39Dad13167D089C559c1138;
+            sfrxEthAddr = 0xac3E018457B222d93114458476f3E3416Abbe38F;
 
             network = "ethereum";
             blockNumber = 18413614; //*18413614* - 18413618
@@ -237,7 +243,8 @@ contract Setup is Test {
             weth: wethAddr,
             reth: rEthAddr,
             usdc: usdcAddr,
-            usdt: usdtAddr
+            usdt: usdtAddr,
+            sfrxEth: sfrxEthAddr
         });
 
         Dexes memory dexes = Dexes({
@@ -252,11 +259,12 @@ contract Setup is Test {
             rEthEthChainlink: rEthEthChainlink
         });
 
-        DiamondInfra memory infra = DiamondInfra({
+        DiamondInfra memory infra = DiamondInfra({ //change this DiamondInfra to Infra
             ozDiamond: address(ozDiamond),
             beacon: address(beacon),
             rocketPoolStorage: rocketPoolStorage,
-            defaultSlippage: defaultSlippage
+            defaultSlippage: defaultSlippage,
+            frxETHminter: frxEthMinterAddr
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -378,6 +386,7 @@ contract Setup is Test {
         vm.label(rEthEthChainlink, 'rEthEthChainlink');
         vm.label(daiAddr, 'DAI');
         vm.label(uniFactory, 'uniFactory');
+        vm.label(frxEthMinterAddr, 'frxETHminter');
     }
 
 

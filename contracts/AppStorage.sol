@@ -37,6 +37,9 @@ struct AppStorage {
     bytes32 rocketDepositPoolID;
     address rocketVault;
     bytes32 rocketDAOProtocolSettingsDepositID;
+
+    address frxETHminter;
+    address sfrxETH;
   
 }
 
@@ -72,6 +75,7 @@ struct Tokens {
     address reth;
     address usdc;
     address usdt;
+    address sfrxEth;
 }
 
 struct Dexes {
@@ -86,11 +90,12 @@ struct Oracles {
     address rEthEthChainlink;
 }
 
-struct DiamondInfra { //modify this to infra
+struct DiamondInfra { //modify this to Infra
     address ozDiamond;
     address beacon;
     address rocketPoolStorage;
     uint defaultSlippage; //try chaning this to an uin8
+    address frxETHminter;
 }
 
 

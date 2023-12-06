@@ -78,6 +78,7 @@ contract DiamondInit {
         s.USDC = tokens_.usdc;
         s.USDT = tokens_.usdt;
         s.rETH = tokens_.reth;
+        s.sfrxETH = tokens_.sfrxEth;
 
         //External infra
         s.rocketPoolStorage = infra_.rocketPoolStorage;
@@ -86,6 +87,8 @@ contract DiamondInit {
             keccak256(abi.encodePacked('contract.address', 'rocketVault'))
         );
         s.rocketDAOProtocolSettingsDepositID = keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"));
+        //-----
+        s.frxETHminter = infra_.frxETHminter;
         
 
     }

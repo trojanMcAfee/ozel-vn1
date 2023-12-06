@@ -29,6 +29,7 @@ import {
     IRocketDAOProtocolSettingsDeposit
 } from "../interfaces/IRocketPool.sol";
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
+import {IfrxETHMinter} from "../interfaces/IFrax.sol";
 
 import "forge-std/console.sol";
 
@@ -66,6 +67,24 @@ contract ROImoduleL1 {
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
             
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
+        } else if (true) {
+            bool paused = IfrxETHMinter(s.frxETHminter).depositEtherPaused();
+            if (paused) {
+                //do something else or throw error and return
+            }
+
+            IWETH(s.WETH).withdraw(amountOut);
+
+            uint bal = IERC20Permit(s.sfrxETH).balanceOf(address(this));
+            console.log('sfrxETH bal pre: ', bal);
+
+            IfrxETHMinter(s.frxETHminter).submitAndDeposit{value: amountOut}(address(this));
+            
+            bal = IERC20Permit(s.sfrxETH).balanceOf(address(this));
+            console.log('sfrxETH bal pre: ', bal);
+
+
+
         } else {
             (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
             if (paused) {
