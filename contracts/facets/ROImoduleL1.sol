@@ -30,6 +30,7 @@ import {
 } from "../interfaces/IRocketPool.sol";
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import {IfrxETHMinter} from "../interfaces/IFrax.sol";
+import "../Errors.sol";
 
 import "forge-std/console.sol";
 
@@ -37,7 +38,6 @@ import "forge-std/console.sol";
 error TokenInNotValid(address token);
 error InvalidBalancerSwap();
 
-error OZError01(string errorMsg);
 
 
 contract ROImoduleL1 {
@@ -75,16 +75,10 @@ contract ROImoduleL1 {
 
             IWETH(s.WETH).withdraw(amountOut);
 
-            uint bal = IERC20Permit(s.sfrxETH).balanceOf(address(this));
-            console.log('sfrxETH bal pre: ', bal);
-
             IfrxETHMinter(s.frxETHminter).submitAndDeposit{value: amountOut}(address(this));
             
-            bal = IERC20Permit(s.sfrxETH).balanceOf(address(this));
+            uint bal = IERC20Permit(s.sfrxETH).balanceOf(address(this));
             console.log('sfrxETH bal pre: ', bal);
-
-
-
         } else {
             (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
             if (paused) {

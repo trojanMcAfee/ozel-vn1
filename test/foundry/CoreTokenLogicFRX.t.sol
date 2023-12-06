@@ -11,4 +11,8 @@ contract CoreTokenLogicFRXtest is TestMethods {
         _minting_approve_smallMint();
     }
 
+    function test_minting_approve_bigMint_frax() public {
+        _minting_approve_bigMint();
+    }
+
 }

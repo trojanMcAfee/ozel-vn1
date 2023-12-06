@@ -55,7 +55,9 @@ contract TestMethods is BaseMethods {
 
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
+        console.log('balAlice: ', balAlice);
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
+        console.log(3);
     }
 
     
