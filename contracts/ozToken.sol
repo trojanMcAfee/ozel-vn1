@@ -46,10 +46,10 @@ error USDMInvalidBlockedAccount(address account);
 error USDMPausedTransfers();
 
 
+//Add here mintWithSignature and redeemWithSignature, like sfrxETH ***
 contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
-    // using MathUpgradeable for uint;
 
     using FixedPointMathLib for uint;
 
@@ -203,16 +203,11 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return convertToAssets(sharesOf(account_));
     }
 
-    function _formatTo6(uint num) internal view returns(uint) {
-        return num / FORMAT_DECIMALS;
-    }
-
 
     function mint(bytes memory data_) external returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
-        uint assets = _formatTo6(amounts.amountIn); 
-        // uint assets = amounts.amountIn;
+        uint assets = amounts.amountIn / FORMAT_DECIMALS;
 
         // require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max"); //<-- Not necessary , I think. Check
 

@@ -192,7 +192,7 @@ contract Setup is Test {
 
     function _runSetup() internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
-        testToken = usdcAddr;
+        testToken = daiAddr;
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
 
         //Initial users config
