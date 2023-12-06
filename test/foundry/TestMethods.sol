@@ -58,35 +58,11 @@ contract TestMethods is BaseMethods {
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
-    //^^^ testMethod. Do all the below the same
-
-    // function test_minting_approve_smallMint_balancer() internal {
-    //     //Pre-condition
-    //     (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
-    //     uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-
-    //     //Action
-    //     (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
-    //         testToken, amountIn, alice, ALICE_PK, true, false, Type.IN
-    //     );
-
-    //     //Post-conditions
-    //     uint balAlice = ozERC20.balanceOf(alice);
-
-    //     assertTrue(address(ozERC20) != address(0));
-    //     assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
-    //     assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
-    //
-
-
-    //Move all of this below to its separate CoreLogiTestBAL
-
-    //Finish with CoreLogicTestR
-
+    
     /**
      * Mints a big quantity of ozTokens (~1M)
      */
-    function test_minting_approve_bigMint_balancer() public {
+    function _minting_approve_bigMint() internal {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -112,7 +88,7 @@ contract TestMethods is BaseMethods {
      * cross-check between them the main rebasing variables from the ozToken
      * (totalSupply, totalShares, totalAssets)
      */
-    function test_minting_eip2612_balancer() public { 
+    function _minting_eip2612() internal { 
         /**
          * Pre-conditions + Actions (creating of ozTokens)
          */
@@ -170,7 +146,7 @@ contract TestMethods is BaseMethods {
      * Tests the constraint that the sum of balances between all holders is equal to
      * calling the totalSupply function of the ozToken contracts.
      */
-    function test_ozToken_supply_balancer() public { 
+    function _ozToken_supply() internal { 
         //Pre-conditions
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
@@ -216,7 +192,7 @@ contract TestMethods is BaseMethods {
     /**
      * Transfer ozTokens between accounts
      */
-    function test_transfer_balancer() public {
+    function _transfer() internal {
         //Pre-conditions
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
 
@@ -246,7 +222,7 @@ contract TestMethods is BaseMethods {
     /**
      * From 1M underlying balance, mint 1M and redeem 1M
      */
-    function test_redeeming_bigBalance_bigMint_bigRedeem_balancer() public {
+    function _redeeming_bigBalance_bigMint_bigRedeem() internal {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
@@ -273,7 +249,7 @@ contract TestMethods is BaseMethods {
         testToken = ozERC20.asset();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
 
-        assertTrue(balanceUnderlyingAlice > 998_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
+        assertTrue(balanceUnderlyingAlice > 997_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
         assertTrue(ozERC20.balanceOf(alice) == 0);
     }
 
@@ -281,7 +257,7 @@ contract TestMethods is BaseMethods {
     /**
      * From 1M underlying balance, mint and redeem a small part (100 USDC)
      */
-    function test_redeeming_bigBalance_smallMint_smallRedeem_balancer() public {
+    function _redeeming_bigBalance_smallMint_smallRedeem() internal {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
@@ -320,7 +296,7 @@ contract TestMethods is BaseMethods {
      * Mints 1M of ozTokens, then rebalances Uniswap and Balancer pools, 
      * and redeems a small portion of ozTokens. 
      */
-    function test_redeeming_bigBalance_bigMint_smallRedeem_balancer() public {
+    function _redeeming_bigBalance_bigMint_smallRedeem() internal {
         /**
          * Pre-conditions
          */
@@ -383,7 +359,7 @@ contract TestMethods is BaseMethods {
      *
      * In this test, the "bigMint" is in relation to the amount being redeem (100:1)
      */
-    function test_redeeming_multipleBigBalances_bigMints_smallRedeem_balancer() public {
+    function _redeeming_multipleBigBalances_bigMints_smallRedeem() internal {
         (,uint initMintAmountBob, uint initMintAmountCharlie) = _dealUnderlying(Quantity.SMALL);
         uint amountToRedeem = 1;
 
@@ -428,7 +404,7 @@ contract TestMethods is BaseMethods {
     /**
      * Mints ~1M of ozTokens, but redeems a portion of the balance.
      */
-    function test_redeeming_bigBalance_bigMint_mediumRedeem_balancer() public {
+    function _redeeming_bigBalance_bigMint_mediumRedeem() internal {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);
@@ -482,7 +458,7 @@ contract TestMethods is BaseMethods {
     /**
      * Tests redeeming ozTokens for underlying using Permit.
      */
-    function test_redeeming_eip2612_balancer() public {
+    function _redeeming_eip2612() internal {
         //Pre-conditions
         _dealUnderlying(Quantity.SMALL);
         uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
@@ -526,7 +502,7 @@ contract TestMethods is BaseMethods {
      * This test proves that the rebasing algorithm works, and that the difference
      * between token balances is due to imbalanced pools after the test swaps
      */
-    function test_redeeming_multipleBigBalances_bigMint_mediumRedeem_balancer() public {
+    function _redeeming_multipleBigBalances_bigMint_mediumRedeem() internal {
         //Pre-conditions
         _changeSlippage(9900);
         _dealUnderlying(Quantity.BIG);

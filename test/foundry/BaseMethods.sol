@@ -167,17 +167,11 @@ contract BaseMethods is Setup {
     }
 
     function _modifyRocketPoolDepositMaxLimit() internal {
-        console.log(11);
-        console.log('rocketPoolStorage: ', rocketPoolStorage);
         address rocketDAOProtocolProposals = 
             IRocketStorage(rocketPoolStorage).getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolProposals")));
-        console.log(12);
         DAOdepositSettings settings = DAOdepositSettings(rocketDAOProtocolSettingsDeposit);
-        console.log(13);
         vm.prank(rocketDAOProtocolProposals);
-        console.log(14);
         settings.setSettingUint("deposit.pool.maximum", 50_000 ether);
-        console.log(15);
     }
 
     function _mintManyOz(
