@@ -16,32 +16,32 @@ import "forge-std/console.sol";
 import {TestMethods} from "./TestMethods.sol";
 
 
-contract CoreTokenLogicRPtest {
+contract CoreTokenLogicRPtest is TestMethods {
 
     using FixedPointMathLib for uint;
     using HelpersLib for address;
 
-    TestMethods private  testMethods;
-    address private constant rETH = 0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8;
+    // TestMethods private  testMethods;
+    // address private constant rETH = 0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8;
 
-    constructor() {
-        testMethods = new TestMethods();
-    }
+    // constructor() {
+    //     testMethods = new TestMethods();
+    // }
 
     modifier confirmRethSupplyIncrease() {
         console.log(1);
         
-        console.log('testMethods: ', address(testMethods));
-        testMethods.modifyRocketPoolDepositMaxLimit(); //it pases when internal
+        // console.log('testMethods: ', address(testMethods));
+        _modifyRocketPoolDepositMaxLimit();
         console.log(2);
 
-        uint preSupply = IERC20Permit(rETH).totalSupply();
+        uint preSupply = IERC20Permit(rEthAddr).totalSupply();
         console.log(3);
         _;
-        uint postSupply = IERC20Permit(rETH).totalSupply();
+        uint postSupply = IERC20Permit(rEthAddr).totalSupply();
         console.log(4);
 
-        assert(postSupply > preSupply);
+        assertTrue(postSupply > preSupply);
         console.log(5);
     }
 
@@ -50,7 +50,7 @@ contract CoreTokenLogicRPtest {
 
 
     function test_minting_approve_smallMint_rocketPool() public confirmRethSupplyIncrease {
-        testMethods.minting_approve_smallMint();
+        _minting_approve_smallMint();
     }
 
     // function test_minting_approve_bigMint_rocketPool() public confirmRethSupplyIncrease {

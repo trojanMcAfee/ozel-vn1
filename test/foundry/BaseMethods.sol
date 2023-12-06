@@ -166,7 +166,7 @@ contract BaseMethods is Setup {
         assertTrue(OZ.getDefaultSlippage() == basisPoints_);
     }
 
-    function modifyRocketPoolDepositMaxLimit() external {
+    function _modifyRocketPoolDepositMaxLimit() internal {
         console.log(11);
         console.log('rocketPoolStorage: ', rocketPoolStorage);
         address rocketDAOProtocolProposals = 
