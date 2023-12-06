@@ -40,7 +40,7 @@ contract TestMethods is BaseMethods {
     /**
      * Mints a small quantity of ozUSDC (~100) through a Balancer swap
      */
-    function _minting_approve_smallMint() internal {
+    function minting_approve_smallMint() internal {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -76,13 +76,12 @@ contract TestMethods is BaseMethods {
     //     assertTrue(address(ozERC20) != address(0));
     //     assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
     //     assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
-    // }
+    //
 
 
     //Move all of this below to its separate CoreLogiTestBAL
 
-    //Finish with CoreLogicTestRP
-
+    //Finish with CoreLogicTestR
 
     /**
      * Mints a big quantity of ozTokens (~1M)
