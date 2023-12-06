@@ -2,26 +2,12 @@
 pragma solidity 0.8.21;
 
 
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
-import {HelpersLib} from "./HelpersLib.sol";
+
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {Setup} from "./Setup.sol";
-import {BaseMethods} from "./BaseMethods.sol";
-import {Type} from "./AppStorageTests.sol";
-import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
-
-import "forge-std/console.sol";
-
 import {TestMethods} from "./TestMethods.sol";
 
 
 contract CoreTokenLogicRPtest is TestMethods {
-
-    using FixedPointMathLib for uint;
-    using HelpersLib for address;
-
-    
 
     modifier confirmRethSupplyIncrease() {
         _modifyRocketPoolDepositMaxLimit();
@@ -30,9 +16,6 @@ contract CoreTokenLogicRPtest is TestMethods {
         uint postSupply = IERC20Permit(rEthAddr).totalSupply();
         assertTrue(postSupply > preSupply);
     }
-
-
-    //-----------------------
 
 
     function test_minting_approve_smallMint_rocketPool() public confirmRethSupplyIncrease {
