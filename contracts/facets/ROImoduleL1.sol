@@ -67,12 +67,13 @@ contract ROImoduleL1 {
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
             
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
-        } else if (true) {
-            bool paused = IfrxETHMinter(s.frxETHminter).depositEtherPaused();
-            if (paused) {
-                //do something else or throw error and return
-            }
+            return;
+        }
 
+        
+        
+        if (!IfrxETHMinter(s.frxETHminter).depositEtherPaused()) {
+            
             IWETH(s.WETH).withdraw(amountOut);
 
             IfrxETHMinter(s.frxETHminter).submitAndDeposit{value: amountOut}(address(this));
