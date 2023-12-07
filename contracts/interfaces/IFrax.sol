@@ -7,3 +7,7 @@ interface IfrxETHMinter {
     function depositEtherPaused() external view returns(bool);
     function submitAndDeposit(address recipient) external payable returns (uint256 shares);
 }
+
+interface IsfrxETH {
+    function pricePerShare() external view returns (uint256);
+}

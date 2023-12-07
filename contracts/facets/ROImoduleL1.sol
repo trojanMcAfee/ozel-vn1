@@ -54,6 +54,7 @@ contract ROImoduleL1 {
         AmountsIn memory amounts_
     ) external {
         uint amountIn = amounts_.amountIn;
+        uint subAmountIn = 0;
       
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
 
@@ -68,30 +69,47 @@ contract ROImoduleL1 {
             
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
             return;
+        } else if (!IfrxETHMinter(s.frxETHminter).depositEtherPaused()) {
+            subAmountIn = amountOut / 2;
+
+            IWETH(s.WETH).withdraw(subAmountIn);
+
+            IfrxETHMinter(s.frxETHminter).submitAndDeposit{value: subAmountIn}(address(this));
+        } 
+
+        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
+        if (paused) {
+            //do something else or throw error and return
         }
 
-        
-        
-        if (!IfrxETHMinter(s.frxETHminter).depositEtherPaused()) {
-            
-            IWETH(s.WETH).withdraw(amountOut);
+        (uint finalAmountIn, uint minRethOut) = _getSwapValues(subAmountIn, amountOut, amounts_.minRethOut);
 
-            IfrxETHMinter(s.frxETHminter).submitAndDeposit{value: amountOut}(address(this));
-            
-            uint bal = IERC20Permit(s.sfrxETH).balanceOf(address(this));
-            console.log('sfrxETH bal pre: ', bal);
+        _swapBalancer( //check if both balancer and uni swaps can be done with multicall
+            s.WETH,
+            s.rETH,
+            finalAmountIn,
+            minRethOut
+        );
+
+        uint bal = IERC20Permit(s.sfrxETH).balanceOf(address(this));
+        console.log('sfrxETH bal post: ', bal);
+
+        bal = IERC20Permit(s.rETH).balanceOf(address(this));
+        console.log('rETH bal post: ', bal);
+    }
+
+
+    function _getSwapValues(
+        uint subAmountIn_, 
+        uint amountOut_, 
+        uint minRethOut_
+    ) private pure returns(uint subAmountIn, uint minRethOut) {
+        if (subAmountIn_ == 0) {
+            subAmountIn = amountOut_;
+            minRethOut = minRethOut_;
         } else {
-            (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
-            if (paused) {
-                //do something else or throw error and return
-            }
-
-            _swapBalancer( //check if both balancer and uni swaps can be done with multicall
-                s.WETH,
-                s.rETH,
-                IWETH(s.WETH).balanceOf(address(this)),
-                amounts_.minRethOut
-            );
+            subAmountIn = subAmountIn_;
+            minRethOut = minRethOut_ / 2;
         }
     }
 
