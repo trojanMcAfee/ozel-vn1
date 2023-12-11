@@ -90,12 +90,6 @@ contract ROImoduleL1 {
             finalAmountIn,
             minRethOut
         );
-
-        uint bal = IERC20Permit(s.sfrxETH).balanceOf(address(this));
-        console.log('sfrxETH bal post: ', bal);
-
-        bal = IERC20Permit(s.rETH).balanceOf(address(this));
-        console.log('rETH bal post: ', bal);
     }
 
 
