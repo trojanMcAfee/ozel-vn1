@@ -35,10 +35,7 @@ contract ozOracle {
         uint rEthRate = IRocketTokenRETH(s.rETH).getExchangeRate();   
         uint frxRate = IsfrxETH(s.sfrxETH).pricePerShare();
 
-        uint subTotalReth = _convertToUSD(rEthRate, amountReth);
-        uint subTotalFrx = _convertToUSD(frxRate, amountSfrxEth);
-
-        return (subTotalReth + subTotalFrx) / 2;
+        return _convertToUSD(rEthRate, amountReth) + _convertToUSD(frxRate, amountSfrxEth);
     }
 
     function _convertToUSD(uint rate_, uint amount_) private view returns(uint) {
