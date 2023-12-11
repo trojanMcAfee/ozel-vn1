@@ -249,6 +249,9 @@ contract TestMethods is BaseMethods {
         testToken = ozERC20.asset();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
 
+        console.log(4);
+        console.log('balanceUnderlyingAlice: ', balanceUnderlyingAlice);
+        console.log('decimalsUnderlying: ', decimalsUnderlying);
         assertTrue(balanceUnderlyingAlice > 997_000 * decimalsUnderlying && balanceUnderlyingAlice < 1_000_000 * decimalsUnderlying);
         assertTrue(ozERC20.balanceOf(alice) == 0);
     }
