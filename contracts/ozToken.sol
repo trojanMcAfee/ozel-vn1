@@ -209,11 +209,15 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         uint assets = amounts.amountIn / FORMAT_DECIMALS;
 
+        console.log('assets in mint: ', assets);
+
         // require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max"); //<-- Not necessary , I think. Check
 
         ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
 
         uint shares = totalShares() == 0 ? assets : previewDeposit(assets);
+
+        console.log('shares in mint: ', shares);
 
         _totalAssets += assets;
         _totalShares += shares;

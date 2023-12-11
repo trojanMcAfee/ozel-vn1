@@ -55,10 +55,14 @@ contract TestMethods is BaseMethods {
 
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
-        console.log(1);
         console.log('balAlice: ', balAlice);
         assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
-        console.log(2);
+        
+        console.log('----');
+        console.log('shares alice test: ', ozERC20.sharesOf(alice));
+        console.log('totalShares: ', ozERC20.totalShares());
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('under: ', OZ.getUnderlyingValue());
     }
 
     
