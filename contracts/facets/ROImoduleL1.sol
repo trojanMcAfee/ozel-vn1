@@ -131,15 +131,18 @@ contract ROImoduleL1 {
             address receiver
         ) = abi.decode(data_, (uint, uint, uint, uint, address));
 
+        console.log(3);
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
+        console.log(4);
 
         //Swap rETH to WETH
         _swapBalancer(
-            s.rETH,
-            s.WETH,
+            s.rETH, //i'm passing rETH only a tokenIn, but now there's sfrxETH also
+            s.WETH, //use curve for frxETH
             amountInReth,
             minAmountOutWeth
         );
+        console.log(5);
 
         //swap WETH to underlying
         amountOut = _swapUni(
@@ -149,13 +152,21 @@ contract ROImoduleL1 {
             ozIToken(msg.sender).asset(),
             receiver
         );
+        console.log(6);
     }
 
 
-    function totalUnderlying(Asset type_) public view returns(uint total) {
-        total = IERC20Permit(s.rETH).balanceOf(address(this));
+    function totalUnderlying(Asset type_) public view returns(uint total) { 
+        // total = IERC20Permit(s.rETH).balanceOf(address(this));
+        address[2] memory lst = [s.rETH, s.sfrxETH]; //do this a view func
 
-        if (type_ == Asset.USD) {
+        for (uint i=0; i < lst.length; i++) {
+            total += IERC20Permit(lst[i]).balanceOf(address(this));
+        }
+
+        console.log('total: ', total);
+
+        if (type_ == Asset.USD) { //call OZ.ETH_USD() here
             (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
             total = uint(price).mulDivDown(total, 1e8);
         }
@@ -227,6 +238,7 @@ contract ROImoduleL1 {
 
         assetIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
         uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
+        console.log(33);
         if (amountOut == 0) revert InvalidBalancerSwap();
     }
 
