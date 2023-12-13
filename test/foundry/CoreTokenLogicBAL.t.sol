@@ -3,9 +3,26 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "./TestMethods.sol";
+import {AmountsIn, AmountsOut, Asset} from "../../contracts/AppStorage.sol";
+
+import "forge-std/console.sol";
 
 
 contract CoreTokenLogicBALtest is TestMethods {
+
+    function test_under() public {
+        _minting_approve_smallMint();
+
+        uint totalrETH = OZ.totalUnderlying(Asset.UNDERLYING);
+        uint totalUSD = OZ.totalUnderlying(Asset.USD);
+        uint rEthEth = OZ.rETH_ETH();
+        uint ethUsd = OZ.ETH_USD();
+
+        console.log('totalrETH: ', totalrETH);
+        console.log('totalUSD: ', totalUSD);
+        console.log('rEthEth: ', rEthEth);
+        console.log('ethUsd: ', ethUsd);
+    }
 
 
     function test_minting_approve_smallMint_balancer() internal {

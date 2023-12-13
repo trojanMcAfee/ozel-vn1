@@ -2,7 +2,6 @@
 pragma solidity 0.8.21;
 
 
-// import "../../lib/forge-std/src/interfaces/IERC20.sol"; 
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
@@ -12,10 +11,8 @@ import {
     AmountsOut, 
     Asset
 } from "../AppStorage.sol";
-// import "solady/src/utils/FixedPointMathLib.sol";
 import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
-// import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {IVault, IAsset, IPool} from "../interfaces/IBalancer.sol";
 import {IPool, IQueries} from "../interfaces/IBalancer.sol";
 import {Helpers} from "../libraries/Helpers.sol";
@@ -132,6 +129,10 @@ contract ROImoduleL1 {
         if (type_ == Asset.USD) {
             (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
             total = uint(price).mulDivDown(total, 1e8);
+
+        
+            uint x = ozIDiamond(s.ozDiamond).rETH_USD();
+            console.log('x: ', x);
         }
     }
 
@@ -213,14 +214,6 @@ contract ROImoduleL1 {
      * add a fallback oracle like uni's TWAP
      **** handle the possibility with Chainlink of Sequencer being down (https://docs.chain.link/data-feeds/l2-sequencer-feeds)
      */
-    // function _calculateMinOut(uint erc20Balance_) private view returns(uint minOut) {
-    //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-    //     uint expectedOut = erc20Balance_.fullmulDivDown(uint(price) * 10 ** 10, 1 ether);
-    //     uint minOutUnprocessed = 
-    //         expectedOut - expectedOut.fullmulDivDown(s.defaultSlippage * 100, 1000000); 
-    //     minOut = minOutUnprocessed.mulWad(10 ** 6);
-    // }
-
-    // function changeETHUSDfeed() external {}
+   
 
 }

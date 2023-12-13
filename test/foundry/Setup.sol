@@ -289,10 +289,12 @@ contract Setup is Test {
             length = 2;
         } else if (id_ == 2 || id_ == 4 || id_ == 8) {
             length = 1;
-        } else if (id_ == 3 || id_ == 5 || id_ == 6) {
+        } else if (id_ == 3 || id_ == 5) {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
+        } else if (id_ == 6) {
+            length = 4;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -323,6 +325,7 @@ contract Setup is Test {
             selectors[0] = oracle.rETH_ETH.selector;
             selectors[1] = oracle.getUnderlyingValue.selector;
             selectors[2] = oracle.ETH_USD.selector;
+            selectors[3] = oracle.rETH_USD.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;
