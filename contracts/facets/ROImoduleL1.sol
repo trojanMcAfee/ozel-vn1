@@ -61,16 +61,59 @@ contract ROImoduleL1 {
             
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         } else {
-            (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
-            if (paused) {
-                //do something else or throw error and return
-            }
-
-            _swapBalancer( //check if both balancer and uni swaps can be done with multicall
-                s.WETH,
-                s.rETH,
+            _checkPauseAndSwap(
+                s.WETH, 
+                s.rETH, 
                 IWETH(s.WETH).balanceOf(address(this)),
                 amounts_.minRethOut
+            );
+
+            // uint amountInWeth = IWETH(s.WETH).balanceOf(address(this));
+            // (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
+
+            // if (paused) {
+            //     _swapUni(
+            //         amountInWeth,
+                    // amounts_.minRethOut,
+            //         s.WETH,
+            //         s.rETH,
+            //         address(this)
+            //     );
+            // } else {
+            //     _swapBalancer( //check if both balancer and uni swaps can be done with multicall
+            //         s.WETH,
+            //         s.rETH,
+            //         amountInWeth,
+            //         amounts_.minRethOut
+            //     );
+            // }
+        }
+    }
+
+
+    function _checkPauseAndSwap(
+        address tokenIn_, 
+        address tokenOut_, 
+        uint amountIn_,
+        uint minAmountOut_
+    ) private {
+        // uint amountInWeth = IWETH(s.WETH).balanceOf(address(this));
+        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
+
+        if (paused) {
+            _swapUni(
+                amountIn_,
+                minAmountOut_,
+                tokenIn_,
+                tokenOut_,
+                address(this)
+            );
+        } else {
+            _swapBalancer( //check if both balancer and uni swaps (the other, not this ^) can be done with multicall
+                tokenIn_,
+                tokenOut_,
+                amountIn_,
+                minAmountOut_
             );
         }
     }
@@ -102,12 +145,14 @@ contract ROImoduleL1 {
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         //Swap rETH to WETH
-        _swapBalancer(
-            s.rETH,
-            s.WETH,
-            amountInReth,
-            minAmountOutWeth
-        );
+        // _swapBalancer(
+        //     s.rETH,
+        //     s.WETH,
+        //     amountInReth,
+        //     minAmountOutWeth
+        // );
+
+        _checkPauseAndSwap(s.rETH, s.WETH, amountInReth, minAmountOutWeth);
 
         //swap WETH to underlying
         amountOut = _swapUni(
@@ -163,16 +208,16 @@ contract ROImoduleL1 {
 
 
     function _swapBalancer(
-        address assetIn_, 
-        address assetOut_, 
+        address tokenIn_, 
+        address tokenOut_, 
         uint amountIn_,
         uint minAmountOutOffchain_
     ) private {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(assetIn_),
-            assetOut: IAsset(assetOut_),
+            assetIn: IAsset(tokenIn_),
+            assetOut: IAsset(tokenOut_),
             amount: amountIn_,
             userData: new bytes(0)
         });
@@ -186,7 +231,7 @@ contract ROImoduleL1 {
         uint minOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds); //remove this querySwap to save gas
         uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
 
-        assetIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
+        tokenIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
         uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
         if (amountOut == 0) revert OZError02();
     }

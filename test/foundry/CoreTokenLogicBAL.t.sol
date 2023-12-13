@@ -11,7 +11,7 @@ import "forge-std/console.sol";
 contract CoreTokenLogicBALtest is TestMethods {
 
    
-    function test_minting_approve_smallMint_balancer() internal {
+    function test_minting_approve_smallMint_balancer() public {
         _minting_approve_smallMint();
     }
 

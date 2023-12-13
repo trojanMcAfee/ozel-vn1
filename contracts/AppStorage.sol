@@ -10,6 +10,7 @@ import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
  */
 struct AppStorage { 
 
+    address rEthWethPoolBalancer;
     address[] ozTokenRegistry;
     address ozDiamond;
     address WETH; 
@@ -24,7 +25,6 @@ struct AppStorage {
     address queriesBalancer;
 
     address rETH;
-    address rEthWethPoolBalancer; //if balancer is no longer used in L1, remove it
     address rEthEthChainlink;
 
     mapping(address underlying => address token) ozTokens;
