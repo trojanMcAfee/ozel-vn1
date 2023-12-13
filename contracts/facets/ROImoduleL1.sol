@@ -125,14 +125,7 @@ contract ROImoduleL1 {
 
     function totalUnderlying(Asset type_) public view returns(uint total) {
         total = IERC20Permit(s.rETH).balanceOf(address(this));
-
-        if (type_ == Asset.USD) {
-            // (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-            // total = uint(price).mulDivDown(total, 1e8);
-
-        
-            total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;
-        }
+        if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
     }
 
     
