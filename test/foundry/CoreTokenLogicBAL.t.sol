@@ -22,6 +22,7 @@ contract CoreTokenLogicBALtest is TestMethods {
         console.log('totalUSD: ', totalUSD);
         console.log('rEthEth: ', rEthEth);
         console.log('ethUsd: ', ethUsd);
+        console.log('rEthUsd: ', OZ.rETH_USD());
     }
 
 

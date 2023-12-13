@@ -127,12 +127,11 @@ contract ROImoduleL1 {
         total = IERC20Permit(s.rETH).balanceOf(address(this));
 
         if (type_ == Asset.USD) {
-            (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-            total = uint(price).mulDivDown(total, 1e8);
+            // (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+            // total = uint(price).mulDivDown(total, 1e8);
 
         
-            uint x = ozIDiamond(s.ozDiamond).rETH_USD();
-            console.log('x: ', x);
+            total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;
         }
     }
 

@@ -87,11 +87,6 @@ library HelpersLib {
         uint slippage = oz_.getDefaultSlippage();
         uint minAmountOutWeth = _calculateMinAmountOut(amountInReth_, oz_.rETH_ETH(), slippage);
         uint minAmountOutUnderlying = _calculateMinAmountOut(minAmountOutWeth, oz_.ETH_USD(), slippage);
-
-        console.log('----');
-        console.log('minAmountOutWeth: ', minAmountOutWeth);
-        console.log('minAmountOutUnderlying: ', minAmountOutUnderlying);
-        console.log('ETH_USD: ', oz_.ETH_USD());
         
         data = abi.encode(ozAmountIn_, amountInReth_, minAmountOutWeth, minAmountOutUnderlying, receiver_);
     }
