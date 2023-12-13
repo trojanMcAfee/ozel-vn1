@@ -26,14 +26,11 @@ import {
     IRocketDAOProtocolSettingsDeposit
 } from "../interfaces/IRocketPool.sol";
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
+import "../Errors.sol";
 
 import "forge-std/console.sol";
 
 
-error TokenInNotValid(address token);
-error InvalidBalancerSwap();
-
-error OZError01(string errorMsg);
 
 
 contract ROImoduleL1 {
@@ -128,9 +125,6 @@ contract ROImoduleL1 {
         if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
     }
 
-    
-    
-
 
     //**** HELPERS */
     function _swapUni(
@@ -194,7 +188,7 @@ contract ROImoduleL1 {
 
         assetIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
         uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
-        if (amountOut == 0) revert InvalidBalancerSwap();
+        if (amountOut == 0) revert OZError02();
     }
 
 

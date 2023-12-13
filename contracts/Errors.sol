@@ -21,3 +21,8 @@ error USDMInvalidRewardMultiplier(uint256 rewardMultiplier);
 error USDMBlockedSender(address sender);
 error USDMInvalidBlockedAccount(address account);
 error USDMPausedTransfers();
+
+//--- My Errors
+
+error OZError01(string errorMsg);
+error OZError02();
