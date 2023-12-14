@@ -306,27 +306,21 @@ contract TestMethods is BaseMethods {
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         uint rawAmount = 100;
         assertTrue(amountIn == 1_000_000 * 10 ** underlyingDecimals);
-        console.log(1);
 
         //Changes the default slippage to 99% so the swaps don't fail.
         _changeSlippage(9900);
-        console.log(2);
 
         //Gets the pre-swap pool values.
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
             bytes32(0)
         );
-        console.log(3);
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
-        console.log(4);
 
         //Creates an ozToken and mints some.
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceUsdcAlicePostMint == 0);
-
-        console.log(3);
 
         //Returns balances to pre-swaps state so the rebase algorithm can be prorperly tested.
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);

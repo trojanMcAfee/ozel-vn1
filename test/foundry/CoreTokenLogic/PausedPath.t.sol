@@ -52,6 +52,7 @@ contract PausedPathTest is TestMethods {
 
     function test_redeeming_bigBalance_bigMint_smallRedeem_paused() public pauseBalancerPool {
         vm.rollFork(18785221);
+        _runSetup();
         // vm.warp(1702567127);
         _redeeming_bigBalance_bigMint_smallRedeem();
         console.log('num: ', block.number);
