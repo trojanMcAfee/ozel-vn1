@@ -11,7 +11,6 @@ import "forge-std/console.sol";
 contract PausedPathTest is TestMethods {
 
     modifier pauseBalancerPool() {
-        // vm.rollFork(18785221);
         vm.mockCall(
             rEthWethPoolBalancer,
             abi.encodeWithSignature('getPausedState()'),
@@ -19,6 +18,13 @@ contract PausedPathTest is TestMethods {
         );
         _;
         vm.clearMockedCalls();
+    }
+
+    modifier rollBlockAndState() {
+        vm.rollFork(18785221);
+        _runSetup();
+        _;
+        vm.rollFork(18413614);
     }
 
 
@@ -50,13 +56,8 @@ contract PausedPathTest is TestMethods {
         _redeeming_bigBalance_smallMint_smallRedeem();
     }
 
-    function test_redeeming_bigBalance_bigMint_smallRedeem_paused() public pauseBalancerPool {
-        vm.rollFork(18785221);
-        _runSetup();
-        // vm.warp(1702567127);
+    function test_redeeming_bigBalance_bigMint_smallRedeem_paused() public pauseBalancerPool rollBlockAndState {
         _redeeming_bigBalance_bigMint_smallRedeem();
-        console.log('num: ', block.number);
-        console.log('stamp: ', block.timestamp);
     }
 
     function test_redeeming_multipleBigBalances_bigMints_smallRedeem_paused() public pauseBalancerPool {

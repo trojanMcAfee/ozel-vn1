@@ -330,7 +330,6 @@ contract TestMethods is BaseMethods {
 
         //Creates offchain the token-amount variables needed for safe protocol execution.
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
-        console.log(4);
         /**
          * Action
          */
@@ -347,11 +346,7 @@ contract TestMethods is BaseMethods {
         testToken = ozERC20.asset();
         uint balanceAliceUnderlying = IERC20Permit(testToken).balanceOf(alice);
 
-        console.log(1);
-        console.log('balanceAliceUnderlying: ', balanceAliceUnderlying);
-        console.log('rawAmount: ', rawAmount);
         assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 99 * 10 ** underlyingDecimals);
-        console.log(2);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
