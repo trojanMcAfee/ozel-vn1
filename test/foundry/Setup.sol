@@ -260,7 +260,8 @@ contract Setup is Test {
             ozDiamond: address(ozDiamond),
             beacon: address(beacon),
             rocketPoolStorage: rocketPoolStorage,
-            defaultSlippage: defaultSlippage
+            defaultSlippage: defaultSlippage,
+            uniFee: 500
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -289,9 +290,9 @@ contract Setup is Test {
         uint length;
         if (id_ == 0) {
             length = 7;
-        } else if (id_ == 1 || id_ == 5) {
+        } else if (id_ == 1 || id_ == 5 || id_ == 8) {
             length = 2;
-        } else if (id_ == 2 || id_ == 4 || id_ == 8) {
+        } else if (id_ == 2 || id_ == 4) {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
@@ -338,6 +339,7 @@ contract Setup is Test {
             selectors[4] = beacon.transferOwnership.selector;
         } else if (id_ == 8) {
             selectors[0] = cutOz.changeDefaultSlippage.selector;
+            selectors[1] = cutOz.changeUniFee.selector;
         }
 
         cut = IDiamondCut.FacetCut({

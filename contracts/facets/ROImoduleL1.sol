@@ -113,7 +113,7 @@ contract ROImoduleL1 {
             ISwapRouter.ExactInputSingleParams({ 
                 tokenIn: tokenIn_,
                 tokenOut: tokenOut_, 
-                fee: 500, //0.05 - 500 / make this a programatic value
+                fee: s.uniFee, //0.05 - 500 / make this a programatic value
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,

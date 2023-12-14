@@ -72,6 +72,7 @@ contract DiamondInit {
         s.ozDiamond = infra_.ozDiamond;
         s.ozBeacon = infra_.beacon;
         s.defaultSlippage = infra_.defaultSlippage;
+        s.uniFee = infra_.uniFee;
 
         //ERC20s
         s.WETH = tokens_.weth;

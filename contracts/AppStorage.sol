@@ -10,7 +10,7 @@ import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
  */
 struct AppStorage { 
 
-    address rEthWethPoolBalancer;
+    address rEthWethPoolBalancer; //don't change this from 1st pos
     address[] ozTokenRegistry;
     address ozDiamond;
     address WETH; 
@@ -37,6 +37,8 @@ struct AppStorage {
     bytes32 rocketDepositPoolID;
     address rocketVault;
     bytes32 rocketDAOProtocolSettingsDepositID;
+
+    uint24 uniFee;
   
 }
 
@@ -91,6 +93,7 @@ struct DiamondInfra { //modify this to infra
     address beacon;
     address rocketPoolStorage;
     uint defaultSlippage; //try chaning this to an uin8
+    uint24 uniFee;
 }
 
 
