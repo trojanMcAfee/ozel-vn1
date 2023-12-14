@@ -72,7 +72,7 @@ contract PausedPathTest is TestMethods {
         _redeeming_eip2612();
     }
 
-    function test_redeeming_multipleBigBalances_bigMint_mediumRedeem_paused() public pauseBalancerPool {
+    function test_redeeming_multipleBigBalances_bigMint_mediumRedeem_paused() public pauseBalancerPool rollBlockAndState {
         _redeeming_multipleBigBalances_bigMint_mediumRedeem();
     }
 }

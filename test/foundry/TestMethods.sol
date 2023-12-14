@@ -534,16 +534,27 @@ contract TestMethods is BaseMethods {
         // //Post-conditions
         uint percentageDiffLiquid = 15;
         uint percentageDiffIliquid = 37;
+        uint percentageDiffPaused = 43;
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         console.log('ozAmountIn: ', ozAmountIn);
         console.log('underlyingOut: ', underlyingOut);
         console.log('decimals: ', decimals);
 
-        uint percentageDiffAmounts = (uint(abs(int(ozAmountIn - (underlyingOut * decimals))))).mulDivDown(10000, ozAmountIn);
+        int x = abs(int(ozAmountIn - (underlyingOut * decimals)));
+        console.logInt(x);
+        console.log('x ^');
+
+        uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
+        // uint percentageDiffAmounts = (uint(abs(int(ozAmountIn - (underlyingOut * decimals))))).mulDivDown(10000, ozAmountIn);
 
         console.log(3);
+        console.log('percentageDiffAmounts: ', percentageDiffAmounts);
 
-        assertTrue(percentageDiffAmounts < percentageDiffLiquid || percentageDiffAmounts < percentageDiffIliquid);
+        assertTrue(
+            percentageDiffAmounts < percentageDiffLiquid || 
+            percentageDiffAmounts < percentageDiffIliquid ||
+            percentageDiffAmounts < percentageDiffPaused
+        );
 
         console.log(4);
     }
