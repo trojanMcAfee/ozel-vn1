@@ -32,7 +32,6 @@ import "forge-std/console.sol";
 
 
 
-
 contract ROImoduleL1 {
 
     using TransferHelper for address;
@@ -67,26 +66,6 @@ contract ROImoduleL1 {
                 IWETH(s.WETH).balanceOf(address(this)),
                 amounts_.minRethOut
             );
-
-            // uint amountInWeth = IWETH(s.WETH).balanceOf(address(this));
-            // (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
-
-            // if (paused) {
-            //     _swapUni(
-            //         amountInWeth,
-                    // amounts_.minRethOut,
-            //         s.WETH,
-            //         s.rETH,
-            //         address(this)
-            //     );
-            // } else {
-            //     _swapBalancer( //check if both balancer and uni swaps can be done with multicall
-            //         s.WETH,
-            //         s.rETH,
-            //         amountInWeth,
-            //         amounts_.minRethOut
-            //     );
-            // }
         }
     }
 
@@ -97,10 +76,10 @@ contract ROImoduleL1 {
         uint amountIn_,
         uint minAmountOut_
     ) private {
-        // uint amountInWeth = IWETH(s.WETH).balanceOf(address(this));
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
 
         if (paused) {
+            console.log('should log');
             _swapUni(
                 amountIn_,
                 minAmountOut_,
@@ -109,6 +88,7 @@ contract ROImoduleL1 {
                 address(this)
             );
         } else {
+            console.log('should not log');
             _swapBalancer( //check if both balancer and uni swaps (the other, not this ^) can be done with multicall
                 tokenIn_,
                 tokenOut_,
@@ -145,13 +125,6 @@ contract ROImoduleL1 {
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         //Swap rETH to WETH
-        // _swapBalancer(
-        //     s.rETH,
-        //     s.WETH,
-        //     amountInReth,
-        //     minAmountOutWeth
-        // );
-
         _checkPauseAndSwap(s.rETH, s.WETH, amountInReth, minAmountOutWeth);
 
         //swap WETH to underlying
