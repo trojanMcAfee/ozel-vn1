@@ -79,7 +79,6 @@ contract ROImoduleL1 {
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
 
         if (paused) {
-            // console.log('should log');
             _swapUni(
                 amountIn_,
                 minAmountOut_,
@@ -88,7 +87,6 @@ contract ROImoduleL1 {
                 address(this)
             );
         } else {
-            // console.log('should not log');
             _swapBalancer( //check if both balancer and uni swaps (the other, not this ^) can be done with multicall
                 tokenIn_,
                 tokenOut_,
