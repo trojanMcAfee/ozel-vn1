@@ -55,20 +55,16 @@ contract ROImoduleL1 {
             underlying_, s.WETH, amountIn, amounts_.minWethOut, address(this)
         );
 
-        console.log('capacity: ', _checkRocketCapacity(amountOut));
         if (_checkRocketCapacity(amountOut)) {
-            console.log('block: ', block.number);
-            console.log('no');
             IWETH(s.WETH).withdraw(amountOut);
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
             
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         } else {
-            console.log('mint');
             _checkPauseAndSwap(
                 s.WETH, 
                 s.rETH, 
-                IWETH(s.WETH).balanceOf(address(this)),
+                amountOut,
                 amounts_.minRethOut
             );
         }
@@ -172,11 +168,7 @@ contract ROImoduleL1 {
     ) private {
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
 
-        paused = tokenIn_ == s.WETH ? false : true;
-
         if (paused) {
-            console.log('should log for redeem');
-            console.log('amountIn: ', amountIn_);
             _swapUni(
                 tokenIn_,
                 tokenOut_,
@@ -185,8 +177,6 @@ contract ROImoduleL1 {
                 address(this)
             );
         } else {
-            console.log('should log for mint');
-            console.log('amountIn: ', amountIn_);
             _swapBalancer( //check if both balancer and uni swaps (the other, not this ^) can be done with multicall
                 tokenIn_,
                 tokenOut_,
