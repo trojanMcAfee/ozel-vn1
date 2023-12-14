@@ -51,7 +51,7 @@ contract ROImoduleL1 {
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
-            amountIn, amounts_.minWethOut, underlying_, s.WETH, address(this)
+            underlying_, s.WETH, amountIn, amounts_.minWethOut, address(this)
         );
 
         if (_checkRocketCapacity(amountOut)) {
@@ -80,10 +80,10 @@ contract ROImoduleL1 {
 
         if (paused) {
             _swapUni(
-                amountIn_,
-                minAmountOut_,
                 tokenIn_,
                 tokenOut_,
+                amountIn_,
+                minAmountOut_,
                 address(this)
             );
         } else {
@@ -127,10 +127,10 @@ contract ROImoduleL1 {
 
         //swap WETH to underlying
         amountOut = _swapUni(
-            IERC20Permit(s.WETH).balanceOf(address(this)),
-            minAmountOutUnderlying,
             s.WETH,
             ozIToken(msg.sender).asset(),
+            IERC20Permit(s.WETH).balanceOf(address(this)),
+            minAmountOutUnderlying,
             receiver
         );
     }
@@ -144,10 +144,10 @@ contract ROImoduleL1 {
 
     //**** HELPERS */
     function _swapUni(
-        uint amountIn_, 
-        uint minAmountOut_, 
         address tokenIn_,
         address tokenOut_,
+        uint amountIn_, 
+        uint minAmountOut_, 
         address receiver_
     ) private returns(uint) {
         tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
