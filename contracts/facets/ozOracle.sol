@@ -37,3 +37,9 @@ contract ozOracle {
         return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
     }
 }
+
+
+/**
+     * add a fallback oracle like uni's TWAP
+     **** handle the possibility with Chainlink of Sequencer being down (https://docs.chain.link/data-feeds/l2-sequencer-feeds)
+     */

@@ -55,12 +55,16 @@ contract ROImoduleL1 {
             underlying_, s.WETH, amountIn, amounts_.minWethOut, address(this)
         );
 
+        console.log('capacity: ', _checkRocketCapacity(amountOut));
         if (_checkRocketCapacity(amountOut)) {
+            console.log('block: ', block.number);
+            console.log('no');
             IWETH(s.WETH).withdraw(amountOut);
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
             
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         } else {
+            console.log('mint');
             _checkPauseAndSwap(
                 s.WETH, 
                 s.rETH, 
@@ -99,12 +103,6 @@ contract ROImoduleL1 {
     }
 
 
-    // function totalUnderlying(Asset type_) public view returns(uint total) {
-    //     total = IERC20Permit(s.rETH).balanceOf(address(this));
-    //     if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
-    // }
-
-
     //**** HELPERS */
     function _swapUni(
         address tokenIn_,
@@ -141,7 +139,7 @@ contract ROImoduleL1 {
         uint amountIn_,
         uint minAmountOutOffchain_
     ) private {
-
+        
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
@@ -172,9 +170,13 @@ contract ROImoduleL1 {
         uint amountIn_,
         uint minAmountOut_
     ) private {
-        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState();
+        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
+
+        paused = tokenIn_ == s.WETH ? false : true;
 
         if (paused) {
+            console.log('should log for redeem');
+            console.log('amountIn: ', amountIn_);
             _swapUni(
                 tokenIn_,
                 tokenOut_,
@@ -183,6 +185,8 @@ contract ROImoduleL1 {
                 address(this)
             );
         } else {
+            console.log('should log for mint');
+            console.log('amountIn: ', amountIn_);
             _swapBalancer( //check if both balancer and uni swaps (the other, not this ^) can be done with multicall
                 tokenIn_,
                 tokenOut_,
@@ -201,15 +205,5 @@ contract ROImoduleL1 {
         uint maxDepositSize = settingsDeposit.getMaximumDepositPoolSize();
 
         return capacityNeeded < maxDepositSize;
-    }
-   
-
-
-
-    /**
-     * add a fallback oracle like uni's TWAP
-     **** handle the possibility with Chainlink of Sequencer being down (https://docs.chain.link/data-feeds/l2-sequencer-feeds)
-     */
-   
-
+    }   
 }

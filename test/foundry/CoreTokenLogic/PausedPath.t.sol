@@ -4,6 +4,7 @@ pragma solidity 0.8.21;
 
 import {TestMethods} from "../TestMethods.sol";
 import {IPool, IQueries} from "../../../contracts/interfaces/IBalancer.sol";
+import {IRocketStorage} from "../../../contracts/interfaces/IRocketPool.sol";
 
 import "forge-std/console.sol";
 
@@ -23,8 +24,15 @@ contract PausedPathTest is TestMethods {
     modifier rollBlockAndState() {
         vm.rollFork(secondaryBlockNumber);
         _runSetup();
+        vm.mockCall(
+            IRocketStorage(rocketPoolStorage)
+                .getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"))),
+            abi.encodeWithSignature('getMaximumDepositPoolSize()'),
+            abi.encode(uint(0))
+        );
         _;
         vm.rollFork(mainBlockNumber);
+        vm.clearMockedCalls();
     }
 
 
