@@ -21,10 +21,10 @@ contract PausedPathTest is TestMethods {
     }
 
     modifier rollBlockAndState() {
-        vm.rollFork(18785221);
+        vm.rollFork(secondaryBlockNumber);
         _runSetup();
         _;
-        vm.rollFork(18413614);
+        vm.rollFork(mainBlockNumber);
     }
 
 

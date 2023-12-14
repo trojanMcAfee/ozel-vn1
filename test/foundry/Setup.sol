@@ -116,16 +116,19 @@ contract Setup is Test {
 
     uint internal constant SHARES_DECIMALS_OFFSET = 1e6;
 
+    uint internal mainBlockNumber;
+    uint internal secondaryBlockNumber;
+
    
 
     /** FUNCTIONS **/ 
     function setUp() public {
-        (string memory network, uint blockNumber) = _chooseNetwork(Network.ETHEREUM);
-        vm.createSelectFork(vm.rpcUrl(network), blockNumber);
+        string memory network = _chooseNetwork(Network.ETHEREUM);
+        vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
         _runSetup();
     }
 
-    function _chooseNetwork(Network chain_) private returns(string memory network, uint blockNumber) {
+    function _chooseNetwork(Network chain_) private returns(string memory network) {
         if (chain_ == Network.ARBITRUM) {
             usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
             usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
@@ -149,7 +152,7 @@ contract Setup is Test {
             uniFactory = address(0);
 
             network = "arbitrum";
-            blockNumber = 136177703;
+            mainBlockNumber = 136177703;
         } else if (chain_ == Network.ETHEREUM) {
             usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
             usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -174,7 +177,8 @@ contract Setup is Test {
             uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
 
             network = "ethereum";
-            blockNumber = 18413614; //*18413614* - 18413618 - 18785221 (paused)
+            mainBlockNumber = 18413614; //*18413614* - 18413618 - 18785221 (paused)
+            secondaryBlockNumber = 18785221;
         }
     }
 
