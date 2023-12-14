@@ -3,9 +3,8 @@ pragma solidity 0.8.21;
 
 
 import {IVault, IAsset} from "../interfaces/IBalancer.sol";
-import "solady/src/utils/FixedPointMathLib.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
-// import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {FixedPointMathLib} from "./FixedPointMathLib.sol";
 
 
 library Helpers {
@@ -33,7 +32,7 @@ library Helpers {
         uint256 amount_,
         uint slippage_
     ) internal pure returns(uint256) {
-        return amount_ - amount_.fullMulDiv(slippage_, 10000);
+        return amount_ - amount_.mulDivDown(slippage_, 10000);
     }
 
 

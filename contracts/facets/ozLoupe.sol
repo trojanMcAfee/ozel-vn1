@@ -3,7 +3,9 @@ pragma solidity 0.8.21;
 
 
 import {DiamondLoupeFacet} from "./DiamondLoupeFacet.sol";
-import {AppStorage} from "../AppStorage.sol";
+import {AppStorage, Asset} from "../AppStorage.sol";
+import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
+import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 
 
 contract ozLoupe is DiamondLoupeFacet {
@@ -15,6 +17,9 @@ contract ozLoupe is DiamondLoupeFacet {
     }
 
 
-
+    function totalUnderlying(Asset type_) public view returns(uint total) {
+        total = IERC20Permit(s.rETH).balanceOf(address(this));
+        if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
+    }
 
 }

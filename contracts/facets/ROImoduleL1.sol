@@ -36,6 +36,7 @@ contract ROImoduleL1 {
 
     using TransferHelper for address;
     using FixedPointMathLib for uint;
+    using Helpers for uint;
   
     AppStorage internal s;
 
@@ -67,6 +68,101 @@ contract ROImoduleL1 {
                 amounts_.minRethOut
             );
         }
+    }
+
+
+    function useOzTokens(
+        address owner_,
+        bytes memory data_
+    ) external returns(uint amountOut) {
+        (
+            uint ozAmountIn,
+            uint amountInReth,
+            uint minAmountOutWeth,
+            uint minAmountOutUnderlying, 
+            address receiver
+        ) = abi.decode(data_, (uint, uint, uint, uint, address));
+
+        msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
+
+        //Swap rETH to WETH
+        _checkPauseAndSwap(s.rETH, s.WETH, amountInReth, minAmountOutWeth);
+
+        //swap WETH to underlying
+        amountOut = _swapUni(
+            s.WETH,
+            ozIToken(msg.sender).asset(),
+            IERC20Permit(s.WETH).balanceOf(address(this)),
+            minAmountOutUnderlying,
+            receiver
+        );
+    }
+
+
+    // function totalUnderlying(Asset type_) public view returns(uint total) {
+    //     total = IERC20Permit(s.rETH).balanceOf(address(this));
+    //     if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
+    // }
+
+
+    //**** HELPERS */
+    function _swapUni(
+        address tokenIn_,
+        address tokenOut_,
+        uint amountIn_, 
+        uint minAmountOut_, 
+        address receiver_
+    ) private returns(uint) {
+        tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
+
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({ 
+                tokenIn: tokenIn_,
+                tokenOut: tokenOut_, 
+                fee: 500, //0.05 - 500 / make this a programatic value
+                recipient: receiver_,
+                deadline: block.timestamp,
+                amountIn: amountIn_,
+                amountOutMinimum: minAmountOut_.formatMinOut(tokenOut_),
+                sqrtPriceLimitX96: 0
+            });
+
+        try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) { 
+            return amountOut;
+        } catch Error(string memory reason) {
+            revert OZError01(reason);
+        }
+    }
+
+
+    function _swapBalancer(
+        address tokenIn_, 
+        address tokenOut_, 
+        uint amountIn_,
+        uint minAmountOutOffchain_
+    ) private {
+
+        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+            poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
+            kind: IVault.SwapKind.GIVEN_IN,
+            assetIn: IAsset(tokenIn_),
+            assetOut: IAsset(tokenOut_),
+            amount: amountIn_,
+            userData: new bytes(0)
+        });
+
+        IVault.FundManagement memory funds = IVault.FundManagement({
+            sender: address(this),
+            fromInternalBalance: false, //check if i can do something with internalBalance instead of external swap
+            recipient: payable(address(this)),
+            toInternalBalance: false
+        });
+        uint minOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds); //remove this querySwap to save gas
+        uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
+
+        tokenIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
+        uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
+        if (amountOut == 0) revert OZError02();
     }
 
 
@@ -106,108 +202,6 @@ contract ROImoduleL1 {
 
         return capacityNeeded < maxDepositSize;
     }
-
-
-    function useOzTokens(
-        address owner_,
-        bytes memory data_
-    ) external returns(uint amountOut) {
-        (
-            uint ozAmountIn,
-            uint amountInReth,
-            uint minAmountOutWeth,
-            uint minAmountOutUnderlying, 
-            address receiver
-        ) = abi.decode(data_, (uint, uint, uint, uint, address));
-
-        msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
-
-        //Swap rETH to WETH
-        _checkPauseAndSwap(s.rETH, s.WETH, amountInReth, minAmountOutWeth);
-
-        //swap WETH to underlying
-        amountOut = _swapUni(
-            s.WETH,
-            ozIToken(msg.sender).asset(),
-            IERC20Permit(s.WETH).balanceOf(address(this)),
-            minAmountOutUnderlying,
-            receiver
-        );
-    }
-
-
-    function totalUnderlying(Asset type_) public view returns(uint total) {
-        total = IERC20Permit(s.rETH).balanceOf(address(this));
-        if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
-    }
-
-
-    //**** HELPERS */
-    function _swapUni(
-        address tokenIn_,
-        address tokenOut_,
-        uint amountIn_, 
-        uint minAmountOut_, 
-        address receiver_
-    ) private returns(uint) {
-        tokenIn_.safeApprove(s.swapRouterUni, amountIn_);
-
-        ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({ 
-                tokenIn: tokenIn_,
-                tokenOut: tokenOut_, 
-                fee: 500, //0.05 - 500 / make this a programatic value
-                recipient: receiver_,
-                deadline: block.timestamp,
-                amountIn: amountIn_,
-                amountOutMinimum: _formatMinOut(minAmountOut_, tokenOut_),
-                sqrtPriceLimitX96: 0
-            });
-
-        try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) { 
-            return amountOut;
-        } catch Error(string memory reason) {
-            revert OZError01(reason);
-        }
-    }
-
-    //This func is in Helpers.sol also ****
-    function _formatMinOut(uint minOut_, address tokenOut_) private view returns(uint) {
-        uint decimals = IERC20Permit(tokenOut_).decimals();
-        return decimals == 18 ? minOut_ : minOut_ / 10 ** (18 - decimals);
-    }
-
-
-    function _swapBalancer(
-        address tokenIn_, 
-        address tokenOut_, 
-        uint amountIn_,
-        uint minAmountOutOffchain_
-    ) private {
-        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
-            kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(tokenIn_),
-            assetOut: IAsset(tokenOut_),
-            amount: amountIn_,
-            userData: new bytes(0)
-        });
-
-        IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: address(this),
-            fromInternalBalance: false, //check if i can do something with internalBalance instead of external swap
-            recipient: payable(address(this)),
-            toInternalBalance: false
-        });
-        uint minOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds); //remove this querySwap to save gas
-        uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
-
-        tokenIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
-        uint amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
-        if (amountOut == 0) revert OZError02();
-    }
-
-
    
 
 
