@@ -24,8 +24,8 @@ pragma solidity 0.8.21;
 
 //--- My Errors
 
-error OZError01(string errorMsg); 
-error OZError02();
+error OZError01(string errorMsg); //_swapUni - error string from uniswap
+error OZError02(); //_swapBalancer - amount was 0
 //--- ozToken errors
 error OZError03(); //decreaseAllowance - decreased allowance below zero
 error OZError04(address from, address to); //_approve / _transfer - can't be zero address

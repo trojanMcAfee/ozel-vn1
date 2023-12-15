@@ -30,6 +30,11 @@ import "forge-std/console.sol";
 error ozTokenInvalidMintReceiver(address account);
 
 
+/**
+ * Like in Lido's stETH, the Transfer event is only emitted in _transfer, and not in rebases
+ * Check the definition of Transfer event here: https://eips.ethereum.org/EIPS/eip-20
+ * It says should, not must: A token contract which creates new tokens SHOULD trigger
+ */
 contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
@@ -56,6 +61,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
     uint public FORMAT_DECIMALS;
+
 
     constructor() {
         _disableInitializers();
@@ -88,20 +94,20 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return _symbol;
     }
 
-    function decimals() public view virtual override returns (uint8) {
+    function decimals() public view returns (uint8) {
         return 18;
     }
 
-    function transfer(address to, uint256 amount) public virtual override returns (bool) {
+    function transfer(address to, uint256 amount) public returns (bool) {
         _transfer(msg.sender, to, amount);
         return true;
     }
     
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(address owner, address spender) public view returns (uint256) {
         return _allowances[owner][spender];
     }
 
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(address spender, uint256 amount) public returns (bool) {
         _approve(msg.sender, spender, amount);
         return true;
     }
@@ -110,18 +116,18 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         address from,
         address to,
         uint256 amount
-    ) public virtual override returns (bool) {
+    ) public returns (bool) {
         _spendAllowance(from, msg.sender, amount);
         _transfer(from, to, amount);
         return true;
     }
 
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
         _approve(msg.sender, spender, allowance(msg.sender, spender) + addedValue);
         return true;
     }
 
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
         uint256 currentAllowance = allowance(msg.sender, spender);
         if (currentAllowance < subtractedValue) revert OZError03();
         unchecked {
@@ -281,6 +287,8 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
             // decrementing then incrementing.
             _shares[to] += shares;
         }
+
+        emit Transfer(from, to, amount);
     }
 
     function previewWithdraw(uint256 assets) public view returns (uint256) {
