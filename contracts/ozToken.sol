@@ -29,24 +29,6 @@ import "forge-std/console.sol";
 
 error ozTokenInvalidMintReceiver(address account);
 
-// error ERC20InsufficientBalance(address sender, uint256 shares, uint256 sharesNeeded);
-// error ERC20InvalidSender(address sender);
-// error ERC20InvalidReceiver(address receiver);
-// error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed);
-// error ERC20InvalidApprover(address approver);
-// error ERC20InvalidSpender(address spender);
-// ERC2612 Errors
-// error ERC2612ExpiredDeadline(uint256 deadline, uint256 blockTimestamp);
-// error ERC2612InvalidSignature(address owner, address spender);
-// USDM Errors
-// error USDMInvalidMintReceiver(address receiver);
-// error USDMInvalidBurnSender(address sender);
-// error USDMInsufficientBurnBalance(address sender, uint256 shares, uint256 sharesNeeded);
-// error USDMInvalidRewardMultiplier(uint256 rewardMultiplier);
-// error USDMBlockedSender(address sender);
-// error USDMInvalidBlockedAccount(address account);
-// error USDMPausedTransfers();
-
 
 contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
 
@@ -154,7 +136,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         address spender,
         uint256 amount
     ) private  {
-        if (owner == address(0) || spender == address(0)) revert OZError04();
+        if (owner == address(0) || spender == address(0)) revert OZError04(owner, spender);
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
@@ -166,7 +148,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     ) private {
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != type(uint256).max) {
-            if (currentAllowance < amount) revert OZError05();
+            if (currentAllowance < amount) revert OZError05(amount);
             unchecked {
                 _approve(owner, spender, currentAllowance - amount);
             }
@@ -203,18 +185,14 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return convertToAssets(sharesOf(account_));
     }
 
-    function _format(uint num) internal view returns(uint) {
-        return num / FORMAT_DECIMALS;
-    }
-
 
     function mint(bytes memory data_) external returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
-        // uint assets = _format(amounts.amountIn); 
         uint assets = amounts.amountIn.format(FORMAT_DECIMALS); 
 
         // require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max"); //<-- Not necessary , I think. Check
+        //check this function when the time comes to decide if this is ERC4626
 
         ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
 
@@ -226,8 +204,6 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         unchecked {
             _shares[receiver_] += shares;
         }
-
-        //emit a Deposit/Mint event here
 
         return shares;
     }
@@ -246,20 +222,19 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return _convertToAssetsFromUnderlying(shares_);
     }
 
-
+    //remove this function if this is not ERC4626
     function maxDeposit(address) public view returns (uint256) {
         return _isVaultCollateralized() ? type(uint256).max : 0;
     }
 
-    function _isVaultCollateralized() private view returns (bool) { //check if this is useful
+    //...and this one
+    function _isVaultCollateralized() private view returns (bool) { 
         return totalAssets() > 0 || totalSupply() == 0;
     }
 
-    //****** */
     function convertToUnderlying(uint shares_) external view returns(uint amountUnderlying) {
         amountUnderlying = (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
     }
-    //****** */
 
 
     function redeem(bytes memory data_) external returns(uint) {
@@ -270,9 +245,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         uint256 accountShares = sharesOf(msg.sender);
         uint shares = convertToShares(ozAmountIn);
 
-        if (accountShares < shares) {
-            revert USDMInsufficientBurnBalance(msg.sender, accountShares, shares);
-        }
+        if (accountShares < shares) revert OZError06(msg.sender, accountShares, shares);
 
         uint assets = previewRedeem(shares);
 
@@ -295,19 +268,12 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         address to, 
         uint256 amount
     ) internal {
-        if (from == address(0)) {
-            revert ERC20InvalidSender(from);
-        }
-        if (to == address(0)) {
-            revert ERC20InvalidReceiver(to);
-        }
+        if (from == address(0) || to == address(0)) revert OZError04(from, to);
 
         uint256 shares = convertToShares(amount);
         uint256 fromShares = _shares[from];
 
-        if (fromShares < shares) {
-            revert ERC20InsufficientBalance(from, fromShares, shares);
-        }
+        if (fromShares < shares) revert OZError07(from, fromShares, shares);
 
         unchecked {
             _shares[from] = fromShares - shares;
@@ -317,8 +283,8 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         }
     }
 
-    function previewWithdraw(uint256 assets) public view returns (uint256) { //check where this is used and if it can be removed
-        return _convertToShares(assets); //MathUpgradeable.Rounding.Up
+    function previewWithdraw(uint256 assets) public view returns (uint256) {
+        return _convertToShares(assets); 
     }
 
    

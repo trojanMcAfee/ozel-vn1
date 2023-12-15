@@ -28,5 +28,7 @@ error OZError01(string errorMsg);
 error OZError02();
 //--- ozToken errors
 error OZError03(); //decreaseAllowance - decreased allowance below zero
-error OZError04(); //_approve - can't be zero address
-error OZError05(); //_spendAllowance - insufficient allowance
+error OZError04(address from, address to); //_approve / _transfer - can't be zero address
+error OZError05(uint amount); //_spendAllowance - insufficient allowance
+error OZError06(address sender, uint accountShares, uint shares); //redeem - insufficient redeem balance
+error OZError07(address from, uint fromShares, uint shares); //_transfer - insufficient sender balance
