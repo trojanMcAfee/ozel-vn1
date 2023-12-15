@@ -355,17 +355,13 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         bytes32 r,
         bytes32 s_
     ) external {
-        if (block.timestamp > deadline) {
-            revert ERC2612ExpiredDeadline(deadline, block.timestamp);
-        }
+        if (block.timestamp > deadline) revert OZError08(deadline, block.timestamp);
 
         bytes32 structHash = keccak256(abi.encode(_PERMIT_TYPEHASH, owner, spender, value, _useNonce(owner), deadline));
         bytes32 hash = _hashTypedDataV4(structHash);
         address signer = ECDSAUpgradeable.recover(hash, v, r, s_);
 
-        if (signer != owner) {
-            revert ERC2612InvalidSignature(owner, spender);
-        }
+        if (signer != owner) revert OZError09(owner, spender);
 
         _approve(owner, spender, value);
     }
