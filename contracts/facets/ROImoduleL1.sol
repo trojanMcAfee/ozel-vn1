@@ -113,7 +113,7 @@ contract ROImoduleL1 {
             ISwapRouter.ExactInputSingleParams({ 
                 tokenIn: tokenIn_,
                 tokenOut: tokenOut_, 
-                fee: s.uniFee, //0.05 - 500 / make this a programatic value
+                fee: s.uniFee, 
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
@@ -147,10 +147,11 @@ contract ROImoduleL1 {
 
         IVault.FundManagement memory funds = IVault.FundManagement({
             sender: address(this),
-            fromInternalBalance: false, //check if i can do something with internalBalance instead of external swap
+            fromInternalBalance: false, 
             recipient: payable(address(this)),
             toInternalBalance: false
         });
+        
         uint minOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds); //remove this querySwap to save gas
         uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
 
@@ -177,7 +178,7 @@ contract ROImoduleL1 {
                 address(this)
             );
         } else {
-            _swapBalancer( //check if both balancer and uni swaps (the other, not this ^) can be done with multicall
+            _swapBalancer( //check if both balancer and uni swaps (the other, not this ^) can be done with multicall - gas optimization (it's possible - check rocketPool and balancer pause before starting first swapUni call. If it's happy path, do multicall)
                 tokenIn_,
                 tokenOut_,
                 amountIn_,

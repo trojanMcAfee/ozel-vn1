@@ -261,7 +261,7 @@ contract Setup is Test {
             beacon: address(beacon),
             rocketPoolStorage: rocketPoolStorage,
             defaultSlippage: defaultSlippage,
-            uniFee: 500
+            uniFee: 500 //0.05 - 500
         });
 
         bytes memory initData = abi.encodeWithSelector(
