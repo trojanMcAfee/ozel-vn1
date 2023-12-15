@@ -131,6 +131,10 @@ library Helpers {
         return decimals == 18 ? minOut_ : minOut_ / 10 ** (18 - decimals);
     }
 
+    function format(uint num_, uint decimals_) internal pure returns(uint) {
+        return num_ / decimals_;
+    }
+
     
     /**
      * *** L1 ***

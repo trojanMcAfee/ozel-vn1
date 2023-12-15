@@ -24,5 +24,9 @@ error USDMPausedTransfers();
 
 //--- My Errors
 
-error OZError01(string errorMsg);
+error OZError01(string errorMsg); 
 error OZError02();
+//--- ozToken errors
+error OZError03(); //decreaseAllowance - decreased allowance below zero
+error OZError04(); //_approve - can't be zero address
+error OZError05(); //_spendAllowance - insufficient allowance
