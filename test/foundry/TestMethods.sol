@@ -535,7 +535,7 @@ contract TestMethods is BaseMethods {
         uint percentageDiffLiquid = 15;
         uint percentageDiffIliquid = 37;
         uint percentageDiffPaused = 43;
-        
+
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
 

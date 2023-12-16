@@ -34,6 +34,9 @@ error ozTokenInvalidMintReceiver(address account);
  * Like in Lido's stETH, the Transfer event is only emitted in _transfer, and not in rebases
  * Check the definition of Transfer event here: https://eips.ethereum.org/EIPS/eip-20
  * It says should, not must: A token contract which creates new tokens SHOULD trigger
+ * .
+ * _convertToShares is rounded up, against ERC4626 which says to round down.
+ * doesn't have a deposit() function
  */
 contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
 
@@ -94,7 +97,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return _symbol;
     }
 
-    function decimals() public view returns (uint8) {
+    function decimals() public pure returns (uint8) {
         return 18;
     }
 
@@ -197,12 +200,9 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         uint assets = amounts.amountIn.format(FORMAT_DECIMALS); 
 
-        // require(assets <= maxDeposit(receiver_), "ERC4626: deposit more than max"); //<-- Not necessary , I think. Check
-        //check this function when the time comes to decide if this is ERC4626
-
         ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
 
-        uint shares = totalShares() == 0 ? assets : previewDeposit(assets);
+        uint shares = totalShares() == 0 ? assets : previewMint(assets);
 
         _totalAssets += assets;
         _totalShares += shares;
@@ -220,7 +220,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return assets_.mulDivDown(totalShares(), totalAssets());
     }
 
-    function previewDeposit(uint assets_) public view returns(uint) {
+    function previewMint(uint assets_) public view returns(uint) {
         return _convertToSharesFromUnderlying(assets_);
     }
 
@@ -229,14 +229,15 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     //remove this function if this is not ERC4626
-    function maxDeposit(address) public view returns (uint256) {
-        return _isVaultCollateralized() ? type(uint256).max : 0;
-    }
+    //must return 0 if deposits are paused
+    // function maxDeposit(address) public view returns (uint256) {
+    //     return _isVaultCollateralized() ? type(uint256).max : 0;
+    // }
 
     //...and this one
-    function _isVaultCollateralized() private view returns (bool) { 
-        return totalAssets() > 0 || totalSupply() == 0;
-    }
+    // function _isVaultCollateralized() private view returns (bool) { 
+    //     return totalAssets() > 0 || totalSupply() == 0;
+    // }
 
     function convertToUnderlying(uint shares_) external view returns(uint amountUnderlying) {
         amountUnderlying = (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
