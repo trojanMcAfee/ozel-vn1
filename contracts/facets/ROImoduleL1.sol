@@ -137,8 +137,6 @@ contract ROImoduleL1 {
     ) private {
         uint amountOut;
         
-        console.log(3);
-        console.log('amountIn_: ', amountIn_);
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
@@ -147,7 +145,6 @@ contract ROImoduleL1 {
             amount: amountIn_,
             userData: new bytes(0)
         });
-        console.log(4);
 
         IVault.FundManagement memory funds = IVault.FundManagement({
             sender: address(this),
@@ -155,9 +152,7 @@ contract ROImoduleL1 {
             recipient: payable(address(this)),
             toInternalBalance: false
         });
-        console.log(5); 
         
-        // uint minOutOnchain = IQueries(s.queriesBalancer).querySwap(singleSwap, funds);
         try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
             uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
 
@@ -166,11 +161,6 @@ contract ROImoduleL1 {
         } catch Error(string memory reason) {
             revert OZError10(reason);
         }
-        console.log(6);
-        // uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
-
-        // tokenIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
-        // amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
         
         if (amountOut == 0) revert OZError02();
     }
