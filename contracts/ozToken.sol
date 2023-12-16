@@ -228,17 +228,6 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return _convertToAssetsFromUnderlying(shares_);
     }
 
-    //remove this function if this is not ERC4626
-    //must return 0 if deposits are paused
-    // function maxDeposit(address) public view returns (uint256) {
-    //     return _isVaultCollateralized() ? type(uint256).max : 0;
-    // }
-
-    //...and this one
-    // function _isVaultCollateralized() private view returns (bool) { 
-    //     return totalAssets() > 0 || totalSupply() == 0;
-    // }
-
     function convertToUnderlying(uint shares_) external view returns(uint amountUnderlying) {
         amountUnderlying = (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
     }
