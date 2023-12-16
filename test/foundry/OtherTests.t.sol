@@ -9,6 +9,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {Type} from "./AppStorageTests.sol";
 import {HelpersLib} from "./HelpersLib.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
+import {OZError10} from "../../contracts/Errors.sol";
 
 import "forge-std/console.sol";
 
@@ -27,18 +28,18 @@ contract OtherTests is TestMethods {
         assertTrue(totalUSD / ROUNDER == ((ozDiamondRethBalance * OZ.rETH_USD()) / 1 ether^2)/ ROUNDER);
     }
 
-
+    /**
+     * An inflation attack wouldn't be possible since it'd be filtered out 
+     * by Balancer when trying to do one of the internal swaps
+     */
     function test_inflation_attack() public {
+        /**
+         * Pre-conditions
+         */
         _dealUnderlying(Quantity.BIG);
         address attacker = alice;
         address victim = charlie;
         uint amountIn = 1;
-
-        console.log(11);
-        // vm.expectRevert();
-        // (ozIToken ozERC20,) = _createAndMintOzTokens(
-        //     testToken, amountIn, attacker, ALICE_PK, true, false, Type.IN
-        // );
 
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -61,39 +62,33 @@ contract OtherTests is TestMethods {
         );
 
         bytes memory mintData = abi.encode(amounts, attacker);
-        vm.expectRevert();
+
+        //The flow of the attack would revert here before the attack even happens.
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError10.selector, 'BAL#510')
+        );
         ozERC20.mint(mintData); 
 
-        console.log(12);
-
-        uint balAlice = ozERC20.balanceOf(alice);
-
-        // console.log('sharesAlice: ', sharesAlice);
-        console.log('balAlice: ', balAlice);
-
-        //--------
-        console.log('--- begin attack ---');
+        /**
+         * Action (attack)
+         */
         amountIn = 10_000e18 - 1;
 
         _createAndMintOzTokens(
             address(ozERC20), amountIn, attacker, ALICE_PK, false, true, Type.IN
         );
-        console.log('--- attack finished ---');
-        //--------
 
+        /**
+         * Post-conditions
+         */
         amountIn = 19999e18;
-        (, uint sharesCharlie) = _createAndMintOzTokens(
+
+        _createAndMintOzTokens(
             address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
         );
 
         uint balVictim = ozERC20.balanceOf(victim);
-        // assertTrue(balVictim <= 1);
-        
-        console.log('balVictim: ', balVictim);
-        console.log('shares victim: ', sharesCharlie);
-
-        
-
+        assertTrue(balVictim > 1);
     }
 
 
