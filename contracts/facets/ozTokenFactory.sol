@@ -43,13 +43,15 @@ contract ozTokenFactory {
         ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, data);
         //------
 
-        console.log('address(newToken): ', address(newToken));
-
-        s.ozTokenRegistry.push(address(newToken));
-
-        emit TokenCreated(address(newToken));
+        _saveInRegistry(address(newToken));
 
         return address(newToken);
+    }
+
+    function _saveInRegistry(address newOzToken_) private {
+        s.ozTokenRegistry.push(newOzToken_);
+        s.ozTokenRegistryMap[newOzToken_] = true;
+        emit TokenCreated(newOzToken_);
     }
 
     function getOzTokenRegistry() external view returns(address[] memory) {

@@ -40,12 +40,17 @@ contract ROImoduleL1 {
   
     AppStorage internal s;
 
+    modifier onlyOzToken {
+        if (!s.ozTokenRegistryMap[msg.sender]) revert OZError13(msg.sender);
+        _;
+    }
+
 
     function useUnderlying( 
         address underlying_, 
         address owner_,
         AmountsIn memory amounts_
-    ) external {
+    ) external onlyOzToken { //doing access control - use ozTokenRegistry and indexOf Helpers
         console.log('sender in useUnder: ', msg.sender);
 
         uint amountIn = amounts_.amountIn;
@@ -76,7 +81,7 @@ contract ROImoduleL1 {
     function useOzTokens(
         address owner_,
         bytes memory data_
-    ) external returns(uint amountOut) {
+    ) external onlyOzToken returns(uint amountOut) {
         console.log('sender in useOz: ', msg.sender); //tokenProxy
 
         (
