@@ -92,4 +92,13 @@ contract OtherTests is TestMethods {
     }
 
 
+    function test_ozTokenRegistry() public {
+        //Action
+        _minting_approve_smallMint();
+
+        //Post-conditions
+        assertTrue(OZ.getOzTokenRegistry().length == 1);
+        assertTrue(OZ.isInRegistry(testToken));
+    }
+
 }

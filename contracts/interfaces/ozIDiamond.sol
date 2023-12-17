@@ -36,11 +36,15 @@ interface ozIDiamond {
     ) external returns(uint);
 
     function getDiamondAddr() external view returns(address);
-    function rETH_ETH() external returns(uint256); //if not used, removed
     function getDefaultSlippage() external view returns(uint);
     function getUnderlyingValue() external view returns(uint);
     function totalUnderlying(Asset) external view returns(uint);
     function changeDefaultSlippage(uint newBasisPoints_) external;
+
+    function rETH_ETH() external returns(uint256); //if not used, removed
     function ETH_USD() external view returns(uint);
     function rETH_USD() external view returns(uint);
+
+    function getOzTokenRegistry() external view returns(address[] memory);
+    function isInRegistry(address underlying_) external view returns(bool);
 }

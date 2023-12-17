@@ -49,15 +49,6 @@ contract DiamondInit {
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
 
-        //Create ERC20 registry
-        address[] memory registry = new address[](1);
-        registry[0] = tokens_.usdt;
-
-        uint length = registry.length;
-        for (uint i=0; i < length; i++) {
-            s.ozTokenRegistry.push(registry[i]);
-        }
-
         //DEXs
         s.swapRouterUni = dexes_.swapRouterUni;
         s.vaultBalancer = dexes_.vaultBalancer;
