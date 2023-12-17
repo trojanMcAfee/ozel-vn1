@@ -27,8 +27,6 @@ import "./Errors.sol";
 import "forge-std/console.sol";
 
 
-error ozTokenInvalidMintReceiver(address account);
-
 
 /**
  * Like in Lido's stETH, the Transfer event is only emitted in _transfer, and not in rebases
