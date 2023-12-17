@@ -36,10 +36,10 @@ interface ozIDiamond {
     ) external returns(uint);
 
     function getDiamondAddr() external view returns(address);
-    function getDefaultSlippage() external view returns(uint);
+    function getDefaultSlippage() external view returns(uint16);
     function getUnderlyingValue() external view returns(uint);
     function totalUnderlying(Asset) external view returns(uint);
-    function changeDefaultSlippage(uint newBasisPoints_) external;
+    function changeDefaultSlippage(uint16 newBasisPoints_) external;
 
     function rETH_ETH() external returns(uint256); //if not used, removed
     function ETH_USD() external view returns(uint);

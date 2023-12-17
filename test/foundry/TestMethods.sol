@@ -66,7 +66,7 @@ contract TestMethods is BaseMethods {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        _changeSlippage(9900);
+        _changeSlippage(uint16(9900));
 
         //Action
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
@@ -154,7 +154,7 @@ contract TestMethods is BaseMethods {
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
-        _changeSlippage(9900);
+        _changeSlippage(uint16(9900));
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
 
@@ -224,7 +224,7 @@ contract TestMethods is BaseMethods {
      */
     function _redeeming_bigBalance_bigMint_bigRedeem() internal {
         //Pre-conditions
-        _changeSlippage(9900);
+        _changeSlippage(uint16(9900));
         _dealUnderlying(Quantity.BIG);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
@@ -259,7 +259,7 @@ contract TestMethods is BaseMethods {
      */
     function _redeeming_bigBalance_smallMint_smallRedeem() internal {
         //Pre-conditions
-        _changeSlippage(9900);
+        _changeSlippage(uint16(9900));
         _dealUnderlying(Quantity.BIG);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
@@ -308,7 +308,7 @@ contract TestMethods is BaseMethods {
         assertTrue(amountIn == 1_000_000 * 10 ** underlyingDecimals);
 
         //Changes the default slippage to 99% so the swaps don't fail.
-        _changeSlippage(9900);
+        _changeSlippage(uint16(9900));
 
         //Gets the pre-swap pool values.
         bytes32 oldSlot0data = vm.load(
@@ -405,7 +405,7 @@ contract TestMethods is BaseMethods {
      */
     function _redeeming_bigBalance_bigMint_mediumRedeem() internal {
         //Pre-conditions
-        _changeSlippage(9900);
+        _changeSlippage(uint16(9900));
         _dealUnderlying(Quantity.BIG);
 
         bytes32 oldSlot0data = vm.load(
@@ -503,7 +503,7 @@ contract TestMethods is BaseMethods {
      */
     function _redeeming_multipleBigBalances_bigMint_mediumRedeem() internal {
         //Pre-conditions
-        _changeSlippage(9900);
+        _changeSlippage(uint16(9900));
         _dealUnderlying(Quantity.BIG);
 
         bytes32 oldSlot0data = vm.load(

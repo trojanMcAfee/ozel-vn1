@@ -12,7 +12,7 @@ contract ozLoupe is DiamondLoupeFacet {
 
     AppStorage internal s;
 
-    function getDefaultSlippage() external view returns(uint) {
+    function getDefaultSlippage() external view returns(uint16) {
         return s.defaultSlippage;
     }
 

@@ -109,7 +109,7 @@ contract Setup is Test {
 
     ozIDiamond internal OZ;
 
-    uint defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
+    uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
     uint24 fee = 500;
 
     uint internal constant _BASE = 18;

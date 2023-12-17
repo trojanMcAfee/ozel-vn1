@@ -154,7 +154,7 @@ contract BaseMethods is Setup {
         );
     }
 
-    function _changeSlippage(uint basisPoints_) internal {
+    function _changeSlippage(uint16 basisPoints_) internal {
         vm.prank(owner);
         OZ.changeDefaultSlippage(basisPoints_);
         assertTrue(OZ.getDefaultSlippage() == basisPoints_);

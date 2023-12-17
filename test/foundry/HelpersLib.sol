@@ -74,17 +74,17 @@ library HelpersLib {
     function _calculateMinAmountOut(
         uint amountIn_,
         uint price_, 
-        uint slippage_
+        uint16 slippage_
     ) internal pure returns(uint minAmountOut) {
         uint ONE_ETHER = 1 ether;
 
         uint amountOut = amountIn_.fullMulDiv(price_, ONE_ETHER);
-        minAmountOut = amountOut - amountOut.fullMulDiv(slippage_, 10000);
+        minAmountOut = amountOut - amountOut.fullMulDiv(uint(slippage_), 10000);
 
     }
 
     function encodeOutData(uint ozAmountIn_, uint amountInReth_, ozIDiamond oz_, address receiver_) internal returns(bytes memory data) {
-        uint slippage = oz_.getDefaultSlippage();
+        uint16 slippage = oz_.getDefaultSlippage();
         uint minAmountOutWeth = _calculateMinAmountOut(amountInReth_, oz_.rETH_ETH(), slippage);
         uint minAmountOutUnderlying = _calculateMinAmountOut(minAmountOutWeth, oz_.ETH_USD(), slippage);
         
@@ -107,7 +107,7 @@ library HelpersLib {
     function calculateMinAmountsOut( 
         address[2] memory feeds_, 
         uint rawAmountIn_, 
-        uint slippage_
+        uint16 slippage_
     ) internal view returns(uint[] memory) {
         uint[] memory minAmountsOut = new uint[](2);
 
@@ -117,7 +117,7 @@ library HelpersLib {
                 ( i == 0 ? rawAmountIn_ * 1e18 : minAmountsOut[i - 1] )
                 .fullMulDiv(1 ether, i == 0 ? uint(price) * 1e10 : uint(price));
 
-            minAmountsOut[i] = expectedOut - expectedOut.fullMulDiv(slippage_, 10000);
+            minAmountsOut[i] = expectedOut - expectedOut.fullMulDiv(uint(slippage_), 10000);
         }
 
         return minAmountsOut;

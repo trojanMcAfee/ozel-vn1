@@ -30,9 +30,9 @@ library Helpers {
 
     function calculateMinAmountOut(
         uint256 amount_,
-        uint slippage_
+        uint16 slippage_
     ) internal pure returns(uint256) {
-        return amount_ - amount_.mulDivDown(slippage_, 10000);
+        return amount_ - amount_.mulDivDown(uint(slippage_), 10000);
     }
 
 

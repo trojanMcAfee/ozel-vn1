@@ -20,7 +20,7 @@ struct AppStorage {
     address swapRouterUni;
     address ethUsdChainlink; //consider removing this since minOut is calculated in the FE
 
-    uint defaultSlippage;
+    uint16 defaultSlippage;
     address vaultBalancer;
     address queriesBalancer;
 
@@ -90,11 +90,11 @@ struct Oracles {
     address rEthEthChainlink;
 }
 
-struct Infra { //modify this to infra
+struct Infra { 
     address ozDiamond;
     address beacon;
     address rocketPoolStorage;
-    uint defaultSlippage; //try chaning this to an uin8
+    uint16 defaultSlippage; //try chaning this to an uin8
     uint24 uniFee;
 }
 
