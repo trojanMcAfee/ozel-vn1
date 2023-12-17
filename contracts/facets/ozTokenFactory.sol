@@ -6,11 +6,12 @@ pragma solidity 0.8.21;
 import {AppStorage} from "../AppStorage.sol";
 import {Helpers} from "../libraries/Helpers.sol";
 import {ozTokenProxy} from "../ozTokenProxy.sol";
+import {ozIToken} from "../interfaces/ozIToken.sol";
 import "../Errors.sol";
 // import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
 // import "hardhat/console.sol";
-// import "forge-std/console.sol";
+import "forge-std/console.sol";
 
 
 
@@ -30,7 +31,7 @@ contract ozTokenFactory {
         string memory symbol_
     ) external returns(address) { //put an onlyOwner
 
-        if (s.ozTokenRegistry.indexOf(underlying_) != -1) revert OZError12(underlying_);
+        if (isInRegistry(underlying_)) revert OZError12(underlying_);
         if (underlying_ == address(0)) revert OZError11(underlying_);
 
         //------
@@ -42,7 +43,9 @@ contract ozTokenFactory {
         ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, data);
         //------
 
-        s.ozTokenRegistry.push(underlying_);
+        console.log('address(newToken): ', address(newToken));
+
+        s.ozTokenRegistry.push(address(newToken));
 
         emit TokenCreated(address(newToken));
 
@@ -54,7 +57,16 @@ contract ozTokenFactory {
     }
 
     function isInRegistry(address underlying_) public view returns(bool) {
-        return s.ozTokenRegistry.indexOf(underlying_) != -1;
+        uint length = s.ozTokenRegistry.length;
+        if (length == 0) return false;
+
+        for (uint i=0; i < length; i++) {
+            if (ozIToken(s.ozTokenRegistry[i]).asset() == underlying_) return true; 
+        }
+
+        return false;
     }
+
+    
 
 }
