@@ -90,7 +90,7 @@ struct Oracles {
     address rEthEthChainlink;
 }
 
-struct DiamondInfra { //modify this to infra
+struct Infra { //modify this to infra
     address ozDiamond;
     address beacon;
     address rocketPoolStorage;

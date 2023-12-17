@@ -50,9 +50,7 @@ contract ROImoduleL1 {
         address underlying_, 
         address owner_,
         AmountsIn memory amounts_
-    ) external onlyOzToken { //doing access control - use ozTokenRegistry and indexOf Helpers
-        console.log('sender in useUnder: ', msg.sender);
-
+    ) external onlyOzToken { 
         uint amountIn = amounts_.amountIn;
       
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
@@ -82,8 +80,6 @@ contract ROImoduleL1 {
         address owner_,
         bytes memory data_
     ) external onlyOzToken returns(uint amountOut) {
-        console.log('sender in useOz: ', msg.sender); //tokenProxy
-
         (
             uint ozAmountIn,
             uint amountInReth,

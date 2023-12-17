@@ -19,7 +19,7 @@ import {
     Tokens,
     Dexes,
     Oracles,
-    DiamondInfra
+    Infra
 } from "../AppStorage.sol";
 
 import {IRocketStorage} from "../interfaces/IRocketPool.sol";
@@ -40,7 +40,7 @@ contract DiamondInit {
         Tokens memory tokens_,
         Dexes memory dexes_,
         Oracles memory oracles_,
-        DiamondInfra memory infra_
+        Infra memory infra_
     ) external {
         // adding ERC165 data **** COMPLETE this with rest of funcs/interfaces
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();

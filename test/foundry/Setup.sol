@@ -26,7 +26,7 @@ import {
     Tokens,
     Dexes,
     Oracles,
-    DiamondInfra
+    Infra
 } from "../../contracts/AppStorage.sol";
 import {ReqOut, ReqIn} from "./AppStorageTests.sol";
 import {ozCut} from "../../contracts/facets/ozCut.sol";
@@ -256,7 +256,7 @@ contract Setup is Test {
             rEthEthChainlink: rEthEthChainlink
         });
 
-        DiamondInfra memory infra = DiamondInfra({
+        Infra memory infra = Infra({
             ozDiamond: address(ozDiamond),
             beacon: address(beacon),
             rocketPoolStorage: rocketPoolStorage,
