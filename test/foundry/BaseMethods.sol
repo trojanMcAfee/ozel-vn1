@@ -26,8 +26,6 @@ contract BaseMethods is Setup {
         bool is2612_,
         Type flowType_
     ) internal returns(ozIToken ozERC20, uint shares) {
-        uint[] memory minAmountsOut;
-       
         if (create_) {
             ozERC20 = ozIToken(OZ.createOzToken(
                 testToken_, "Ozel-ERC20", "ozERC20"
@@ -40,11 +38,7 @@ contract BaseMethods is Setup {
             ozERC20, amountIn_, userPk_, user_, flowType_
         );
 
-        if (flowType_ == Type.IN) {
-            (minAmountsOut,,,) = HelpersLib.extract(data);
-        } else { //remove this and the flowType if not needed
-            //decode for redeeming
-        }
+        (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         vm.startPrank(user_);
 
