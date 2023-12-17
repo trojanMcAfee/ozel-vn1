@@ -202,7 +202,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         uint shares = totalShares() == 0 ? assets : previewMint(assets);
 
-        _totalAssets += assets;
+        _totalAssets += assets; //check if these two can be stored in the same slot var
         _totalShares += shares;
 
         unchecked {

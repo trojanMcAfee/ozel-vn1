@@ -188,7 +188,7 @@ contract ROImoduleL1 {
                 address(this)
             );
         } else {
-            _swapBalancer( //check if both balancer and uni swaps (the other, not this ^) can be done with multicall - gas optimization (it's possible - check rocketPool and balancer pause before starting first swapUni call. If it's happy path, do multicall)
+            _swapBalancer(
                 tokenIn_,
                 tokenOut_,
                 amountIn_,

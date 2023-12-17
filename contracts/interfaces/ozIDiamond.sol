@@ -17,18 +17,12 @@ interface ozIDiamond {
         string memory symbol_
     ) external returns(address);
 
-    function useUnderlying( //remove this
+    function useUnderlying( 
         address underlying_, 
-        address user_, 
+        address owner_, 
         AmountsIn memory amounts_
     ) external;
 
-    function useUnderlying( 
-        address underlying_, 
-        address user_,
-        uint amountIn_,
-        uint minWethOut_
-    ) external;
 
     function useOzTokens(
         address owner_,
