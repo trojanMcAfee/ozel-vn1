@@ -46,8 +46,9 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     address private _ozDiamond;
     address private _underlying;
 
-    uint private _totalShares;
-    uint private _totalAssets;
+    // uint private _totalShares;
+    // uint private _totalAssets;
+    bytes32 private _assetsAndShares;
 
     mapping(address user => uint256 shares) private _shares;
     mapping(address => CountersUpgradeable.Counter) private _nonces;
@@ -62,6 +63,8 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
     uint public FORMAT_DECIMALS;
+
+    uint constant MASK = 2 ** (128) - 1;
 
 
     constructor() {
@@ -169,15 +172,19 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function totalAssets() public view returns(uint) {
-        return _totalAssets;
+        return _extract(TotalType.ASSETS);
+
+        // return _totalAssets;
     }
 
     function totalShares() public view returns(uint) {
-        return _totalShares;
+        return _extract(TotalType.SHARES);
+
+        // return _totalShares;
     }
 
     function totalSupply() public view returns(uint) {
-        return _totalShares == 0 ? 0 : _convertToAssets(_totalShares);
+        return totalShares() == 0 ? 0 : _convertToAssets(totalShares());
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -192,6 +199,37 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return convertToAssets(sharesOf(account_));
     }
 
+    function _setAssetsAndShares(uint assets_, uint shares_, bool addOrSub_) private {
+        uint assets = uint(_assetsAndShares >> 128) & MASK;
+        uint shares = uint(_assetsAndShares) & MASK;
+
+        unchecked {
+            if (addOrSub_) {
+                assets += assets_;
+                shares += shares_;
+            } else {
+                assets -= assets_;
+                shares -= shares_;
+            }
+        }
+        
+        // uint assets = (uint(_assetsAndShares >> 128) & MASK) + assets_;
+        // uint shares = (uint(_assetsAndShares) & MASK) + shares_;
+
+        _assetsAndShares = bytes32((shares << 128) + assets);
+    }
+
+    function _extract(TotalType type_) private view returns(uint) {
+        return type_ == TotalType.ASSETS ? 
+            uint(_assetsAndShares >> 128) & MASK :
+            uint(_assetsAndShares) & MASK;
+    }
+
+    enum TotalType {
+        ASSETS,
+        SHARES
+    }
+
 
     function mint(bytes memory data_) external returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
@@ -202,8 +240,13 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         uint shares = totalShares() == 0 ? assets : previewMint(assets);
 
-        _totalAssets += assets; //check if these two can be stored in the same slot var
-        _totalShares += shares;
+        _setAssetsAndShares(assets, shares, true);
+
+        // _totalAssets += assets; //check if these two can be stored in the same slot var
+        // _totalShares += shares;
+
+        // console.log('assets: ', _totalAssets);
+        // console.log('shares: ', _totalShares);
 
         unchecked {
             _shares[receiver_] += shares;
@@ -247,10 +290,12 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         accountShares = sharesOf(_ozDiamond);
 
+        _setAssetsAndShares(assets, accountShares, false);
+
         unchecked {
             _shares[_ozDiamond] = 0;
-            _totalShares -= accountShares;
-            _totalAssets -= assets;
+            // _totalShares -= accountShares;
+            // _totalAssets -= assets;
         }
 
         return amountOut;
