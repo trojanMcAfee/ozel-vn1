@@ -2,13 +2,13 @@
 pragma solidity 0.8.21;
 
 
-import {TestMethods} from "./TestMethods.sol";
+import {TestMethods} from "../TestMethods.sol";
 
 
-contract CoreTokenLogicBALtest is TestMethods {
+contract BalancerPathTest is TestMethods {
 
-
-    function test_minting_approve_smallMint_balancer() internal {
+   
+    function test_minting_approve_smallMint_balancer() public {
         _minting_approve_smallMint();
     }
 

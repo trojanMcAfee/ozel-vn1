@@ -19,7 +19,7 @@ import {
     Tokens,
     Dexes,
     Oracles,
-    DiamondInfra
+    Infra
 } from "../AppStorage.sol";
 
 import {IRocketStorage} from "../interfaces/IRocketPool.sol";
@@ -40,7 +40,7 @@ contract DiamondInit {
         Tokens memory tokens_,
         Dexes memory dexes_,
         Oracles memory oracles_,
-        DiamondInfra memory infra_
+        Infra memory infra_
     ) external {
         // adding ERC165 data **** COMPLETE this with rest of funcs/interfaces
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
@@ -48,15 +48,6 @@ contract DiamondInit {
         ds.supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
-
-        //Create ERC20 registry
-        address[] memory registry = new address[](1);
-        registry[0] = tokens_.usdt;
-
-        uint length = registry.length;
-        for (uint i=0; i < length; i++) {
-            s.ozTokenRegistry.push(registry[i]);
-        }
 
         //DEXs
         s.swapRouterUni = dexes_.swapRouterUni;
@@ -72,6 +63,7 @@ contract DiamondInit {
         s.ozDiamond = infra_.ozDiamond;
         s.ozBeacon = infra_.beacon;
         s.defaultSlippage = infra_.defaultSlippage;
+        s.uniFee = infra_.uniFee;
 
         //ERC20s
         s.WETH = tokens_.weth;

@@ -13,10 +13,13 @@ contract ozCut is DiamondCutFacet {
 
     AppStorage private s;
 
-    function changeDefaultSlippage(uint newBasisPoints_) external {
+    function changeDefaultSlippage(uint16 newBps_) external {
         LibDiamond.enforceIsContractOwner();
-        s.defaultSlippage = newBasisPoints_;
+        s.defaultSlippage = newBps_;
     }
 
-
+    function changeUniFee(uint24 newBps_) external {
+        LibDiamond.enforceIsContractOwner();
+        s.uniFee = newBps_;
+    }
 }

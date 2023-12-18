@@ -3,14 +3,29 @@ pragma solidity 0.8.21;
 
 
 import {IVault, IAsset} from "../interfaces/IBalancer.sol";
-import "solady/src/utils/FixedPointMathLib.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
-// import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {FixedPointMathLib} from "./FixedPointMathLib.sol";
+
+enum TotalType {
+    ASSETS,
+    SHARES
+}
 
 
 library Helpers {
 
     using FixedPointMathLib for uint;
+
+
+    function extract(bytes32 assetsAndShares_, TotalType type_) internal pure returns(uint) {
+        uint MASK = 2 ** (128) - 1;
+        
+        return type_ == TotalType.ASSETS ? 
+            uint(assetsAndShares_ >> 128) & MASK :
+            uint(assetsAndShares_) & MASK;
+    }
+
+
 
     function indexOf(
         address[] memory array_, 
@@ -31,9 +46,9 @@ library Helpers {
 
     function calculateMinAmountOut(
         uint256 amount_,
-        uint slippage_
+        uint16 slippage_
     ) internal pure returns(uint256) {
-        return amount_ - amount_.fullMulDiv(slippage_, 10000);
+        return amount_ - amount_.mulDivDown(uint(slippage_), 10000);
     }
 
 
@@ -130,6 +145,10 @@ library Helpers {
     function formatMinOut(uint minOut_, address tokenOut_) internal view returns(uint) {
         uint decimals = IERC20Permit(tokenOut_).decimals();
         return decimals == 18 ? minOut_ : minOut_ / 10 ** (18 - decimals);
+    }
+
+    function format(uint num_, uint decimals_) internal pure returns(uint) {
+        return num_ / decimals_;
     }
 
     

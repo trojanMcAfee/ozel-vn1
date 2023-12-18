@@ -17,18 +17,12 @@ interface ozIDiamond {
         string memory symbol_
     ) external returns(address);
 
-    function useUnderlying( //remove this
+    function useUnderlying( 
         address underlying_, 
-        address user_, 
+        address owner_, 
         AmountsIn memory amounts_
     ) external;
 
-    function useUnderlying( 
-        address underlying_, 
-        address user_,
-        uint amountIn_,
-        uint minWethOut_
-    ) external;
 
     function useOzTokens(
         address owner_,
@@ -36,10 +30,15 @@ interface ozIDiamond {
     ) external returns(uint);
 
     function getDiamondAddr() external view returns(address);
-    function rETH_ETH() external returns(uint256); //if not used, removed
-    function getDefaultSlippage() external view returns(uint);
+    function getDefaultSlippage() external view returns(uint16);
     function getUnderlyingValue() external view returns(uint);
     function totalUnderlying(Asset) external view returns(uint);
-    function changeDefaultSlippage(uint newBasisPoints_) external;
+    function changeDefaultSlippage(uint16 newBasisPoints_) external;
+
+    function rETH_ETH() external returns(uint256); //if not used, removed
     function ETH_USD() external view returns(uint);
+    function rETH_USD() external view returns(uint);
+
+    function getOzTokenRegistry() external view returns(address[] memory);
+    function isInRegistry(address underlying_) external view returns(bool);
 }

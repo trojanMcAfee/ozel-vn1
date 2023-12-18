@@ -16,24 +16,30 @@ contract ozOracle {
     AppStorage private s;
 
     //validate with lastTimeUpdated
-    function rETH_ETH() external view returns(uint) {
+    function rETH_ETH() public view returns(uint) {
         (,int price,,,) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
         return uint(price);
     }
 
     function ETH_USD() public view returns(uint) {
         (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-        return uint(price);
+        return uint(price) * 1e10;
     }
 
+    function rETH_USD() external view returns(uint) {
+        return (rETH_ETH() * ETH_USD()) / 1 ether ^ 2;
+    }
 
     function getUnderlyingValue() external view returns(uint) {
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate();    
-        (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
 
-        return ( ((rate * amountReth) / 1 ether) * (uint(price) * 1e10) ) / 1 ether; 
+        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
     }
-
-
 }
+
+
+/**
+     * add a fallback oracle like uni's TWAP
+     **** handle the possibility with Chainlink of Sequencer being down (https://docs.chain.link/data-feeds/l2-sequencer-feeds)
+     */

@@ -3,11 +3,11 @@ pragma solidity 0.8.21;
 
 
 
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {TestMethods} from "./TestMethods.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
+import {TestMethods} from "../TestMethods.sol";
 
 
-contract CoreTokenLogicRPtest is TestMethods {
+contract RocketPoolPathTest is TestMethods {
 
     modifier confirmRethSupplyIncrease() {
         _modifyRocketPoolDepositMaxLimit();

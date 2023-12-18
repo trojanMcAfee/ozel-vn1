@@ -10,6 +10,7 @@ import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
  */
 struct AppStorage { 
 
+    address rEthWethPoolBalancer; //don't change this from 1st pos
     address[] ozTokenRegistry;
     address ozDiamond;
     address WETH; 
@@ -19,12 +20,11 @@ struct AppStorage {
     address swapRouterUni;
     address ethUsdChainlink; //consider removing this since minOut is calculated in the FE
 
-    uint defaultSlippage;
+    uint16 defaultSlippage;
     address vaultBalancer;
     address queriesBalancer;
 
     address rETH;
-    address rEthWethPoolBalancer; //if balancer is no longer used in L1, remove it
     address rEthEthChainlink;
 
     mapping(address underlying => address token) ozTokens;
@@ -37,6 +37,10 @@ struct AppStorage {
     bytes32 rocketDepositPoolID;
     address rocketVault;
     bytes32 rocketDAOProtocolSettingsDepositID;
+
+    uint24 uniFee;
+
+    mapping(address ozToken => bool exist) ozTokenRegistryMap;
   
 }
 
@@ -86,11 +90,12 @@ struct Oracles {
     address rEthEthChainlink;
 }
 
-struct DiamondInfra { //modify this to infra
+struct Infra { 
     address ozDiamond;
     address beacon;
     address rocketPoolStorage;
-    uint defaultSlippage; //try chaning this to an uin8
+    uint16 defaultSlippage; //try chaning this to an uin8
+    uint24 uniFee;
 }
 
 

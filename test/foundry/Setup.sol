@@ -26,7 +26,7 @@ import {
     Tokens,
     Dexes,
     Oracles,
-    DiamondInfra
+    Infra
 } from "../../contracts/AppStorage.sol";
 import {ReqOut, ReqIn} from "./AppStorageTests.sol";
 import {ozCut} from "../../contracts/facets/ozCut.sol";
@@ -109,23 +109,26 @@ contract Setup is Test {
 
     ozIDiamond internal OZ;
 
-    uint defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
+    uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
     uint24 fee = 500;
 
     uint internal constant _BASE = 18;
 
     uint internal constant SHARES_DECIMALS_OFFSET = 1e6;
 
+    uint internal mainBlockNumber;
+    uint internal secondaryBlockNumber;
+
    
 
     /** FUNCTIONS **/ 
     function setUp() public {
-        (string memory network, uint blockNumber) = _chooseNetwork(Network.ETHEREUM);
-        vm.createSelectFork(vm.rpcUrl(network), blockNumber);
+        string memory network = _chooseNetwork(Network.ETHEREUM);
+        vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
         _runSetup();
     }
 
-    function _chooseNetwork(Network chain_) private returns(string memory network, uint blockNumber) {
+    function _chooseNetwork(Network chain_) private returns(string memory network) {
         if (chain_ == Network.ARBITRUM) {
             usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
             usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
@@ -149,7 +152,7 @@ contract Setup is Test {
             uniFactory = address(0);
 
             network = "arbitrum";
-            blockNumber = 136177703;
+            mainBlockNumber = 136177703;
         } else if (chain_ == Network.ETHEREUM) {
             usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
             usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -174,7 +177,8 @@ contract Setup is Test {
             uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
 
             network = "ethereum";
-            blockNumber = 18413614; //*18413614* - 18413618
+            mainBlockNumber = 18413614; //*18413614* - 18413618 - 18785221 (paused)
+            secondaryBlockNumber = 18785221;
         }
     }
 
@@ -252,11 +256,12 @@ contract Setup is Test {
             rEthEthChainlink: rEthEthChainlink
         });
 
-        DiamondInfra memory infra = DiamondInfra({
+        Infra memory infra = Infra({
             ozDiamond: address(ozDiamond),
             beacon: address(beacon),
             rocketPoolStorage: rocketPoolStorage,
-            defaultSlippage: defaultSlippage
+            defaultSlippage: defaultSlippage,
+            uniFee: 500 //0.05 - 500
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -284,15 +289,17 @@ contract Setup is Test {
     ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
         if (id_ == 0) {
-            length = 6;
-        } else if (id_ == 1) {
+            length = 7;
+        } else if (id_ == 1 || id_ == 5 || id_ == 8) {
             length = 2;
-        } else if (id_ == 2 || id_ == 4 || id_ == 8) {
+        } else if (id_ == 2 || id_ == 4) {
             length = 1;
-        } else if (id_ == 3 || id_ == 5 || id_ == 6) {
+        } else if (id_ == 3) {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
+        } else if (id_ == 6) {
+            length = 4;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -304,6 +311,7 @@ contract Setup is Test {
             selectors[3] = loupe.facetAddress.selector;
             selectors[4] = loupe.supportsInterface.selector;
             selectors[5] = loupe.getDefaultSlippage.selector;
+            selectors[6] = loupe.totalUnderlying.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -317,12 +325,12 @@ contract Setup is Test {
             selectors[0] = 0xe9e05c43;
         } else if (id_ == 5) {
             selectors[0] = roi.useUnderlying.selector;
-            selectors[1] = roi.totalUnderlying.selector;
-            selectors[2] = roi.useOzTokens.selector;
+            selectors[1] = roi.useOzTokens.selector;
         } else if (id_ == 6) {
             selectors[0] = oracle.rETH_ETH.selector;
             selectors[1] = oracle.getUnderlyingValue.selector;
             selectors[2] = oracle.ETH_USD.selector;
+            selectors[3] = oracle.rETH_USD.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;
@@ -331,6 +339,7 @@ contract Setup is Test {
             selectors[4] = beacon.transferOwnership.selector;
         } else if (id_ == 8) {
             selectors[0] = cutOz.changeDefaultSlippage.selector;
+            selectors[1] = cutOz.changeUniFee.selector;
         }
 
         cut = IDiamondCut.FacetCut({
