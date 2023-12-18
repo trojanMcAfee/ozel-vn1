@@ -6,10 +6,26 @@ import {IVault, IAsset} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 import {FixedPointMathLib} from "./FixedPointMathLib.sol";
 
+enum TotalType {
+    ASSETS,
+    SHARES
+}
+
 
 library Helpers {
 
     using FixedPointMathLib for uint;
+
+    uint constant MASK = 2 ** (128) - 1;
+
+
+    function extract(bytes32 assetsAndShares_, TotalType type_) internal pure returns(uint) {
+        return type_ == TotalType.ASSETS ? 
+            uint(assetsAndShares_ >> 128) & MASK :
+            uint(assetsAndShares_) & MASK;
+    }
+
+
 
     function indexOf(
         address[] memory array_, 

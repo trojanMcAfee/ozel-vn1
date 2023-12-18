@@ -21,7 +21,7 @@ import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/
 
 import {AmountsIn} from "./AppStorage.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
-import {Helpers} from "./libraries/Helpers.sol";
+import {Helpers, TotalType} from "./libraries/Helpers.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
@@ -42,6 +42,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
     using FixedPointMathLib for uint;
     using Helpers for uint;
+    using Helpers for bytes32;
 
     address private _ozDiamond;
     address private _underlying;
@@ -172,15 +173,11 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
     function totalAssets() public view returns(uint) {
-        return _extract(TotalType.ASSETS);
-
-        // return _totalAssets;
+        return _assetsAndShares.extract(TotalType.ASSETS);
     }
 
     function totalShares() public view returns(uint) {
-        return _extract(TotalType.SHARES);
-
-        // return _totalShares;
+        return _assetsAndShares.extract(TotalType.SHARES);
     }
 
     function totalSupply() public view returns(uint) {
@@ -219,16 +216,16 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         _assetsAndShares = bytes32((shares << 128) + assets);
     }
 
-    function _extract(TotalType type_) private view returns(uint) {
-        return type_ == TotalType.ASSETS ? 
-            uint(_assetsAndShares >> 128) & MASK :
-            uint(_assetsAndShares) & MASK;
-    }
+    // function _extract(TotalType type_) private view returns(uint) {
+    //     return type_ == TotalType.ASSETS ? 
+    //         uint(_assetsAndShares >> 128) & MASK :
+    //         uint(_assetsAndShares) & MASK;
+    // }
 
-    enum TotalType {
-        ASSETS,
-        SHARES
-    }
+    // enum TotalType {
+    //     ASSETS,
+    //     SHARES
+    // }
 
 
     function mint(bytes memory data_) external returns(uint) { 
@@ -241,12 +238,6 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         uint shares = totalShares() == 0 ? assets : previewMint(assets);
 
         _setAssetsAndShares(assets, shares, true);
-
-        // _totalAssets += assets; //check if these two can be stored in the same slot var
-        // _totalShares += shares;
-
-        // console.log('assets: ', _totalAssets);
-        // console.log('shares: ', _totalShares);
 
         unchecked {
             _shares[receiver_] += shares;
