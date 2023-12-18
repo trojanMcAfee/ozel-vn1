@@ -46,9 +46,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
     address private _ozDiamond;
     address private _underlying;
-
-    // uint private _totalShares;
-    // uint private _totalAssets;
+    
     bytes32 private _assetsAndShares;
 
     mapping(address user => uint256 shares) private _shares;
@@ -209,23 +207,9 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
                 shares -= shares_;
             }
         }
-        
-        // uint assets = (uint(_assetsAndShares >> 128) & MASK) + assets_;
-        // uint shares = (uint(_assetsAndShares) & MASK) + shares_;
 
         _assetsAndShares = bytes32((shares << 128) + assets);
     }
-
-    // function _extract(TotalType type_) private view returns(uint) {
-    //     return type_ == TotalType.ASSETS ? 
-    //         uint(_assetsAndShares >> 128) & MASK :
-    //         uint(_assetsAndShares) & MASK;
-    // }
-
-    // enum TotalType {
-    //     ASSETS,
-    //     SHARES
-    // }
 
 
     function mint(bytes memory data_) external returns(uint) { 
@@ -285,8 +269,6 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
         unchecked {
             _shares[_ozDiamond] = 0;
-            // _totalShares -= accountShares;
-            // _totalAssets -= assets;
         }
 
         return amountOut;
