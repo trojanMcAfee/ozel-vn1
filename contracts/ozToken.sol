@@ -194,23 +194,6 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
         return convertToAssets(sharesOf(account_));
     }
 
-    function _setAssetsAndShares(uint assets_, uint shares_, bool addOrSub_) private {
-        uint assets = uint(_assetsAndShares >> 128) & MASK;
-        uint shares = uint(_assetsAndShares) & MASK;
-
-        unchecked {
-            if (addOrSub_) {
-                assets += assets_;
-                shares += shares_;
-            } else {
-                assets -= assets_;
-                shares -= shares_;
-            }
-        }
-
-        _assetsAndShares = bytes32((shares << 128) + assets);
-    }
-
 
     function mint(bytes memory data_) external returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
@@ -316,6 +299,23 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
     function convertToShares(uint256 assets) public view returns (uint256 shares) {
         return _convertToShares(assets);
+    }
+
+    function _setAssetsAndShares(uint assets_, uint shares_, bool addOrSub_) private {
+        uint assets = _assetsAndShares.extract(TotalType.ASSETS); 
+        uint shares = _assetsAndShares.extract(TotalType.SHARES); 
+
+        unchecked {
+            if (addOrSub_) {
+                assets += assets_;
+                shares += shares_;
+            } else {
+                assets -= assets_;
+                shares -= shares_;
+            }
+        }
+
+        _assetsAndShares = bytes32((shares << 128) + assets);
     }
 
 
