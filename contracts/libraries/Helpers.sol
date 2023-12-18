@@ -16,10 +16,10 @@ library Helpers {
 
     using FixedPointMathLib for uint;
 
-    uint constant MASK = 2 ** (128) - 1;
-
 
     function extract(bytes32 assetsAndShares_, TotalType type_) internal pure returns(uint) {
+        uint MASK = 2 ** (128) - 1;
+        
         return type_ == TotalType.ASSETS ? 
             uint(assetsAndShares_ >> 128) & MASK :
             uint(assetsAndShares_) & MASK;
