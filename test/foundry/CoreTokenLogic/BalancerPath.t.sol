@@ -16,6 +16,12 @@ contract BalancerPathTest is TestMethods {
     using FixedPointMathLib for uint;
 
 
+    // function getFees() public {
+    //     total
+
+    // }
+
+
     function test_fees() public {
         _minting_approve_smallMint();
 
@@ -60,6 +66,33 @@ contract BalancerPathTest is TestMethods {
         uint assets = ozERC20.convertToAssets(feeShares);
         console.log('assets: ', assets);
     }
+
+    function test_fees3() public {
+        _minting_approve_smallMint();
+
+        ozIToken ozERC20 = ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac);
+
+        uint totalAssets = ozERC20.totalAssets();
+        console.log('totalAssets: ', totalAssets);
+
+        uint underValue = OZ.getUnderlyingValue();
+        console.log('underValue: ', underValue);
+        //------
+
+        vm.mockCall(
+            address(OZ),
+            abi.encodeWithSignature('getUnderlyingValue()'),
+            abi.encode(101 * 1e18)
+        );
+
+        underValue = OZ.getUnderlyingValue();
+        console.log('mocked underValue: ', underValue);
+
+        // uint netFees = OZ.getUnderlyingValue() - (ozERC20.totalAssets() * 1e12);
+        // console.log('netFees: ', netFees);
+
+    }
+
 
 
     //---------

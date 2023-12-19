@@ -6,6 +6,7 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/Ag
 import {AppStorage} from "../AppStorage.sol";
 import {IPool} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 
@@ -38,17 +39,41 @@ contract ozOracle {
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate();    
 
         uint subTotal =  ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
-        console.log('total after fees: ', applyFee(subTotal));
-        return subTotal;
+
+        uint totalAssets;
+        for (uint i=0; i < s.ozTokenRegistry.length; i++) {
+            totalAssets += ozIToken(s.ozTokenRegistry[i]).totalAssets();
+        }
+
+        // uint total = (totalAssets * 1e12) > subTotal ? subTotal : _applyFee(subTotal, totalAssets);
+
+        if ((totalAssets * 1e12) > subTotal) {
+            return subTotal;
+        } else {
+            (uint netUnderlyingValue,) = _applyFee(subTotal, totalAssets);
+            return netUnderlyingValue;
+        }
     }
 
-    function applyFee(uint subTotal_) public pure returns(uint) {
+
+    function _applyFee(uint subTotal_, uint totalAssets_) private pure returns(uint, uint) {
         // subTotal --- 100% 10_000
         //    x ------- 15% 1_500
-        uint fee = 1_500;
+        uint protocolFee = 1_500;
 
-        return subTotal_ - fee.mulDivDown(subTotal_, 10_000);
+        // return subTotal_ - protocolFee.mulDivDown(subTotal_, 10_000);
+        //-------
+
+        uint totalRewards = subTotal_ - totalAssets_;
+        // uint netUnderlyingValue = subTotal_ - totalRewards;
+
+        uint ozelRewards = protocolFee.mulDivDown(totalRewards, 10_000);
+        uint netUnderlyingValue = subTotal_ - ozelRewards;
+
+        return (netUnderlyingValue, ozelRewards);
     }
+
+
 }
 
 
