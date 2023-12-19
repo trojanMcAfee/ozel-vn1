@@ -286,6 +286,8 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
 
     // function transferShares() external {} <--- https://docs.lido.fi/guides/lido-tokens-integration-guide#transfer-shares-function-for-steth
 
+    //remove the _functions if not needed
+
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_) private view returns (uint256 assets) {  
         return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue() / (totalShares() == 0 ? 1: totalShares())), 1);

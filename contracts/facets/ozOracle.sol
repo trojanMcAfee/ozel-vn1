@@ -38,7 +38,7 @@ contract ozOracle {
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate();    
 
         uint subTotal =  ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
-        // return applyFee(subTotal);
+        console.log('total after fees: ', applyFee(subTotal));
         return subTotal;
     }
 

@@ -6,10 +6,14 @@ import {TestMethods} from "../TestMethods.sol";
 import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
 
+import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
+
 import "forge-std/console.sol";
 
 
 contract BalancerPathTest is TestMethods {
+
+    using FixedPointMathLib for uint;
 
 
     function test_fees() public {
@@ -20,16 +24,45 @@ contract BalancerPathTest is TestMethods {
         console.log('under: ', OZ.getUnderlyingValue());
         console.log('totalShares: ', ozERC20.totalShares());
         
-        uint numerator = OZ.getUnderlyingValue() * 1500 * ozERC20.totalShares();
+        int numerator = int(OZ.getUnderlyingValue() * 1500 * ozERC20.totalShares());
         console.log(1);
         console.log('rETH bal: ', IERC20Permit(rEthAddr).balanceOf(address(OZ)));
-        uint denominator = (IERC20Permit(rEthAddr).balanceOf(address(OZ)) * 10_000) - (1500 * OZ.getUnderlyingValue());
+        int denominator = int((IERC20Permit(rEthAddr).balanceOf(address(OZ)) * 10_000)) - int((1500 * OZ.getUnderlyingValue()));
         console.log(2);
-        uint sharesToMint = numerator / denominator;
+        int sharesToMint = numerator / denominator;
 
-        console.log('sharesToMint: ', sharesToMint);
+        console.logInt(sharesToMint);
+        console.log('sharesToMint ^^');
+
+        // 100_000_000 ---- 100%
+        //     x      ------ 15% x = 1_500_000
     }
 
+    function applyFee(uint subTotal_) public pure returns(uint) {
+        uint fee = 1_500;
+        return fee.mulDivDown(subTotal_, 10_000);
+    }
+
+    function test_fees2() public {
+        _minting_approve_smallMint();
+
+        ozIToken ozERC20 = ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac);
+
+        uint val = OZ.getUnderlyingValue();
+        console.log('UnderlyingValue: ', val);
+
+        uint totalShares = ozERC20.totalShares();
+        console.log('totalShares: ', totalShares);
+        
+        uint feeShares = applyFee(totalShares);
+        console.log('feeShares: ', feeShares);
+
+        uint assets = ozERC20.convertToAssets(feeShares);
+        console.log('assets: ', assets);
+    }
+
+
+    //---------
    
     function test_minting_approve_smallMint_balancer() public {
         _minting_approve_smallMint();
