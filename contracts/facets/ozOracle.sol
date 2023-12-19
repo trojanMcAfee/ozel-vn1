@@ -56,16 +56,14 @@ contract ozOracle {
     }
 
 
-    function _applyFee(uint subTotal_, uint totalAssets_) private pure returns(uint, uint) {
+    function _applyFee(uint subTotal_, uint totalAssets_) private view returns(uint, uint) {
         // subTotal --- 100% 10_000
         //    x ------- 15% 1_500
+        console.log('here');
+        
         uint protocolFee = 1_500;
 
-        // return subTotal_ - protocolFee.mulDivDown(subTotal_, 10_000);
-        //-------
-
         uint totalRewards = subTotal_ - totalAssets_;
-        // uint netUnderlyingValue = subTotal_ - totalRewards;
 
         uint ozelRewards = protocolFee.mulDivDown(totalRewards, 10_000);
         uint netUnderlyingValue = subTotal_ - ozelRewards;

@@ -80,9 +80,9 @@ contract BalancerPathTest is TestMethods {
         //------
 
         vm.mockCall(
-            address(OZ),
-            abi.encodeWithSignature('getUnderlyingValue()'),
-            abi.encode(101 * 1e18)
+            address(ozERC20),
+            abi.encodeWithSignature('totalAssets()'),
+            abi.encode(99 * 1e6)
         );
 
         underValue = OZ.getUnderlyingValue();

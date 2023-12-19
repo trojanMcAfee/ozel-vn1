@@ -110,7 +110,8 @@ contract Setup is Test {
     ozIDiamond internal OZ;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
-    uint24 fee = 500;
+    uint24 uniPoolFee = 500; //0.05 - 500
+    uint protocolFee = 1_500; //15%
 
     uint internal constant _BASE = 18;
 
@@ -261,7 +262,7 @@ contract Setup is Test {
             beacon: address(beacon),
             rocketPoolStorage: rocketPoolStorage,
             defaultSlippage: defaultSlippage,
-            uniFee: 500 //0.05 - 500
+            uniFee: uniPoolFee //0.05 - 500
         });
 
         bytes memory initData = abi.encodeWithSelector(
