@@ -7,11 +7,14 @@ import {AppStorage} from "../AppStorage.sol";
 import {IPool} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
+import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 
 
 contract ozOracle {
+
+    using FixedPointMathLib for uint;
 
     AppStorage private s;
 
@@ -34,7 +37,17 @@ contract ozOracle {
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate();    
 
-        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
+        uint subTotal =  ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
+        // return applyFee(subTotal);
+        return subTotal;
+    }
+
+    function applyFee(uint subTotal_) public pure returns(uint) {
+        // subTotal --- 100% 10_000
+        //    x ------- 15% 1_500
+        uint fee = 1_500;
+
+        return subTotal_ - fee.mulDivDown(subTotal_, 10_000);
     }
 }
 

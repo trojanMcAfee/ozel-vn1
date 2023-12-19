@@ -3,9 +3,32 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../TestMethods.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+
+import "forge-std/console.sol";
 
 
 contract BalancerPathTest is TestMethods {
+
+
+    function test_fees() public {
+        _minting_approve_smallMint();
+
+        ozIToken ozERC20 = ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac);
+
+        console.log('under: ', OZ.getUnderlyingValue());
+        console.log('totalShares: ', ozERC20.totalShares());
+        
+        uint numerator = OZ.getUnderlyingValue() * 1500 * ozERC20.totalShares();
+        console.log(1);
+        console.log('rETH bal: ', IERC20Permit(rEthAddr).balanceOf(address(OZ)));
+        uint denominator = (IERC20Permit(rEthAddr).balanceOf(address(OZ)) * 10_000) - (1500 * OZ.getUnderlyingValue());
+        console.log(2);
+        uint sharesToMint = numerator / denominator;
+
+        console.log('sharesToMint: ', sharesToMint);
+    }
 
    
     function test_minting_approve_smallMint_balancer() public {
