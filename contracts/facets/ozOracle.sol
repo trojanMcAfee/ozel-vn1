@@ -60,12 +60,10 @@ contract ozOracle {
         // subTotal --- 100% 10_000
         //    x ------- 15% 1_500
         console.log('here');
-        
-        uint protocolFee = 1_500;
 
         uint totalRewards = subTotal_ - totalAssets_;
 
-        uint ozelRewards = protocolFee.mulDivDown(totalRewards, 10_000);
+        uint ozelRewards = uint(s.protocolFee).mulDivDown(totalRewards, 10_000);
         uint netUnderlyingValue = subTotal_ - ozelRewards;
 
         return (netUnderlyingValue, ozelRewards);

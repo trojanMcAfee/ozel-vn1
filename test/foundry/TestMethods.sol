@@ -93,7 +93,7 @@ contract TestMethods is BaseMethods {
          * Pre-conditions + Actions (creating of ozTokens)
          */
         bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
             bytes32(0)
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
@@ -149,7 +149,7 @@ contract TestMethods is BaseMethods {
     function _ozToken_supply() internal { 
         //Pre-conditions
         bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
             bytes32(0)
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
@@ -312,7 +312,7 @@ contract TestMethods is BaseMethods {
 
         //Gets the pre-swap pool values.
         bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
             bytes32(0)
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
@@ -409,7 +409,7 @@ contract TestMethods is BaseMethods {
         _dealUnderlying(Quantity.BIG);
 
         bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee),
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee),
             bytes32(0)
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
@@ -507,7 +507,7 @@ contract TestMethods is BaseMethods {
         _dealUnderlying(Quantity.BIG);
 
         bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), 
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
             bytes32(0)
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();

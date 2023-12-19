@@ -59,11 +59,12 @@ contract DiamondInit {
         s.ethUsdChainlink = oracles_.ethUsdChainlink;
         s.rEthEthChainlink = oracles_.rEthEthChainlink;
 
-        //Diamond infra
+        //Internal infrastructure
         s.ozDiamond = infra_.ozDiamond;
         s.ozBeacon = infra_.beacon;
         s.defaultSlippage = infra_.defaultSlippage;
         s.uniFee = infra_.uniFee;
+        s.protocolFee = infra_.protocolFee;
 
         //ERC20s
         s.WETH = tokens_.weth;

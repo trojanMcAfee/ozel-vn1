@@ -41,6 +41,8 @@ struct AppStorage {
     uint24 uniFee;
 
     mapping(address ozToken => bool exist) ozTokenRegistryMap;
+
+    uint24 protocolFee;
   
 }
 
@@ -94,8 +96,9 @@ struct Infra {
     address ozDiamond;
     address beacon;
     address rocketPoolStorage;
-    uint16 defaultSlippage; //try chaning this to an uin8
+    uint16 defaultSlippage; 
     uint24 uniFee;
+    uint24 protocolFee;
 }
 
 

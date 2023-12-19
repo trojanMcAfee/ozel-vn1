@@ -220,7 +220,7 @@ contract BaseMethods is Setup {
         bytes20 oldSqrtPriceX96 = bytes20(slot0data_);
 
         bytes32 newSlot0Data = bytes32(bytes.concat(oldSqrtPriceX96, oldLast12Bytes));
-        vm.store(IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, fee), bytes32(0), newSlot0Data);
+        vm.store(IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), bytes32(0), newSlot0Data);
     }
 
     function _getSharedCashBalancer() internal view returns(bytes32, bytes32) {
