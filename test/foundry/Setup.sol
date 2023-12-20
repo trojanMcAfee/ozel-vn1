@@ -32,6 +32,9 @@ import {ReqOut, ReqIn} from "./AppStorageTests.sol";
 import {ozCut} from "../../contracts/facets/ozCut.sol";
 import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 
+import {OZL} from "../../contracts/OZL.sol";
+//put here the ProxyAdmin and TransparantProxy - use them below
+
 // import "forge-std/console.sol";
 
 
@@ -108,6 +111,7 @@ contract Setup is Test {
     ozCut internal cutOz;
 
     ozIDiamond internal OZ;
+    OZL internal ozl;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
     uint24 uniPoolFee = 500; //0.05 - 500
@@ -224,6 +228,9 @@ contract Setup is Test {
         oracle = new ozOracle();
         beacon = new ozBeacon(address(tokenOz));
         cutOz = new ozCut();
+
+        //Deploys OZL token contracts
+        ozl = new OZL();
 
         //Create initial FacetCuts
         IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](9);

@@ -45,8 +45,6 @@ contract ozOracle {
             totalAssets += ozIToken(s.ozTokenRegistry[i]).totalAssets();
         }
 
-        // uint total = (totalAssets * 1e12) > subTotal ? subTotal : _applyFee(subTotal, totalAssets);
-
         if ((totalAssets * 1e12) > subTotal) {
             return subTotal;
         } else {
