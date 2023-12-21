@@ -191,6 +191,57 @@
         }
       }
     },
+    "contracts/ProxyAdmin.sol": {
+      "lastModificationDate": 1703199620078,
+      "contentHash": "4d1bbff0611334b325ad798e43fcd83f",
+      "sourceName": "contracts/ProxyAdmin.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol"
+      ],
+      "versionRequirement": "^0.8.0",
+      "artifacts": {
+        "ProxyAdmin": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ProxyAdmin.sol/ProxyAdmin.json"
+        }
+      }
+    },
     "contracts/facets/DiamondCutFacet.sol": {
       "lastModificationDate": 1697894671794,
       "contentHash": "e4ef88a55e3f841c72e68872d39d12a5",
@@ -323,8 +374,8 @@
       }
     },
     "contracts/facets/OZLadmin.sol": {
-      "lastModificationDate": 1703168128779,
-      "contentHash": "e2dfc265272e2f89497c779266833c64",
+      "lastModificationDate": 1703199595527,
+      "contentHash": "2451c331411c13554b6e6a03c857c1cb",
       "sourceName": "contracts/facets/OZLadmin.sol",
       "solcConfig": {
         "settings": {
@@ -357,21 +408,19 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/libraries/LibDiamond.sol",
         "lib/forge-std/src/console.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
-        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
         "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
         "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
-        "node_modules/@openzeppelin/contracts/utils/Context.sol",
         "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
         "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
@@ -2939,59 +2988,6 @@
         }
       }
     },
-    "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol": {
-      "lastModificationDate": 1696361508140,
-      "contentHash": "9891986e27d357222a8ac8c0c13abe31",
-      "sourceName": "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
-        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
-        "node_modules/@openzeppelin/contracts/utils/Address.sol",
-        "node_modules/@openzeppelin/contracts/utils/Context.sol",
-        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol"
-      ],
-      "versionRequirement": "^0.8.0",
-      "artifacts": {
-        "ProxyAdmin": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ProxyAdmin.sol/ProxyAdmin.json"
-        }
-      }
-    },
     "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol": {
       "lastModificationDate": 1696361508618,
       "contentHash": "1286aa8d056c7120d1a2da252e310d2f",
@@ -4451,6 +4447,7 @@
         "contracts/Diamond.sol",
         "contracts/Errors.sol",
         "contracts/OZL.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
@@ -4506,7 +4503,6 @@
         "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
@@ -4588,6 +4584,7 @@
         "contracts/Diamond.sol",
         "contracts/Errors.sol",
         "contracts/OZL.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
@@ -4643,7 +4640,6 @@
         "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
@@ -4727,6 +4723,7 @@
         "contracts/Diamond.sol",
         "contracts/Errors.sol",
         "contracts/OZL.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
@@ -4782,7 +4779,6 @@
         "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
@@ -4866,6 +4862,7 @@
         "contracts/Diamond.sol",
         "contracts/Errors.sol",
         "contracts/OZL.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
@@ -4921,7 +4918,6 @@
         "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
@@ -5024,8 +5020,8 @@
       }
     },
     "test/foundry/OZLtoken.t.sol": {
-      "lastModificationDate": 1703168294800,
-      "contentHash": "3cb6674ee435afafc670605525ccc512",
+      "lastModificationDate": 1703168316507,
+      "contentHash": "9b192756a8fb80b9d74127ae71e20977",
       "sourceName": "test/foundry/OZLtoken.t.sol",
       "solcConfig": {
         "settings": {
@@ -5061,6 +5057,7 @@
         "contracts/Diamond.sol",
         "contracts/Errors.sol",
         "contracts/OZL.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
@@ -5117,7 +5114,6 @@
         "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
@@ -5201,6 +5197,7 @@
         "contracts/Diamond.sol",
         "contracts/Errors.sol",
         "contracts/OZL.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
@@ -5256,7 +5253,6 @@
         "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
@@ -5340,6 +5336,7 @@
         "contracts/Diamond.sol",
         "contracts/Errors.sol",
         "contracts/OZL.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
@@ -5395,7 +5392,6 @@
         "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
@@ -5607,6 +5603,7 @@
         "contracts/Diamond.sol",
         "contracts/Errors.sol",
         "contracts/OZL.sol",
+        "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
@@ -5662,7 +5659,6 @@
         "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
