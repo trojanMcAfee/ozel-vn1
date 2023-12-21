@@ -43,6 +43,8 @@ struct AppStorage {
     mapping(address ozToken => bool exist) ozTokenRegistryMap;
 
     uint24 protocolFee;
+
+    address ozlProxy;
   
 }
 
@@ -99,6 +101,7 @@ struct Infra {
     uint16 defaultSlippage; 
     uint24 uniFee;
     uint24 protocolFee;
+    address ozlProxy;
 }
 
 

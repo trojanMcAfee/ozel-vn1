@@ -33,6 +33,8 @@ import {ozCut} from "../../contracts/facets/ozCut.sol";
 import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 
 import {OZL} from "../../contracts/OZL.sol";
+import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 //put here the ProxyAdmin and TransparantProxy - use them below
 
 // import "forge-std/console.sol";
@@ -111,7 +113,11 @@ contract Setup is Test {
     ozCut internal cutOz;
 
     ozIDiamond internal OZ;
-    OZL internal ozl;
+
+    //OZL token
+    OZL internal ozlLogic;
+    TransparentUpgradeableProxy internal ozlProxy;
+    ProxyAdmin internal ozlOwner;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
     uint24 uniPoolFee = 500; //0.05 - 500
@@ -230,10 +236,24 @@ contract Setup is Test {
         cutOz = new ozCut();
 
         //Deploys OZL token contracts
-        ozl = new OZL();
+        _initOZLtoken();
+
+        // ozlLogic = new OZL(); 
+
+        // vm.prank(owner);
+        // ozlOwner = new ProxyAdmin();
+
+        // bytes memory initData = abi.encodeWithSelector(
+        //     ozlLogic.initialize.selector,
+        //     "Ozel", "OZL"
+        // );
+
+        // ozlProxy = new TransparentUpgradeableProxy(
+        //     address(ozlLogic), address(ozlOwner), initData
+        // );
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](9);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](10);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
         cuts[2] = _createCut(address(mirrorEx), 2);
@@ -243,6 +263,7 @@ contract Setup is Test {
         cuts[6] = _createCut(address(oracle), 6);
         cuts[7] = _createCut(address(beacon), 7);
         cuts[8] = _createCut(address(cutOz), 8);
+        cuts[9] = _createCut(address(ozlOwner), 9);
 
         //Create init vars
         Tokens memory tokens = Tokens({
@@ -270,7 +291,8 @@ contract Setup is Test {
             rocketPoolStorage: rocketPoolStorage,
             defaultSlippage: defaultSlippage,
             uniFee: uniPoolFee, //0.05 - 500,
-            protocolFee: protocolFee
+            protocolFee: protocolFee,
+            ozlProxy: address(ozlProxy)
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -305,7 +327,7 @@ contract Setup is Test {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 7) {
+        } else if (id_ == 7 || id_ == 9) {
             length = 5;
         } else if (id_ == 6) {
             length = 4;
@@ -349,6 +371,8 @@ contract Setup is Test {
         } else if (id_ == 8) {
             selectors[0] = cutOz.changeDefaultSlippage.selector;
             selectors[1] = cutOz.changeUniFee.selector;
+        } else if (id_ == 9) {
+
         }
 
         cut = IDiamondCut.FacetCut({
@@ -356,6 +380,22 @@ contract Setup is Test {
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: selectors
         });
+    }
+
+    function _initOZLtoken() private {
+        ozlLogic = new OZL(); 
+
+        vm.prank(owner);
+        ozlOwner = new ProxyAdmin();
+
+        bytes memory initData = abi.encodeWithSelector(
+            ozlLogic.initialize.selector,
+            "Ozel", "OZL"
+        );
+
+        ozlProxy = new TransparentUpgradeableProxy(
+            address(ozlLogic), address(ozlOwner), initData
+        );
     }
 
     function _setLabels() private {
@@ -395,8 +435,9 @@ contract Setup is Test {
         vm.label(rocketPoolStorage, "rocketPoolStorage");
         vm.label(rEthEthChainlink, 'rEthEthChainlink');
         vm.label(daiAddr, 'DAI');
-        vm.label(uniFactory, 'uniFactory');
+        vm.label(address(uniFactory), 'uniFactory');
+        vm.label(address(ozlLogic), "OZL Logic");
+        vm.label(address(ozlProxy), "OZL Proxy");
+        vm.label(address(ozlOwner), "OZL Owner");
     }
-
-
 }

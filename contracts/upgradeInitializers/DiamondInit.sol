@@ -65,6 +65,7 @@ contract DiamondInit {
         s.defaultSlippage = infra_.defaultSlippage;
         s.uniFee = infra_.uniFee;
         s.protocolFee = infra_.protocolFee;
+        s.ozlProxy = infra_.ozlProxy;
 
         //ERC20s
         s.WETH = tokens_.weth;
