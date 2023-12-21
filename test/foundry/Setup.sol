@@ -34,8 +34,8 @@ import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRo
 
 import {OZL} from "../../contracts/OZL.sol";
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
-//put here the ProxyAdmin and TransparantProxy - use them below
+// import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
+import {OZLadmin} from "../../contracts/facets/OZLadmin.sol";
 
 // import "forge-std/console.sol";
 
@@ -117,7 +117,7 @@ contract Setup is Test {
     //OZL token
     OZL internal ozlLogic;
     TransparentUpgradeableProxy internal ozlProxy;
-    ProxyAdmin internal ozlOwner;
+    OZLadmin internal ozlAdmin;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
     uint24 uniPoolFee = 500; //0.05 - 500
@@ -241,7 +241,7 @@ contract Setup is Test {
         // ozlLogic = new OZL(); 
 
         // vm.prank(owner);
-        // ozlOwner = new ProxyAdmin();
+        // ozlAdmin = new ProxyAdmin();
 
         // bytes memory initData = abi.encodeWithSelector(
         //     ozlLogic.initialize.selector,
@@ -249,7 +249,7 @@ contract Setup is Test {
         // );
 
         // ozlProxy = new TransparentUpgradeableProxy(
-        //     address(ozlLogic), address(ozlOwner), initData
+        //     address(ozlLogic), address(ozlAdmin), initData
         // );
 
         //Create initial FacetCuts
@@ -263,7 +263,7 @@ contract Setup is Test {
         cuts[6] = _createCut(address(oracle), 6);
         cuts[7] = _createCut(address(beacon), 7);
         cuts[8] = _createCut(address(cutOz), 8);
-        cuts[9] = _createCut(address(ozlOwner), 9);
+        cuts[9] = _createCut(address(ozlAdmin), 9);
 
         //Create init vars
         Tokens memory tokens = Tokens({
@@ -327,10 +327,12 @@ contract Setup is Test {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 7 || id_ == 9) {
+        } else if (id_ == 7) {
             length = 5;
         } else if (id_ == 6) {
             length = 4;
+        } else if (id_ == 9) {
+            length = 6;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -372,7 +374,12 @@ contract Setup is Test {
             selectors[0] = cutOz.changeDefaultSlippage.selector;
             selectors[1] = cutOz.changeUniFee.selector;
         } else if (id_ == 9) {
-
+            selectors[0] = ozlAdmin.getOZLlogic.selector;
+            selectors[1] = ozlAdmin.getOZLadmin.selector;
+            selectors[2] = ozlAdmin.changeOZLadmin.selector;
+            selectors[3] = ozlAdmin.changeOZLlogic.selector;
+            selectors[4] = ozlAdmin.changeOZLlogicAndCall.selector;
+            selectors[5] = ozlAdmin.getOZL.selector;
         }
 
         cut = IDiamondCut.FacetCut({
@@ -386,7 +393,7 @@ contract Setup is Test {
         ozlLogic = new OZL(); 
 
         vm.prank(owner);
-        ozlOwner = new ProxyAdmin();
+        ozlAdmin = new OZLadmin();
 
         bytes memory initData = abi.encodeWithSelector(
             ozlLogic.initialize.selector,
@@ -394,7 +401,7 @@ contract Setup is Test {
         );
 
         ozlProxy = new TransparentUpgradeableProxy(
-            address(ozlLogic), address(ozlOwner), initData
+            address(ozlLogic), address(ozlAdmin), initData
         );
     }
 
@@ -438,6 +445,6 @@ contract Setup is Test {
         vm.label(address(uniFactory), 'uniFactory');
         vm.label(address(ozlLogic), "OZL Logic");
         vm.label(address(ozlProxy), "OZL Proxy");
-        vm.label(address(ozlOwner), "OZL Owner");
+        vm.label(address(ozlAdmin), "OZL Owner");
     }
 }
