@@ -17,7 +17,6 @@ contract OZLadmin is ProxyAdmin {
 
 
     function getOZL() external view returns(address) {
-        console.log('s.ozlProxy in admin: ', s.ozlProxy);
         return s.ozlProxy;
     }
 

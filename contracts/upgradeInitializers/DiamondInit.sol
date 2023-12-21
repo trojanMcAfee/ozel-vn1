@@ -66,7 +66,6 @@ contract DiamondInit {
         s.uniFee = infra_.uniFee;
         s.protocolFee = infra_.protocolFee;
         s.ozlProxy = infra_.ozlProxy;
-        console.log('ozl proxy in init: ', s.ozlProxy);
 
         //ERC20s
         s.WETH = tokens_.weth;

@@ -12,12 +12,41 @@ contract OZLtokenTest is TestMethods {
 
 
     function test_token() public {
-        // _minting_approve_smallMint();
-
-        console.log('ozDiamond in test: ', address(OZ));
 
         IOZL ozl = IOZL(OZ.getOZL());
         ozl.getRewards();
+    }
+
+    function applyFee(uint subTotal_) public pure returns(uint) {
+        uint fee = 1_500;
+        return fee.mulDivDown(subTotal_, 10_000);
+    }
+
+
+    function test_fees3() public {
+        _minting_approve_smallMint();
+
+        ozIToken ozERC20 = ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac);
+
+        uint totalAssets = ozERC20.totalAssets();
+        console.log('totalAssets: ', totalAssets);
+
+        uint underValue = OZ.getUnderlyingValue();
+        console.log('underValue: ', underValue);
+        //------
+
+        vm.mockCall(
+            address(ozERC20),
+            abi.encodeWithSignature('totalAssets()'),
+            abi.encode(99 * 1e6)
+        );
+
+        underValue = OZ.getUnderlyingValue();
+        console.log('mocked underValue: ', underValue);
+
+        // uint netFees = OZ.getUnderlyingValue() - (ozERC20.totalAssets() * 1e12);
+        // console.log('netFees: ', netFees);
+
     }
 
 
