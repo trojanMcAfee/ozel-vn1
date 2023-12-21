@@ -22,7 +22,7 @@ contract OZL is ERC20Upgradeable {
     }
 
 
-    function getRewards() public {
+    function getRewards() public view {
         console.log('hellooo');
     }
 

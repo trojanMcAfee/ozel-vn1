@@ -41,4 +41,5 @@ interface ozIDiamond {
 
     function getOzTokenRegistry() external view returns(address[] memory);
     function isInRegistry(address underlying_) external view returns(bool);
+    function getOZL() external view returns(address);
 }

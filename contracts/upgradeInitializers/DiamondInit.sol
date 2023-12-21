@@ -24,7 +24,7 @@ import {
 
 import {IRocketStorage} from "../interfaces/IRocketPool.sol";
 
-// import "forge-std/console.sol";
+import "forge-std/console.sol";
 
 // It is expected that this contract is customized if you want to deploy your diamond
 // with data from a deployment script. Use the init function to initialize state variables
@@ -66,6 +66,7 @@ contract DiamondInit {
         s.uniFee = infra_.uniFee;
         s.protocolFee = infra_.protocolFee;
         s.ozlProxy = infra_.ozlProxy;
+        console.log('ozl proxy in init: ', s.ozlProxy);
 
         //ERC20s
         s.WETH = tokens_.weth;

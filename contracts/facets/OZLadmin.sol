@@ -3,9 +3,11 @@ pragma solidity 0.8.21;
 
 
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
-import {LibDiamond} from "../../libraries/LibDiamond.sol";
+import {LibDiamond} from "../libraries/LibDiamond.sol";
 import {AppStorage} from "../AppStorage.sol";
 import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+
+import "forge-std/console.sol";
 
 
 contract OZLadmin is ProxyAdmin {
@@ -14,6 +16,7 @@ contract OZLadmin is ProxyAdmin {
 
 
     function getOZL() external view returns(address) {
+        console.log('s.ozlProxy in admin: ', s.ozlProxy);
         return s.ozlProxy;
     }
 
