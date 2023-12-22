@@ -56,14 +56,14 @@ contract OZLtokenTest is TestMethods {
     //-------
 
     function test_chargeOZLfee_noFeesToDistribute() public {
+        //Pre-condtion
         _minting_approve_smallMint();
 
+        //Action
         bool wasCharged = OZ.chargeOZLfee();
-        console.log('----');
-        console.log('wasCharged - false: ', wasCharged);
 
-        // assertTrue(!wasCharged);
-
+        //Post-condition
+        assertTrue(!wasCharged);
     }
 
 

@@ -115,28 +115,28 @@ struct LastRewards {
 }
 
 
-// 1st round - 
-// rETH        - 110
-// totalAssets - 100
-// ---
-// currentRewards = totalRewards(110 - 100 = 10) - prevTotalRewards(0) = 10
+1st round - 
+rETH        - 110
+totalAssets - 100
+---
+currentRewards = totalRewards(110 - 100 = 10) - prevTotalRewards(0) = 10
 
-// 2nd round -
-// rETH        - 112
-// totalAssets - 100
-// ----
-// currentRewards = totalRewards(112 - 100 = 12) - prevTotalRewards(10) = 2
+2nd round -
+rETH        - 112
+totalAssets - 100
+----
+currentRewards = totalRewards(112 - 100 = 12) - prevTotalRewards(10) = 2
 
-// 3rd round - 
-// rETH        - 117
-// totalAssets - 100
-// ----
-// currentRewards = totalRewards(117 - 100 = 17) - prevTotalRewards(12) = 5
+3rd round - 
+rETH        - 117
+totalAssets - 100
+----
+currentRewards = totalRewards(117 - 100 = 17) - prevTotalRewards(12) = 5
 
-// 4th roud -
-// rETH        - 116
-// totalAssets - 100
-// ----
-// currentRewards = totalRewards(116 - 100 = 16) - prevTotalRewards(17) = -1
+4th roud -
+rETH        - 116
+totalAssets - 100
+----
+currentRewards = totalRewards(116 - 100 = 16) - prevTotalRewards(17) = -1
 
 

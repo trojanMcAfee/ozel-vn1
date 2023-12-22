@@ -67,17 +67,16 @@ contract ozOracle {
 
         if (block.number <= s.rewards.blockNumber) revert OZError14(block.number);
 
-        uint totalRewards = grossRethValue - totalAssets;
+        int totalRewards = int(grossRethValue) - int(totalAssets * 1e12);
 
-        // console.log('grossRethValue: ', grossRethValue);
-        // console.log('totalAssets: ', totalAssets);
+        if (totalRewards <= 0) return false;
 
-        int currentRewards = int(totalRewards) - int(s.rewards.prevTotalRewards);
+        int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
         if (currentRewards <= 0) return false;
 
         uint ozelFees = uint(s.protocolFee).mulDivDown(uint(currentRewards), 10_000);
-        s.rewards.prevTotalRewards = totalRewards;
+        s.rewards.prevTotalRewards = uint(totalRewards);
 
         _forwardFees(ozelFees);
 
