@@ -65,7 +65,7 @@ contract ozOracle {
 
         //------
 
-        if (block.number <= s.rewards.blockNumber) revert OZError14(block.number);
+        if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
         int totalRewards = int(grossRethValue) - int(totalAssets * 1e12);
 

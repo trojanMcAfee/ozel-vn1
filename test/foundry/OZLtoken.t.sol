@@ -40,9 +40,9 @@ contract OZLtokenTest is TestMethods {
         //------
 
         vm.mockCall(
-            address(ozERC20),
-            abi.encodeWithSignature('totalAssets()'),
-            abi.encode(99 * 1e6)
+            address(OZ),
+            abi.encodeWithSignature('getUnderlyingValue()'),
+            abi.encode(110 * 1e18)
         );
 
         underValue = OZ.getUnderlyingValue();
