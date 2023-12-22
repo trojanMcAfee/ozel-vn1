@@ -4,11 +4,15 @@ pragma solidity 0.8.21;
 
 import {TestMethods} from "./TestMethods.sol";
 import {IOZL} from "../../contracts/interfaces/IOZL.sol";
+import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
+import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 
 
 contract OZLtokenTest is TestMethods {
+
+    using FixedPointMathLib for uint;
 
 
     function test_token() public {
