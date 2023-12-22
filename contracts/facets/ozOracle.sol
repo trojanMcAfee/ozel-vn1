@@ -47,17 +47,19 @@ contract ozOracle {
 
         uint grossRethValue =  ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
 
-        uint totalAssets;
-        for (uint i=0; i < s.ozTokenRegistry.length; i++) {
-            totalAssets += ozIToken(s.ozTokenRegistry[i]).totalAssets();
-        }
+        return grossRethValue;
 
-        if ((totalAssets * 1e12) > grossRethValue) {
-            return grossRethValue;
-        } else {
-            (uint netUnderlyingValue,) = _applyFee(grossRethValue, totalAssets);
-            return netUnderlyingValue;
-        }
+        // uint totalAssets;
+        // for (uint i=0; i < s.ozTokenRegistry.length; i++) {
+        //     totalAssets += ozIToken(s.ozTokenRegistry[i]).totalAssets();
+        // }
+
+        // if ((totalAssets * 1e12) > grossRethValue) {
+        //     return grossRethValue;
+        // } else {
+        //     (uint netUnderlyingValue,) = _applyFee(grossRethValue, totalAssets);
+        //     return netUnderlyingValue;
+        // }
     }
 
     // struct LastRewards {
@@ -67,26 +69,53 @@ contract ozOracle {
     // }
 
 
-    function _applyFee(uint grossRethValue_, uint totalAssets_) private returns(uint, uint) {
+    function chargeOZLfee() external returns(bool) { // function _applyFee(uint grossRethValue_, uint totalAssets_)
         // grossRethValue --- 100% 10_000
         //    x ------- 15% 1_500
         console.log('here');
 
+        uint grossRethValue = getUnderlyingValue();
+
+        uint totalAssets;
+        for (uint i=0; i < s.ozTokenRegistry.length; i++) {
+            totalAssets += ozIToken(s.ozTokenRegistry[i]).totalAssets();
+        }
+
+        //------
+
         if (block.number <= s.rewards.blockNumber) revert OZError14(block.number);
 
-        uint totalRewards = grossRethValue_ - totalAssets_;
+        uint totalRewards = grossRethValue - totalAssets;
         int currentRewards = int(totalRewards) - int(s.rewards.prevTotalRewards);
 
-        if (currentRewards > 0) {
-            uint ozelFees = uint(s.protocolFee).mulDivDown(currentRewards, 10_000);
-            s.rewards.prevTotalRewards = totalRewards;
+        if (currentRewards <=) return false;
 
-            _forwardFees(ozelFees); //forwards fees to OZL - withdraws it from rETH bal
+        uint ozelFees = uint(s.protocolFee).mulDivDown(currentRewards, 10_000);
+        s.rewards.prevTotalRewards = totalRewards;
 
-            emit OZLrewards(block.number, totalRewards, ozelFees, netUnderlyingValue);
-        } else {
-            //No rewards
-        }
+        _forwardFees(ozelFees); //forwards fees to OZL - withdraws it from rETH bal
+        //do this next ^
+
+        emit OZLrewards(block.number, totalRewards, ozelFees, netUnderlyingValue);
+
+        return true
+
+        //------
+
+        // if (currentRewards > 0) {
+        //     uint ozelFees = uint(s.protocolFee).mulDivDown(currentRewards, 10_000);
+        //     s.rewards.prevTotalRewards = totalRewards;
+
+        //     _forwardFees(ozelFees); //forwards fees to OZL - withdraws it from rETH bal
+        //     //do this next ^
+
+        //     emit OZLrewards(block.number, totalRewards, ozelFees, netUnderlyingValue);
+
+        //     return true
+        // } else {
+        //     //No rewards
+        //     return false;
+        // }
 
         //-------
         // s.rewards.endBlock = s.rewards.startBlock; 
