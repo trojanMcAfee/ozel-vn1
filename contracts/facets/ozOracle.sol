@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage} from "../AppStorage.sol";
+import {AppStorage, LastRewards} from "../AppStorage.sol";
 import {IPool} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
@@ -18,6 +18,13 @@ contract ozOracle {
     using FixedPointMathLib for uint;
 
     AppStorage private s;
+
+    event OZLrewards(
+        uint blockNumber, 
+        uint totalRewards, 
+        uint ozelFees, 
+        uint netUnderlyingValue
+    );
 
     //validate with lastTimeUpdated
     function rETH_ETH() public view returns(uint) {
@@ -38,33 +45,49 @@ contract ozOracle {
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate();    
 
-        uint subTotal =  ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
+        uint grossRethValue =  ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
 
         uint totalAssets;
         for (uint i=0; i < s.ozTokenRegistry.length; i++) {
             totalAssets += ozIToken(s.ozTokenRegistry[i]).totalAssets();
         }
 
-        if ((totalAssets * 1e12) > subTotal) {
-            return subTotal;
+        if ((totalAssets * 1e12) > grossRethValue) {
+            return grossRethValue;
         } else {
-            (uint netUnderlyingValue,) = _applyFee(subTotal, totalAssets);
+            (uint netUnderlyingValue,) = _applyFee(grossRethValue, totalAssets);
             return netUnderlyingValue;
         }
     }
 
+    // struct LastRewards {
+    //     uint amountRewards;
+    //     uint startBlock;
+    //     uint endBlock;
+    // }
 
-    function _applyFee(uint subTotal_, uint totalAssets_) private view returns(uint, uint) {
-        // subTotal --- 100% 10_000
+
+    function _applyFee(uint grossRethValue_, uint totalAssets_) private returns(uint, uint) {
+        // grossRethValue --- 100% 10_000
         //    x ------- 15% 1_500
         console.log('here');
 
-        uint totalRewards = subTotal_ - totalAssets_;
+        if (block.number <= s.rewards.startBlock) revert OZError14(block.number);
 
-        uint ozelRewards = uint(s.protocolFee).mulDivDown(totalRewards, 10_000);
-        uint netUnderlyingValue = subTotal_ - ozelRewards;
+        uint totalRewards = grossRethValue_ - totalAssets_;
 
-        return (netUnderlyingValue, ozelRewards);
+        //-------
+        s.rewards.endBlock = s.rewards.startBlock; 
+        s.rewards.amountRewards = totalRewards;
+        s.rewards.startBlock = block.number;
+        //-------
+
+        uint ozelFees = uint(s.protocolFee).mulDivDown(totalRewards, 10_000);
+        uint netUnderlyingValue = grossRethValue_ - ozelFees;
+
+        emit OZLrewards(block.number, totalRewards, ozelFees, netUnderlyingValue);
+
+        return (netUnderlyingValue, ozelFees);
     }
 
 

@@ -45,8 +45,17 @@ struct AppStorage {
     uint24 protocolFee;
 
     address ozlProxy;
+
+    LastRewards rewards;
   
 }
+
+struct LastRewards {
+    uint amountRewards;
+    uint startBlock;
+    uint endBlock;
+}
+
 
 struct AmountsIn {
     uint amountIn;
