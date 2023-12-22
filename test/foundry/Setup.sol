@@ -238,20 +238,6 @@ contract Setup is Test {
         //Deploys OZL token contracts
         _initOZLtoken();
 
-        // ozlLogic = new OZL(); 
-
-        // vm.prank(owner);
-        // ozlAdmin = new ProxyAdmin();
-
-        // bytes memory initData = abi.encodeWithSelector(
-        //     ozlLogic.initialize.selector,
-        //     "Ozel", "OZL"
-        // );
-
-        // ozlProxy = new TransparentUpgradeableProxy(
-        //     address(ozlLogic), address(ozlAdmin), initData
-        // );
-
         //Create initial FacetCuts
         IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](10);
         cuts[0] = _createCut(address(loupe), 0);
@@ -327,10 +313,8 @@ contract Setup is Test {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 7) {
+        } else if (id_ == 7 || id_ == 6) {
             length = 5;
-        } else if (id_ == 6) {
-            length = 4;
         } else if (id_ == 9) {
             length = 6;
         }
@@ -364,6 +348,7 @@ contract Setup is Test {
             selectors[1] = oracle.getUnderlyingValue.selector;
             selectors[2] = oracle.ETH_USD.selector;
             selectors[3] = oracle.rETH_USD.selector;
+            selectors[4] = oracle.chargeOZLfee.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;

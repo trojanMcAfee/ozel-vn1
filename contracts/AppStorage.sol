@@ -109,13 +109,6 @@ struct Infra {
 
 //-----
 
-// struct LastRewards {
-//     uint accumulated;
-//     uint startBlock;
-//     uint endBlock;
-//     uint prevTotalRewards;
-// }
-
 struct LastRewards {
     uint blockNumber;
     uint prevTotalRewards;

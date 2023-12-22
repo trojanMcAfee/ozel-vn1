@@ -38,6 +38,7 @@ interface ozIDiamond {
     function rETH_ETH() external returns(uint256); //if not used, removed
     function ETH_USD() external view returns(uint);
     function rETH_USD() external view returns(uint);
+    function chargeOZLfee() external returns(bool);
 
     function getOzTokenRegistry() external view returns(address[] memory);
     function isInRegistry(address underlying_) external view returns(bool);
