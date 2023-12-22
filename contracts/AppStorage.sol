@@ -50,12 +50,6 @@ struct AppStorage {
   
 }
 
-struct LastRewards {
-    uint amountRewards;
-    uint startBlock;
-    uint endBlock;
-}
-
 
 struct AmountsIn {
     uint amountIn;
@@ -112,6 +106,45 @@ struct Infra {
     uint24 protocolFee;
     address ozlProxy;
 }
+
+//-----
+
+// struct LastRewards {
+//     uint accumulated;
+//     uint startBlock;
+//     uint endBlock;
+//     uint prevTotalRewards;
+// }
+
+struct LastRewards {
+    uint blockNumber;
+    uint prevTotalRewards;
+}
+
+
+1st round - 
+rETH        - 110
+totalAssets - 100
+---
+currentRewards = totalRewards(110 - 100 = 10) - prevTotalRewards(0) = 10
+
+2nd round -
+rETH        - 112
+totalAssets - 100
+----
+currentRewards = totalRewards(112 - 100 = 12) - prevTotalRewards(10) = 2
+
+3rd round - 
+rETH        - 117
+totalAssets - 100
+----
+currentRewards = totalRewards(117 - 100 = 17) - prevTotalRewards(12) = 5
+
+4th roud -
+rETH        - 116
+totalAssets - 100
+----
+currentRewards = totalRewards(116 - 100 = 16) - prevTotalRewards(17) = -1
 
 
 

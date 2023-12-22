@@ -72,22 +72,38 @@ contract ozOracle {
         //    x ------- 15% 1_500
         console.log('here');
 
-        if (block.number <= s.rewards.startBlock) revert OZError14(block.number);
+        if (block.number <= s.rewards.blockNumber) revert OZError14(block.number);
 
         uint totalRewards = grossRethValue_ - totalAssets_;
+        int currentRewards = int(totalRewards) - int(s.rewards.prevTotalRewards);
+
+        if (currentRewards > 0) {
+            uint ozelFees = uint(s.protocolFee).mulDivDown(currentRewards, 10_000);
+            s.rewards.prevTotalRewards = totalRewards;
+
+            _forwardFees(ozelFees); //forwards fees to OZL - withdraws it from rETH bal
+
+            emit OZLrewards(block.number, totalRewards, ozelFees, netUnderlyingValue);
+        } else {
+            //No rewards
+        }
 
         //-------
-        s.rewards.endBlock = s.rewards.startBlock; 
-        s.rewards.amountRewards = totalRewards;
-        s.rewards.startBlock = block.number;
-        //-------
+        // s.rewards.endBlock = s.rewards.startBlock; 
 
-        uint ozelFees = uint(s.protocolFee).mulDivDown(totalRewards, 10_000);
-        uint netUnderlyingValue = grossRethValue_ - ozelFees;
+        // uint currentCycleRewards = totalRewards;
+        // s.rewards.accumulated += totalRewards;
 
-        emit OZLrewards(block.number, totalRewards, ozelFees, netUnderlyingValue);
+        // s.rewards.startBlock = block.number;
+        // s.rewards.prevTotalRewards = totalRewards;
+        // //-------
 
-        return (netUnderlyingValue, ozelFees);
+        // uint ozelFees = uint(s.protocolFee).mulDivDown(totalRewards, 10_000);
+        // uint netUnderlyingValue = grossRethValue_ - ozelFees;
+
+        // emit OZLrewards(block.number, totalRewards, ozelFees, netUnderlyingValue);
+
+        // return (netUnderlyingValue, ozelFees);
     }
 
 
