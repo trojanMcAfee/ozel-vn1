@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {IDiamondCut} from "./IDiamondCut.sol";
-import {AmountsIn, AmountsOut, Asset} from "../AppStorage.sol";
+import {AmountsIn, AmountsOut, Asset, LastRewards} from "../AppStorage.sol";
 
 
 interface ozIDiamond {
@@ -43,4 +43,7 @@ interface ozIDiamond {
     function getOzTokenRegistry() external view returns(address[] memory);
     function isInRegistry(address underlying_) external view returns(bool);
     function getOZL() external view returns(address);
+    function getLastRewards() external view returns(LastRewards memory);
+
+    function getProtocolFee() external view returns(uint);
 }

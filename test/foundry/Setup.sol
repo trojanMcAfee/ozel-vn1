@@ -306,16 +306,16 @@ contract Setup is Test {
     ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
         if (id_ == 0) {
-            length = 7;
+            length = 8;
         } else if (id_ == 1 || id_ == 5 || id_ == 8) {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 7 || id_ == 6) {
+        } else if (id_ == 7) {
             length = 5;
-        } else if (id_ == 9) {
+        } else if (id_ == 9 || id_ == 6) {
             length = 6;
         }
 
@@ -329,6 +329,7 @@ contract Setup is Test {
             selectors[4] = loupe.supportsInterface.selector;
             selectors[5] = loupe.getDefaultSlippage.selector;
             selectors[6] = loupe.totalUnderlying.selector;
+            selectors[7] = loupe.getProtocolFee.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -349,6 +350,7 @@ contract Setup is Test {
             selectors[2] = oracle.ETH_USD.selector;
             selectors[3] = oracle.rETH_USD.selector;
             selectors[4] = oracle.chargeOZLfee.selector;
+            selectors[5] = oracle.getLastRewards.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;

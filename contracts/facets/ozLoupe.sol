@@ -22,4 +22,9 @@ contract ozLoupe is DiamondLoupeFacet {
         if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
     }
 
+
+    function getProtocolFee() external view returns(uint) {
+        return uint(s.protocolFee);
+    }
+
 }

@@ -112,46 +112,43 @@ contract OZLtokenTest is TestMethods {
         console.log('totalAssets: ', ozERC20.totalAssets());
 
         //Mock underlyingValue
-        uint mockedValue = 154 * 1e18;
-        vm.mockCall( //try expectCall()
-            address(OZ),
-            abi.encodeWithSignature('getUnderlyingValue()'),
-            abi.encode(mockedValue)
-        );
-        console.log('OZ.getUnderlyingValue() in test: ', OZ.getUnderlyingValue());
-        assertTrue(OZ.getUnderlyingValue() == mockedValue);
+        // uint mockedValue = 154 * 1e18;
+        // vm.mockCall( 
+        //     address(OZ),
+        //     abi.encodeWithSignature('getUnderlyingValue()'),
+        //     abi.encode(mockedValue)
+        // );
+        // assertTrue(OZ.getUnderlyingValue() == mockedValue);
 
         //--------
-        uint rate = IRocketTokenRETH(rEthAddr).getExchangeRate();    
-        console.log('rEth rate - pre: ', rate); 
+        uint rETHrate = IRocketTokenRETH(rEthAddr).getExchangeRate();
+        console.log('rETHrate - premock: ', rETHrate);
 
         uint rETHrateMock = 1097152127893442928;
-        vm.mockCall( //try expectCall()
+        vm.mockCall( 
             address(rEthAddr),
             abi.encodeWithSignature('getExchangeRate()'),
             abi.encode(rETHrateMock)
-        );
-
-        rate = IRocketTokenRETH(rEthAddr).getExchangeRate();    
-        console.log('rEth rate - post: ', rate); 
-
-        // vm.mockCall(
-        //     address(rEthAddr),
-        //     abi.encodeWithSignature('getExchangeRate()'),
-        //     abi.encode()
-        // );
+        );    
 
         //--------
 
         //Charges fee
         wasCharged = OZ.chargeOZLfee();
-        console.log('wasCharged: ', wasCharged);
         assertTrue(wasCharged);
 
         bool pass = IOZL(address(ozlProxy)).getBal(); //<---- here ****
         assertTrue(pass);
 
-        // wasCharged = OZ.chargeOZLfee();
+        console.log('--');
+     
+        uint pastCalculatedRewardsUSD = OZ.getLastRewards().prevTotalRewards;
+        // uint protocolFee = OZ.getProtocolFee();
+        uint ozelFeesUSD = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsUSD, 10_000);
+        console.log('ozelFeesUSD ***: ', ozelFeesUSD);
+
+
+
 
         //--------
 
