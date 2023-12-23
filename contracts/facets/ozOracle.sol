@@ -11,6 +11,8 @@ import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import "../Errors.sol";
 
+import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
+
 import "forge-std/console.sol";
 
 
@@ -42,9 +44,13 @@ contract ozOracle {
         return (rETH_ETH() * ETH_USD()) / 1 ether ^ 2;
     }
 
+
     function getUnderlyingValue() public view returns(uint) {
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
-        uint rate = IRocketTokenRETH(s.rETH).getExchangeRate();    
+        console.log('amountReth in ozOracle: ', amountReth);
+
+        uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
+        console.log('ETH_USD: ', ETH_USD());   
 
         uint grossRethValue =  ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
 
@@ -56,7 +62,7 @@ contract ozOracle {
 
     function chargeOZLfee() external returns(bool) { 
      
-        uint grossRethValue = getUnderlyingValue();
+        uint grossRethValue = getUnderlyingValue(); 
 
         uint totalAssets;
         for (uint i=0; i < s.ozTokenRegistry.length; i++) {
@@ -69,10 +75,15 @@ contract ozOracle {
 
         int totalRewards = int(grossRethValue) - int(totalAssets * 1e12);
 
+        console.log(1);
+        console.log('grossRethValue: ', grossRethValue);
+
         if (totalRewards <= 0) return false;
+        console.log(2);  
 
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
+        console.log(3);
         if (currentRewards <= 0) return false;
 
         uint ozelFees = uint(s.protocolFee).mulDivDown(uint(currentRewards), 10_000);
@@ -100,6 +111,7 @@ contract ozOracle {
 
         uint amountRethForward = feesPercentage.mulDivDown(amountReth, 10_000);
         IERC20Permit(s.rETH).transfer(s.ozlProxy, amountRethForward);
+        console.log('bal OZL rETH - _forwardFees: ', IERC20Permit(s.rETH).balanceOf(s.ozlProxy));
 
     }
 

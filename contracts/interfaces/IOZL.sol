@@ -61,4 +61,5 @@ interface IOZL {
 
     //-----
     function getRewards() external;
+    function getBal() external view returns(bool);
 }

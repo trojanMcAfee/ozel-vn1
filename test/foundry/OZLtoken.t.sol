@@ -9,6 +9,7 @@ import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {Type} from "./AppStorageTests.sol";
+import {IRocketTokenRETH} from "../../contracts/interfaces/IRocketPool.sol";
 
 import "forge-std/console.sol";
 
@@ -36,7 +37,7 @@ contract OZLtokenTest is TestMethods {
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(!wasCharged);
 
-        ozIToken ozERC20 = ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac);
+        // ozIToken ozERC20 = ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac);
 
         // uint totalAssets = ozERC20.totalAssets();
         // console.log('totalAssets: ', totalAssets);
@@ -90,7 +91,7 @@ contract OZLtokenTest is TestMethods {
 
          //ALICE
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(
+        (ozIToken ozERC20,) = _createAndMintOzTokens(
             testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
         );
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
@@ -102,7 +103,7 @@ contract OZLtokenTest is TestMethods {
 
         //BOB
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
-        (, uint sharesBob) = _createAndMintOzTokens(
+        _createAndMintOzTokens(
             address(ozERC20), amountIn, bob, BOB_PK, false, true, Type.IN
         );
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
@@ -110,27 +111,55 @@ contract OZLtokenTest is TestMethods {
         console.log('under: ', OZ.getUnderlyingValue());
         console.log('totalAssets: ', ozERC20.totalAssets());
 
+        //Mock underlyingValue
+        uint mockedValue = 154 * 1e18;
+        vm.mockCall( //try expectCall()
+            address(OZ),
+            abi.encodeWithSignature('getUnderlyingValue()'),
+            abi.encode(mockedValue)
+        );
+        console.log('OZ.getUnderlyingValue() in test: ', OZ.getUnderlyingValue());
+        assertTrue(OZ.getUnderlyingValue() == mockedValue);
+
+        //--------
+        uint rate = IRocketTokenRETH(rEthAddr).getExchangeRate();    
+        console.log('rEth rate - pre: ', rate); 
+
+        uint rETHrateMock = 1097152127893442928;
+        vm.mockCall( //try expectCall()
+            address(rEthAddr),
+            abi.encodeWithSignature('getExchangeRate()'),
+            abi.encode(rETHrateMock)
+        );
+
+        rate = IRocketTokenRETH(rEthAddr).getExchangeRate();    
+        console.log('rEth rate - post: ', rate); 
+
         // vm.mockCall(
-        //     address(OZ),
-        //     abi.encodeWithSignature('getUnderlyingValue()'),
-        //     abi.encode(110 * 1e18)
+        //     address(rEthAddr),
+        //     abi.encodeWithSignature('getExchangeRate()'),
+        //     abi.encode()
         // );
-        // assertTrue(OZ.getUnderlyingValue(), 110 * 1e18);
+
+        //--------
+
+        //Charges fee
+        wasCharged = OZ.chargeOZLfee();
+        console.log('wasCharged: ', wasCharged);
+        assertTrue(wasCharged);
+
+        bool pass = IOZL(address(ozlProxy)).getBal(); //<---- here ****
+        assertTrue(pass);
 
         // wasCharged = OZ.chargeOZLfee();
 
+        //--------
 
-
-
-
-
-
-
-        amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
-        (, uint sharesCharlie) = _createAndMintOzTokens(
-            address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
-        );
-        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        // amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
+        // _createAndMintOzTokens(
+        //     address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
+        // );
+        // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
     }  
 
 
