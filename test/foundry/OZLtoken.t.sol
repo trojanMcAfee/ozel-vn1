@@ -10,6 +10,7 @@ import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {Type} from "./AppStorageTests.sol";
 import {IRocketTokenRETH} from "../../contracts/interfaces/IRocketPool.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 import "forge-std/console.sol";
 
@@ -111,15 +112,6 @@ contract OZLtokenTest is TestMethods {
         console.log('under: ', OZ.getUnderlyingValue());
         console.log('totalAssets: ', ozERC20.totalAssets());
 
-        //Mock underlyingValue
-        // uint mockedValue = 154 * 1e18;
-        // vm.mockCall( 
-        //     address(OZ),
-        //     abi.encodeWithSignature('getUnderlyingValue()'),
-        //     abi.encode(mockedValue)
-        // );
-        // assertTrue(OZ.getUnderlyingValue() == mockedValue);
-
         //--------
         uint rETHrate = IRocketTokenRETH(rEthAddr).getExchangeRate();
         console.log('rETHrate - premock: ', rETHrate);
@@ -130,6 +122,22 @@ contract OZLtokenTest is TestMethods {
             abi.encodeWithSignature('getExchangeRate()'),
             abi.encode(rETHrateMock)
         );    
+
+        int ETHRateMock = 169283007425;
+        vm.mockCall( 
+            address(ethUsdChainlink),
+            abi.encodeWithSignature('latestRoundData()'),
+            abi.encode(uint80(0), ETHRateMock, uint(0), uint(0), uint80(0))
+        ); 
+
+        int rETHETHmock = 1096480787660134800;
+        vm.mockCall( 
+            address(rEthEthChainlink),
+            abi.encodeWithSignature('latestRoundData()'),
+            abi.encode(uint80(0), rETHETHmock, uint(0), uint(0), uint80(0))
+        ); 
+
+
 
         //--------
 
@@ -143,10 +151,17 @@ contract OZLtokenTest is TestMethods {
         console.log('--');
      
         uint pastCalculatedRewardsUSD = OZ.getLastRewards().prevTotalRewards;
-        // uint protocolFee = OZ.getProtocolFee();
+        console.log('totalRewards in test: ', pastCalculatedRewardsUSD);
         uint ozelFeesUSD = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsUSD, 10_000);
         console.log('ozelFeesUSD ***: ', ozelFeesUSD);
 
+        uint ozlFeesInReth = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
+        uint ozlFeesUSDCalculated = (ozlFeesInReth * OZ.rETH_USD()) / 1 ether;
+        console.log('ozlFeesUSDCalculated: ', ozlFeesUSDCalculated);
+
+        uint feeDifference = ozelFeesUSD - ozlFeesUSDCalculated;
+        uint percentageDiff = feeDifference.mulDivDown(10_000, ozelFeesUSD);
+        console.log('percentageDiff: ', percentageDiff);
 
 
 
@@ -158,6 +173,7 @@ contract OZLtokenTest is TestMethods {
         // );
         // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
     }  
+
 
 
 }

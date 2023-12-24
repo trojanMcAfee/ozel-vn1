@@ -90,6 +90,7 @@ contract ozOracle {
         console.log('rETH_ETH: ', rETH_ETH());
         console.log('ETH_USD: ', ETH_USD());
         console.log('-- increase --');
+        console.log('totalRewards in oracle: ', uint(totalRewards));
 
         if (totalRewards <= 0) return false;
 
