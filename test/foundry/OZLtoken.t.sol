@@ -20,46 +20,17 @@ contract OZLtokenTest is TestMethods {
     using FixedPointMathLib for uint;
 
 
-    function test_token() public {
-
-        IOZL ozl = IOZL(OZ.getOZL());
-        ozl.getRewards();
+   function _mock_rETH_ETH() internal {
+        int rETHETHmock = 1096480787660134800;
+        vm.mockCall( 
+            address(rEthEthChainlink),
+            abi.encodeWithSignature('latestRoundData()'),
+            abi.encode(uint80(0), rETHETHmock, uint(0), uint(0), uint80(0))
+        ); 
     }
 
-    function applyFee(uint subTotal_) public pure returns(uint) {
-        uint fee = 1_500;
-        return fee.mulDivDown(subTotal_, 10_000);
-    }
 
-
-    function test_fees3() public {
-        _minting_approve_smallMint();
-
-        bool wasCharged = OZ.chargeOZLfee();
-        assertTrue(!wasCharged);
-
-        // ozIToken ozERC20 = ozIToken(0xffD4505B3452Dc22f8473616d50503bA9E1710Ac);
-
-        // uint totalAssets = ozERC20.totalAssets();
-        // console.log('totalAssets: ', totalAssets);
-
-        // uint underValue = OZ.getUnderlyingValue();
-        // console.log('underValue: ', underValue);
-        //------
-
-        vm.mockCall(
-            address(OZ),
-            abi.encodeWithSignature('getUnderlyingValue()'),
-            abi.encode(110 * 1e18)
-        );
-
-        uint underValue = OZ.getUnderlyingValue();
-        console.log('mocked underValue: ', underValue);
-
-
-
-    }
-
+    
     //-------
 
     function test_chargeOZLfee_noFeesToDistribute() public {
@@ -76,7 +47,7 @@ contract OZLtokenTest is TestMethods {
 
     function test_chargeOZLfee_distributeFees() public { 
         /**
-         * Pre-conditions + Actions (creating of ozTokens)
+         * Pre-conditions
          */
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
@@ -111,15 +82,7 @@ contract OZLtokenTest is TestMethods {
 
 
         //--------
-
-        int rETHETHmock = 1096480787660134800;
-        vm.mockCall( 
-            address(rEthEthChainlink),
-            abi.encodeWithSignature('latestRoundData()'),
-            abi.encode(uint80(0), rETHETHmock, uint(0), uint(0), uint80(0))
-        ); 
-
-
+        _mock_rETH_ETH();
 
         //--------
 
@@ -127,10 +90,11 @@ contract OZLtokenTest is TestMethods {
         wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
-        uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); //<---- here ****
+        uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); 
 
-        console.log('--');
-     
+        /**
+         * Post-conditions
+         */
         uint pastCalculatedRewardsETH = OZ.getLastRewards().prevTotalRewards;
         uint ozelFeesETH = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsETH, 10_000);
 
@@ -145,8 +109,8 @@ contract OZLtokenTest is TestMethods {
         //     address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
         // );
         // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+
+        vm.clearMockedCalls();
     }  
-
-
 
 }

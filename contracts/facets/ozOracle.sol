@@ -24,10 +24,11 @@ contract ozOracle {
 
     event OZLrewards(
         uint blockNumber, 
+        uint ozelFeesInRETH, 
         uint totalRewards, 
-        uint ozelFees, 
-        uint netUnderlyingValue
+        uint currentRewards
     );
+
 
     //validate with lastTimeUpdated
     function rETH_ETH() public view returns(uint) {
@@ -80,19 +81,22 @@ contract ozOracle {
 
         if (currentRewards <= 0) return false;
 
-        _getFeeAndForward(totalRewards, currentRewards);      
+        uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
 
-        // emit OZLrewards(block.number, totalRewards, ozelFees, netUnderlyingValue);
+        emit OZLrewards(block.number, ozelFeesInRETH, totalRewards, currentRewards);
 
         return true;
     }
 
-    function _getFeeAndForward(int totalRewards_, int currentRewards_) private {
+
+    function _getFeeAndForward(int totalRewards_, int currentRewards_) private returns(uint) {
         uint ozelFeesInETH = uint(s.protocolFee).mulDivDown(uint(currentRewards_), 10_000);
         s.rewards.prevTotalRewards = uint(totalRewards_);
 
         uint ozelFeesInRETH = (ozelFeesInETH * 1 ether) / rETH_ETH();
         IERC20Permit(s.rETH).transfer(s.ozlProxy, ozelFeesInRETH);
+        
+        return ozelFeesInRETH;
     }
 
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
