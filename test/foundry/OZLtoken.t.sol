@@ -109,26 +109,8 @@ contract OZLtokenTest is TestMethods {
         );
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
-        console.log('under: ', OZ.getUnderlyingValue());
-        console.log('totalAssets: ', ozERC20.totalAssets());
 
         //--------
-        uint rETHrate = IRocketTokenRETH(rEthAddr).getExchangeRate();
-        console.log('rETHrate - premock: ', rETHrate);
-
-        // uint rETHrateMock = 1097152127893442928;
-        // vm.mockCall( 
-        //     address(rEthAddr),
-        //     abi.encodeWithSignature('getExchangeRate()'),
-        //     abi.encode(rETHrateMock)
-        // );    
-
-        // int ETHRateMock = 169283007425;
-        // vm.mockCall( 
-        //     address(ethUsdChainlink),
-        //     abi.encodeWithSignature('latestRoundData()'),
-        //     abi.encode(uint80(0), ETHRateMock, uint(0), uint(0), uint80(0))
-        // ); 
 
         int rETHETHmock = 1096480787660134800;
         vm.mockCall( 
@@ -146,14 +128,11 @@ contract OZLtokenTest is TestMethods {
         assertTrue(wasCharged);
 
         uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); //<---- here ****
-        // assertTrue(pass);
 
         console.log('--');
      
         uint pastCalculatedRewardsETH = OZ.getLastRewards().prevTotalRewards;
-        console.log('totalRewards in test: ', pastCalculatedRewardsETH);
         uint ozelFeesETH = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsETH, 10_000);
-        console.log('ozelFeesETH ***: ', ozelFeesETH);
 
         uint ozelFeesRETH = ozelFeesETH.mulDivDown(1 ether, OZ.rETH_ETH());
         assertTrue(ozlRethBalance == ozelFeesRETH);

@@ -47,15 +47,9 @@ contract ozOracle {
 
     function getUnderlyingValue() public view returns(uint) {
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
-        console.log('amountReth in ozOracle: ', amountReth);
-
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
-        // console.log('ETH_USD: ', ETH_USD());   
 
-        uint grossRethValue =  ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether; 
-
-        return grossRethValue;
-       
+        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 
 
