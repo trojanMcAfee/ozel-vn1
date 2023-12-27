@@ -155,23 +155,8 @@ contract OZLtokenTest is TestMethods {
         uint ozelFeesETH = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsETH, 10_000);
         console.log('ozelFeesETH ***: ', ozelFeesETH);
 
-        // pastCalculatedRewardsETH --- 100%
-        //      x -------------- fee
-
-        // 1 rETH --- 1.08 ETH - rETH_ETH()
-        //    x ------ ozelFeesETH
-
         uint ozelFeesRETH = ozelFeesETH.mulDivDown(1 ether, OZ.rETH_ETH());
         assertTrue(ozlRethBalance == ozelFeesRETH);
-
-        // uint ozlFeesInReth = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
-        // uint ozlFeesUSDCalculated = (ozlFeesInReth * OZ.rETH_USD()) / 1 ether;
-        // console.log('ozlFeesUSDCalculated: ', ozlFeesUSDCalculated);
-
-        // uint feeDifference = ozelFeesUSD - ozlFeesUSDCalculated;
-        // uint percentageDiff = feeDifference.mulDivDown(10_000, ozelFeesUSD);
-        // console.log('percentageDiff: ', percentageDiff);
-
 
 
         //--------
