@@ -25,8 +25,8 @@ contract ozOracle {
     event OZLrewards(
         uint blockNumber, 
         uint ozelFeesInRETH, 
-        uint totalRewards, 
-        uint currentRewards
+        int totalRewards, 
+        int currentRewards
     );
 
 

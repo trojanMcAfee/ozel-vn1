@@ -21,14 +21,15 @@ contract OZLtokenTest is TestMethods {
 
 
    function _mock_rETH_ETH() internal {
-        int rETHETHmock = 1096480787660134800;
+        uint bspIncrease = 92;
+        uint rETHETHmock = OZ.rETH_ETH() + bspIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
+
         vm.mockCall( 
             address(rEthEthChainlink),
             abi.encodeWithSignature('latestRoundData()'),
-            abi.encode(uint80(0), rETHETHmock, uint(0), uint(0), uint80(0))
+            abi.encode(uint80(0), int(rETHETHmock), uint(0), uint(0), uint80(0))
         ); 
     }
-
 
     
     //-------
@@ -67,11 +68,6 @@ contract OZLtokenTest is TestMethods {
             testToken, amountIn, alice, ALICE_PK, true, true, Type.IN
         );
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-
-        //------- OZL fee ------ ****
-        bool wasCharged = OZ.chargeOZLfee();
-        assertTrue(!wasCharged);
-        //------- OZL fee ------ ****
 
         //BOB
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();

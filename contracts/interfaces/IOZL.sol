@@ -62,4 +62,6 @@ interface IOZL {
     //-----
     function getRewards() external;
     function getBal() external view returns(uint);
+
+    function getExchangeRate() external view returns(uint);
 }
