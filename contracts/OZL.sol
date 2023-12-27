@@ -27,13 +27,13 @@ contract OZL is ERC20Upgradeable {
         console.log('hellooo');
     }
 
-    function getBal() public view returns(bool) {
+    function getBal() public view returns(uint) {
         address rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
 
         uint bal = IERC20Permit(rEthAddr).balanceOf(address(this));
         console.log('rETH bal (from fees) ***: ', bal);
 
-        return true;
+        return bal;
     }
 
 

@@ -145,15 +145,24 @@ contract OZLtokenTest is TestMethods {
         wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
-        bool pass = IOZL(address(ozlProxy)).getBal(); //<---- here ****
-        assertTrue(pass);
+        uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); //<---- here ****
+        // assertTrue(pass);
 
         console.log('--');
      
-        // uint pastCalculatedRewardsUSD = OZ.getLastRewards().prevTotalRewards;
-        // console.log('totalRewards in test: ', pastCalculatedRewardsUSD);
-        // uint ozelFeesUSD = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsUSD, 10_000);
-        // console.log('ozelFeesUSD ***: ', ozelFeesUSD);
+        uint pastCalculatedRewardsETH = OZ.getLastRewards().prevTotalRewards;
+        console.log('totalRewards in test: ', pastCalculatedRewardsETH);
+        uint ozelFeesETH = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsETH, 10_000);
+        console.log('ozelFeesETH ***: ', ozelFeesETH);
+
+        // pastCalculatedRewardsETH --- 100%
+        //      x -------------- fee
+
+        // 1 rETH --- 1.08 ETH - rETH_ETH()
+        //    x ------ ozelFeesETH
+
+        uint ozelFeesRETH = ozelFeesETH.mulDivDown(1 ether, OZ.rETH_ETH());
+        assertTrue(ozlRethBalance == ozelFeesRETH);
 
         // uint ozlFeesInReth = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
         // uint ozlFeesUSDCalculated = (ozlFeesInReth * OZ.rETH_USD()) / 1 ether;
