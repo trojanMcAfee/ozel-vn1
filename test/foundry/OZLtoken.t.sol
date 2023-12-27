@@ -116,19 +116,19 @@ contract OZLtokenTest is TestMethods {
         uint rETHrate = IRocketTokenRETH(rEthAddr).getExchangeRate();
         console.log('rETHrate - premock: ', rETHrate);
 
-        uint rETHrateMock = 1097152127893442928;
-        vm.mockCall( 
-            address(rEthAddr),
-            abi.encodeWithSignature('getExchangeRate()'),
-            abi.encode(rETHrateMock)
-        );    
+        // uint rETHrateMock = 1097152127893442928;
+        // vm.mockCall( 
+        //     address(rEthAddr),
+        //     abi.encodeWithSignature('getExchangeRate()'),
+        //     abi.encode(rETHrateMock)
+        // );    
 
-        int ETHRateMock = 169283007425;
-        vm.mockCall( 
-            address(ethUsdChainlink),
-            abi.encodeWithSignature('latestRoundData()'),
-            abi.encode(uint80(0), ETHRateMock, uint(0), uint(0), uint80(0))
-        ); 
+        // int ETHRateMock = 169283007425;
+        // vm.mockCall( 
+        //     address(ethUsdChainlink),
+        //     abi.encodeWithSignature('latestRoundData()'),
+        //     abi.encode(uint80(0), ETHRateMock, uint(0), uint(0), uint80(0))
+        // ); 
 
         int rETHETHmock = 1096480787660134800;
         vm.mockCall( 
@@ -150,18 +150,18 @@ contract OZLtokenTest is TestMethods {
 
         console.log('--');
      
-        uint pastCalculatedRewardsUSD = OZ.getLastRewards().prevTotalRewards;
-        console.log('totalRewards in test: ', pastCalculatedRewardsUSD);
-        uint ozelFeesUSD = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsUSD, 10_000);
-        console.log('ozelFeesUSD ***: ', ozelFeesUSD);
+        // uint pastCalculatedRewardsUSD = OZ.getLastRewards().prevTotalRewards;
+        // console.log('totalRewards in test: ', pastCalculatedRewardsUSD);
+        // uint ozelFeesUSD = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsUSD, 10_000);
+        // console.log('ozelFeesUSD ***: ', ozelFeesUSD);
 
-        uint ozlFeesInReth = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
-        uint ozlFeesUSDCalculated = (ozlFeesInReth * OZ.rETH_USD()) / 1 ether;
-        console.log('ozlFeesUSDCalculated: ', ozlFeesUSDCalculated);
+        // uint ozlFeesInReth = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
+        // uint ozlFeesUSDCalculated = (ozlFeesInReth * OZ.rETH_USD()) / 1 ether;
+        // console.log('ozlFeesUSDCalculated: ', ozlFeesUSDCalculated);
 
-        uint feeDifference = ozelFeesUSD - ozlFeesUSDCalculated;
-        uint percentageDiff = feeDifference.mulDivDown(10_000, ozelFeesUSD);
-        console.log('percentageDiff: ', percentageDiff);
+        // uint feeDifference = ozelFeesUSD - ozlFeesUSDCalculated;
+        // uint percentageDiff = feeDifference.mulDivDown(10_000, ozelFeesUSD);
+        // console.log('percentageDiff: ', percentageDiff);
 
 
 
