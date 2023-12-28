@@ -28,9 +28,6 @@ contract OZL is ERC20Upgradeable {
     }
 
 
-    function getRewards() public view {
-        console.log('hellooo');
-    }
 
     function getBal() public view returns(uint) {
         uint bal = IERC20Permit(rEthAddr).balanceOf(address(this));
@@ -47,7 +44,6 @@ contract OZL is ERC20Upgradeable {
         if (ozlSupply == 0) return 1;
 
         return 1.mulDivDown(totalFees, ozlSupply);
-
     }
 
 

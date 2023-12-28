@@ -60,7 +60,6 @@ interface IOZL {
     function nonces(address owner) external view returns (uint256);
 
     //-----
-    function getRewards() external;
     function getBal() external view returns(uint);
 
     function getExchangeRate() external view returns(uint);
