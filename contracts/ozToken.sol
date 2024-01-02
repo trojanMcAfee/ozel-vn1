@@ -196,7 +196,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function mint(bytes memory data_) external updateRewards(msg.sender) returns(uint) { 
+    function mint(bytes memory data_) external updateReward(msg.sender) returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
         uint assets = amounts.amountIn.format(FORMAT_DECIMALS); 
@@ -233,7 +233,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function redeem(bytes memory data_) external updateRewards(msg.sender) returns(uint) {
+    function redeem(bytes memory data_) external updateReward(msg.sender) returns(uint) {
         (
             uint ozAmountIn,,,,
         ) = abi.decode(data_, (uint, uint, uint, uint, address));

@@ -82,7 +82,7 @@ contract OZLrewards is Modifiers {
         if (s.ozTokensArr[0].totalSupply == 0) return s.rewardPerTokenStored;
 
         return s.rewardPerTokenStored + (s.rewardRate * 
-            (lastTimeRewardApplicable() - updateAt) * 1e18
+            (lastTimeRewardApplicable() - s.updateAt) * 1e18
         ) / s.ozTokensArr[0].totalSupply();
     }
 
@@ -93,9 +93,9 @@ contract OZLrewards is Modifiers {
          + s.rewards[user_];
     }
     
-    function getReward() external updateReward(msg.sender) {
+    function getReward() external updateReward(msg.sender) { //add a reentrancy check
         uint reward = s.rewards[msg.sender];
-        if (rewards > 0) {
+        if (reward > 0) {
             s.rewards[msg.sender] = 0;
             s.ozlProxy.transfer(msg.sender, reward);
         }
@@ -103,7 +103,8 @@ contract OZLrewards is Modifiers {
 
 
     //------
-    function _min(uint x_, uint y_) private pure returns(uint) {
+    //put this impl inside lastTimeRewardApplicable() ****
+    function _min(uint x, uint y) private pure returns(uint) {
         return x <= y ? x : y;
     }
 

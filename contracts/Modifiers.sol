@@ -9,13 +9,13 @@ contract Modifiers is IOZLrewards {
 
     AppStorage.ozlRewards internal s;
 
-    modifier updateRewards(address user_) {
+    modifier updateReward(address user_) {
         s.rewardPerTokenStored = rewardPerToken();
         s.updatedAt = lastTimeRewardApplicable();
 
         if (user_ != address(0)) {
             s.rewards[user_] = earned(user_);
-            s.userRewardPerTokenPaid[user_] = rewardPerTokenStored;
+            s.userRewardPerTokenPaid[user_] = s.rewardPerTokenStored;
         }
 
         _;
