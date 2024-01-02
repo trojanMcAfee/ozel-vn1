@@ -3,68 +3,109 @@ pragma solidity 0.8.21;
 
 
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
+import {LibDiamond} from "./libraries/LibDiamond.sol";
+import {Modifiers} from "./Modifiers.sol";
 
 
-contract OZLrewards {
+contract OZLrewards is Modifiers {
 
-    IERC20Permit public immutable ozStable; //stakingToken
-    IERC20Permit public immutable OZL; //rewardsToken
+    // IERC20Permit public immutable ozToken; //stakingToken
+    // IERC20Permit public immutable OZL; //rewardsToken
 
-    address public owner;
+    // address public owner;
 
-    uint public duration;
-    uint public finishAt; 
-    uint public updatedAt; 
-    uint public rewardRate;
-    uint public rewardPerTokenStored;
+    //--------------
+    // uint public s.duration;
+    // uint public s.finishAt; 
+    // uint public s.updatedAt; 
+    // uint public s.rewardRate;
+    // uint public rewardPerTokenStored;
 
-    mapping(
-        address user => uint rewardPerTokenStoredPerUser
-    ) public userRewardPerTokenPaid;
-    mapping(address user => uint rewardsEarned) public rewards;
+    // mapping(
+    //     address user => uint rewardPerTokenStoredPerUser
+    // ) public userRewardPerTokenPaid;
+    // mapping(address user => uint rewardsEarned) public rewards;
+    //-----------
 
-    uint public totalSupply = ozStable.totalSupply();
+    // uint public totalSupply = ozToken.totalSupply();
     // mapping(address=>uint) balanceOf; --> amount of staked token by user
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "not owner" );
-        _;
+    // modifier onlyOwner() {
+    //     require(msg.sender == owner, "not owner" );
+    //     _;
+    // }
+
+
+    // constructor(address rewardsToken_) {
+    //     // owner = msg.sender;
+    //     // ozToken = IERC20Permit(stakingToken_);
+    //     OZL = IERC20Permit(rewardsToken_);
+    // }
+
+    //Sets the lenght of the reward campaign
+    function setRewardsDuration(uint duration_) external {
+        LibDiamond.enforceIsContractOwner();
+        require(s.finishAt < block.timestamp, 'rewards duration not finished');
+        s.duration = duration_;
     }
 
+    //Calculates the reward rate
+    function notifyRewardAmount(uint amount_) external updateReward(address(0)) { //4:55
+        LibDiamond.enforceIsContractOwner();
 
-    constructor(address stakingToken_, address rewardsToken_) {
-        owner = msg.sender;
-        ozStable = IERC20Permit(stakingToken_);
-        OZL = IERC20Permit(rewardsToken_);
-    }
-
-
-    function setRewardsDuratino(uint duration_) external onlyOwner {
-        require(finishAt < block.timestamp, 'rewards duration not finished');
-        duration = duration_;
-    }
-
-    function notifyRewardAmount(uint amount_) external onlyOwner { //4:55
-        if (block.timestamp > finishAt) {
-            rewardRate = amount_ / duration;            
+        if (block.timestamp > s.finishAt) {
+            s.rewardRate = amount_ / s.duration;            
         } else {
-            uint remainingRewards = rewardRate * (finishAt - block.timestamp);
-            rewardRate = (remainingRewards + amount_) / duration;
+            uint remainingRewards = s.rewardRate * (s.finishAt - block.timestamp);
+            s.rewardRate = (remainingRewards + amount_) / s.duration;
         }
 
-        require(rewardRate > 0, "reward rate = 0");
+        require(s.rewardRate > 0, "reward rate = 0");
         require(
-            rewardRate * duration <= OZL.balanceOf(address(this)),
+            s.rewardRate * s.duration <= s.ozlProxy.balanceOf(address(this)),
             'reward amount > balance'
         );
 
-        finishAt = block.timestamp + duration;
-        updatedAt = block.timestamp;
+        s.finishAt = block.timestamp + s.duration;
+        s.updatedAt = block.timestamp;
     }
+
     // function stake(uint amount_) external {}
     // function withdraw(uint amount_) external {}
-    function earned(address user_) external view returns(uint) {}
-    function getReward() external {}
+
+    function lastTimeRewardApplicable() public view returns(uint) {
+        return _min(block.timestamp, s.finishAt);
+    }
+
+    //Computes the amount of reward per ozToken created
+    function rewardPerToken() public view returns(uint) {
+        if (s.ozTokensArr[0].totalSupply == 0) return s.rewardPerTokenStored;
+
+        return s.rewardPerTokenStored + (s.rewardRate * 
+            (lastTimeRewardApplicable() - updateAt) * 1e18
+        ) / s.ozTokensArr[0].totalSupply();
+    }
+
+    //Computes the rewards earned by an user
+    function earned(address user_) public view returns(uint) {
+        return (s.ozTokensArr[0].balanceOf(user_) * 
+            (rewardPerToken() - s.userRewardPerTokenPaid[user_])) / 1e18
+         + s.rewards[user_];
+    }
+    
+    function getReward() external updateReward(msg.sender) {
+        uint reward = s.rewards[msg.sender];
+        if (rewards > 0) {
+            s.rewards[msg.sender] = 0;
+            s.ozlProxy.transfer(msg.sender, reward);
+        }
+    }
+
+
+    //------
+    function _min(uint x_, uint y_) private pure returns(uint) {
+        return x <= y ? x : y;
+    }
 
 
 }

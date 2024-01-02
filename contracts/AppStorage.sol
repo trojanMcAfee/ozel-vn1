@@ -40,13 +40,14 @@ struct AppStorage {
 
     uint24 uniFee;
 
-    mapping(address ozToken => bool exist) ozTokenRegistryMap;
+    mapping(address ozToken => bool exist) ozTokenRegistryMap; //remove if not used
 
     uint24 protocolFee;
 
-    address ozlProxy;
+    address ozlProxy; //change this to OZL everywhere
 
     LastRewards rewards;
+    OZLrewards ozlRewards;
   
 }
 
@@ -109,9 +110,24 @@ struct Infra {
 
 //-----
 
-struct LastRewards {
+struct LastRewards { //change this struct's name to reflect more what it does
     uint lastBlock;
     uint prevTotalRewards;
+}
+
+struct OZLrewards { 
+    // uint rewardPerTokenStored;
+    // uint updatedAt;
+    //-----
+    uint duration;
+    uint finishAt; 
+    uint updatedAt; 
+    uint rewardRate;
+    uint rewardPerTokenStored;
+    mapping(
+        address user => uint rewardPerTokenStoredPerUser
+    ) userRewardPerTokenPaid;
+    mapping(address user => uint rewardsEarned) rewards;
 }
 
 

@@ -22,6 +22,7 @@ import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/
 import {AmountsIn} from "./AppStorage.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {Helpers, TotalType} from "./libraries/Helpers.sol";
+import {Modifiers} from "./Modifiers.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
@@ -36,7 +37,7 @@ import "forge-std/console.sol";
  * _convertToShares is rounded up, against ERC4626 which says to round down.
  * doesn't have a deposit() function
  */
-contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
+contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
@@ -195,7 +196,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
 
-    function mint(bytes memory data_) external returns(uint) { 
+    function mint(bytes memory data_) external updateRewards(msg.sender) returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
         uint assets = amounts.amountIn.format(FORMAT_DECIMALS); 
@@ -232,7 +233,7 @@ contract ozToken is IERC20MetadataUpgradeable, IERC20PermitUpgradeable, EIP712Up
     }
 
 
-    function redeem(bytes memory data_) external returns(uint) {
+    function redeem(bytes memory data_) external updateRewards(msg.sender) returns(uint) {
         (
             uint ozAmountIn,,,,
         ) = abi.decode(data_, (uint, uint, uint, uint, address));

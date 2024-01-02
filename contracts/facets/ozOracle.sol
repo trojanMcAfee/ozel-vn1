@@ -22,7 +22,7 @@ contract ozOracle {
 
     AppStorage private s;
 
-    event OZLrewards(
+    event OzRewards(
         uint blockNumber, 
         uint ozelFeesInRETH, 
         int totalRewards, 
@@ -83,7 +83,7 @@ contract ozOracle {
 
         uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
 
-        emit OZLrewards(block.number, ozelFeesInRETH, totalRewards, currentRewards);
+        emit OzRewards(block.number, ozelFeesInRETH, totalRewards, currentRewards);
 
         return true;
     }
