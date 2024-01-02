@@ -83,7 +83,7 @@ contract OZLtokenTest is TestMethods {
         //--------
 
         //Charges fee
-        wasCharged = OZ.chargeOZLfee();
+        bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
         uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); 
