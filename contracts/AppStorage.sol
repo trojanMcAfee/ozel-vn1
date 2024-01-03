@@ -47,7 +47,7 @@ struct AppStorage {
     address ozlProxy; //change this to OZL everywhere
 
     LastRewards rewards;
-    OZLrewards ozlRewards;
+    OZLrewards r;
   
 }
 

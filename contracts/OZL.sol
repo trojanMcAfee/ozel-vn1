@@ -8,7 +8,7 @@ import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 
-
+//Add Permit to this contract
 contract OZL is ERC20Upgradeable {
 
     using FixedPointMathLib for uint;

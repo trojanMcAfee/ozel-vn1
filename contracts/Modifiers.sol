@@ -7,15 +7,15 @@ import {AppStorage} from "./AppStorage.sol";
 
 contract Modifiers is IOZLrewards {
 
-    AppStorage.ozlRewards internal s;
+    AppStorage internal s;
 
     modifier updateReward(address user_) {
-        s.rewardPerTokenStored = rewardPerToken();
-        s.updatedAt = lastTimeRewardApplicable();
+        s.r.rewardPerTokenStored = rewardPerToken();
+        s.r.updatedAt = lastTimeRewardApplicable();
 
         if (user_ != address(0)) {
-            s.rewards[user_] = earned(user_);
-            s.userRewardPerTokenPaid[user_] = s.rewardPerTokenStored;
+            s.r.rewards[user_] = earned(user_);
+            s.r.userRewardPerTokenPaid[user_] = s.r.rewardPerTokenStored;
         }
 
         _;
