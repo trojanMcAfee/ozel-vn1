@@ -6,7 +6,6 @@ import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {StorageSlot} from "@openzeppelin/contracts/utils/StorageSlot.sol";
-import {IOZL} from "./interfaces/IOZL.sol";
 
 import "forge-std/console.sol";
 
@@ -31,26 +30,8 @@ contract OZL is ERC20Upgradeable {
         __ERC20_init(name_, symbol_);
         StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value = ozDiamond_;
 
-        console.log('sender in OZL: ', msg.sender);
-        console.log('this in OZL: ', address(this));
-        console.log('ozDiamond in OZL: ', ozDiamond_);
-
-        _mint(address(this), 100_000_000 * 1e18); //only token minting event
-
-        // IOZL(address(this)).approve(msg.sender, type(uint).max);
-
-        _transfer(address(this), ozDiamond_, 30_000_000 * 1e18); //<--- problem here ***
-        
-        // (bool success, bytes memory data) = address(this).delegatecall(
-        //     abi.encodeWithSignature(
-        //         'transfer(address,uint256)',
-        //         ozDiamond_, 30_000_000 * 1e18
-        //     )
-        // );
-        // require(success, 'ff');
-        // console.logBytes(data);
-
-
+        _mint(address(this), 100_000_000 * 1e18); 
+        _transfer(address(this), ozDiamond_, 30_000_000 * 1e18);
     }
 
 

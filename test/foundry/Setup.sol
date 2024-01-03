@@ -397,19 +397,8 @@ contract Setup is Test {
 
     function _initOZLtokenPt1() private {
         ozlLogic = new OZL(); 
-        console.log('ozlLogic in setup: ', address(ozlLogic));
-
         vm.prank(owner);
         ozlAdmin = new OZLadmin();
-
-        // bytes memory initData = abi.encodeWithSelector(
-        //     ozlLogic.initialize.selector,
-        //     "Ozel", "OZL", address(OZ)
-        // );
-
-        // ozlProxy = new TransparentUpgradeableProxy(
-        //     address(ozlLogic), address(ozlAdmin), initData
-        // );
     }
 
     function _initOZLtokenPt2() private {
@@ -421,7 +410,6 @@ contract Setup is Test {
         ozlProxy = new TransparentUpgradeableProxy(
             address(ozlLogic), address(ozlAdmin), initData
         );
-        console.log('ozlProxy in setup: ', address(ozlProxy));
     }
 
     function _setLabels() private {
