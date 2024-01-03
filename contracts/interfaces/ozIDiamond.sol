@@ -53,4 +53,5 @@ interface ozIDiamond {
     function rewardPerToken() external view returns(uint);
     function earned(address user_) external view returns(uint);
     function getReward() external;
+    function getRewardRate() external view returns(uint);
 }

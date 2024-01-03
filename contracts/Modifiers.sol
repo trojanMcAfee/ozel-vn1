@@ -5,6 +5,8 @@ pragma solidity 0.8.21;
 import {IOZLrewards} from "./interfaces/IOZLrewards.sol";
 import {AppStorage} from "./AppStorage.sol";
 
+import "forge-std/console.sol";
+
 contract Modifiers is IOZLrewards {
 
     AppStorage internal s;

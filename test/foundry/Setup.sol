@@ -132,6 +132,7 @@ contract Setup is Test {
     uint internal secondaryBlockNumber;
 
     uint campaignDuration = 126100000; //4 years
+    uint communityAmount = 30_000_000 * 1e18;
 
    
 
@@ -304,6 +305,7 @@ contract Setup is Test {
 
         //Initialze OZL distribution campaign 
         // OZ.setRewardsDuration(campaignDuration);
+        // OZ.notifyRewardAmount(communityAmount);
 
         //Sets labels
         _setLabels(); 
@@ -327,8 +329,10 @@ contract Setup is Test {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
-        } else if (id_ == 9 || id_ == 6 || id_ == 10) {
-            length = 6;
+        } else if (id_ == 9 || id_ == 6) {
+            length = 6; 
+        } else if (id_ == 10) {
+            length = 7;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -386,6 +390,7 @@ contract Setup is Test {
             selectors[3] = rewardsContract.rewardPerToken.selector;
             selectors[4] = rewardsContract.earned.selector;
             selectors[5] = rewardsContract.getReward.selector;
+            selectors[6] = rewardsContract.getRewardRate.selector;
         }
 
         cut = IDiamondCut.FacetCut({

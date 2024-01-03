@@ -5,6 +5,9 @@ pragma solidity 0.8.21;
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 import {LibDiamond} from "./libraries/LibDiamond.sol";
 import {Modifiers} from "./Modifiers.sol";
+import {IOZL} from "./interfaces/IOZL.sol";
+
+import "forge-std/console.sol";
 
 
 contract OZLrewards is Modifiers {
@@ -54,20 +57,32 @@ contract OZLrewards is Modifiers {
         LibDiamond.enforceIsContractOwner();
 
         if (block.timestamp > s.r.finishAt) {
-            s.r.rewardRate = amount_ / s.r.duration;            
+            console.log(1);
+            s.r.rewardRate = amount_ / s.r.duration;    
+            console.log('amount: ', amount_);
+            console.log('duration: ', s.r.duration);
+            console.log(2);
         } else {
+            console.log(3);
             uint remainingRewards = s.r.rewardRate * (s.r.finishAt - block.timestamp);
+            console.log(4);
             s.r.rewardRate = (remainingRewards + amount_) / s.r.duration;
+            console.log(5);
         }
 
         require(s.r.rewardRate > 0, "reward rate = 0");
+        console.log('address(this) - should be OZ: ', address(this));
+        console.log('ozlProxy: ', s.ozlProxy);
+        console.log('ozlProxy bal: ', IOZL(s.ozlProxy).balanceOf(address(this)));
         require(
             s.r.rewardRate * s.r.duration <= IERC20Permit(s.ozlProxy).balanceOf(address(this)),
             'reward amount > balance'
         );
 
         s.r.finishAt = block.timestamp + s.r.duration;
+        console.log(7);
         s.r.updatedAt = block.timestamp;
+        console.log(8);
     }
 
     // function stake(uint amount_) external {}
@@ -79,7 +94,7 @@ contract OZLrewards is Modifiers {
 
     //Computes the amount of reward per ozToken created
     function rewardPerToken() public view override returns(uint) {
-        uint totalSupply = IERC20Permit(s.ozTokensArr[0]).totalSupply();
+        uint totalSupply = IERC20Permit(s.ozTokenRegistry[0]).totalSupply();
 
         if (totalSupply == 0) return s.r.rewardPerTokenStored;
 
@@ -90,7 +105,7 @@ contract OZLrewards is Modifiers {
 
     //Computes the rewards earned by an user
     function earned(address user_) public view override returns(uint) {
-        return (IERC20Permit(s.ozTokensArr[0]).balanceOf(user_) * 
+        return (IERC20Permit(s.ozTokenRegistry[0]).balanceOf(user_) * 
             (rewardPerToken() - s.r.userRewardPerTokenPaid[user_])) / 1e18
          + s.r.rewards[user_];
     }
@@ -101,6 +116,10 @@ contract OZLrewards is Modifiers {
             s.r.rewards[msg.sender] = 0;
             IERC20Permit(s.ozlProxy).transfer(msg.sender, reward);
         }
+    }
+
+    function getRewardRate() external view override returns(uint) {
+        return s.r.rewardRate;
     }
 
 

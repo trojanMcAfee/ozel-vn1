@@ -28,7 +28,7 @@ struct AppStorage {
     address rEthEthChainlink;
 
     mapping(address underlying => address token) ozTokens;
-    address[] ozTokensArr;
+    address[] ozTokensArr; //remove - not used
     uint rewardMultiplier; //remove if not used
 
     address ozBeacon;
@@ -40,7 +40,7 @@ struct AppStorage {
 
     uint24 uniFee;
 
-    mapping(address ozToken => bool exist) ozTokenRegistryMap; //remove if not used
+    mapping(address ozToken => bool exist) ozTokenRegistryMap; //used
 
     uint24 protocolFee;
 

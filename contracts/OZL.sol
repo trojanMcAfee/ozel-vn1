@@ -30,7 +30,7 @@ contract OZL is ERC20Upgradeable {
         __ERC20_init(name_, symbol_);
         StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value = ozDiamond_;
 
-        _mint(address(this), 100_000_000 * 1e18); 
+        _mint(address(this), 100_000_000 * 1e18); //change this nums to vars
         _transfer(address(this), ozDiamond_, 30_000_000 * 1e18);
     }
 
