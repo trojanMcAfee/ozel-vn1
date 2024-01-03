@@ -240,7 +240,7 @@ contract Setup is Test {
         rewardsContract = new OZLrewards();
 
         //Deploys OZL token contracts
-        _initOZLtoken();
+        _initOZLtokenPt1();
 
         //Create initial FacetCuts
         IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](11);
@@ -299,6 +299,8 @@ contract Setup is Test {
         //Initialize diamond
         vm.prank(owner);
         OZ.diamondCut(cuts, address(initDiamond), initData);
+
+        _initOZLtokenPt2();
 
         //Initialze OZL distribution campaign 
         // OZ.setRewardsDuration(campaignDuration);
@@ -393,14 +395,25 @@ contract Setup is Test {
         });
     }
 
-    function _initOZLtoken() private {
+    function _initOZLtokenPt1() private {
         ozlLogic = new OZL(); 
 
         vm.prank(owner);
         ozlAdmin = new OZLadmin();
 
-        bytes memory initData = abi.encodeWithSelector(
-            ozlLogic.initialize.selector,
+        // bytes memory initData = abi.encodeWithSelector(
+        //     ozlLogic.initialize.selector,
+        //     "Ozel", "OZL", address(OZ)
+        // );
+
+        // ozlProxy = new TransparentUpgradeableProxy(
+        //     address(ozlLogic), address(ozlAdmin), initData
+        // );
+    }
+
+    function _initOZLtokenPt2() private {
+        bytes memory initData = abi.encodeWithSignature(
+            'initialize(string,string,address)',
             "Ozel", "OZL", address(OZ)
         );
 
