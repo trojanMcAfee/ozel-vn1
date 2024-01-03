@@ -54,4 +54,6 @@ interface ozIDiamond {
     function earned(address user_) external view returns(uint);
     function getReward() external;
     function getRewardRate() external view returns(uint);
+
+    function storeOZL(address ozlProxy_) external;
 }

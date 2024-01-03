@@ -23,5 +23,10 @@ contract ozCut is DiamondCutFacet {
         s.uniFee = newBps_;
     }
 
+    function storeOZL(address ozlProxy_) external { //make this func a one time thing
+        LibDiamond.enforceIsContractOwner();
+        s.ozlProxy = ozlProxy_;
+    }
+
     //function changeProtocolfee() <----
 }

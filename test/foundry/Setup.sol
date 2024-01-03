@@ -283,8 +283,7 @@ contract Setup is Test {
             rocketPoolStorage: rocketPoolStorage,
             defaultSlippage: defaultSlippage,
             uniFee: uniPoolFee, //0.05 - 500,
-            protocolFee: protocolFee,
-            ozlProxy: address(ozlProxy)
+            protocolFee: protocolFee
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -321,11 +320,11 @@ contract Setup is Test {
         uint length;
         if (id_ == 0) {
             length = 8;
-        } else if (id_ == 1 || id_ == 5 || id_ == 8) {
+        } else if (id_ == 1 || id_ == 5) {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
-        } else if (id_ == 3) {
+        } else if (id_ == 3 || id_ == 8) {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
@@ -376,6 +375,7 @@ contract Setup is Test {
         } else if (id_ == 8) {
             selectors[0] = cutOz.changeDefaultSlippage.selector;
             selectors[1] = cutOz.changeUniFee.selector;
+            selectors[2] = cutOz.storeOZL.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;
@@ -415,6 +415,8 @@ contract Setup is Test {
         ozlProxy = new TransparentUpgradeableProxy(
             address(ozlLogic), address(ozlAdmin), initData
         );
+
+        OZ.storeOZL(address(ozlProxy));
     }
 
     function _setLabels() private {

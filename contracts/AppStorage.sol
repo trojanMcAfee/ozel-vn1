@@ -105,7 +105,6 @@ struct Infra {
     uint16 defaultSlippage; 
     uint24 uniFee;
     uint24 protocolFee;
-    address ozlProxy;
 }
 
 //-----
