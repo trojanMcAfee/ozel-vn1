@@ -18,8 +18,17 @@ contract OZLrewardsTest is TestMethods {
         //     testToken_, "Ozel-ERC20", "ozERC20"
         // ));
 
-        uint bal = IOZL(address(ozlProxy)).balanceOf(address(OZ));
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        console.log('---');
+        uint x = OZL.balanceOf(address(ozlProxy));
+        console.log('OZL own bal - pre: ', x);
+
+        uint bal = OZL.balanceOf(address(OZ));
         console.log('oz bal: ', bal);
+
+        x = OZL.balanceOf(address(ozlProxy));
+        console.log('OZL own bal - post: ', x);
 
     }
 

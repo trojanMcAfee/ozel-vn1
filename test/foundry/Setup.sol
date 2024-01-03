@@ -297,7 +297,7 @@ contract Setup is Test {
         OZ = ozIDiamond(address(ozDiamond));
 
         //Initialize diamond
-        vm.prank(owner);
+        vm.startPrank(owner);
         OZ.diamondCut(cuts, address(initDiamond), initData);
 
         _initOZLtokenPt2();
@@ -397,6 +397,7 @@ contract Setup is Test {
 
     function _initOZLtokenPt1() private {
         ozlLogic = new OZL(); 
+        console.log('ozlLogic in setup: ', address(ozlLogic));
 
         vm.prank(owner);
         ozlAdmin = new OZLadmin();
@@ -420,6 +421,7 @@ contract Setup is Test {
         ozlProxy = new TransparentUpgradeableProxy(
             address(ozlLogic), address(ozlAdmin), initData
         );
+        console.log('ozlProxy in setup: ', address(ozlProxy));
     }
 
     function _setLabels() private {
@@ -460,9 +462,9 @@ contract Setup is Test {
         vm.label(rEthEthChainlink, 'rEthEthChainlink');
         vm.label(daiAddr, 'DAI');
         vm.label(address(uniFactory), 'uniFactory');
-        vm.label(address(ozlLogic), "OZL Logic");
-        vm.label(address(ozlProxy), "OZL Proxy");
-        vm.label(address(ozlAdmin), "OZL Owner");
-        vm.label(address(rewardsContract), "OZL Rewards");
+        vm.label(address(ozlLogic), "OZL_Logic");
+        vm.label(address(ozlProxy), "OZL_Proxy");
+        vm.label(address(ozlAdmin), "OZL_Owner");
+        vm.label(address(rewardsContract), "OZL_Rewards");
     }
 }
