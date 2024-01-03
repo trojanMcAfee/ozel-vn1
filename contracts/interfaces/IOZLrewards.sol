@@ -2,7 +2,7 @@
 pragma solidity 0.8.21;
 
 
-
+//needs to be an abstract contracts, instead of interface, so function sigs can be shared
 abstract contract IOZLrewards {
     function setRewardsDuration(uint duration_) external virtual {}
     function notifyRewardAmount(uint amount_) external virtual {}

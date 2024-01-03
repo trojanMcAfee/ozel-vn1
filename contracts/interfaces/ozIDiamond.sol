@@ -46,4 +46,11 @@ interface ozIDiamond {
     function getLastRewards() external view returns(LastRewards memory);
 
     function getProtocolFee() external view returns(uint);
+
+    function setRewardsDuration(uint duration_) external;
+    function notifyRewardAmount(uint amount_) external;
+    function lastTimeRewardApplicable() external view returns(uint);
+    function rewardPerToken() external view returns(uint);
+    function earned(address user_) external view returns(uint);
+    function getReward() external;
 }

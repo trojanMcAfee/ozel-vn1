@@ -34,8 +34,8 @@ import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRo
 
 import {OZL} from "../../contracts/OZL.sol";
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-// import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import {OZLadmin} from "../../contracts/facets/OZLadmin.sol";
+import {OZLrewards} from "../../contracts/OZLrewards.sol";
 
 // import "forge-std/console.sol";
 
@@ -102,6 +102,7 @@ contract Setup is Test {
     Diamond internal ozDiamond;
     ozBeacon internal beacon;
     ozToken internal tokenOz;
+    OZLrewards internal rewardsContract;
 
     //Ozel custom facets
     ozTokenFactory internal factory; 
@@ -129,6 +130,8 @@ contract Setup is Test {
 
     uint internal mainBlockNumber;
     uint internal secondaryBlockNumber;
+
+    uint campaignDuration = 126100000; //4 years
 
    
 
@@ -234,12 +237,13 @@ contract Setup is Test {
         oracle = new ozOracle();
         beacon = new ozBeacon(address(tokenOz));
         cutOz = new ozCut();
+        rewardsContract = new OZLrewards();
 
         //Deploys OZL token contracts
         _initOZLtoken();
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](10);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](11);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
         cuts[2] = _createCut(address(mirrorEx), 2);
@@ -250,6 +254,7 @@ contract Setup is Test {
         cuts[7] = _createCut(address(beacon), 7);
         cuts[8] = _createCut(address(cutOz), 8);
         cuts[9] = _createCut(address(ozlAdmin), 9);
+        cuts[10] = _createCut(address(rewardsContract), 10);
 
         //Create init vars
         Tokens memory tokens = Tokens({
@@ -295,8 +300,13 @@ contract Setup is Test {
         vm.prank(owner);
         OZ.diamondCut(cuts, address(initDiamond), initData);
 
+        //Initialze OZL distribution campaign 
+        // OZ.setRewardsDuration(campaignDuration);
+
         //Sets labels
         _setLabels(); 
+
+        vm.stopPrank();
     }
 
 
@@ -315,7 +325,7 @@ contract Setup is Test {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
-        } else if (id_ == 9 || id_ == 6) {
+        } else if (id_ == 9 || id_ == 6 || id_ == 10) {
             length = 6;
         }
 
@@ -367,6 +377,13 @@ contract Setup is Test {
             selectors[3] = ozlAdmin.changeOZLlogic.selector;
             selectors[4] = ozlAdmin.changeOZLlogicAndCall.selector;
             selectors[5] = ozlAdmin.getOZL.selector;
+        } else if (id_ == 10) {
+            selectors[0] = rewardsContract.setRewardsDuration.selector;
+            selectors[1] = rewardsContract.notifyRewardAmount.selector;
+            selectors[2] = rewardsContract.lastTimeRewardApplicable.selector;
+            selectors[3] = rewardsContract.rewardPerToken.selector;
+            selectors[4] = rewardsContract.earned.selector;
+            selectors[5] = rewardsContract.getReward.selector;
         }
 
         cut = IDiamondCut.FacetCut({
@@ -384,7 +401,7 @@ contract Setup is Test {
 
         bytes memory initData = abi.encodeWithSelector(
             ozlLogic.initialize.selector,
-            "Ozel", "OZL"
+            "Ozel", "OZL", address(OZ)
         );
 
         ozlProxy = new TransparentUpgradeableProxy(
@@ -433,5 +450,6 @@ contract Setup is Test {
         vm.label(address(ozlLogic), "OZL Logic");
         vm.label(address(ozlProxy), "OZL Proxy");
         vm.label(address(ozlAdmin), "OZL Owner");
+        vm.label(address(rewardsContract), "OZL Rewards");
     }
 }
