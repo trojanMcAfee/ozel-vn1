@@ -7,6 +7,7 @@ import {LibDiamond} from "./libraries/LibDiamond.sol";
 import {Helpers} from "./libraries/Helpers.sol";
 import {Modifiers} from "./Modifiers.sol";
 import {IOZL} from "./interfaces/IOZL.sol";
+import "./Errors.sol";
 
 import "forge-std/console.sol";
 
@@ -16,7 +17,7 @@ contract OZLrewards is Modifiers {
     //Sets the lenght of the reward campaign
     function setRewardsDuration(uint duration_) external override {
         LibDiamond.enforceIsContractOwner();
-        require(s.r.finishAt < block.timestamp, 'rewards duration not finished');
+        if (s.r.finishAt >= block.timestamp) revert OZError15();
         s.r.duration = duration_;
     }
 
@@ -31,11 +32,10 @@ contract OZLrewards is Modifiers {
             s.r.rewardRate = (remainingRewards + amount_) / s.r.duration;
         }
 
-        require(s.r.rewardRate > 0, "reward rate = 0");
-        require(
-            s.r.rewardRate * s.r.duration <= IERC20Permit(s.ozlProxy).balanceOf(address(this)),
-            'reward amount > balance'
-        );
+        if (s.r.rewardRate <= 0) revert OZError16();
+        if (
+            s.r.rewardRate * s.r.duration > IERC20Permit(s.ozlProxy).balanceOf(address(this))
+        ) revert OZError17();
 
         s.r.finishAt = block.timestamp + s.r.duration;
         s.r.updatedAt = block.timestamp;

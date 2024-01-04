@@ -41,19 +41,8 @@ error OZError07(address from, uint fromShares, uint shares); //_transfer - insuf
 error OZError08(uint deadline, uint blockTimestamp); //permit - ERC2612ExpiredDeadline
 error OZError09(address owner, address spender); //permit - ERC2612InvalidSignature
 
+//--- OZLrewards errors
+error OZError15(); //setRewardsDuration - rewards duration not finished
+error OZError16(); //notifyRewardAmount - reward rate = 0
+error OZError17(); //notifyRewardAmount - reward amount > balance
 
-
-// 1st round - blockNum -> 1
-// 1 > 0
-// end -> 0
-// start -> 1
-
-// 2nd round - blockNum -> 2
-// 2 > 1
-// end -> 1
-// start -> 2
-
-// 3rd round - blockNumb -> 3
-// 3 > 2
-// end -> 2
-// start -> 3
