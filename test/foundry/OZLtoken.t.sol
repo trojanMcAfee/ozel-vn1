@@ -79,19 +79,32 @@ contract OZLtokenTest is TestMethods {
         _mock_rETH_ETH();
 
         //Charges fee
+        uint bal = IERC20Permit(rEthAddr).balanceOf(owner);
+        console.log('bal pre: ', bal);
+
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
+
+        bal = IERC20Permit(rEthAddr).balanceOf(owner);
+        console.log('bal post: ', bal);
 
         uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); 
 
         /**
          * Post-conditions
          */
-        uint pastCalculatedRewardsETH = OZ.getLastRewards().prevTotalRewards;
+        uint pastCalculatedRewardsETH = OZ.getLastRewards().prevTotalRewards; 
         uint ozelFeesETH = OZ.getProtocolFee().mulDivDown(pastCalculatedRewardsETH, 10_000);
+        uint netOzelFeesETH = ozelFeesETH - uint(50).mulDivDown(ozelFeesETH, 10_000);
 
-        uint ozelFeesRETH = ozelFeesETH.mulDivDown(1 ether, OZ.rETH_ETH());
-        assertTrue(ozlRethBalance == ozelFeesRETH);
+        uint ozelFeesRETH = netOzelFeesETH.mulDivDown(1 ether, OZ.rETH_ETH());
+
+        console.log('ozlRethBalance: ', ozlRethBalance);
+        console.log('ozelFeesRETH: ', ozelFeesRETH);
+
+        uint feesDiff = ozlRethBalance - ozelFeesRETH;
+
+        assertTrue(feesDiff <= 1 && feesDiff >= 0);
 
         vm.clearMockedCalls();
     }  

@@ -9,9 +9,10 @@ import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
+import {LibDiamond} from "../../contracts/libraries/LibDiamond.sol";
 import "../Errors.sol";
 
-import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 
 import "forge-std/console.sol";
 
@@ -93,10 +94,13 @@ contract ozOracle {
         uint ozelFeesInETH = uint(s.protocolFee).mulDivDown(uint(currentRewards_), 10_000);
         s.rewards.prevTotalRewards = uint(totalRewards_);
 
-        uint ozelFeesInRETH = (ozelFeesInETH * 1 ether) / rETH_ETH();
-        IERC20Permit(s.rETH).transfer(s.ozlProxy, ozelFeesInRETH);
+        uint grossOzelFeesInRETH = (ozelFeesInETH * 1 ether) / rETH_ETH();
+
+        uint netOzelFees = _getAdminFee(grossOzelFeesInRETH);
+
+        IERC20Permit(s.rETH).transfer(s.ozlProxy, netOzelFees);
         
-        return ozelFeesInRETH;
+        return netOzelFees;
     }
 
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
@@ -106,7 +110,13 @@ contract ozOracle {
         return (assetsInETH, valueInETH);
     }
 
+    function _getAdminFee(uint grossFees_) private returns(uint) {
+        address owner = LibDiamond.diamondStorage().contractOwner;
+        uint adminFee = uint(50).mulDivDown(grossFees_, 10_000);
+        IERC20Permit(s.rETH).transfer(owner, adminFee);
 
+        return grossFees_ - adminFee;
+    }
 
 }
 
