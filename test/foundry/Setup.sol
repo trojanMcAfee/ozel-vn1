@@ -405,8 +405,8 @@ contract Setup is Test {
 
     function _initOZLtokenPt2() private {
         bytes memory initData = abi.encodeWithSignature(
-            'initialize(string,string,address)',
-            "Ozel", "OZL", address(OZ)
+            'initialize(string,string,address,uint256,uint256)',
+            "Ozel", "OZL", address(OZ), totalSupplyOZL, communityAmount
         );
 
         ozlProxy = new TransparentUpgradeableProxy(

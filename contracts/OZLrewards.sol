@@ -75,6 +75,4 @@ contract OZLrewards is Modifiers {
     function getRewardRate() external view override returns(uint) {
         return s.r.rewardRate;
     }
-
-
 }

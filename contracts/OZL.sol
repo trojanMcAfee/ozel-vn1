@@ -25,13 +25,20 @@ contract OZL is ERC20Upgradeable {
     function initialize(
         string memory name_, 
         string memory symbol_,
-        address ozDiamond_
+        address ozDiamond_,
+        uint totalSupply_,
+        uint communityAmount_
     ) external initializer {
         __ERC20_init(name_, symbol_);
         StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value = ozDiamond_;
 
-        _mint(address(this), 100_000_000 * 1e18); //change this nums to vars
-        _transfer(address(this), ozDiamond_, 30_000_000 * 1e18);
+        /**
+         * Add here later the vesting strategy using
+         * OP's VestingWallet.sol / https://medium.com/cardstack/building-a-token-vesting-contract-b368a954f99
+         * Use linear distribution, not all unlocked at once
+         */
+        _mint(address(this), totalSupply_); 
+        _transfer(address(this), ozDiamond_, communityAmount_);
     }
 
 
