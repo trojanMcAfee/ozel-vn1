@@ -78,6 +78,30 @@ contract BaseMethods is Setup {
     }
 
 
+    function _mintOzTokens(ozIToken ozERC20_) internal {
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        (bytes memory data) = _createDataOffchain(
+            ozERC20_, amountIn, ALICE_PK, alice, Type.IN
+        );
+
+        (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
+
+        vm.startPrank(alice);
+        IERC20Permit(testToken).approve(address(OZ), amountIn);
+
+        AmountsIn memory amounts = AmountsIn(
+            amountIn,
+            minAmountsOut[0],
+            minAmountsOut[1]
+        );
+
+        ozERC20_.mint(abi.encode(amounts, alice));         
+        vm.stopPrank();
+    }
+
+
     function _sendPermit(address user_, uint amountIn_, bytes memory data_) internal {
         (,uint8 v, bytes32 r, bytes32 s) = HelpersLib.extract(data_);
 

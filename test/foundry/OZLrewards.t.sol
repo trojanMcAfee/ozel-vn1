@@ -6,9 +6,9 @@ import {TestMethods} from "./TestMethods.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IOZL} from "../../contracts/interfaces/IOZL.sol";
-import {Type} from "./AppStorageTests.sol";
-import {HelpersLib} from "./HelpersLib.sol";
-import {AmountsIn} from "../../contracts/AppStorage.sol";
+// import {Type} from "./AppStorageTests.sol";
+// import {HelpersLib} from "./HelpersLib.sol";
+// import {AmountsIn} from "../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -44,42 +44,21 @@ contract OZLrewardsTest is TestMethods {
     }
 
 
+    //tests that the distribution of rewards is properly working with the rewardRate assigned
     function test_distribute() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
+        //Actions
         _startCampaign();
-
-        //---- mint ozTokens ----
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-
-        (bytes memory data) = _createDataOffchain(
-            ozERC20, amountIn, ALICE_PK, alice, Type.IN
-        );
-
-        (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
-
-        vm.startPrank(alice);
-        IERC20Permit(testToken).approve(address(OZ), amountIn);
-
-        AmountsIn memory amounts = AmountsIn(
-            amountIn,
-            minAmountsOut[0],
-            minAmountsOut[1]
-        );
-
-        bytes memory mintData = abi.encode(amounts, alice);
-        ozERC20.mint(mintData); 
-        
-        vm.stopPrank();
-        //---- end minting ----
+        _mintOzTokens(ozERC20);
 
         uint secs = 10;
         vm.warp(block.timestamp + secs);
 
+        //Post-conditions
         uint ozlEarned = OZ.earned(alice);
         uint rewardsEarned = OZ.getRewardRate() * secs;
         uint earnedDiff = rewardsEarned - ozlEarned;
