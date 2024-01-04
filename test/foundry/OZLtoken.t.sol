@@ -80,13 +80,11 @@ contract OZLtokenTest is TestMethods {
 
         //Charges fee
         uint bal = IERC20Permit(rEthAddr).balanceOf(owner);
-        console.log('bal pre: ', bal);
 
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
         bal = IERC20Permit(rEthAddr).balanceOf(owner);
-        console.log('bal post: ', bal);
 
         uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); 
 
@@ -98,10 +96,6 @@ contract OZLtokenTest is TestMethods {
         uint netOzelFeesETH = ozelFeesETH - uint(50).mulDivDown(ozelFeesETH, 10_000);
 
         uint ozelFeesRETH = netOzelFeesETH.mulDivDown(1 ether, OZ.rETH_ETH());
-
-        console.log('ozlRethBalance: ', ozlRethBalance);
-        console.log('ozelFeesRETH: ', ozelFeesRETH);
-
         uint feesDiff = ozlRethBalance - ozelFeesRETH;
 
         assertTrue(feesDiff <= 1 && feesDiff >= 0);
