@@ -20,25 +20,21 @@ contract OZLrewardsTest is TestMethods {
     }
 
 
-    function test_rewards() public {
-
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
-
+    function test_rewardRate() public {
+        //Pre-conditions
+        OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20");
         _startCampaign();
 
         IOZL OZL = IOZL(address(ozlProxy));
 
-        uint bal = OZL.balanceOf(address(OZ));
-        console.log('oz bal: ', bal);
+        uint ozlBalanceDiamond = OZL.balanceOf(address(OZ));
+        assertTrue(ozlBalanceDiamond == communityAmount);
 
-        uint x = OZL.balanceOf(address(ozlProxy));
-        console.log('OZL own bal - post: ', x);
+        uint ozlBalanceOZLproxy = OZL.balanceOf(address(ozlProxy));
+        assertTrue(ozlBalanceOZLproxy == totalSupplyOZL - ozlBalanceDiamond);
 
-        uint rate =  OZ.getRewardRate();
-        console.log('rate: ', rate);
-
+        uint rewardRate =  OZ.getRewardRate();
+        assertTrue(rewardRate == communityAmount / campaignDuration);
     }
 
 

@@ -133,6 +133,7 @@ contract Setup is Test {
 
     uint campaignDuration = 126100000; //4 years
     uint communityAmount = 30_000_000 * 1e18;
+    uint totalSupplyOZL = 100_000_000 * 1e18;
 
    
 
