@@ -76,11 +76,7 @@ contract OZLtokenTest is TestMethods {
         );
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
-
-        //--------
         _mock_rETH_ETH();
-
-        //--------
 
         //Charges fee
         bool wasCharged = OZ.chargeOZLfee();
@@ -96,15 +92,6 @@ contract OZLtokenTest is TestMethods {
 
         uint ozelFeesRETH = ozelFeesETH.mulDivDown(1 ether, OZ.rETH_ETH());
         assertTrue(ozlRethBalance == ozelFeesRETH);
-
-
-        //--------
-
-        // amountIn = (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals();
-        // _createAndMintOzTokens(
-        //     address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
-        // );
-        // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
         vm.clearMockedCalls();
     }  
