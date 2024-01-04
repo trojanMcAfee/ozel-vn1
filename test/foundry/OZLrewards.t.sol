@@ -77,20 +77,14 @@ contract OZLrewardsTest is TestMethods {
         vm.stopPrank();
         //---- end minting ----
 
-        // console.log('time - pre: ', block.timestamp);
         uint secs = 10;
         vm.warp(block.timestamp + secs);
-        // console.log('time - post: ', block.timestamp);
 
         uint ozlEarned = OZ.earned(alice);
-        // console.log('ozlEarned: ', ozlEarned / 100);
-
         uint rewardsEarned = OZ.getRewardRate() * secs;
-        // console.log('rewardsEarned: ', rewardsEarned / 100);
-
         uint earnedDiff = rewardsEarned - ozlEarned;
-        assertTrue(earnedDiff <= 1 && earnedDiff >= 0);
 
+        assertTrue(earnedDiff <= 1 && earnedDiff >= 0);
     }
 
 
