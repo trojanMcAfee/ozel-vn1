@@ -302,10 +302,6 @@ contract Setup is Test {
 
         _initOZLtokenPt2();
 
-        //Initialze OZL distribution campaign 
-        // OZ.setRewardsDuration(campaignDuration);
-        // OZ.notifyRewardAmount(communityAmount);
-
         //Sets labels
         _setLabels(); 
 

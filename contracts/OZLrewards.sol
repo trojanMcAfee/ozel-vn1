@@ -57,32 +57,20 @@ contract OZLrewards is Modifiers {
         LibDiamond.enforceIsContractOwner();
 
         if (block.timestamp > s.r.finishAt) {
-            console.log(1);
             s.r.rewardRate = amount_ / s.r.duration;    
-            console.log('amount: ', amount_);
-            console.log('duration: ', s.r.duration);
-            console.log(2);
         } else {
-            console.log(3);
             uint remainingRewards = s.r.rewardRate * (s.r.finishAt - block.timestamp);
-            console.log(4);
             s.r.rewardRate = (remainingRewards + amount_) / s.r.duration;
-            console.log(5);
         }
 
         require(s.r.rewardRate > 0, "reward rate = 0");
-        console.log('address(this) - should be OZ: ', address(this));
-        console.log('ozlProxy: ', s.ozlProxy);
-        console.log('ozlProxy bal: ', IOZL(s.ozlProxy).balanceOf(address(this)));
         require(
             s.r.rewardRate * s.r.duration <= IERC20Permit(s.ozlProxy).balanceOf(address(this)),
             'reward amount > balance'
         );
 
         s.r.finishAt = block.timestamp + s.r.duration;
-        console.log(7);
         s.r.updatedAt = block.timestamp;
-        console.log(8);
     }
 
     // function stake(uint amount_) external {}
