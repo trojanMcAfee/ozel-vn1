@@ -83,10 +83,13 @@ contract OZLrewardsTest is TestMethods {
         // console.log('time - post: ', block.timestamp);
 
         uint ozlEarned = OZ.earned(alice);
-        console.log('ozlEarned: ', ozlEarned);
+        // console.log('ozlEarned: ', ozlEarned / 100);
 
         uint rewardsEarned = OZ.getRewardRate() * secs;
-        console.log('rewardsEarned: ', rewardsEarned);
+        // console.log('rewardsEarned: ', rewardsEarned / 100);
+
+        uint earnedDiff = rewardsEarned - ozlEarned;
+        assertTrue(earnedDiff <= 1 && earnedDiff >= 0);
 
     }
 
