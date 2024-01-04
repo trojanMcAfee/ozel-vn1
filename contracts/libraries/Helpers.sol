@@ -151,6 +151,10 @@ library Helpers {
         return num_ / decimals_;
     }
 
+    function min(uint x, uint y) internal pure returns(uint) {
+        return x <= y ? x : y;
+    }
+
     
     /**
      * *** L1 ***

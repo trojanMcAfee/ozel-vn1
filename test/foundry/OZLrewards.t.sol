@@ -15,14 +15,6 @@ import "forge-std/console.sol";
 
 contract OZLrewardsTest is TestMethods {
 
-    //Initialze OZL distribution campaign 
-    function _startCampaign() private {
-        vm.startPrank(owner);
-        OZ.setRewardsDuration(campaignDuration);
-        OZ.notifyRewardAmount(communityAmount);
-        vm.stopPrank();
-    }
-
     //tests that the reward rate was properly calculated + OZL assignation to ozDiamond
     function test_rewardRate() public {
         //Pre-conditions

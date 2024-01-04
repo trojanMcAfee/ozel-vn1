@@ -4,6 +4,7 @@ pragma solidity 0.8.21;
 
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 import {LibDiamond} from "./libraries/LibDiamond.sol";
+import {Helpers} from "./libraries/Helpers.sol";
 import {Modifiers} from "./Modifiers.sol";
 import {IOZL} from "./interfaces/IOZL.sol";
 
@@ -11,39 +12,6 @@ import "forge-std/console.sol";
 
 
 contract OZLrewards is Modifiers {
-
-    // IERC20Permit public immutable ozToken; //stakingToken
-    // IERC20Permit public immutable OZL; //rewardsToken
-
-    // address public owner;
-
-    //--------------
-    // uint public duration;
-    // uint public finishAt; 
-    // uint public updatedAt; 
-    // uint public rewardRate;
-    // uint public rewardPerTokenStored;
-
-    // mapping(
-    //     address user => uint rewardPerTokenStoredPerUser
-    // ) public userRewardPerTokenPaid;
-    // mapping(address user => uint rewardsEarned) public rewards;
-    //-----------
-
-    // uint public totalSupply = ozToken.totalSupply();
-    // mapping(address=>uint) balanceOf; --> amount of staked token by user
-
-    // modifier onlyOwner() {
-    //     require(msg.sender == owner, "not owner" );
-    //     _;
-    // }
-
-
-    // constructor(address rewardsToken_) {
-    //     // owner = msg.sender;
-    //     // ozToken = IERC20Permit(stakingToken_);
-    //     OZL = IERC20Permit(rewardsToken_);
-    // }
 
     //Sets the lenght of the reward campaign
     function setRewardsDuration(uint duration_) external override {
@@ -73,11 +41,9 @@ contract OZLrewards is Modifiers {
         s.r.updatedAt = block.timestamp;
     }
 
-    // function stake(uint amount_) external {}
-    // function withdraw(uint amount_) external {}
 
     function lastTimeRewardApplicable() public view override returns(uint) {
-        return _min(block.timestamp, s.r.finishAt);
+        return Helpers.min(block.timestamp, s.r.finishAt);
     }
 
     //Computes the amount of reward per ozToken created
@@ -108,13 +74,6 @@ contract OZLrewards is Modifiers {
 
     function getRewardRate() external view override returns(uint) {
         return s.r.rewardRate;
-    }
-
-
-    //------
-    //put this impl inside lastTimeRewardApplicable() ****
-    function _min(uint x, uint y) private pure returns(uint) {
-        return x <= y ? x : y;
     }
 
 

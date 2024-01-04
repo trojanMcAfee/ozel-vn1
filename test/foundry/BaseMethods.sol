@@ -228,6 +228,15 @@ contract BaseMethods is Setup {
     }
 
 
+    //Initialze OZL distribution campaign 
+    function _startCampaign() internal {
+        vm.startPrank(owner);
+        OZ.setRewardsDuration(campaignDuration);
+        OZ.notifyRewardAmount(communityAmount);
+        vm.stopPrank();
+    }
+
+
     //---- Reset pools helpers ----
     
     function _resetPoolBalances(
