@@ -23,10 +23,12 @@ contract OZLrewardsTest is TestMethods {
     function test_rewardRate() public {
         //Pre-conditions
         OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20");
-        _startCampaign();
-
         IOZL OZL = IOZL(address(ozlProxy));
 
+        //Action
+        _startCampaign();
+
+        //Post-conditions
         uint ozlBalanceDiamond = OZL.balanceOf(address(OZ));
         assertTrue(ozlBalanceDiamond == communityAmount);
 
