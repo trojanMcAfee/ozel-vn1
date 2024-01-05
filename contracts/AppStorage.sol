@@ -117,14 +117,12 @@ struct LastRewards { //change this struct's name to reflect more what it does
 }
 
 struct OZLrewards { 
-    // uint rewardPerTokenStored;
-    // uint updatedAt;
-    //-----
     uint duration;
     uint finishAt; 
     uint updatedAt; 
     uint rewardRate;
     uint rewardPerTokenStored;
+    uint circulatingSupply;
     mapping(
         address user => uint rewardPerTokenStoredPerUser
     ) userRewardPerTokenPaid;

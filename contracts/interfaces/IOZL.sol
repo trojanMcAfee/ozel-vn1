@@ -63,4 +63,5 @@ interface IOZL {
     function getBal() external view returns(uint);
 
     function getExchangeRate() external view returns(uint);
+    function getCirculatingSupply() external view returns(uint);
 }

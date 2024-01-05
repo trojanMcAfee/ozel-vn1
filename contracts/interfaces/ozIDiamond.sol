@@ -52,9 +52,10 @@ interface ozIDiamond {
     function lastTimeRewardApplicable() external view returns(uint);
     function rewardPerToken() external view returns(uint);
     function earned(address user_) external view returns(uint);
-    function getReward() external;
+    function claimReward() external;
     function getRewardRate() external view returns(uint);
 
     function storeOZL(address ozlProxy_) external;
     function changeAdminFeeRecipient(address newRecipient_) external;
+    function getOZLCirculatingSupply() external view returns(uint);
 }

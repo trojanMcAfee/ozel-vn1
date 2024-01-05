@@ -36,7 +36,8 @@ contract OZLrewardsTest is TestMethods {
     }
 
 
-    //tests that the distribution of rewards is properly working with the rewardRate assigned
+    //tests that the distribution of rewards is properly working with the rewardRate assigned,
+    //and that it's been added to the circulating supply.
     function test_distribute() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
@@ -56,6 +57,22 @@ contract OZLrewardsTest is TestMethods {
         uint earnedDiff = rewardsEarned - ozlEarned;
 
         assertTrue(earnedDiff <= 1 && earnedDiff >= 0);
+
+        IOZL OZL = IOZL(address(ozlProxy));
+        uint ozlClaimed = OZL.balanceOf(alice);
+        uint circulatingSupply = OZL.getCirculatingSupply();
+
+        assertTrue(ozlClaimed == 0);
+        assertTrue(circulatingSupply == 0);
+
+        vm.prank(alice);
+        OZ.claimReward();
+
+        ozlClaimed = OZL.balanceOf(alice);
+        assertTrue(ozlClaimed == ozlEarned);
+
+        circulatingSupply = OZL.getCirculatingSupply();
+        assertTrue(ozlClaimed == circulatingSupply);
     }
 
 

@@ -64,15 +64,23 @@ contract OZLrewards is Modifiers {
          + s.r.rewards[user_];
     }
     
-    function getReward() external override updateReward(msg.sender) { //add a reentrancy check
+    function claimReward() external override updateReward(msg.sender) { //add a reentrancy check
         uint reward = s.r.rewards[msg.sender];
         if (reward > 0) {
             s.r.rewards[msg.sender] = 0;
             IERC20Permit(s.ozlProxy).transfer(msg.sender, reward);
+            s.r.circulatingSupply += reward;
         }
     }
 
     function getRewardRate() external view override returns(uint) {
         return s.r.rewardRate;
     }
+
+    function getOZLCirculatingSupply() external view override returns(uint) {
+        return s.r.circulatingSupply;
+    }
 }
+
+
+//add events here

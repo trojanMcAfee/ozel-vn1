@@ -9,6 +9,7 @@ abstract contract IOZLrewards {
     function lastTimeRewardApplicable() public view virtual returns(uint) {}
     function rewardPerToken() public view virtual returns(uint) {}
     function earned(address user_) public view virtual returns(uint) {}
-    function getReward() external virtual {}
+    function claimReward() external virtual {}
     function getRewardRate() external view virtual returns(uint) {}
+    function getOZLCirculatingSupply() external view virtual returns(uint) {}
 }

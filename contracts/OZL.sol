@@ -6,6 +6,7 @@ import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {StorageSlot} from "@openzeppelin/contracts/utils/StorageSlot.sol";
+import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 
 import "forge-std/console.sol";
 
@@ -35,7 +36,8 @@ contract OZL is ERC20Upgradeable {
         /**
          * Add here later the vesting strategy using
          * OP's VestingWallet.sol / https://medium.com/cardstack/building-a-token-vesting-contract-b368a954f99
-         * Use linear distribution, not all unlocked at once
+         * Use linear distribution, not all unlocked at once.
+         * When they vest, add it to circulating supply.
          */
         _mint(address(this), totalSupply_); 
         _transfer(address(this), ozDiamond_, communityAmount_);
@@ -58,7 +60,12 @@ contract OZL is ERC20Upgradeable {
 
         if (ozlSupply == 0) return ONE;
 
-        return ONE.mulDivDown(totalFees, ozlSupply);
+        return ONE.mulDivDown(totalFees, ozlSupply); //ozlSupply must be circulating supply
+    }
+
+    function getCirculatingSupply() external view returns(uint) {
+        ozIDiamond OZ = ozIDiamond(StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value);
+        return OZ.getOZLCirculatingSupply();
     }
 
     
