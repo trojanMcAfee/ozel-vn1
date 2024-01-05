@@ -70,6 +70,7 @@ contract OZLrewards is Modifiers {
             s.r.rewards[msg.sender] = 0;
             IERC20Permit(s.ozlProxy).transfer(msg.sender, reward);
             s.r.circulatingSupply += reward;
+
         }
     }
 
@@ -83,4 +84,4 @@ contract OZLrewards is Modifiers {
 }
 
 
-//add events here
+//add events here **** https://github.com/Synthetixio/synthetix/blob/develop/contracts/StakingRewards.sol

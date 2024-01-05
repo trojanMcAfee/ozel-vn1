@@ -56,11 +56,11 @@ contract OZL is ERC20Upgradeable {
     function getExchangeRate() public view returns(uint) {
         uint ONE = 1;
         uint totalFees = IERC20Permit(rEthAddr).balanceOf(address(this));
-        uint ozlSupply = totalSupply();
+        uint c_Supply = circulatingSupply();
 
-        if (ozlSupply == 0) return ONE;
+        if (c_Supply == 0) return ONE;
 
-        return ONE.mulDivDown(totalFees, circulatingSupply()); 
+        return ONE.mulDivDown(totalFees, c_Supply);
     }
 
     function circulatingSupply() public view returns(uint) {

@@ -45,6 +45,8 @@ contract OZLtokenTest is TestMethods {
         assertTrue(!wasCharged);
     }
 
+    // function test_exchangeRate_no_circulatingSupply
+
 
     function test_chargeOZLfee_distributeFees() public { 
         /**
@@ -79,7 +81,8 @@ contract OZLtokenTest is TestMethods {
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
-        uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); 
+        IOZL OZL = IOZL(address(ozlProxy));
+        uint ozlRethBalance = OZL.getBal(); 
 
         /**
          * Post-conditions
@@ -96,6 +99,16 @@ contract OZLtokenTest is TestMethods {
         assertTrue(ownerBalance > 0);
 
         vm.clearMockedCalls();
+
+        //------
+        uint rate = OZL.getExchangeRate();
+        assertTrue(rate == 1);
+
+        vm.prank(alice);
+        OZ.claimReward();
+
+        uint rate2 = OZL.getExchangeRate();
+        console.log('rate2: ', rate2); //why is it still 1? Investigate
     }  
 
 }
