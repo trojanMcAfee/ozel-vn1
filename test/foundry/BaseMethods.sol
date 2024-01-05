@@ -78,7 +78,7 @@ contract BaseMethods is Setup {
     }
 
 
-    function _mintOzTokens(ozIToken ozERC20_, address user_) internal {
+    function _mintOzTokens(ozIToken ozERC20_, address user_, uint amountIn_) internal {
         uint pk;
 
         if (user_ == alice) {
@@ -89,20 +89,17 @@ contract BaseMethods is Setup {
             pk = CHARLIE_PK;
         }
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-
         (bytes memory data) = _createDataOffchain(
-            ozERC20_, amountIn, pk, user_, Type.IN
+            ozERC20_, amountIn_, pk, user_, Type.IN
         );
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         vm.startPrank(user_);
-        IERC20Permit(testToken).approve(address(OZ), amountIn);
+        IERC20Permit(testToken).approve(address(OZ), amountIn_);
 
         AmountsIn memory amounts = AmountsIn(
-            amountIn,
+            amountIn_,
             minAmountsOut[0],
             minAmountsOut[1]
         );

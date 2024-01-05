@@ -43,10 +43,13 @@ contract OZLrewardsTest is TestMethods {
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
         ));
+        
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
         //Actions
         _startCampaign();
-        _mintOzTokens(ozERC20, alice);
+        _mintOzTokens(ozERC20, alice, amountIn);
 
         uint secs = 10;
         vm.warp(block.timestamp + secs);
