@@ -63,7 +63,7 @@ contract OZL is ERC20Upgradeable {
         return ONE.mulDivDown(totalFees, ozlSupply); //ozlSupply must be circulating supply
     }
 
-    function getCirculatingSupply() external view returns(uint) {
+    function circulatingSupply() public view returns(uint) {
         ozIDiamond OZ = ozIDiamond(StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value);
         return OZ.getOZLCirculatingSupply();
     }

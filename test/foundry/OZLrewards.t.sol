@@ -60,7 +60,7 @@ contract OZLrewardsTest is TestMethods {
 
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlClaimed = OZL.balanceOf(alice);
-        uint circulatingSupply = OZL.getCirculatingSupply();
+        uint circulatingSupply = OZL.circulatingSupply();
 
         assertTrue(ozlClaimed == 0);
         assertTrue(circulatingSupply == 0);
@@ -71,7 +71,7 @@ contract OZLrewardsTest is TestMethods {
         ozlClaimed = OZL.balanceOf(alice);
         assertTrue(ozlClaimed == ozlEarned);
 
-        circulatingSupply = OZL.getCirculatingSupply();
+        circulatingSupply = OZL.circulatingSupply();
         assertTrue(ozlClaimed == circulatingSupply);
     }
 
