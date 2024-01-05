@@ -82,6 +82,7 @@ contract OZLtokenTest is TestMethods {
 
         uint rate = OZL.getExchangeRate();
         console.log('rate3: ', rate);
+
     }
 
 

@@ -55,22 +55,26 @@ contract OZL is ERC20Upgradeable {
 
     function getExchangeRate() public view returns(uint) {
         uint ONE = 1;
-        uint totalFees = IERC20Permit(rEthAddr).balanceOf(address(this));
-        uint c_Supply = circulatingSupply();
+        uint totalFeesRETH = IERC20Permit(rEthAddr).balanceOf(address(this));
+        uint totalFeesUSD = totalFeesRETH.mulDivDown(getOZ().rETH_USD(), 1 ether);
 
-        // console.log('c_Supply: ', c_Supply);
+        uint c_Supply = circulatingSupply();
 
         if (c_Supply == 0) return ONE;
 
-        console.log('totalFees: ', totalFees);
+        console.log('totalFeesRETH: ', totalFeesRETH);
+        console.log('totalFeesUSD: ', totalFeesUSD);
         console.log('c_Supply: ', c_Supply);
 
-        return ONE.mulDivDown(totalFees, c_Supply);
+        return ONE.mulDivDown(totalFeesUSD, c_Supply);
     }
 
     function circulatingSupply() public view returns(uint) {
-        ozIDiamond OZ = ozIDiamond(StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value);
-        return OZ.getOZLCirculatingSupply();
+        return getOZ().getOZLCirculatingSupply();
+    }
+
+    function getOZ() public view returns(ozIDiamond) {
+        return ozIDiamond(StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value);
     }
 
     
