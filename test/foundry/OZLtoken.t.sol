@@ -79,12 +79,8 @@ contract OZLtokenTest is TestMethods {
         _mock_rETH_ETH();
 
         //Charges fee
-        uint bal = IERC20Permit(rEthAddr).balanceOf(owner);
-
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
-
-        bal = IERC20Permit(rEthAddr).balanceOf(owner);
 
         uint ozlRethBalance = IOZL(address(ozlProxy)).getBal(); 
 
@@ -97,8 +93,10 @@ contract OZLtokenTest is TestMethods {
 
         uint ozelFeesRETH = netOzelFeesETH.mulDivDown(1 ether, OZ.rETH_ETH());
         uint feesDiff = ozlRethBalance - ozelFeesRETH;
-
         assertTrue(feesDiff <= 1 && feesDiff >= 0);
+
+        uint ownerBalance = IERC20Permit(rEthAddr).balanceOf(owner);
+        assertTrue(ownerBalance > 0);
 
         vm.clearMockedCalls();
     }  

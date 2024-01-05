@@ -10,7 +10,6 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
-import {LibDiamond} from "../../contracts/libraries/LibDiamond.sol";
 import "../Errors.sol";
 
 
@@ -111,9 +110,8 @@ contract ozOracle {
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {
-        address owner = LibDiamond.diamondStorage().contractOwner;
         uint adminFee = uint(50).mulDivDown(grossFees_, 10_000);
-        IERC20Permit(s.rETH).transfer(owner, adminFee);
+        IERC20Permit(s.rETH).transfer(s.adminFeeRecipient, adminFee);
 
         return grossFees_ - adminFee;
     }

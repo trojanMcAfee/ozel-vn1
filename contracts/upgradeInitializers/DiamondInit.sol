@@ -80,7 +80,7 @@ contract DiamondInit {
         );
         s.rocketDAOProtocolSettingsDepositID = keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"));
         
-
+        s.adminFeeRecipient = ds.contractOwner;
     }
 
 

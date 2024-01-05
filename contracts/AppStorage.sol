@@ -48,6 +48,8 @@ struct AppStorage {
 
     LastRewards rewards;
     OZLrewards r;
+
+    address adminFeeRecipient; 
   
 }
 
