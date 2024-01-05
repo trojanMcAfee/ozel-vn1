@@ -321,7 +321,7 @@ contract Setup is Test {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
-        } else if (id_ == 3 || id_ == 8) {
+        } else if (id_ == 3) {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
@@ -329,6 +329,8 @@ contract Setup is Test {
             length = 6; 
         } else if (id_ == 10) {
             length = 7;
+        } else if (id_ == 8) {
+            length = 4;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -373,6 +375,7 @@ contract Setup is Test {
             selectors[0] = cutOz.changeDefaultSlippage.selector;
             selectors[1] = cutOz.changeUniFee.selector;
             selectors[2] = cutOz.storeOZL.selector;
+            selectors[3] = cutOz.changeAdminFeeRecipient.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;

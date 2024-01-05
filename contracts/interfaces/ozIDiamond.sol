@@ -56,4 +56,5 @@ interface ozIDiamond {
     function getRewardRate() external view returns(uint);
 
     function storeOZL(address ozlProxy_) external;
+    function changeAdminFeeRecipient(address newRecipient_) external;
 }

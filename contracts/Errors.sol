@@ -29,7 +29,7 @@ error OZError02(); //_swapBalancer - amount was 0
 error OZError10(string errorCode); //_swapBalancer
 error OZError11(address token); //createOzToken - can't be 0 address
 error OZError12(address token); //createOzToken - TokenAlreadyInRegistry
-error OZError13(address caller); //onlyOzToken - Not authorized
+error OZError13(address caller); //onlyOzToken & changeAdminFeeRecipient - Not authorized
 error OZError14(uint blockNumber); //_applyFee - blockNum is equal or less than last rewards update
 
 //--- ozToken errors

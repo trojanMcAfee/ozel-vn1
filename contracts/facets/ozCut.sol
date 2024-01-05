@@ -3,15 +3,13 @@ pragma solidity 0.8.21;
 
 
 import {DiamondCutFacet} from "./DiamondCutFacet.sol";
-import {AppStorage} from "../AppStorage.sol";
-import { LibDiamond } from "../libraries/LibDiamond.sol";
+import {LibDiamond} from "../libraries/LibDiamond.sol";
+import {Modifiers} from "../Modifiers.sol";
 
 import "forge-std/console.sol";
 
 
-contract ozCut is DiamondCutFacet {
-
-    AppStorage private s;
+contract ozCut is Modifiers, DiamondCutFacet {
 
     function changeDefaultSlippage(uint16 newBps_) external {
         LibDiamond.enforceIsContractOwner();
@@ -26,6 +24,10 @@ contract ozCut is DiamondCutFacet {
     function storeOZL(address ozlProxy_) external { //make this func a one time thing
         LibDiamond.enforceIsContractOwner();
         s.ozlProxy = ozlProxy_;
+    }
+
+    function changeAdminFeeRecipient(address newRecipient_) external onlyRecipient {
+        s.adminFeeRecipient = newRecipient_;
     }
 
     //function changeProtocolfee() <----
