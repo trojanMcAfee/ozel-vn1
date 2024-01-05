@@ -70,7 +70,6 @@ contract OZLrewards is Modifiers {
             s.r.rewards[msg.sender] = 0;
             IERC20Permit(s.ozlProxy).transfer(msg.sender, reward);
             s.r.circulatingSupply += reward;
-
         }
     }
 

@@ -48,6 +48,43 @@ contract OZLtokenTest is TestMethods {
     // function test_exchangeRate_no_circulatingSupply
 
 
+    function test_exchangeRate_with_circulatingSupply() public {
+        // bytes32 oldSlot0data = vm.load(
+        //     IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
+        //     bytes32(0)
+        // );
+        // (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+        //-----
+
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20"
+        ));
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        _startCampaign();
+        _mintOzTokens(ozERC20, alice, amountIn); 
+
+        uint secs = 10;
+        vm.warp(block.timestamp + secs);
+
+        _mock_rETH_ETH();
+
+        bool wasCharged = OZ.chargeOZLfee();
+        assertTrue(wasCharged);
+
+        vm.prank(alice);
+        OZ.claimReward();
+
+        //-----
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        uint rate = OZL.getExchangeRate();
+        console.log('rate3: ', rate);
+    }
+
+
     function test_chargeOZLfee_distributeFees() public { 
         /**
          * Pre-conditions
@@ -99,16 +136,6 @@ contract OZLtokenTest is TestMethods {
         assertTrue(ownerBalance > 0);
 
         vm.clearMockedCalls();
-
-        //------
-        uint rate = OZL.getExchangeRate();
-        assertTrue(rate == 1);
-
-        vm.prank(alice);
-        OZ.claimReward();
-
-        uint rate2 = OZL.getExchangeRate();
-        console.log('rate2: ', rate2); //why is it still 1? Investigate
     }  
 
 }

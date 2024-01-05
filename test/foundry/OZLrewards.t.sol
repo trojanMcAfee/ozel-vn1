@@ -38,12 +38,13 @@ contract OZLrewardsTest is TestMethods {
 
     //tests that the distribution of rewards is properly working with the rewardRate assigned,
     //and that it's been added to the circulating supply.
-    function test_distribute() public {
+    //tests the exchange rate also
+    function test_distribute_OZL() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
         ));
-        
+
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
@@ -76,6 +77,13 @@ contract OZLrewardsTest is TestMethods {
 
         circulatingSupply = OZL.circulatingSupply();
         assertTrue(ozlClaimed == circulatingSupply);
+
+        //------
+        // uint rate = OZL.getExchangeRate();
+        // assertTrue(rate == 1);
+
+        // uint rate = OZL.getExchangeRate();
+        // console.log('rate3: ', rate); 
     }
 
 
