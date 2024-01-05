@@ -60,7 +60,7 @@ contract OZL is ERC20Upgradeable {
 
         if (ozlSupply == 0) return ONE;
 
-        return ONE.mulDivDown(totalFees, ozlSupply); //ozlSupply must be circulating supply
+        return ONE.mulDivDown(totalFees, circulatingSupply()); 
     }
 
     function circulatingSupply() public view returns(uint) {
