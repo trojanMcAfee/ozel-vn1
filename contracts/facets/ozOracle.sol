@@ -67,17 +67,21 @@ contract ozOracle {
             totalAssets += ozIToken(s.ozTokenRegistry[i]).totalAssets();
         }
 
-        //------
-
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
         (uint assetsInETH, uint valueInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
         int totalRewards = int(valueInETH) - int(assetsInETH);
 
+        console.logInt(totalRewards); //<--- this is negative with BIG. Why? ****
+        console.log('totalRewards ^^');
+
         if (totalRewards <= 0) return false;
 
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
+
+        console.logInt(currentRewards);
+        console.log('currentRewards ^^');
 
         if (currentRewards <= 0) return false;
 

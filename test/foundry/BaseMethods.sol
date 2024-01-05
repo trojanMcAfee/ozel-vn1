@@ -69,8 +69,10 @@ contract BaseMethods is Setup {
     ) internal returns(uint) {
         uint amountIn = IERC20Permit(testToken).balanceOf(owner_);
         _createAndMintOzTokens(address(ozERC20_), amountIn, owner_, ownerPK_, false, false, Type.IN);
+        
         uint balanceUsdcPostMint = IERC20Permit(testToken).balanceOf(owner_);
         assertTrue(balanceUsdcPostMint == 0);
+        
         uint balanceOzPostMint = ozERC20_.balanceOf(owner_);
         assertTrue(balanceOzPostMint > (initMintAmout_ - 1) * 1 ether && balanceOzPostMint < initMintAmout_ * 1 ether);
 

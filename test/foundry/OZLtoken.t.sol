@@ -49,19 +49,13 @@ contract OZLtokenTest is TestMethods {
 
 
     function test_exchangeRate_with_circulatingSupply() public {
-        // bytes32 oldSlot0data = vm.load(
-        //     IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
-        //     bytes32(0)
-        // );
-        // (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
-        //-----
-
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _changeSlippage(uint16(9900));
 
         _startCampaign();
         _mintOzTokens(ozERC20, alice, amountIn); 
