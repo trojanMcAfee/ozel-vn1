@@ -71,10 +71,7 @@ contract OZLtokenTest is TestMethods {
 
         //BOB
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
-        _createAndMintOzTokens(
-            address(ozERC20), amountIn, bob, BOB_PK, false, true, Type.IN
-        );
-        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        _mintOzTokens(ozERC20, bob, amountIn);
 
         _mock_rETH_ETH();
 
