@@ -71,26 +71,36 @@ contract ozOracle {
 
         (uint assetsInETH, uint valueInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
-        console.log('assetsInETH: ', assetsInETH);
-        console.log('valueInETH: ', valueInETH);
-        console.log('----');
-        console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
-        console.log('ETH_USD: ', ETH_USD());
-        console.log('rETH_ETH: ', rETH_ETH());
-        console.log('totalAssets - stables: ', totalAssets * 1e12);
-        console.log('----');
+        // console.log('assetsInETH: ', assetsInETH);
+        // console.log('valueInETH: ', valueInETH);
+        // console.log('----');
+        // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
+        // console.log('ETH_USD: ', ETH_USD());
+        // console.log('rETH_ETH: ', rETH_ETH());
+        // console.log('totalAssets - stables: ', totalAssets * 1e12);
+        // console.log('----');
 
-        int totalRewards = int(valueInETH) - int(assetsInETH);
+        int totalRewards = int(valueInETH) - int(assetsInETH); 
+        /**
+         * this line needs to be thoroughly tested out ^.
+         * edge case --> when the protocol is ready to accrue rewards, but then a new stable
+         * deposit comes in that increases assetsInETH. the invariant from above will brake and 
+         * no rewards-accrual will be possible.
+         * .
+         * Consider putting a check that when valueInETH > assetsInETH, something/someone calls chargeOZLfee()
+         * Decrease the gas consumption of this function as much as possible.
+         * Consider adding a call to this function in an user-calling function. 
+         */
 
-        console.logInt(totalRewards);
-        console.log('totalRewards ^^');
+        // console.logInt(totalRewards);
+        // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
 
-        int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
+        int currentRewards = totalRewards - int(s.rewards.prevTotalRewards); //this too (further testing)
 
-        console.logInt(currentRewards);
-        console.log('currentRewards ^^');
+        // console.logInt(currentRewards);
+        // console.log('currentRewards ^^');
 
         if (currentRewards <= 0) return false;
 
@@ -115,8 +125,6 @@ contract ozOracle {
         return netOzelFees;
     }
 
-    //assets -> how much stablecoins there are, in ETH
-    //amountReth -> how much rETH the protocol has
 
     /**
      * @dev Calculates the values in ETH of the variables
@@ -132,7 +140,7 @@ contract ozOracle {
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {
-        uint adminFee = uint(50).mulDivDown(grossFees_, 10_000);
+        uint adminFee = uint(50).mulDivDown(grossFees_, 10_000); //put here adminFeeBps - 50
         IERC20Permit(s.rETH).transfer(s.adminFeeRecipient, adminFee);
 
         return grossFees_ - adminFee;

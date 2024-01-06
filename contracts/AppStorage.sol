@@ -50,6 +50,7 @@ struct AppStorage {
     OZLrewards r;
 
     address adminFeeRecipient; 
+    // uint16 adminFeeBps;
   
 }
 
@@ -148,7 +149,7 @@ struct OZLrewards {
 // ----
 // currentRewards = totalRewards(117 - 100 = 17) - prevTotalRewards(12) = 5
 
-// 4th roud -
+// 4th round -
 // rETH        - 116
 // totalAssets - 100
 // ----

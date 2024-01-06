@@ -21,8 +21,8 @@ contract OZLtokenTest is TestMethods {
 
 
    function _mock_rETH_ETH() internal {
-        uint bspIncrease = 400;
-        uint rETHETHmock = OZ.rETH_ETH() + bspIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
+        uint bpsIncrease = 400; //92
+        uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
 
         vm.mockCall( 
             address(rEthEthChainlink),
@@ -76,6 +76,7 @@ contract OZLtokenTest is TestMethods {
 
         uint rate = OZL.getExchangeRate();
         console.log('rate3: ', rate);
+
 
     }
 
@@ -133,4 +134,43 @@ contract OZLtokenTest is TestMethods {
         vm.clearMockedCalls();
     }  
 
+
+
+
+
+    //---------
+
+    //** this function represents the notes in chargeOZLfee() (will fail) */
+    function test_exchangeRate_edge_case() internal {
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20"
+        ));
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _changeSlippage(uint16(9900));
+
+        _startCampaign();
+        _mintOzTokens(ozERC20, alice, amountIn); 
+
+        uint secs = 10;
+        vm.warp(block.timestamp + secs);
+
+        _mock_rETH_ETH();
+
+        _dealUnderlying(Quantity.BIG);
+        _mintOzTokens(ozERC20, alice, amountIn); //<-- part the makes this function fail
+
+        bool wasCharged = OZ.chargeOZLfee();
+        assertTrue(wasCharged);
+
+        vm.prank(alice);
+        OZ.claimReward();
+
+        //-----
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        uint rate = OZL.getExchangeRate();
+        console.log('rate3: ', rate);
+    }
 }

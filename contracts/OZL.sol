@@ -66,6 +66,7 @@ contract OZL is ERC20Upgradeable {
         console.log('totalFeesUSD: ', totalFeesUSD);
         console.log('c_Supply: ', c_Supply);
 
+        //why this doesn't represent how much you can redeeem? ***
         return ONE.mulDivDown(totalFeesUSD, c_Supply);
     }
 
