@@ -82,7 +82,7 @@ contract ozOracle {
 
         int totalRewards = int(valueInETH) - int(assetsInETH);
 
-        console.logInt(totalRewards); //<--- this is negative with BIG. Why? ****
+        console.logInt(totalRewards);
         console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
