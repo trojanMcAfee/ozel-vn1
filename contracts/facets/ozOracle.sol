@@ -71,6 +71,15 @@ contract ozOracle {
 
         (uint assetsInETH, uint valueInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
+        console.log('assetsInETH: ', assetsInETH);
+        console.log('valueInETH: ', valueInETH);
+        console.log('----');
+        console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
+        console.log('ETH_USD: ', ETH_USD());
+        console.log('rETH_ETH: ', rETH_ETH());
+        console.log('totalAssets - stables: ', totalAssets * 1e12);
+        console.log('----');
+
         int totalRewards = int(valueInETH) - int(assetsInETH);
 
         console.logInt(totalRewards); //<--- this is negative with BIG. Why? ****
@@ -106,6 +115,15 @@ contract ozOracle {
         return netOzelFees;
     }
 
+    //assets -> how much stablecoins there are, in ETH
+    //amountReth -> how much rETH the protocol has
+
+    /**
+     * @dev Calculates the values in ETH of the variables
+     * @param assets_ How much in stablecoins there are in ozToken contrats
+     * @param amountReth_ How much rETH in total the protocol manages
+     * @return (uint, uint) - assets_ valued in ETH / all protocol rETH valued in ETH
+     */
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
