@@ -10,7 +10,7 @@ import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 
 contract ozLoupe is DiamondLoupeFacet {
 
-    AppStorage internal s;
+    AppStorage private s;
 
     function getDefaultSlippage() external view returns(uint16) {
         return s.defaultSlippage;
@@ -26,5 +26,13 @@ contract ozLoupe is DiamondLoupeFacet {
     function getProtocolFee() external view returns(uint) {
         return uint(s.protocolFee);
     }
+
+    function ozTokens(address underlying_) external view returns(address) {
+        return s.ozTokens[underlying_];
+    }
+
+    // function storage() external view returns(AppStorage) {
+    //     return s;
+    // }
 
 }

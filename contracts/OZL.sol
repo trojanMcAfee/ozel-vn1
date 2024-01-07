@@ -19,6 +19,7 @@ contract OZL is ERC20Upgradeable {
     using FixedPointMathLib for uint;
 
     address constant rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+    address constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     bytes32 private constant _OZ_DIAMOND_SLOT = bytes32(uint(keccak256('ozDiamond.storage.slot')) - 1);
 
     // enum QuoteAsset {
@@ -60,6 +61,10 @@ contract OZL is ERC20Upgradeable {
         return bal;
     }
 
+    function getExchangeRate() external view returns(uint) {
+        return this.getExchangeRate(QuoteAsset.USD);
+    }
+
 
     function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
         uint ONE = 1 ether;
@@ -91,7 +96,86 @@ contract OZL is ERC20Upgradeable {
     }
 
 
-    function redeem(uint amount_, address receiver_) external returns(uint) {
+    // function redeem(uint amount_, address receiver_) external returns(uint) {
+        
+
+    // }
+
+    // function maxRedeem(address owner) public view returns(uint256) {
+    //     return balanceOf(owner);
+    // }
+
+    // function redeem(uint256 shares, address receiver, address owner) public virtual override returns (uint256) {
+    //     require(shares <= maxRedeem(owner), "ERC4626: redeem more than max");
+
+    //     uint256 assets = previewRedeem(shares);
+    //     _withdraw(_msgSender(), receiver, owner, assets, shares);
+
+    //     return assets;
+    // }
+
+    function _burn(address account, uint amount) internal override {
+
+
+
+    }
+
+
+    error AssetOutNoExist();
+
+    // enum AssetOut {
+    //     ETH,
+    //     rETH
+    // }
+
+    // struct AssetOut {
+    //     address ETH;
+    //     address rETH
+    // }
+
+    function _triage(assetOut_) private returns(uint) {
+        if (getOZ().ozTokens(assetOut_) != address(0)) return assetOut_;
+
+        // address[] memory ethTokens = new address[](2);
+        // ethTokens[0] = 
+        // ethTokens[1] = rEthAddr;
+
+        if (assetOut_ == ETH) return assetOut_;
+        if (assetOut_ == rEthAddr) return assetOut_
+
+    }
+
+
+    function redeem(
+        address receiver_,
+        address owner_,
+        address assetOut_
+        uint256 ozlAmountIn_,
+        uint minOzlAmountOut_;
+    ) external {
+        if (
+            getOZ().ozTokens(assetOut_) == address(0) &&
+            assetOut != ETH &&
+            assetOut != rETH
+        ) revert AssetOutNoExist();
+
+        if (msg.sender != owner_) {
+            _spendAllowance(owner_, msg.sender, ozlAmount_);
+        }
+
+        _burn(owner_, ozlAmount_);
+        SafeERC20.safeTransfer(_asset, receiver_, assets);
+
+        emit Withdraw(msg.sender, receiver_, owner_, assets, shares);
+    }
+
+
+    function _burn(address owner_, uint ozlAmountIn_, uint minOzlAmountOut_) private {
+        //get the OZL tokens out of the owner
+
+        //send the OZL tokens to the distribution contract (OZLrewards)
+
+        //grabs rETH from the contract and swaps it for assetOut_
         
 
     }
