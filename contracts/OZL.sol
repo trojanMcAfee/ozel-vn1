@@ -7,8 +7,10 @@ import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {StorageSlot} from "@openzeppelin/contracts/utils/StorageSlot.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
+import {QuoteAsset} from "./interfaces/IOZL.sol";
 
 import "forge-std/console.sol";
+
 
 //Add Permit to this contract
 contract OZL is ERC20Upgradeable {
@@ -17,6 +19,11 @@ contract OZL is ERC20Upgradeable {
 
     address constant rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
     bytes32 private constant _OZ_DIAMOND_SLOT = bytes32(uint(keccak256('ozDiamond.storage.slot')) - 1);
+
+    // enum QuoteAsset {
+    //     USD,
+    //     ETH
+    // }
 
     constructor() {
         _disableInitializers();
@@ -53,21 +60,40 @@ contract OZL is ERC20Upgradeable {
     }
 
 
-    function getExchangeRate() public view returns(uint) {
+    function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
         uint ONE = 1 ether;
         uint totalFeesRETH = IERC20Permit(rEthAddr).balanceOf(address(this));
-        uint totalFeesUSD = totalFeesRETH.mulDivDown(getOZ().rETH_USD(), ONE);
+        // uint totalFeesUSD = totalFeesRETH.mulDivDown(getOZ().rETH_USD(), ONE);
+        uint totalFeesQuote = _convertToQuote(asset_, totalFeesRETH);
 
         uint c_Supply = circulatingSupply();
 
         if (c_Supply == 0) return ONE;
 
-        console.log('totalFeesRETH: ', totalFeesRETH);
-        console.log('totalFeesUSD: ', totalFeesUSD);
-        console.log('c_Supply: ', c_Supply);
-
-        return ONE.mulDivDown(totalFeesUSD, c_Supply);
+        return ONE.mulDivDown(totalFeesQuote, c_Supply);
     }
+
+    function _convertToQuote(QuoteAsset qt_, uint totalFeesRETH_) private view returns(uint) {
+        (bool success, bytes memory data) = address(getOZ()).staticcall('rETH_ETH()');
+        //^^^ this staticcall is failing, why? 
+        //use that's solved, confirm that exchangeRate is working with both quote assets
+        console.logBytes(data);
+        uint reth_eth = abi.decode(data, (uint));
+        console.log('reth_eth: ', reth_eth);
+        require(success, 'fff');
+
+        return qt_ == QuoteAsset.USD ? totalFeesRETH_.mulDivDown(getOZ().rETH_USD(), 1 ether) :
+            totalFeesRETH_.mulDivDown(reth_eth, 1 ether);
+    }
+
+
+    function redeem(uint amount_, address receiver_) external returns(uint) {
+        
+
+    }
+
+
+    //--------
 
     function circulatingSupply() public view returns(uint) {
         return getOZ().getOZLCirculatingSupply();
@@ -76,6 +102,8 @@ contract OZL is ERC20Upgradeable {
     function getOZ() public view returns(ozIDiamond) {
         return ozIDiamond(StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value);
     }
+
+
 
     
 

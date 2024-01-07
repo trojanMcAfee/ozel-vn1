@@ -2,8 +2,14 @@
 pragma solidity 0.8.21;
 
 
+enum QuoteAsset {
+    USD,
+    ETH
+}
+
 
 interface IOZL {
+
     /// @dev Emitted when `value` tokens are moved from one account (`from`) to another (`to`).
     event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -62,6 +68,6 @@ interface IOZL {
     //-----
     function getBal() external view returns(uint);
 
-    function getExchangeRate() external view returns(uint);
+    function getExchangeRate(QuoteAsset asset_) external view returns(uint);
     function circulatingSupply() external view returns(uint);
 }

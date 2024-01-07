@@ -11,6 +11,7 @@ import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {Type} from "./AppStorageTests.sol";
 import {IRocketTokenRETH} from "../../contracts/interfaces/IRocketPool.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 
 import "forge-std/console.sol";
 
@@ -18,6 +19,11 @@ import "forge-std/console.sol";
 contract OZLtokenTest is TestMethods {
 
     using FixedPointMathLib for uint;
+
+    // enum QuoteAsset {
+    //     USD,
+    //     ETH
+    // }
 
 
    function _mock_rETH_ETH() internal {
@@ -74,8 +80,10 @@ contract OZLtokenTest is TestMethods {
         //-----
         IOZL OZL = IOZL(address(ozlProxy));
 
-        uint rate = OZL.getExchangeRate();
+        uint rate = OZL.getExchangeRate(QuoteAsset.USD);
+        uint rateEth = OZL.getExchangeRate(QuoteAsset.ETH);
         console.log('rate3: ', rate);
+        console.log('rate in eth: ', rateEth);
         //-----
 
         uint ozlBal = OZL.balanceOf(alice);
@@ -177,7 +185,7 @@ contract OZLtokenTest is TestMethods {
         //-----
         IOZL OZL = IOZL(address(ozlProxy));
 
-        uint rate = OZL.getExchangeRate();
+        uint rate = OZL.getExchangeRate(QuoteAsset.USD);
         console.log('rate3: ', rate);
     }
 }
