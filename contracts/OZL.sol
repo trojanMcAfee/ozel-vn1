@@ -54,9 +54,9 @@ contract OZL is ERC20Upgradeable {
 
 
     function getExchangeRate() public view returns(uint) {
-        uint ONE = 1;
+        uint ONE = 1 ether;
         uint totalFeesRETH = IERC20Permit(rEthAddr).balanceOf(address(this));
-        uint totalFeesUSD = totalFeesRETH.mulDivDown(getOZ().rETH_USD(), 1 ether);
+        uint totalFeesUSD = totalFeesRETH.mulDivDown(getOZ().rETH_USD(), ONE);
 
         uint c_Supply = circulatingSupply();
 
@@ -66,7 +66,6 @@ contract OZL is ERC20Upgradeable {
         console.log('totalFeesUSD: ', totalFeesUSD);
         console.log('c_Supply: ', c_Supply);
 
-        //why this doesn't represent how much you can redeeem? ***
         return ONE.mulDivDown(totalFeesUSD, c_Supply);
     }
 

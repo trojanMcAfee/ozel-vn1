@@ -21,7 +21,7 @@ contract OZLtokenTest is TestMethods {
 
 
    function _mock_rETH_ETH() internal {
-        uint bpsIncrease = 400; //92
+        uint bpsIncrease = 400; //92 - 400
         uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
 
         vm.mockCall( 
@@ -76,6 +76,13 @@ contract OZLtokenTest is TestMethods {
 
         uint rate = OZL.getExchangeRate();
         console.log('rate3: ', rate);
+        //-----
+
+        uint ozlBal = OZL.balanceOf(alice);
+        console.log('ozlBal alice: ', ozlBal);
+
+        uint ozlRedeem = (rate * ozlBal) / 1 ether;
+        console.log('ozlRedeem in USD: ', ozlRedeem);
 
 
     }
