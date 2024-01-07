@@ -147,11 +147,11 @@ contract OZL is ERC20Upgradeable {
 
 
     function redeem(
-        address receiver_,
         address owner_,
+        address receiver_,
         address assetOut_
         uint256 ozlAmountIn_,
-        uint minOzlAmountOut_;
+        uint minAmountOut_;
     ) external {
         if (
             getOZ().ozTokens(assetOut_) == address(0) &&
@@ -170,13 +170,31 @@ contract OZL is ERC20Upgradeable {
     }
 
 
-    function _burn(address owner_, uint ozlAmountIn_, uint minOzlAmountOut_) private {
-        //get the OZL tokens out of the owner
-
-        //send the OZL tokens to the distribution contract (OZLrewards)
+    function _burn(address owner_, address assetOut_, uint ozlAmountIn_, uint minAmountOut_) private returns(uint) {
+        //get the OZL tokens out of the owner + send them to ozDiamond (holder of OZL dist)
+        transferFrom(owner_, address(getOZ), ozlAmountIn_);
 
         //grabs rETH from the contract and swaps it for assetOut_
-        
+        uint rate = getOZ().getExchangeRate();
+        uint usdValue = ozlAmountIn_.mulDivDown(rate, 1 ether);
+        uint rETHtoRedeem = usdValue.mulDivDown(rEthAddr, getOZ().rETH_USD()) / 1 ether;
+
+        if (assetOut_ == rEthAddr) return rETHtoRedeem;
+
+        _checkPauseAndSwap(
+            rEthAddr,
+            wethAddr,
+            rETHtoRedeem,
+            minAmountOut_
+            //receipient - address(this)
+        );
+
+
+        1 ozl --- rate in usd
+        ozlAmountIn -- usd
+
+        1 rEth --- rETH_USD()
+           x  ---- usdToRedeem
 
     }
 
