@@ -80,16 +80,23 @@ contract OZLtokenTest is TestMethods {
         //-----
         IOZL OZL = IOZL(address(ozlProxy));
 
-        uint rate = OZL.getExchangeRate(QuoteAsset.USD);
+        uint rateUsd = OZL.getExchangeRate(QuoteAsset.USD);
         uint rateEth = OZL.getExchangeRate(QuoteAsset.ETH);
-        console.log('rate3: ', rate);
+        console.log('rate usd: ', rateUsd);
         console.log('rate in eth: ', rateEth);
+
+        console.log('rateEth * OZ.ETH_USD(): ', rateEth * OZ.ETH_USD());
+        uint diff = rateUsd / 1000 - ((rateEth * OZ.ETH_USD()) / 1 ether) / 1000;
+        console.log('diff: ', diff);
+
+        // assertTrue(diff < _calculatePercentage())
+        assertTrue(diff == 0);
         //-----
 
         uint ozlBal = OZL.balanceOf(alice);
         console.log('ozlBal alice: ', ozlBal);
 
-        uint ozlRedeem = (rate * ozlBal) / 1 ether;
+        uint ozlRedeem = (rateUsd * ozlBal) / 1 ether;
         console.log('ozlRedeem in USD: ', ozlRedeem);
 
 

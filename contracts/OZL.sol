@@ -64,7 +64,6 @@ contract OZL is ERC20Upgradeable {
     function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
         uint ONE = 1 ether;
         uint totalFeesRETH = IERC20Permit(rEthAddr).balanceOf(address(this));
-        // uint totalFeesUSD = totalFeesRETH.mulDivDown(getOZ().rETH_USD(), ONE);
         uint totalFeesQuote = _convertToQuote(asset_, totalFeesRETH);
 
         uint c_Supply = circulatingSupply();
