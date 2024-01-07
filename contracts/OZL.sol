@@ -8,6 +8,7 @@ import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {StorageSlot} from "@openzeppelin/contracts/utils/StorageSlot.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {QuoteAsset} from "./interfaces/IOZL.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 import "forge-std/console.sol";
 
@@ -74,20 +75,20 @@ contract OZL is ERC20Upgradeable {
     }
 
     function _convertToQuote(QuoteAsset qt_, uint totalFeesRETH_) private view returns(uint) {
-        (bool success, bytes memory data) = address(getOZ()).staticcall(
-            abi.encodeWithSignature('rETH_ETH()')
-        );
-        require(success, 'fff');
-        //^^^ this staticcall is failing, why? 
-        //once that's solved, confirm that exchangeRate is working with both quote assets
-        // console.logBytes(data);
-        // console.log('^');
-        // console.log('success: ', success);
-        uint reth_eth = abi.decode(data, (uint));
-        // console.log('reth_eth: ', reth_eth);
+        bytes memory data = abi.encodeWithSignature('rETH_ETH()');
+        data = Address.functionStaticCall(address(getOZ()), data);
 
-        return qt_ == QuoteAsset.USD ? totalFeesRETH_.mulDivDown(getOZ().rETH_USD(), 1 ether) :
-            totalFeesRETH_.mulDivDown(reth_eth, 1 ether);
+        uint reth_eth = abi.decode(data, (uint));
+
+        uint quote;
+
+        if (qt_ == QuoteAsset.USD) {
+            quote = totalFeesRETH_.mulDivDown(getOZ().rETH_USD(), 1 ether);
+        } else if(qt_ == QuoteAsset.ETH) {
+            quote = totalFeesRETH_.mulDivDown(reth_eth, 1 ether);
+        }
+
+        return quote;
     }
 
 
