@@ -35,7 +35,7 @@ interface ozIDiamond {
     function totalUnderlying(Asset) external view returns(uint);
     function changeDefaultSlippage(uint16 newBasisPoints_) external;
 
-    function rETH_ETH() external returns(uint256); //if not used, removed
+    function rETH_ETH() external returns(uint256); 
     function ETH_USD() external view returns(uint);
     function rETH_USD() external view returns(uint);
     function chargeOZLfee() external returns(bool);

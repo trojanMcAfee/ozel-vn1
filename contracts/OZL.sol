@@ -74,13 +74,17 @@ contract OZL is ERC20Upgradeable {
     }
 
     function _convertToQuote(QuoteAsset qt_, uint totalFeesRETH_) private view returns(uint) {
-        (bool success, bytes memory data) = address(getOZ()).staticcall('rETH_ETH()');
-        //^^^ this staticcall is failing, why? 
-        //use that's solved, confirm that exchangeRate is working with both quote assets
-        console.logBytes(data);
-        uint reth_eth = abi.decode(data, (uint));
-        console.log('reth_eth: ', reth_eth);
+        (bool success, bytes memory data) = address(getOZ()).staticcall(
+            abi.encodeWithSignature('rETH_ETH()')
+        );
         require(success, 'fff');
+        //^^^ this staticcall is failing, why? 
+        //once that's solved, confirm that exchangeRate is working with both quote assets
+        // console.logBytes(data);
+        // console.log('^');
+        // console.log('success: ', success);
+        uint reth_eth = abi.decode(data, (uint));
+        // console.log('reth_eth: ', reth_eth);
 
         return qt_ == QuoteAsset.USD ? totalFeesRETH_.mulDivDown(getOZ().rETH_USD(), 1 ether) :
             totalFeesRETH_.mulDivDown(reth_eth, 1 ether);
