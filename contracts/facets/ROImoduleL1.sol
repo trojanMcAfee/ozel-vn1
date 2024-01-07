@@ -46,6 +46,23 @@ contract ROImoduleL1 {
     }
 
 
+    function useOZL(
+        address tokenIn_, 
+        address tokenOut_,
+        address receiver_,
+        uint amountIn_,
+        uint amountOut_
+    ) external {
+        _checkPauseAndSwap2(
+            tokenIn_,
+            tokenOut_,
+            receiver_
+            rETHtoRedeem,
+            minAmountOut_
+        );
+    }
+
+
     function useUnderlying( 
         address underlying_, 
         address owner_,
@@ -133,6 +150,46 @@ contract ROImoduleL1 {
         }
     }
 
+
+
+    function _swapBalancer2(
+        address tokenIn_, 
+        address tokenOut_, 
+        address receiver_,
+        uint amountIn_,
+        uint minAmountOutOffchain_
+    ) private {
+        uint amountOut;
+        
+        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+            poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
+            kind: IVault.SwapKind.GIVEN_IN,
+            assetIn: IAsset(tokenIn_),
+            assetOut: IAsset(tokenOut_),
+            amount: amountIn_,
+            userData: new bytes(0)
+        });
+
+        IVault.FundManagement memory funds = IVault.FundManagement({
+            sender: address(this),
+            fromInternalBalance: false, 
+            recipient: payable(receiver_),
+            toInternalBalance: false
+        });
+        
+        try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
+            uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
+
+            tokenIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
+            amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
+        } catch Error(string memory reason) {
+            revert OZError10(reason);
+        }
+        
+        if (amountOut == 0) revert OZError02();
+    }
+
+
     
     function _swapBalancer(
         address tokenIn_, 
@@ -168,6 +225,35 @@ contract ROImoduleL1 {
         }
         
         if (amountOut == 0) revert OZError02();
+    }
+
+
+    function _checkPauseAndSwap2(
+        address tokenIn_, 
+        address tokenOut_, 
+        address receiver_,
+        uint amountIn_,
+        uint minAmountOut_
+    ) private {
+        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
+
+        if (paused) {
+            _swapUni(
+                tokenIn_,
+                tokenOut_,
+                amountIn_,
+                minAmountOut_,
+                receiver_
+            );
+        } else {
+            _swapBalancer2(
+                tokenIn_,
+                tokenOut_,
+                receiver_,
+                amountIn_,
+                minAmountOut_
+            );
+        }
     }
 
 
