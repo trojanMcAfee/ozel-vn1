@@ -97,6 +97,9 @@ contract OZLtokenTest is TestMethods {
         uint ozlRedeem = (rateUsd * ozlBal) / 1 ether;
         console.log('ozlRedeem in USD: ', ozlRedeem);
 
+        vm.startPrank(alice);
+        OZL.approve(address(OZL), ozlBal);
+
         OZL.redeem(
             alice,
             alice,
@@ -104,7 +107,9 @@ contract OZLtokenTest is TestMethods {
             ozlBal,
             uint(0)
         );
+
         console.log('yes');
+        vm.stopPrank();
     }
 
 

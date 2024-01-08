@@ -63,6 +63,7 @@ interface ozIDiamond {
     function useOZL(
         address tokenIn_, 
         address tokenOut_,
+        address receiver_,
         uint amountIn_,
         uint minAmountOut_
     ) external;

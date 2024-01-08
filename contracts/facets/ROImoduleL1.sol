@@ -49,6 +49,7 @@ contract ROImoduleL1 {
     function useOZL(
         address tokenIn_, 
         address tokenOut_,
+        address receiver_,
         uint amountIn_,
         uint minAmountOut_
     ) external {
@@ -57,11 +58,23 @@ contract ROImoduleL1 {
 
         _checkPauseAndSwap2(
             tokenIn_,
-            tokenOut_,
+            s.WETH,
             msg.sender,
-            msg.sender,
+            address(this),
             amountIn_,
-            minAmountOut_
+            minAmountOut_ //here it's 0 for both, but it must be different
+        );
+
+        console.log('good here');
+
+        // if (tokenOut_ != rETH or ETH) {}
+
+        _swapUni(
+            s.WETH,
+            tokenOut_,
+            IWETH(s.WETH).balanceOf(address(this)),
+            minAmountOut_,
+            receiver_
         );
     }
 
