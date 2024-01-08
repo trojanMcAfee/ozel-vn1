@@ -27,6 +27,7 @@ import {
 } from "../interfaces/IRocketPool.sol";
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "../Errors.sol";
+import {TradingLib} from "../libraries/TradingLib.sol";
 
 import "forge-std/console.sol";
 
@@ -60,8 +61,8 @@ contract ROImoduleL1 {
 
         // IERC20Permit(tokenIn_).approve(s.vaultBalancer, amountIn_);
 
-        uint x = IERC20Permit(tokenIn_).allowance(msg.sender, s.vaultBalancer);
-        console.log('allowancee: ', x);
+        // uint x = IERC20Permit(tokenIn_).allowance(msg.sender, s.vaultBalancer);
+        // console.log('allowancee: ', x);
 
         _checkPauseAndSwap2(
             tokenIn_,
@@ -194,6 +195,8 @@ contract ROImoduleL1 {
         // console.log('rETH bal msg.sender: ', IERC20Permit(tokenIn_).balanceOf(msg.sender));
         // console.log('rETH bal address(this): ', IERC20Permit(tokenIn_).balanceOf(address(this)));
         // console.log('amountIn: ', amountIn_);
+
+        IVault(s.vaultBalancer).setRelayerApproval(msg.sender, msg.sender, true);
         
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -205,9 +208,9 @@ contract ROImoduleL1 {
         });
 
         IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: address(this),
+            sender: sender_,
             fromInternalBalance: false, 
-            recipient: payable(address(this)),
+            recipient: payable(receiver_),
             toInternalBalance: false
         });
         
@@ -281,14 +284,14 @@ contract ROImoduleL1 {
                 receiver_
             );
         } else {
-            _swapBalancer2(
-                tokenIn_,
-                tokenOut_,
-                sender_,
-                receiver_,
-                amountIn_,
-                minAmountOut_
-            );
+            // TradingLib._swapBalancer2(
+            //     tokenIn_,
+            //     tokenOut_,
+            //     sender_,
+            //     receiver_,
+            //     amountIn_,
+            //     minAmountOut_
+            // );
         }
     }
 

@@ -11,6 +11,7 @@ import {QuoteAsset} from "./interfaces/IOZL.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {TradingLib} from "./libraries/TradingLib.sol";
 
 import "forge-std/console.sol";
 
@@ -200,11 +201,11 @@ contract OZL is ERC20Upgradeable {
 
         // IERC20Permit(rEthAddr).approve(0xBA12222222228d8Ba445958a75a0704d566BF2C8, type(uint).max);
 
-        getOZ().useOZL( 
+        TradingLib.useOZL( 
             rEthAddr,
-            tokenOut_,
+            0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
             address(this),
-            receiver_,
+            address(this),
             rETHtoRedeem,
             minAmountOut_
         );

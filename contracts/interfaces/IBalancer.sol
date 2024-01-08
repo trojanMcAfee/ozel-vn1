@@ -73,6 +73,12 @@ interface IVault {
         address recipient,
         JoinPoolRequest memory request
     ) external payable;
+
+    function setRelayerApproval(
+        address sender,
+        address relayer,
+        bool approved
+    ) external;
 }
 
 interface IPool {
