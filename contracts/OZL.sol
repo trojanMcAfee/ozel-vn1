@@ -186,15 +186,24 @@ contract OZL is ERC20Upgradeable {
         //get the OZL tokens out of the owner + send them to ozDiamond (holder of OZL dist)
         transfer(address(getOZ()), ozlAmountIn_);
 
+        // 1 OZL --- exchangeRate $
+        // ozlAmountIn --- x
+
+        // 1 rETH --- rETH_USD $
+        //   x   ----- usdValue
+
         //grabs rETH from the contract and swaps it for tokenOut_
         uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
-        uint rETHtoRedeem = usdValue.mulDivDown(1 ether, getOZ().rETH_USD()) / 1 ether;
+        uint rETHtoRedeem = usdValue.mulDivDown(1 ether, getOZ().rETH_USD());
 
         if (tokenOut_ == rEthAddr) return rETHtoRedeem;
+
+        // IERC20Permit(rEthAddr).approve(0xBA12222222228d8Ba445958a75a0704d566BF2C8, type(uint).max);
 
         getOZ().useOZL( 
             rEthAddr,
             tokenOut_,
+            address(this),
             receiver_,
             rETHtoRedeem,
             minAmountOut_

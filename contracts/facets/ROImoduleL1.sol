@@ -49,18 +49,25 @@ contract ROImoduleL1 {
     function useOZL(
         address tokenIn_, 
         address tokenOut_,
+        address sender_,
         address receiver_,
         uint amountIn_,
         uint minAmountOut_
     ) external {
         console.log('sender in useOZL: ', msg.sender);
         console.log('address(this): ', address(this));
+        console.log('rETH bal sender in use: ', IERC20Permit(tokenIn_).balanceOf(msg.sender));
+
+        // IERC20Permit(tokenIn_).approve(s.vaultBalancer, amountIn_);
+
+        uint x = IERC20Permit(tokenIn_).allowance(msg.sender, s.vaultBalancer);
+        console.log('allowancee: ', x);
 
         _checkPauseAndSwap2(
             tokenIn_,
             s.WETH,
-            msg.sender,
-            address(this),
+            sender_,
+            sender_, //receiver
             amountIn_,
             minAmountOut_ //here it's 0 for both, but it must be different
         );
@@ -177,6 +184,16 @@ contract ROImoduleL1 {
         uint minAmountOutOffchain_
     ) private {
         uint amountOut;
+
+        // IERC20Permit(s.rETH).approve(0xBA12222222228d8Ba445958a75a0704d566BF2C8, type(uint).max);
+
+        // uint x = IERC20Permit(tokenIn_).allowance(msg.sender, s.vaultBalancer);
+        // console.log('allowance: ', x);
+
+        // console.log('rETH bal sender: ', IERC20Permit(tokenIn_).balanceOf(sender_));
+        // console.log('rETH bal msg.sender: ', IERC20Permit(tokenIn_).balanceOf(msg.sender));
+        // console.log('rETH bal address(this): ', IERC20Permit(tokenIn_).balanceOf(address(this)));
+        // console.log('amountIn: ', amountIn_);
         
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -188,9 +205,9 @@ contract ROImoduleL1 {
         });
 
         IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: sender_,
+            sender: address(this),
             fromInternalBalance: false, 
-            recipient: payable(receiver_),
+            recipient: payable(address(this)),
             toInternalBalance: false
         });
         
