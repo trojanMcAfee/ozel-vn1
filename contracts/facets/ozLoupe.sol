@@ -7,6 +7,8 @@ import {AppStorage, Asset} from "../AppStorage.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 
+import "forge-std/console.sol";
+
 
 contract ozLoupe is DiamondLoupeFacet {
 

@@ -49,15 +49,18 @@ contract ROImoduleL1 {
     function useOZL(
         address tokenIn_, 
         address tokenOut_,
-        address receiver_,
         uint amountIn_,
-        uint amountOut_
+        uint minAmountOut_
     ) external {
+        console.log('sender in useOZL: ', msg.sender);
+        console.log('address(this): ', address(this));
+
         _checkPauseAndSwap2(
             tokenIn_,
             tokenOut_,
-            receiver_
-            rETHtoRedeem,
+            msg.sender,
+            msg.sender,
+            amountIn_,
             minAmountOut_
         );
     }
@@ -155,6 +158,7 @@ contract ROImoduleL1 {
     function _swapBalancer2(
         address tokenIn_, 
         address tokenOut_, 
+        address sender_,
         address receiver_,
         uint amountIn_,
         uint minAmountOutOffchain_
@@ -171,7 +175,7 @@ contract ROImoduleL1 {
         });
 
         IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: address(this),
+            sender: sender_,
             fromInternalBalance: false, 
             recipient: payable(receiver_),
             toInternalBalance: false
@@ -231,6 +235,7 @@ contract ROImoduleL1 {
     function _checkPauseAndSwap2(
         address tokenIn_, 
         address tokenOut_, 
+        address sender_,
         address receiver_,
         uint amountIn_,
         uint minAmountOut_
@@ -249,6 +254,7 @@ contract ROImoduleL1 {
             _swapBalancer2(
                 tokenIn_,
                 tokenOut_,
+                sender_,
                 receiver_,
                 amountIn_,
                 minAmountOut_

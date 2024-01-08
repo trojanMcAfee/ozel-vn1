@@ -58,4 +58,12 @@ interface ozIDiamond {
     function storeOZL(address ozlProxy_) external;
     function changeAdminFeeRecipient(address newRecipient_) external;
     function getOZLCirculatingSupply() external view returns(uint);
+
+    function ozTokens(address underlying_) external view returns(address);
+    function useOZL(
+        address tokenIn_, 
+        address tokenOut_,
+        uint amountIn_,
+        uint minAmountOut_
+    ) external;
 }

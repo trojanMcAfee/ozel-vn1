@@ -315,13 +315,13 @@ contract Setup is Test {
         uint id_
     ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
-        if (id_ == 0 || id_ == 10) {
+        if (id_ == 10) {
             length = 8;
-        } else if (id_ == 1 || id_ == 5) {
+        } else if (id_ == 1) {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
-        } else if (id_ == 3) {
+        } else if (id_ == 3 || id_ == 5) {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
@@ -329,6 +329,8 @@ contract Setup is Test {
             length = 6; 
         } else if (id_ == 8) {
             length = 4;
+        } else if (id_ == 0) {
+            length = 9;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -342,6 +344,7 @@ contract Setup is Test {
             selectors[5] = loupe.getDefaultSlippage.selector;
             selectors[6] = loupe.totalUnderlying.selector;
             selectors[7] = loupe.getProtocolFee.selector;
+            selectors[8] = loupe.ozTokens.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -356,6 +359,7 @@ contract Setup is Test {
         } else if (id_ == 5) {
             selectors[0] = roi.useUnderlying.selector;
             selectors[1] = roi.useOzTokens.selector;
+            selectors[2] = roi.useOZL.selector;
         } else if (id_ == 6) {
             selectors[0] = oracle.rETH_ETH.selector;
             selectors[1] = oracle.getUnderlyingValue.selector;

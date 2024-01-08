@@ -70,4 +70,12 @@ interface IOZL {
 
     function getExchangeRate(QuoteAsset asset_) external view returns(uint);
     function circulatingSupply() external view returns(uint);
+
+    function redeem(
+        address owner_,
+        address receiver_,
+        address tokenOut_,
+        uint ozlAmountIn_,
+        uint minAmountOut_
+    ) external;
 }

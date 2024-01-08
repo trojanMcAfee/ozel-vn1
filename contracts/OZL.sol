@@ -9,6 +9,8 @@ import {StorageSlot} from "@openzeppelin/contracts/utils/StorageSlot.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {QuoteAsset} from "./interfaces/IOZL.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -114,11 +116,12 @@ contract OZL is ERC20Upgradeable {
     //     return assets;
     // }
 
-    function _burn(address account, uint amount) internal override {
+
+    // function _burn(address account, uint amount) internal override {
 
 
 
-    }
+    // }
 
 
     error AssetOutNoExist();
@@ -133,75 +136,69 @@ contract OZL is ERC20Upgradeable {
     //     address rETH
     // }
 
-    function _triage(assetOut_) private returns(uint) {
-        if (getOZ().ozTokens(assetOut_) != address(0)) return assetOut_;
+    // function _triage(assetOut_) private returns(uint) {
+    //     if (getOZ().ozTokens(assetOut_) != address(0)) return assetOut_;
 
-        // address[] memory ethTokens = new address[](2);
-        // ethTokens[0] = 
-        // ethTokens[1] = rEthAddr;
+    //     // address[] memory ethTokens = new address[](2);
+    //     // ethTokens[0] = 
+    //     // ethTokens[1] = rEthAddr;
 
-        if (assetOut_ == ETH) return assetOut_;
-        if (assetOut_ == rEthAddr) return assetOut_
+    //     if (assetOut_ == ETH) return assetOut_;
+    //     if (assetOut_ == rEthAddr) return assetOut_;
 
-    }
+    // }
 
 
     function redeem(
         address owner_,
         address receiver_,
-        address assetOut_
+        address tokenOut_,
         uint256 ozlAmountIn_,
-        uint minAmountOut_;
+        uint minAmountOut_
     ) external {
         if (
-            getOZ().ozTokens(assetOut_) == address(0) &&
-            assetOut != ETH &&
-            assetOut != rETH
+            getOZ().ozTokens(tokenOut_) == address(0) &&
+            tokenOut_ != ETH &&
+            tokenOut_ != rEthAddr
         ) revert AssetOutNoExist();
 
         if (msg.sender != owner_) {
-            _spendAllowance(owner_, msg.sender, ozlAmount_);
+            _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
-        _burn(owner_, ozlAmount_);
-        SafeERC20.safeTransfer(_asset, receiver_, assets);
+        // _burn(owner_, ozlAmount_);
+        _burn(owner_, tokenOut_, ozlAmountIn_, minAmountOut_);
+        SafeERC20.safeTransfer(
+            IERC20(tokenOut_), receiver_, IERC20(tokenOut_).balanceOf(address(this))
+        );
 
-        emit Withdraw(msg.sender, receiver_, owner_, assets, shares);
+        // emit Withdraw(msg.sender, receiver_, owner_, assets, shares);
     }
 
 
-    function _burn(address owner_, address tokenOut_, uint ozlAmountIn_, uint minAmountOut_) private returns(uint) {
+    function _burn(
+        address owner_, 
+        address tokenOut_, 
+        uint ozlAmountIn_, 
+        uint minAmountOut_
+    ) private returns(uint) {
         //get the OZL tokens out of the owner + send them to ozDiamond (holder of OZL dist)
-        transferFrom(owner_, address(getOZ), ozlAmountIn_);
+        transferFrom(owner_, address(getOZ()), ozlAmountIn_);
 
         //grabs rETH from the contract and swaps it for tokenOut_
-        uint rate = getOZ().getExchangeRate();
-        uint usdValue = ozlAmountIn_.mulDivDown(rate, 1 ether);
-        uint rETHtoRedeem = usdValue.mulDivDown(rEthAddr, getOZ().rETH_USD()) / 1 ether;
+        uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
+        uint rETHtoRedeem = usdValue.mulDivDown(1 ether, getOZ().rETH_USD()) / 1 ether;
 
         if (tokenOut_ == rEthAddr) return rETHtoRedeem;
 
-        getOZ().useOZL( //<-- here *** doing the OZL-tokenOut redeem frmo treasury
+        getOZ().useOZL( 
             rEthAddr,
             tokenOut_,
             rETHtoRedeem,
             minAmountOut_
         );
 
-        // _checkPauseAndSwap(
-        //     rEthAddr,
-        //     wethAddr,
-        //     rETHtoRedeem,
-        //     minAmountOut_
-        //     //receipient - address(this)
-        // );
-
-
-        // 1 ozl --- rate in usd
-        // ozlAmountIn -- usd
-
-        // 1 rEth --- rETH_USD()
-        //    x  ---- usdToRedeem
+        revert('here');
 
     }
 

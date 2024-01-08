@@ -79,7 +79,7 @@ contract OZLtokenTest is TestMethods {
         vm.prank(alice);
         OZ.claimReward();
 
-        //-----
+        //----- test exchangeRAte
         IOZL OZL = IOZL(address(ozlProxy));
 
         uint rateUsd = OZL.getExchangeRate(QuoteAsset.USD);
@@ -90,13 +90,21 @@ contract OZLtokenTest is TestMethods {
         //-----
 
         //--- reedem OZL for investment
+        console.log('--- redeem OZL ---');
         uint ozlBal = OZL.balanceOf(alice);
         console.log('ozlBal alice: ', ozlBal);
 
         uint ozlRedeem = (rateUsd * ozlBal) / 1 ether;
         console.log('ozlRedeem in USD: ', ozlRedeem);
 
-
+        OZL.redeem(
+            alice,
+            alice,
+            daiAddr,
+            ozlBal,
+            uint(0)
+        );
+        console.log('yes');
     }
 
 

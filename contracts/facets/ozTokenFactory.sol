@@ -43,14 +43,16 @@ contract ozTokenFactory {
         ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, data);
         //------
 
-        _saveInRegistry(address(newToken));
+        _saveInRegistry(address(newToken), underlying_);
 
         return address(newToken);
     }
 
-    function _saveInRegistry(address newOzToken_) private {
+    //*** check the note in AppStorage for ozTokenRegistryMap*/
+    function _saveInRegistry(address newOzToken_, address underlying_) private {
         s.ozTokenRegistry.push(newOzToken_);
-        s.ozTokenRegistryMap[newOzToken_] = true;
+        s.ozTokenRegistryMap[newOzToken_] = true; //<--- remove
+        s.ozTokens[underlying_] = newOzToken_;
         emit TokenCreated(newOzToken_);
     }
 

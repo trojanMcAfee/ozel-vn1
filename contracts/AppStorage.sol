@@ -40,7 +40,7 @@ struct AppStorage {
 
     uint24 uniFee;
 
-    mapping(address ozToken => bool exist) ozTokenRegistryMap; //used
+    mapping(address ozToken => bool exist) ozTokenRegistryMap; //used - remove this and use only ozTokens map
 
     uint24 protocolFee;
 
