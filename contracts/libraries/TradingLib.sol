@@ -2,11 +2,14 @@ pragma solidity 0.8.21;
 
 
 import {IVault, IAsset, IPool, IQueries} from "../interfaces/IBalancer.sol";
+import {IWETH} from "../interfaces/IWETH.sol";
 import "../Errors.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {TradingPackage, Action} from "../AppStorage.sol";
 import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+
+import "forge-std/console.sol";
 
 
 library TradingLib {
@@ -30,7 +33,7 @@ library TradingLib {
         (bool paused,,) = IPool(p.rEthWethPoolBalancer).getPausedState(); 
 
         if (paused) {
-            _swapUni(
+            amountOut = _swapUni(
                 tokenIn,
                 tokenOut,
                 address(this),
@@ -51,16 +54,21 @@ library TradingLib {
             );
         }
 
-        amountOut = _swapUni(
-            p.WETH,
-            tokenOut_,
-            receiver_,
-            p.swapRouterUni,
-            p.uniFee,
-            amountOut,
-            minAmountOut_ //diff from swapBal, but for now it's at 0
-        );
+        if (tokenOut_ == p.WETH) {
+            IWETH(p.WETH).transfer(receiver_, amountOut);
+        } else {
+            amountOut = _swapUni(
+                p.WETH,
+                tokenOut_,
+                receiver_,
+                p.swapRouterUni,
+                p.uniFee,
+                amountOut,
+                minAmountOut_ //diff from swapBal, but for now it's at 0
+            );
+        }
     }
+
 
     function useOZL(
         TradingPackage memory p,

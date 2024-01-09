@@ -4,6 +4,7 @@ pragma solidity 0.8.21;
 
 import {TestMethods} from "./TestMethods.sol";
 import {IOZL} from "../../contracts/interfaces/IOZL.sol";
+import {IWETH} from "../../contracts/interfaces/IWETH.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
@@ -89,61 +90,102 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-    function test_exchangeRate_with_circulatingSupply() public {
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        _changeSlippage(uint16(9900));
+    function test_redeem_for_WETH() public {
+        //Pre-conditions
+        test_claim_OZL();
 
-        _startCampaign();
-        _mintOzTokens(ozERC20, alice, amountIn); 
-
-        uint secs = 10;
-        vm.warp(block.timestamp + secs);
-
-        _mock_rETH_ETH();
-
-        //--- charges fee
-        bool wasCharged = OZ.chargeOZLfee();
-        assertTrue(wasCharged);
-
-        //--- claims airdrop
-        vm.prank(alice);
-        OZ.claimReward();
-
-        //----- test exchangeRAte
         IOZL OZL = IOZL(address(ozlProxy));
+        uint ozlBalanceAlice = OZL.balanceOf(alice);
 
-        uint rateUsd = OZL.getExchangeRate(QuoteAsset.USD);
-        uint rateEth = OZL.getExchangeRate(QuoteAsset.ETH);
-
-        uint diff = rateUsd / 1000 - ((rateEth * OZ.ETH_USD()) / 1 ether) / 1000;
-        assertTrue(diff == 0);
-        //-----
-
-        //--- reedem OZL for investment
-        console.log('--- redeem OZL ---');
-        uint ozlBal = OZL.balanceOf(alice);
-        console.log('ozlBal alice: ', ozlBal);
-
-        uint ozlRedeem = (rateUsd * ozlBal) / 1 ether;
-        console.log('ozlRedeem in USD: ', ozlRedeem);
+        uint wethBalancePre = IWETH(wethAddr).balanceOf(alice);
+        assertTrue(wethBalancePre == 0);
 
         vm.prank(alice);
         uint amountOut = OZL.redeem(
             alice,
             alice,
+            wethAddr,
+            ozlBalanceAlice,
+            uint(0)
+        );
+        
+
+        uint wethBalancePost = IWETH(wethAddr).balanceOf(alice);
+        console.log('wethBalancePost: ', wethBalancePost);
+        assertTrue(wethBalancePost > 0);
+    }
+
+
+
+    function test_redeem_for_stable() public {
+        //Pre-conditions
+        test_claim_OZL();
+
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        uint balanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
+        uint ozlBalanceAlice = OZL.balanceOf(alice);
+
+        //-- this is off in comparisson to amountOut after swap in USD
+        // uint ozlValue = ozlBalanceAlice * OZL.getExchangeRate();
+        // console.log('ozlValue: ', ozlValue);
+        //***** -----
+
+        //Action
+        vm.prank(alice);
+        uint amountOut = OZL.redeem(
+            alice,
+            alice,
             daiAddr,
-            ozlBal,
+            ozlBalanceAlice,
             uint(0)
         );
 
-        uint balanceAlice = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(balanceAlice == amountOut);
-        console.log('dai bal alice - post: ', balanceAlice);
+        //Post-condtions
+        uint balanceAlicePost = IERC20Permit(testToken).balanceOf(alice);
+
+        assertTrue(balanceAlicePre == 0);
+        assertTrue(balanceAlicePost == amountOut);
+
+    }
+
+
+    function test_exchangeRate_with_circulatingSupply() public {
+        //Pre-condition
+        test_claim_OZL();
+
+        //Actions
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        uint rateUsd = OZL.getExchangeRate(QuoteAsset.USD);
+        uint rateEth = OZL.getExchangeRate(QuoteAsset.ETH);
+
+        //Post-condition
+        uint diff = rateUsd / 1000 - ((rateEth * OZ.ETH_USD()) / 1 ether) / 1000;
+        assertTrue(diff == 0);
+        //-----
+
+        //--- reedem OZL for investment
+        // console.log('--- redeem OZL ---');
+        // uint ozlBal = OZL.balanceOf(alice);
+        // console.log('ozlBal alice: ', ozlBal);
+
+        // uint ozlRedeem = (rateUsd * ozlBal) / 1 ether;
+        // console.log('ozlRedeem in USD: ', ozlRedeem);
+
+        // vm.prank(alice);
+        // uint amountOut = OZL.redeem(
+        //     alice,
+        //     alice,
+        //     daiAddr,
+        //     ozlBal,
+        //     uint(0)
+        // );
+
+        // uint balanceAlice = IERC20Permit(testToken).balanceOf(alice);
+        // assertTrue(balanceAlice == amountOut);
+        // console.log('dai bal alice - post: ', balanceAlice);
     }
 
 
@@ -180,8 +222,8 @@ contract OZLtokenTest is TestMethods {
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
-        IOZL OZL = IOZL(address(ozlProxy));
-        uint ozlRethBalance = OZL.getBal(); 
+        uint ozlRethBalance = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
+        // uint ozlRethBalance = OZL.getBal(); 
 
         /**
          * Post-conditions

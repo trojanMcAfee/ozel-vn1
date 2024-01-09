@@ -22,7 +22,7 @@ contract OZL is ERC20Upgradeable {
     using FixedPointMathLib for uint;
 
     address constant rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-    address constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     bytes32 private constant _OZ_DIAMOND_SLOT = bytes32(uint(keccak256('ozDiamond.storage.slot')) - 1);
 
     // enum QuoteAsset {
@@ -57,13 +57,6 @@ contract OZL is ERC20Upgradeable {
 
 
 
-    function getBal() public view returns(uint) {
-        uint bal = IERC20Permit(rEthAddr).balanceOf(address(this));
-        console.log('rETH bal (from fees) ***: ', bal);
-
-        return bal;
-    }
-
     function getExchangeRate() external view returns(uint) {
         return this.getExchangeRate(QuoteAsset.USD);
     }
@@ -71,7 +64,9 @@ contract OZL is ERC20Upgradeable {
 
     function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
         uint ONE = 1 ether;
-        uint totalFeesRETH = IERC20Permit(rEthAddr).balanceOf(address(this));
+        address rETH = getOZ().tradingPackage().rETH;
+
+        uint totalFeesRETH = IERC20Permit(rETH).balanceOf(address(this));
         uint totalFeesQuote = _convertToQuote(asset_, totalFeesRETH);
 
         uint c_Supply = circulatingSupply();
@@ -99,10 +94,7 @@ contract OZL is ERC20Upgradeable {
     }
 
 
-    // function redeem(uint amount_, address receiver_) external returns(uint) {
-        
-
-    // }
+  
 
     // function maxRedeem(address owner) public view returns(uint256) {
     //     return balanceOf(owner);
@@ -159,7 +151,7 @@ contract OZL is ERC20Upgradeable {
     ) external returns(uint amountOut) {
         if (
             getOZ().ozTokens(tokenOut_) == address(0) &&
-            tokenOut_ != ETH &&
+            tokenOut_ != WETH &&
             tokenOut_ != rEthAddr
         ) revert AssetOutNoExist();
 

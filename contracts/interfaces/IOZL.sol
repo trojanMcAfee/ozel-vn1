@@ -66,9 +66,9 @@ interface IOZL {
     function nonces(address owner) external view returns (uint256);
 
     //-----
-    function getBal() external view returns(uint);
 
     function getExchangeRate(QuoteAsset asset_) external view returns(uint);
+    function getExchangeRate() external view returns(uint);
     function circulatingSupply() external view returns(uint);
 
     function redeem(
