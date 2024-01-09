@@ -156,7 +156,7 @@ contract OZL is ERC20Upgradeable {
         address tokenOut_,
         uint256 ozlAmountIn_,
         uint minAmountOut_
-    ) external {
+    ) external returns(uint amountOut) {
         if (
             getOZ().ozTokens(tokenOut_) == address(0) &&
             tokenOut_ != ETH &&
@@ -168,7 +168,7 @@ contract OZL is ERC20Upgradeable {
         }
 
         // _burn(owner_, ozlAmount_);
-        _burn(owner_, receiver_, tokenOut_, ozlAmountIn_, minAmountOut_);
+        amountOut = _burn(owner_, receiver_, tokenOut_, ozlAmountIn_, minAmountOut_);
         // SafeERC20.safeTransfer(
         //     IERC20(tokenOut_), receiver_, IERC20(tokenOut_).balanceOf(address(this))
         // );
@@ -183,7 +183,7 @@ contract OZL is ERC20Upgradeable {
         address tokenOut_, 
         uint ozlAmountIn_, 
         uint minAmountOut_
-    ) private returns(uint) {
+    ) private returns(uint amountOut) {
         //get the OZL tokens out of the owner + send them to ozDiamond (holder of OZL dist)
         transfer(address(getOZ()), ozlAmountIn_); //<--- handle later getting the OZL back to the dist campaign
 
@@ -201,7 +201,7 @@ contract OZL is ERC20Upgradeable {
 
         // IERC20Permit(rEthAddr).approve(0xBA12222222228d8Ba445958a75a0704d566BF2C8, type(uint).max);
 
-        TradingLib.useOZL( 
+        amountOut = TradingLib.useOZL( 
             // rEthAddr,
             // 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
             getOZ().tradingPackage(),

@@ -98,18 +98,20 @@ contract OZLtokenTest is TestMethods {
         console.log('ozlRedeem in USD: ', ozlRedeem);
 
         vm.startPrank(alice);
-        OZL.approve(address(OZL), ozlBal);
+        // OZL.approve(address(OZL), ozlBal);
 
-        OZL.redeem(
+        uint amountOut = OZL.redeem(
             alice,
             alice,
             daiAddr,
             ozlBal,
             uint(0)
         );
-
-        console.log('yes');
         vm.stopPrank();
+
+        uint balanceAlice = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceAlice == amountOut);
+        console.log('dai bal alice - post: ', balanceAlice);
     }
 
 

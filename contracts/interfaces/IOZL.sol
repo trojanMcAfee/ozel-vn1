@@ -77,5 +77,5 @@ interface IOZL {
         address tokenOut_,
         uint ozlAmountIn_,
         uint minAmountOut_
-    ) external;
+    ) external returns(uint amountOut);
 }

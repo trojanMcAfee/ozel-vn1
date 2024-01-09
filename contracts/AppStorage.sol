@@ -56,6 +56,12 @@ struct AppStorage {
   
 }
 
+enum Action {
+    OZL_OUT,
+    OZ_IN,
+    OZ_OUT
+}
+
 
 struct AmountsIn {
     uint amountIn;
