@@ -196,7 +196,7 @@ contract ROImoduleL1 {
         // console.log('rETH bal address(this): ', IERC20Permit(tokenIn_).balanceOf(address(this)));
         // console.log('amountIn: ', amountIn_);
 
-        IVault(s.vaultBalancer).setRelayerApproval(msg.sender, msg.sender, true);
+        // IVault(s.vaultBalancer).setRelayerApproval(msg.sender, msg.sender, true);
         
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),

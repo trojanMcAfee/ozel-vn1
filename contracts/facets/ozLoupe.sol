@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {DiamondLoupeFacet} from "./DiamondLoupeFacet.sol";
-import {AppStorage, Asset} from "../AppStorage.sol";
+import {AppStorage, Asset, TradingPackage} from "../AppStorage.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 
@@ -33,8 +33,8 @@ contract ozLoupe is DiamondLoupeFacet {
         return s.ozTokens[underlying_];
     }
 
-    // function storage() external view returns(AppStorage) {
-    //     return s;
-    // }
+    function tradingPackage() external view returns(TradingPackage memory) {
+        return s.p;
+    }
 
 }

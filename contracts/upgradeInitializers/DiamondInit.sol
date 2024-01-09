@@ -19,7 +19,8 @@ import {
     Tokens,
     Dexes,
     Oracles,
-    Infra
+    Infra,
+    TradingPackage
 } from "../AppStorage.sol";
 
 import {IRocketStorage} from "../interfaces/IRocketPool.sol";
@@ -65,6 +66,17 @@ contract DiamondInit {
         s.defaultSlippage = infra_.defaultSlippage;
         s.uniFee = infra_.uniFee;
         s.protocolFee = infra_.protocolFee;
+        s.adminFeeRecipient = ds.contractOwner;
+        s.p = TradingPackage(
+            s.swapRouterUni,
+            s.uniFee,
+            s.rEthWethPoolBalancer,
+            s.queriesBalancer,
+            s.vaultBalancer,
+            0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, //<-- put this in Setup.sol
+            tokens_.reth,
+            tokens_.weth
+        );
 
         //ERC20s
         s.WETH = tokens_.weth;
@@ -80,7 +92,6 @@ contract DiamondInit {
         );
         s.rocketDAOProtocolSettingsDepositID = keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"));
         
-        s.adminFeeRecipient = ds.contractOwner;
     }
 
 

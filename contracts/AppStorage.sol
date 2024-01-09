@@ -51,6 +51,8 @@ struct AppStorage {
 
     address adminFeeRecipient; 
     // uint16 adminFeeBps;
+
+    TradingPackage p;
   
 }
 
@@ -59,6 +61,20 @@ struct AmountsIn {
     uint amountIn;
     uint minWethOut;
     uint minRethOut;
+}
+
+struct TradingPackage {
+    //Uniswap
+    address swapRouterUni;
+    uint24 uniFee;
+    //Balancer
+    address rEthWethPoolBalancer;
+    address queriesBalancer;
+    address vaultBalancer;
+    //Addresses
+    address ETH;
+    address rETH;
+    address WETH;
 }
 
 

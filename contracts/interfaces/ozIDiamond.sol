@@ -3,7 +3,13 @@ pragma solidity 0.8.21;
 
 
 import {IDiamondCut} from "./IDiamondCut.sol";
-import {AmountsIn, AmountsOut, Asset, LastRewards} from "../AppStorage.sol";
+import {
+    AmountsIn, 
+    AmountsOut, 
+    Asset, 
+    LastRewards,
+    TradingPackage
+} from "../AppStorage.sol";
 
 
 interface ozIDiamond {
@@ -68,4 +74,6 @@ interface ozIDiamond {
         uint amountIn_,
         uint minAmountOut_
     ) external;
+
+    function tradingPackage() external view returns(TradingPackage memory);
 }

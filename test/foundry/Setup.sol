@@ -330,7 +330,7 @@ contract Setup is Test {
         } else if (id_ == 8) {
             length = 4;
         } else if (id_ == 0) {
-            length = 9;
+            length = 10;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -345,6 +345,7 @@ contract Setup is Test {
             selectors[6] = loupe.totalUnderlying.selector;
             selectors[7] = loupe.getProtocolFee.selector;
             selectors[8] = loupe.ozTokens.selector;
+            selectors[9] = loupe.tradingPackage.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
