@@ -53,6 +53,41 @@ contract OZLtokenTest is TestMethods {
 
     // function test_exchangeRate_no_circulatingSupply
 
+    function test_claim_OZL() public {
+        //Pre-conditions
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20"
+        ));
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _changeSlippage(uint16(9900));
+
+        _startCampaign();
+        _mintOzTokens(ozERC20, alice, amountIn); 
+
+        uint secs = 10;
+        vm.warp(block.timestamp + secs);
+
+        _mock_rETH_ETH();
+
+        IOZL OZL = IOZL(address(ozlProxy));
+        uint ozlBalancePre = OZL.balanceOf(alice);
+
+        //Actions
+        bool wasCharged = OZ.chargeOZLfee();
+
+        vm.prank(alice);
+        OZ.claimReward();
+
+        //Post-condtions
+        uint ozlBalancePost = OZL.balanceOf(alice);
+
+        assertTrue(wasCharged);
+        assertTrue(ozlBalancePre == 0);
+        assertTrue(ozlBalancePost > 0);
+    }
+
 
     function test_exchangeRate_with_circulatingSupply() public {
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
@@ -97,9 +132,7 @@ contract OZLtokenTest is TestMethods {
         uint ozlRedeem = (rateUsd * ozlBal) / 1 ether;
         console.log('ozlRedeem in USD: ', ozlRedeem);
 
-        vm.startPrank(alice);
-        // OZL.approve(address(OZL), ozlBal);
-
+        vm.prank(alice);
         uint amountOut = OZL.redeem(
             alice,
             alice,
@@ -107,7 +140,6 @@ contract OZLtokenTest is TestMethods {
             ozlBal,
             uint(0)
         );
-        vm.stopPrank();
 
         uint balanceAlice = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceAlice == amountOut);
