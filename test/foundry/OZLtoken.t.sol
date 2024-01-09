@@ -112,7 +112,6 @@ contract OZLtokenTest is TestMethods {
         
 
         uint wethBalancePost = IWETH(wethAddr).balanceOf(alice);
-        console.log('wethBalancePost: ', wethBalancePost);
         assertTrue(wethBalancePost > 0);
     }
 
@@ -160,32 +159,14 @@ contract OZLtokenTest is TestMethods {
 
         uint rateUsd = OZL.getExchangeRate(QuoteAsset.USD);
         uint rateEth = OZL.getExchangeRate(QuoteAsset.ETH);
+        uint rateReth = OZL.getExchangeRate(QuoteAsset.rETH);
 
-        //Post-condition
-        uint diff = rateUsd / 1000 - ((rateEth * OZ.ETH_USD()) / 1 ether) / 1000;
-        assertTrue(diff == 0);
-        //-----
+        //Post-conditions
+        uint diffUSDETH = _getRateDifference(rateUsd, rateEth, OZ.ETH_USD());
+        uint diffETHRETH = _getRateDifference(rateEth, rateReth, OZ.rETH_ETH());
 
-        //--- reedem OZL for investment
-        // console.log('--- redeem OZL ---');
-        // uint ozlBal = OZL.balanceOf(alice);
-        // console.log('ozlBal alice: ', ozlBal);
-
-        // uint ozlRedeem = (rateUsd * ozlBal) / 1 ether;
-        // console.log('ozlRedeem in USD: ', ozlRedeem);
-
-        // vm.prank(alice);
-        // uint amountOut = OZL.redeem(
-        //     alice,
-        //     alice,
-        //     daiAddr,
-        //     ozlBal,
-        //     uint(0)
-        // );
-
-        // uint balanceAlice = IERC20Permit(testToken).balanceOf(alice);
-        // assertTrue(balanceAlice == amountOut);
-        // console.log('dai bal alice - post: ', balanceAlice);
+        assertTrue(diffUSDETH == 0);
+        assertTrue(diffETHRETH == 0);
     }
 
 
@@ -280,5 +261,14 @@ contract OZLtokenTest is TestMethods {
 
         uint rate = OZL.getExchangeRate(QuoteAsset.USD);
         console.log('rate3: ', rate);
+    }
+
+
+    function _getRateDifference(
+        uint baseRate_, 
+        uint quoteRate_,
+        uint exchangeRate_
+    ) internal pure returns(uint) {
+        return baseRate_ / 1000 - ((quoteRate_ * exchangeRate_) / 1 ether) / 1000;
     }
 }

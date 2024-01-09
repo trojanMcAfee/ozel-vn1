@@ -4,7 +4,8 @@ pragma solidity 0.8.21;
 
 enum QuoteAsset {
     USD,
-    ETH
+    ETH,
+    rETH
 }
 
 
