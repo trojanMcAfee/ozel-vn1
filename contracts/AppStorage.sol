@@ -57,7 +57,7 @@ struct AppStorage {
 }
 
 enum Action {
-    OZL_OUT,
+    OZL_IN,
     OZ_IN,
     OZ_OUT
 }

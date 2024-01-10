@@ -120,6 +120,7 @@ contract OZL is ERC20Upgradeable {
         uint rETHtoRedeem = usdValue.mulDivDown(1 ether, OZ.rETH_USD());
 
         if (tokenOut_ == p.rETH) {
+            if (rETHtoRedeem < minAmountOut_) revert OZError19(rETHtoRedeem);
             return TradingLib.sendLSD(p.rETH, receiver_, rETHtoRedeem);
         }
 

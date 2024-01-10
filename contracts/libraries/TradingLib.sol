@@ -3,6 +3,7 @@ pragma solidity 0.8.21;
 
 import {IVault, IAsset, IPool, IQueries} from "../interfaces/IBalancer.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
+import {Helpers} from "../libraries/Helpers.sol";
 import "../Errors.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -25,7 +26,7 @@ library TradingLib {
         address tokenIn;
         address tokenOut;
 
-        if (type_ == Action.OZL_OUT) {
+        if (type_ == Action.OZL_IN) {
             tokenIn = p.rETH;
             tokenOut = p.WETH;
         } 
@@ -50,7 +51,8 @@ library TradingLib {
                 p.queriesBalancer,
                 p.vaultBalancer,
                 amountIn_,
-                minAmountOut_
+                minAmountOut_,
+                Action.OZL_IN
             );
         }
 
@@ -83,7 +85,7 @@ library TradingLib {
             receiver_,
             amountIn_,
             minAmountOut_,
-            Action.OZL_OUT
+            Action.OZL_IN
         );
     }
 
@@ -135,8 +137,9 @@ library TradingLib {
         address queries_,
         address vault_,
         uint amountIn_,
-        uint minAmountOutOffchain_
-    ) private returns(uint amountOut) {
+        uint minAmountOutOffchain_,
+        Action type_
+    ) private returns(uint) {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(pool_).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
@@ -152,17 +155,36 @@ library TradingLib {
             recipient: payable(address(this)),
             toInternalBalance: false
         });
-        
-        try IQueries(queries_).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
-            uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
 
-            SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
-            amountOut = IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp);
+        uint minOut;
+        
+        if (type_ == Action.OZL_IN) {
+            minOut = minAmountOutOffchain_;
+        } else if (type_ != Action.OZL_IN) {
+            try IQueries(queries_).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
+                minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
+
+                // SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
+                // amountOut = IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp);
+            } catch Error(string memory reason) {
+                revert OZError10(reason);
+            }
+        }
+
+        SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
+    
+        try IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp) returns(uint amountOut) {
+            if (amountOut == 0) revert OZError02();
+            return amountOut;
         } catch Error(string memory reason) {
-            revert OZError10(reason);
+            if (Helpers.compareStrings(reason, 'BAL#507')) {
+                revert OZError20();
+            } else {
+                revert OZError21(reason);
+            }
         }
         
-        if (amountOut == 0) revert OZError02();
     }
+
 
 }

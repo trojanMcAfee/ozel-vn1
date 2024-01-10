@@ -155,10 +155,12 @@ library Helpers {
         return x <= y ? x : y;
     }
 
-    
-    /**
-     * *** L1 ***
-     */
+    function compareStrings(
+        string memory str1_,
+        string memory str2_
+    ) internal pure returns(bool) {
+        return keccak256(abi.encodePacked(str1_)) == keccak256(abi.encodePacked(str2_));
+    }
 
   
 }

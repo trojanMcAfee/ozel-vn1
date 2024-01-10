@@ -96,7 +96,7 @@ contract OZLtokenTest is TestMethods {
         uint rEthBalancePre = IERC20Permit(rEthAddr).balanceOf(alice);
         
         uint rEthToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.rETH)) / 1 ether;
-        _changeSlippage(uint16(50));
+        _changeSlippage(uint16(5)); //0.05%
         uint minAmountOut = HelpersLib.calculateMinAmountOut(rEthToRedeem, OZ.getDefaultSlippage());
 
         //Action
@@ -127,6 +127,12 @@ contract OZLtokenTest is TestMethods {
         uint ozlBalanceAlice = OZL.balanceOf(alice);
         uint wethBalancePre = IWETH(wethAddr).balanceOf(alice);
 
+        uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
+        console.log('wethToRedeem: ', wethToRedeem);
+        _changeSlippage(uint16(500)); //0.5%
+        uint minAmountOut = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
+        console.log('minAmountOut: ', minAmountOut);
+
         //Action
         vm.prank(alice);
         uint amountOut = OZL.redeem(
@@ -134,13 +140,15 @@ contract OZLtokenTest is TestMethods {
             alice,
             wethAddr,
             ozlBalanceAlice,
-            uint(0)
+            minAmountOut
         );
         
         //Post-condition
         uint wethBalancePost = IWETH(wethAddr).balanceOf(alice);
         assertTrue(wethBalancePre == 0);
         assertTrue(wethBalancePost > 0);
+        assertTrue(wethBalancePost == amountOut);
+        console.log('amountOut: ', amountOut);
     }
 
 

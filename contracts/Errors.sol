@@ -48,4 +48,9 @@ error OZError17(); //notifyRewardAmount - reward amount > balance
 
 //----- OZL errors
 error OZError18(address tokenOut); //redeem - not valid token out
+error OZError19(uint amount); //redeem - redeem amount is less than minAmountOut
+
+//--- More my errors
+error OZError20(); //_swapBalancer - not enough slippage (could be the same as OZError19 - check)
+error OZError21(string reason); //_swapBalancer - other balancer failure reason besides slippage
 
