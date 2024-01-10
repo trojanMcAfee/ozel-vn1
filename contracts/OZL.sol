@@ -161,14 +161,13 @@ contract OZL is ERC20Upgradeable {
             _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
-        amountOut = _burn(owner_, receiver_, tokenOut_, ozlAmountIn_, minAmountOut_);
+        amountOut = _burn(receiver_, tokenOut_, ozlAmountIn_, minAmountOut_);
 
         // emit Withdraw(msg.sender, receiver_, owner_, assets, shares);
     }
 
 
     function _burn(
-        address owner_, 
         address receiver_,
         address tokenOut_, 
         uint ozlAmountIn_, 
@@ -182,7 +181,7 @@ contract OZL is ERC20Upgradeable {
         uint rETHtoRedeem = usdValue.mulDivDown(1 ether, getOZ().rETH_USD());
 
         if (tokenOut_ == rEthAddr) {
-            return TradingLib.sendLSD(rEthAddr, address(this), receiver_, rETHtoRedeem);
+            return TradingLib.sendLSD(rEthAddr, receiver_, rETHtoRedeem);
         }
 
         return TradingLib.useOZL( 

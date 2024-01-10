@@ -91,7 +91,6 @@ library TradingLib {
 
     function sendLSD(
         address lsd_, 
-        address from_, 
         address receiver_, 
         uint amount_
     ) internal returns(uint) {

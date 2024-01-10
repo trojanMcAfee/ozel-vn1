@@ -111,9 +111,10 @@ contract OZLtokenTest is TestMethods {
 
         //Post-condition
         uint rEthBalancePost = IERC20Permit(rEthAddr).balanceOf(alice);
-        console.log('rEthBalancePost: ', rEthBalancePost);
+        
         assertTrue(rEthBalancePre == 0);
         assertTrue(rEthBalancePost > 0);
+        assertTrue(amountOut == rEthBalancePost);
     } 
 
 
