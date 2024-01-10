@@ -112,9 +112,6 @@ contract OZL is ERC20Upgradeable {
             _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
-        //-------
-        // amountOut = _burn(p, receiver_, tokenOut_, ozlAmountIn_, minAmountOut_);
-
         //get the OZL tokens out of the owner + send them to ozDiamond (holder of OZL dist)
         SafeERC20.safeTransfer(IERC20(address(this)), address(OZ), ozlAmountIn_);
 

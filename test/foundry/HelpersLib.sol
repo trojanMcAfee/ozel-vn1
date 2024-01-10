@@ -4,12 +4,13 @@ pragma solidity 0.8.21;
 
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "solady/src/utils/FixedPointMathLib.sol";
+// import "solady/src/utils/FixedPointMathLib.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IPool, IVault} from "../../contracts/interfaces/IBalancer.sol";
 import {Helpers} from "../../contracts/libraries/Helpers.sol";
 import {RequestType, Type, ReqIn, ReqOut} from "./AppStorageTests.sol";
 import {ozIDiamond} from "../../contracts/interfaces/ozIDiamond.sol";
+import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 
@@ -70,23 +71,28 @@ library HelpersLib {
     }
 
   
-
-    function _calculateMinAmountOut(
+    function calculateMinAmountOut(
         uint amountIn_,
         uint price_, 
         uint16 slippage_
     ) internal pure returns(uint minAmountOut) {
-        uint ONE_ETHER = 1 ether;
-
-        uint amountOut = amountIn_.fullMulDiv(price_, ONE_ETHER);
-        minAmountOut = amountOut - amountOut.fullMulDiv(uint(slippage_), 10000);
-
+        uint amountOut = amountIn_.mulDivDown(price_, 1 ether);
+        minAmountOut = amountOut - amountOut.mulDivDown(uint(slippage_), 10000);
     }
+
+
+    function calculateMinAmountOut(
+        uint amountIn_,
+        uint16 slippage_
+    ) internal pure returns(uint minAmountOut) {
+        return amountIn_ - amountIn_.mulDivDown(uint(slippage_), 10000);
+    }
+
 
     function encodeOutData(uint ozAmountIn_, uint amountInReth_, ozIDiamond oz_, address receiver_) internal returns(bytes memory data) {
         uint16 slippage = oz_.getDefaultSlippage();
-        uint minAmountOutWeth = _calculateMinAmountOut(amountInReth_, oz_.rETH_ETH(), slippage);
-        uint minAmountOutUnderlying = _calculateMinAmountOut(minAmountOutWeth, oz_.ETH_USD(), slippage);
+        uint minAmountOutWeth = calculateMinAmountOut(amountInReth_, oz_.rETH_ETH(), slippage);
+        uint minAmountOutUnderlying = calculateMinAmountOut(minAmountOutWeth, oz_.ETH_USD(), slippage);
         
         data = abi.encode(ozAmountIn_, amountInReth_, minAmountOutWeth, minAmountOutUnderlying, receiver_);
     }
@@ -115,9 +121,9 @@ library HelpersLib {
             (,int price,,,) = AggregatorV3Interface(feeds_[i]).latestRoundData();
             uint expectedOut = 
                 ( i == 0 ? rawAmountIn_ * 1e18 : minAmountsOut[i - 1] )
-                .fullMulDiv(1 ether, i == 0 ? uint(price) * 1e10 : uint(price));
+                .mulDivDown(1 ether, i == 0 ? uint(price) * 1e10 : uint(price));
 
-            minAmountsOut[i] = expectedOut - expectedOut.fullMulDiv(uint(slippage_), 10000);
+            minAmountsOut[i] = expectedOut - expectedOut.mulDivDown(uint(slippage_), 10000);
         }
 
         return minAmountsOut;

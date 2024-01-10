@@ -13,6 +13,7 @@ import {Type} from "./AppStorageTests.sol";
 import {IRocketTokenRETH} from "../../contracts/interfaces/IRocketPool.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
+import {HelpersLib} from "./HelpersLib.sol";
 
 import "forge-std/console.sol";
 
@@ -20,11 +21,6 @@ import "forge-std/console.sol";
 contract OZLtokenTest is TestMethods {
 
     using FixedPointMathLib for uint;
-
-    // enum QuoteAsset {
-    //     USD,
-    //     ETH
-    // }
 
 
    function _mock_rETH_ETH() internal {
@@ -98,6 +94,10 @@ contract OZLtokenTest is TestMethods {
 
         uint ozlBalanceAlice = OZL.balanceOf(alice);
         uint rEthBalancePre = IERC20Permit(rEthAddr).balanceOf(alice);
+        
+        uint rEthToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.rETH)) / 1 ether;
+        _changeSlippage(uint16(50));
+        uint minAmountOut = HelpersLib.calculateMinAmountOut(rEthToRedeem, OZ.getDefaultSlippage());
 
         //Action
         vm.prank(alice);
@@ -106,7 +106,7 @@ contract OZLtokenTest is TestMethods {
             alice,
             rEthAddr,
             ozlBalanceAlice,
-            uint(0)
+            minAmountOut
         );
 
         //Post-condition
@@ -155,9 +155,17 @@ contract OZLtokenTest is TestMethods {
         uint ozlBalanceAlice = OZL.balanceOf(alice);
 
         //-- this is off in comparisson to amountOut after swap in USD
-        // uint ozlValue = ozlBalanceAlice * OZL.getExchangeRate();
-        // console.log('ozlValue: ', ozlValue);
+        uint ozlValue = ozlBalanceAlice * OZL.getExchangeRate();
+        console.log('ozlValue: ', ozlValue / 1 ether);
+
+        uint slippage = 100;
+
+
         //***** -----
+
+        // uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
+        //     [ethUsdChainlink, rEthEthChainlink], rawAmountIn_, slippage_
+        // );
 
         //Action
         vm.prank(alice);
@@ -171,6 +179,7 @@ contract OZLtokenTest is TestMethods {
 
         //Post-condtions
         uint balanceAlicePost = IERC20Permit(testToken).balanceOf(alice);
+        console.log('balanceAlicePost: ', balanceAlicePost);
 
         assertTrue(balanceAlicePre == 0);
         assertTrue(balanceAlicePost == amountOut);
@@ -231,7 +240,6 @@ contract OZLtokenTest is TestMethods {
         assertTrue(wasCharged);
 
         uint ozlRethBalance = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
-        // uint ozlRethBalance = OZL.getBal(); 
 
         /**
          * Post-conditions
