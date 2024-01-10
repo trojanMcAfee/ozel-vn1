@@ -89,15 +89,14 @@ library TradingLib {
         );
     }
 
-    function approveLSD(address lsd_, address spender_, uint amount_) internal {
-        IERC20(lsd_).approve(spender_, amount_);
-    }
-
-    function sendLSD(address lsd_, address from_, address receiver_, uint amount_) internal {
-        console.log('sender: ', msg.sender);
-        console.log('this: ', address(this));
-
-        IERC20(lsd_).transfer(receiver_, amount_);
+    function sendLSD(
+        address lsd_, 
+        address from_, 
+        address receiver_, 
+        uint amount_
+    ) internal returns(uint) {
+        SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
+        return amount_;
     }
 
 

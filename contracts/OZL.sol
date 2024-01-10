@@ -173,26 +173,19 @@ contract OZL is ERC20Upgradeable {
         address tokenOut_, 
         uint ozlAmountIn_, 
         uint minAmountOut_
-    ) private returns(uint amountOut) {
+    ) private returns(uint) {
         //get the OZL tokens out of the owner + send them to ozDiamond (holder of OZL dist)
-        transfer(address(getOZ()), ozlAmountIn_); //<--- handle later getting the OZL back to the dist campaign
+        SafeERC20.safeTransfer(IERC20(address(this)), address(getOZ()), ozlAmountIn_); //<--- handle later getting the OZL back to the dist campaign
 
         //grabs rETH from the contract and swaps it for tokenOut_
         uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
         uint rETHtoRedeem = usdValue.mulDivDown(1 ether, getOZ().rETH_USD());
 
         if (tokenOut_ == rEthAddr) {
-            // console.log('rETHtoRedeem: ', rETHtoRedeem);
-            // console.log('rEth bal: ', IERC20Permit(rEthAddr).balanceOf(address(this)));
-            // TradingLib.approveLSD(rEthAddr, msg.sender, rETHtoRedeem);
-
-            // transferFrom(address(this), receiver_, rETHtoRedeem);
-            TradingLib.sendLSD(rEthAddr, address(this), receiver_, rETHtoRedeem);
-            // amountOut = rETHtoRedeem;
-            return amountOut;
+            return TradingLib.sendLSD(rEthAddr, address(this), receiver_, rETHtoRedeem);
         }
 
-        amountOut = TradingLib.useOZL( 
+        return TradingLib.useOZL( 
             getOZ().tradingPackage(),
             tokenOut_,
             receiver_,
