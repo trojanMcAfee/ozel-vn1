@@ -11,6 +11,8 @@ import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRoute
 
 import "forge-std/console.sol";
 
+import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol";
+
 
 library TradingLib {
 
@@ -85,6 +87,17 @@ library TradingLib {
             minAmountOut_,
             Action.OZL_OUT
         );
+    }
+
+    function approveLSD(address lsd_, address spender_, uint amount_) internal {
+        IERC20(lsd_).approve(spender_, amount_);
+    }
+
+    function sendLSD(address lsd_, address from_, address receiver_, uint amount_) internal {
+        console.log('sender: ', msg.sender);
+        console.log('this: ', address(this));
+
+        IERC20(lsd_).transfer(receiver_, amount_);
     }
 
 

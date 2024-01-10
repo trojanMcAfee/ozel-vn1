@@ -181,7 +181,16 @@ contract OZL is ERC20Upgradeable {
         uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
         uint rETHtoRedeem = usdValue.mulDivDown(1 ether, getOZ().rETH_USD());
 
-        if (tokenOut_ == rEthAddr) return rETHtoRedeem;
+        if (tokenOut_ == rEthAddr) {
+            // console.log('rETHtoRedeem: ', rETHtoRedeem);
+            // console.log('rEth bal: ', IERC20Permit(rEthAddr).balanceOf(address(this)));
+            // TradingLib.approveLSD(rEthAddr, msg.sender, rETHtoRedeem);
+
+            // transferFrom(address(this), receiver_, rETHtoRedeem);
+            TradingLib.sendLSD(rEthAddr, address(this), receiver_, rETHtoRedeem);
+            // amountOut = rETHtoRedeem;
+            return amountOut;
+        }
 
         amountOut = TradingLib.useOZL( 
             getOZ().tradingPackage(),

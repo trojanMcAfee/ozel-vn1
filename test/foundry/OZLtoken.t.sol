@@ -90,17 +90,43 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-
-    function test_redeem_for_WETH() public {
+    function test_redeem_in_rETH() public {
         //Pre-conditions
         test_claim_OZL();
 
         IOZL OZL = IOZL(address(ozlProxy));
+
         uint ozlBalanceAlice = OZL.balanceOf(alice);
+        uint rEthBalancePre = IERC20Permit(rEthAddr).balanceOf(alice);
 
+        //Action
+        vm.prank(alice);
+        uint amountOut = OZL.redeem(
+            alice,
+            alice,
+            rEthAddr,
+            ozlBalanceAlice,
+            uint(0)
+        );
+
+        //Post-condition
+        uint rEthBalancePost = IERC20Permit(rEthAddr).balanceOf(alice);
+        console.log('rEthBalancePost: ', rEthBalancePost);
+        assertTrue(rEthBalancePre == 0);
+        assertTrue(rEthBalancePost > 0);
+    } 
+
+
+    function test_redeem_in_WETH() public {
+        //Pre-conditions
+        test_claim_OZL();
+
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        uint ozlBalanceAlice = OZL.balanceOf(alice);
         uint wethBalancePre = IWETH(wethAddr).balanceOf(alice);
-        assertTrue(wethBalancePre == 0);
 
+        //Action
         vm.prank(alice);
         uint amountOut = OZL.redeem(
             alice,
@@ -110,14 +136,15 @@ contract OZLtokenTest is TestMethods {
             uint(0)
         );
         
-
+        //Post-condition
         uint wethBalancePost = IWETH(wethAddr).balanceOf(alice);
+        assertTrue(wethBalancePre == 0);
         assertTrue(wethBalancePost > 0);
     }
 
 
 
-    function test_redeem_for_stable() public {
+    function test_redeem_in_stable() public {
         //Pre-conditions
         test_claim_OZL();
 
@@ -146,7 +173,6 @@ contract OZLtokenTest is TestMethods {
 
         assertTrue(balanceAlicePre == 0);
         assertTrue(balanceAlicePost == amountOut);
-
     }
 
 
