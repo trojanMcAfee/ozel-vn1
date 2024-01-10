@@ -46,3 +46,6 @@ error OZError15(); //setRewardsDuration - rewards duration not finished
 error OZError16(); //notifyRewardAmount - reward rate = 0
 error OZError17(); //notifyRewardAmount - reward amount > balance
 
+//----- OZL errors
+error OZError18(address tokenOut); //redeem - not valid token out
+
