@@ -15,6 +15,23 @@ import "forge-std/console.sol";
 
 library TradingLib {
 
+    function useOZL(
+        TradingPackage memory p,
+        address tokenOut_,
+        address receiver_,
+        uint amountIn_,
+        uint minAmountOut_
+    ) internal returns(uint) {
+        return _checkPauseAndSwap(
+            p,
+            tokenOut_,
+            receiver_,
+            amountIn_,
+            minAmountOut_,
+            Action.OZL_IN
+        );
+    }
+
     function _checkPauseAndSwap(
         TradingPackage memory p,
         address tokenOut_,
@@ -56,7 +73,7 @@ library TradingLib {
             );
         }
 
-        if (tokenOut_ == p.WETH) {
+        if (tokenOut_ == p.WETH) { //put a safeTransfer here
             IWETH(p.WETH).transfer(receiver_, amountOut);
         } else {
             amountOut = _swapUni(
@@ -69,33 +86,6 @@ library TradingLib {
                 minAmountOut_ //diff from swapBal, but for now it's at 0
             );
         }
-    }
-
-
-    function useOZL(
-        TradingPackage memory p,
-        address tokenOut_,
-        address receiver_,
-        uint amountIn_,
-        uint minAmountOut_
-    ) internal returns(uint) {
-        return _checkPauseAndSwap(
-            p,
-            tokenOut_,
-            receiver_,
-            amountIn_,
-            minAmountOut_,
-            Action.OZL_IN
-        );
-    }
-
-    function sendLSD(
-        address lsd_, 
-        address receiver_, 
-        uint amount_
-    ) internal returns(uint) {
-        SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
-        return amount_;
     }
 
 
@@ -183,8 +173,32 @@ library TradingLib {
                 revert OZError21(reason);
             }
         }
-        
+    }
+
+
+    function sendLSD(
+        address lsd_, 
+        address receiver_, 
+        uint amount_
+    ) internal returns(uint) {
+        SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
+        return amount_;
     }
 
 
 }
+
+
+
+// function _executeSwap() private returns(uint amountOut) {
+//     try IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp) returns(uint amountOut) {
+//         if (amountOut == 0) revert OZError02();
+//         return amountOut;
+//     } catch Error(string memory reason) {
+//         if (Helpers.compareStrings(reason, 'BAL#507')) {
+//             revert OZError20();
+//         } else {
+//             revert OZError21(reason);
+//         }
+//     }
+// }

@@ -125,11 +125,16 @@ contract OZLtokenTest is TestMethods {
         IOZL OZL = IOZL(address(ozlProxy));
 
         uint ozlBalanceAlice = OZL.balanceOf(alice);
+
         uint wethBalancePre = IWETH(wethAddr).balanceOf(alice);
+        assertTrue(wethBalancePre == 0);
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
         console.log('wethToRedeem: ', wethToRedeem);
-        _changeSlippage(uint16(500)); //0.5%
+
+        _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5% 
+        //^ this one is outputing 5% of slippage
+
         uint minAmountOut = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
         console.log('minAmountOut: ', minAmountOut);
 
@@ -145,7 +150,6 @@ contract OZLtokenTest is TestMethods {
         
         //Post-condition
         uint wethBalancePost = IWETH(wethAddr).balanceOf(alice);
-        assertTrue(wethBalancePre == 0);
         assertTrue(wethBalancePost > 0);
         assertTrue(wethBalancePost == amountOut);
         console.log('amountOut: ', amountOut);
@@ -163,11 +167,20 @@ contract OZLtokenTest is TestMethods {
         uint ozlBalanceAlice = OZL.balanceOf(alice);
 
         //-- this is off in comparisson to amountOut after swap in USD
-        uint ozlValue = ozlBalanceAlice * OZL.getExchangeRate();
-        console.log('ozlValue: ', ozlValue / 1 ether);
+        uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate();
+        console.log('usdToRedeem: ', usdToRedeem / 1 ether);
 
-        uint slippage = 100;
+        // uint slippage = 100;
 
+        // _changeSlippage(uint16(9900)); //500 - 5% / 50 - 0.5%  / 100 - 1%
+
+        // uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
+        // uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
+        // uint minAmountOutUsd = HelpersLib.calculateMinAmountOut(usdToRedeem, OZ.getDefaultSlippage());
+        
+        // uint[] memory minAmounts = new uint[2];
+        // minAmounts[0] = minAmountOutWeth;
+        // minAmounts[1] = minAmountOutUsd;
 
         //***** -----
 
