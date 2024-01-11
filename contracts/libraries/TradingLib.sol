@@ -20,14 +20,14 @@ library TradingLib {
         address tokenOut_,
         address receiver_,
         uint amountIn_,
-        uint minAmountOut_
+        uint[] memory minAmountsOut_
     ) internal returns(uint) {
         return _checkPauseAndSwap(
             p,
             tokenOut_,
             receiver_,
             amountIn_,
-            minAmountOut_,
+            minAmountsOut_,
             Action.OZL_IN
         );
     }
@@ -38,7 +38,7 @@ library TradingLib {
         address tokenOut_,
         address receiver_,
         uint amountIn_,
-        uint minAmountOut_,
+        uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint amountOut) {
         address tokenIn;
@@ -51,7 +51,7 @@ library TradingLib {
 
         (bool paused,,) = IPool(p.rEthWethPoolBalancer).getPausedState(); 
 
-        if (!paused) {
+        if (paused) {
             amountOut = _swapUni(
                 tokenIn,
                 tokenOut,
@@ -59,7 +59,7 @@ library TradingLib {
                 p.swapRouterUni,
                 p.uniFee,
                 amountIn_,
-                minAmountOut_
+                minAmountsOut_
             );
         } else {
             amountOut = _swapBalancer(
@@ -69,7 +69,7 @@ library TradingLib {
                 p.queriesBalancer,
                 p.vaultBalancer,
                 amountIn_,
-                minAmountOut_,
+                minAmountsOut_,
                 Action.OZL_IN
             );
         }
@@ -84,7 +84,7 @@ library TradingLib {
                 p.swapRouterUni,
                 p.uniFee,
                 amountOut,
-                minAmountOut_ //diff from swapBal, but for now it's at 0
+                minAmountsOut_ //diff from swapBal, but for now it's at 0
             );
         }
     }
@@ -97,7 +97,7 @@ library TradingLib {
         address router_,
         uint24 poolFee_,
         uint amountIn_, 
-        uint minAmountOut_
+        uint[] memory minAmountsOut_
     ) private returns(uint) {
         SafeERC20.safeApprove(IERC20(tokenIn_), router_, amountIn_);
 
@@ -109,7 +109,7 @@ library TradingLib {
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: 0, //minAmountOut_.formatMinOut(tokenOut_)
+                amountOutMinimum: 0, //minAmountsOut[1] - minAmountOut_.formatMinOut(tokenOut_)
                 sqrtPriceLimitX96: 0
             });
 
@@ -128,7 +128,7 @@ library TradingLib {
         address queries_,
         address vault_,
         uint amountIn_,
-        uint minAmountOutOffchain_,
+        uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint) {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
@@ -150,10 +150,11 @@ library TradingLib {
         uint minOut;
         
         if (type_ == Action.OZL_IN) {
-            minOut = minAmountOutOffchain_;
+            minOut = minAmountsOut_[0]; //minAmountOutOffchain_
         } else if (type_ != Action.OZL_IN) {
             try IQueries(queries_).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
-                minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
+                uint minAmountOutOffchain = minAmountsOut_[0];
+                minOut = minAmountOutOffchain > minOutOnchain ? minAmountOutOffchain : minOutOnchain;
 
                 // SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
                 // amountOut = IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp);

@@ -99,7 +99,7 @@ contract OZLtokenTest is TestMethods {
         _changeSlippage(uint16(5)); //0.05%
         uint minAmountOutReth = HelpersLib.calculateMinAmountOut(rEthToRedeem, OZ.getDefaultSlippage());
 
-        uint[] memory minAmountsOut = new uint[1];
+        uint[] memory minAmountsOut = new uint[](1);
         minAmountsOut[0] = minAmountOutReth;
 
         //Action
@@ -141,7 +141,7 @@ contract OZLtokenTest is TestMethods {
         uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
         console.log('minAmountOut: ', minAmountOutWeth);
 
-        uint[] memory minAmountsOut = new uint[1];
+        uint[] memory minAmountsOut = new uint[](1);
         minAmountsOut[0] = minAmountOutWeth;
 
         //Action
@@ -184,7 +184,7 @@ contract OZLtokenTest is TestMethods {
         uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
         uint minAmountOutUsd = HelpersLib.calculateMinAmountOut(usdToRedeem, OZ.getDefaultSlippage());
         
-        uint[] memory minAmountsOut = new uint[2];
+        uint[] memory minAmountsOut = new uint[](2);
         minAmountsOut[0] = minAmountOutWeth;
         minAmountsOut[1] = minAmountOutUsd;
 

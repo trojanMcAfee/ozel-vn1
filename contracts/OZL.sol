@@ -130,7 +130,7 @@ contract OZL is ERC20Upgradeable {
             tokenOut_,
             receiver_,
             rETHtoRedeem,
-            minAmountOut_[1]
+            minAmountsOut_
         );
 
         // emit Withdraw(msg.sender, receiver_, owner_, assets, shares);
