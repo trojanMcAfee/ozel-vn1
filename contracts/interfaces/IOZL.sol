@@ -78,5 +78,13 @@ interface IOZL {
         address tokenOut_,
         uint ozlAmountIn_,
         uint minAmountOut_
+    ) external returns(uint amountOut); //delete this one later
+
+    function redeem(
+        address owner_,
+        address receiver_,
+        address tokenOut_,
+        uint ozlAmountIn_,
+        uint[] memory minAmountsOut_
     ) external returns(uint amountOut);
 }

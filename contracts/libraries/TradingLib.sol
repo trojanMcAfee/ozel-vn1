@@ -32,6 +32,7 @@ library TradingLib {
         );
     }
 
+
     function _checkPauseAndSwap(
         TradingPackage memory p,
         address tokenOut_,
@@ -50,7 +51,7 @@ library TradingLib {
 
         (bool paused,,) = IPool(p.rEthWethPoolBalancer).getPausedState(); 
 
-        if (paused) {
+        if (!paused) {
             amountOut = _swapUni(
                 tokenIn,
                 tokenOut,

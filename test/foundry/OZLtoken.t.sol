@@ -97,16 +97,19 @@ contract OZLtokenTest is TestMethods {
         
         uint rEthToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.rETH)) / 1 ether;
         _changeSlippage(uint16(5)); //0.05%
-        uint minAmountOut = HelpersLib.calculateMinAmountOut(rEthToRedeem, OZ.getDefaultSlippage());
+        uint minAmountOutReth = HelpersLib.calculateMinAmountOut(rEthToRedeem, OZ.getDefaultSlippage());
+
+        uint[] memory minAmountsOut = new uint[1];
+        minAmountsOut[0] = minAmountOutReth;
 
         //Action
         vm.prank(alice);
         uint amountOut = OZL.redeem(
             alice,
             alice,
-            rEthAddr,
+            wethAddr,
             ozlBalanceAlice,
-            minAmountOut
+            minAmountsOut
         );
 
         //Post-condition
@@ -135,8 +138,11 @@ contract OZLtokenTest is TestMethods {
         _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5% 
         //^ this one is outputing 5% of slippage
 
-        uint minAmountOut = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
-        console.log('minAmountOut: ', minAmountOut);
+        uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
+        console.log('minAmountOut: ', minAmountOutWeth);
+
+        uint[] memory minAmountsOut = new uint[1];
+        minAmountsOut[0] = minAmountOutWeth;
 
         //Action
         vm.prank(alice);
@@ -145,7 +151,7 @@ contract OZLtokenTest is TestMethods {
             alice,
             wethAddr,
             ozlBalanceAlice,
-            minAmountOut
+            minAmountsOut
         );
         
         //Post-condition
@@ -172,15 +178,15 @@ contract OZLtokenTest is TestMethods {
 
         // uint slippage = 100;
 
-        // _changeSlippage(uint16(9900)); //500 - 5% / 50 - 0.5%  / 100 - 1%
+        _changeSlippage(uint16(9900)); //500 - 5% / 50 - 0.5%  / 100 - 1%
 
-        // uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
-        // uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
-        // uint minAmountOutUsd = HelpersLib.calculateMinAmountOut(usdToRedeem, OZ.getDefaultSlippage());
+        uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
+        uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
+        uint minAmountOutUsd = HelpersLib.calculateMinAmountOut(usdToRedeem, OZ.getDefaultSlippage());
         
-        // uint[] memory minAmounts = new uint[2];
-        // minAmounts[0] = minAmountOutWeth;
-        // minAmounts[1] = minAmountOutUsd;
+        uint[] memory minAmountsOut = new uint[2];
+        minAmountsOut[0] = minAmountOutWeth;
+        minAmountsOut[1] = minAmountOutUsd;
 
         //***** -----
 
@@ -195,7 +201,7 @@ contract OZLtokenTest is TestMethods {
             alice,
             daiAddr,
             ozlBalanceAlice,
-            uint(0)
+            minAmountsOut
         );
 
         //Post-condtions

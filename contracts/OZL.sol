@@ -97,7 +97,8 @@ contract OZL is ERC20Upgradeable {
         address receiver_,
         address tokenOut_,
         uint256 ozlAmountIn_,
-        uint minAmountOut_
+        // uint minAmountOut_
+        uint[] memory minAmountsOut_
     ) external returns(uint amountOut) {
         ozIDiamond OZ = getOZ();
         TradingPackage memory p = OZ.tradingPackage();
@@ -120,7 +121,7 @@ contract OZL is ERC20Upgradeable {
         uint rETHtoRedeem = usdValue.mulDivDown(1 ether, OZ.rETH_USD());
 
         if (tokenOut_ == p.rETH) {
-            if (rETHtoRedeem < minAmountOut_) revert OZError19(rETHtoRedeem);
+            if (rETHtoRedeem < minAmountsOut_[0]) revert OZError19(rETHtoRedeem);
             return TradingLib.sendLSD(p.rETH, receiver_, rETHtoRedeem);
         }
 
@@ -129,7 +130,7 @@ contract OZL is ERC20Upgradeable {
             tokenOut_,
             receiver_,
             rETHtoRedeem,
-            minAmountOut_
+            minAmountOut_[1]
         );
 
         // emit Withdraw(msg.sender, receiver_, owner_, assets, shares);
