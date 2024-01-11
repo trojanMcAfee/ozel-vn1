@@ -131,6 +131,8 @@ library TradingLib {
         uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint) {
+        console.log('amountInReth - balancer: ', amountIn_);
+
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(pool_).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
@@ -167,6 +169,9 @@ library TradingLib {
     
         try IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp) returns(uint amountOut) {
             if (amountOut == 0) revert OZError02();
+
+            console.log('amountOutWeth uni: ', amountOut);
+
             return amountOut;
         } catch Error(string memory reason) {
             if (Helpers.compareStrings(reason, 'BAL#507')) {
