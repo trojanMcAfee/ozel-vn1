@@ -92,7 +92,7 @@ contract OZLtokenTest is TestMethods {
     }
 
     function approve(IOZL ozl_, uint amount_) public {
-        vm.prank(alice);
+        // vm.prank(alice);
         ozl_.approve(address(ozl_), amount_);
     }
 
@@ -126,6 +126,7 @@ contract OZLtokenTest is TestMethods {
             ozlBalanceAlice,
             minAmountsOut
         );
+        vm.stopPrank();
 
         //Post-condition
         uint rEthBalancePost = IERC20Permit(rEthAddr).balanceOf(alice);
@@ -141,7 +142,7 @@ contract OZLtokenTest is TestMethods {
      * The rETH-WETH Balancer pool doesn't recognize this increase so it's outputting
      * a value based on the actual rETH-WETH rate, instead of the mocked one.
      */
-    function test_redeem_in_WETH() public {
+    function test_redeem_in_WETH_ETH() public {
         //Pre-conditions
         test_claim_OZL();
 
@@ -222,7 +223,7 @@ contract OZLtokenTest is TestMethods {
 
 
     function test_redeem_in_WETH_paused_pool() public pauseBalancerPool {
-        test_redeem_in_WETH();
+        test_redeem_in_WETH_ETH();
     }
 
 
