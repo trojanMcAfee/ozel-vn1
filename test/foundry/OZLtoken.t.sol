@@ -156,7 +156,16 @@ contract OZLtokenTest is TestMethods {
 
         //Action
         vm.startPrank(alice);
-        OZL.approve(address(OZL), ozlBalanceAlice);
+        // OZL.approve(address(OZL), ozlBalanceAlice);
+
+        //------
+        bytes32 permitHash = testToken == daiAddr ? _getPermitHashDAI(alice) : _getPermitHash(alice, ozlBalanceAlice);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
+        
+        bytes memory data = abi.encode(minAmountsOut, v, r, s);
+        _sendPermit(alice, ozlBalanceAlice, data);
+
+        //------
 
         uint amountOut = OZL.redeem(
             alice,
@@ -175,6 +184,46 @@ contract OZLtokenTest is TestMethods {
     }
 
 
+    function test_redeem_permit_in_stable() public {
+        //Pre-conditions
+        test_claim_OZL();
+
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        uint balanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceAlicePre == 0);
+
+        uint ozlBalanceAlice = OZL.balanceOf(alice);
+        uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
+
+        _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5%  / 100 - 1%
+
+        uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
+
+        uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
+            [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
+        );
+
+        //Action
+        vm.startPrank(alice);
+        OZL.approve(address(OZL), ozlBalanceAlice);
+
+        uint amountOut = OZL.redeem(
+            alice,
+            alice,
+            daiAddr,
+            ozlBalanceAlice,
+            minAmountsOut
+        );
+
+        vm.stopPrank();
+
+        //Post-condtions
+        uint balanceAlicePost = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(balanceAlicePost == amountOut);
+    }
+
+
     function test_redeem_in_stable() public {
         //Pre-conditions
         test_claim_OZL();
@@ -185,7 +234,6 @@ contract OZLtokenTest is TestMethods {
         assertTrue(balanceAlicePre == 0);
 
         uint ozlBalanceAlice = OZL.balanceOf(alice);
-
         uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
 
         _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5%  / 100 - 1%

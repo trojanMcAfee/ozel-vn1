@@ -13,17 +13,25 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {TradingLib} from "./libraries/TradingLib.sol";
 import {TradingPackage} from "./AppStorage.sol";
+import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol";
+import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
 
 
 //Add Permit to this contract
-contract OZL is ERC20Upgradeable {
+contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
+    using CountersUpgradeable for CountersUpgradeable.Counter;
     using FixedPointMathLib for uint;
 
     bytes32 private constant _OZ_DIAMOND_SLOT = bytes32(uint(keccak256('ozDiamond.storage.slot')) - 1);
+
+    bytes32 private constant _PERMIT_TYPEHASH =
+        keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+
+    mapping(address => CountersUpgradeable.Counter) private _nonces;
 
 
     constructor() {
@@ -39,6 +47,7 @@ contract OZL is ERC20Upgradeable {
         uint communityAmount_
     ) external initializer {
         __ERC20_init(name_, symbol_);
+        __EIP712_init(name_, "1");
         StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value = ozDiamond_;
 
         /**
@@ -113,7 +122,6 @@ contract OZL is ERC20Upgradeable {
             _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
-        //grabs rETH from the contract and swaps it for tokenOut_
         uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
         uint rETHtoRedeem = usdValue.mulDivDown(1 ether, OZ.rETH_USD());
 
@@ -153,67 +161,67 @@ contract OZL is ERC20Upgradeable {
      * @notice Returns the EIP-712 DOMAIN_SEPARATOR.
      * @return A bytes32 value representing the EIP-712 DOMAIN_SEPARATOR.
      */
-    // function DOMAIN_SEPARATOR() external view returns (bytes32) {
-    //     return _domainSeparatorV4();
-    // }
+    function DOMAIN_SEPARATOR() external view returns (bytes32) {
+        return _domainSeparatorV4();
+    }
 
-    // /**
-    //  * @notice Returns the current nonce for the given owner address.
-    //  * @param owner The address whose nonce is to be retrieved.
-    //  * @return The current nonce as a uint256 value.
-    //  */
-    // function nonces(address owner) external view returns (uint256) {
-    //     return _nonces[owner].current();
-    // }
+    /**
+     * @notice Returns the current nonce for the given owner address.
+     * @param owner The address whose nonce is to be retrieved.
+     * @return The current nonce as a uint256 value.
+     */
+    function nonces(address owner) external view returns (uint256) {
+        return _nonces[owner].current();
+    }
 
-    // /**
-    //  * @dev Private function that increments and returns the current nonce for a given owner address.
-    //  * @param owner The address whose nonce is to be incremented.
-    //  */
-    // function _useNonce(address owner) private returns (uint256 current) {
-    //     CountersUpgradeable.Counter storage nonce = _nonces[owner];
-    //     current = nonce.current();
+    /**
+     * @dev Private function that increments and returns the current nonce for a given owner address.
+     * @param owner The address whose nonce is to be incremented.
+     */
+    function _useNonce(address owner) private returns (uint256 current) {
+        CountersUpgradeable.Counter storage nonce = _nonces[owner];
+        current = nonce.current();
 
-    //     nonce.increment();
-    // }
+        nonce.increment();
+    }
 
-    // /**
-    //  * @notice Allows an owner to approve a spender with a one-time signature, bypassing the need for a transaction.
-    //  * @dev Uses the EIP-2612 standard.
-    //  * @param owner The address of the token owner.
-    //  * @param spender The address of the spender.
-    //  * @param value The amount of tokens to be approved.
-    //  * @param deadline The expiration time of the signature, specified as a Unix timestamp.
-    //  * @param v The recovery byte of the signature.
-    //  * @param r The first 32 bytes of the signature.
-    //  * @param s_ The second 32 bytes of the signature.
-    //  */
-    // function permit(
-    //     address owner,
-    //     address spender,
-    //     uint256 value,
-    //     uint256 deadline,
-    //     uint8 v,
-    //     bytes32 r,
-    //     bytes32 s_
-    // ) external {
-    //     if (block.timestamp > deadline) revert OZError08(deadline, block.timestamp);
+    /**
+     * @notice Allows an owner to approve a spender with a one-time signature, bypassing the need for a transaction.
+     * @dev Uses the EIP-2612 standard.
+     * @param owner The address of the token owner.
+     * @param spender The address of the spender.
+     * @param value The amount of tokens to be approved.
+     * @param deadline The expiration time of the signature, specified as a Unix timestamp.
+     * @param v The recovery byte of the signature.
+     * @param r The first 32 bytes of the signature.
+     * @param s_ The second 32 bytes of the signature.
+     */
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s_
+    ) external {
+        if (block.timestamp > deadline) revert OZError08(deadline, block.timestamp);
 
-    //     bytes32 structHash = keccak256(abi.encode(_PERMIT_TYPEHASH, owner, spender, value, _useNonce(owner), deadline));
-    //     bytes32 hash = _hashTypedDataV4(structHash);
-    //     address signer = ECDSAUpgradeable.recover(hash, v, r, s_);
+        bytes32 structHash = keccak256(abi.encode(_PERMIT_TYPEHASH, owner, spender, value, _useNonce(owner), deadline));
+        bytes32 hash = _hashTypedDataV4(structHash);
+        address signer = ECDSAUpgradeable.recover(hash, v, r, s_);
 
-    //     if (signer != owner) revert OZError09(owner, spender);
+        if (signer != owner) revert OZError09(owner, spender);
 
-    //     _approve(owner, spender, value);
-    // }
+        _approve(owner, spender, value);
+    }
 
-    // /**
-    //  * @dev This empty reserved space is put in place to allow future versions to add new
-    //  * variables without shifting down storage in the inheritance chain.
-    //  * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-    //  */
-    // uint256[42] private __gap;
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+     */
+    uint256[42] private __gap;
     
 
 

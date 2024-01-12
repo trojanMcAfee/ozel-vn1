@@ -145,7 +145,7 @@ contract BaseMethods is Setup {
     ) internal returns(bytes memory data) {
         if (reqType_ == Type.OUT) {
 
-            uint shares = ozERC20_.previewWithdraw(amountIn_); //ozAmountIn
+            uint shares = ozERC20_.previewWithdraw(amountIn_); 
             uint amountInReth = ozERC20_.convertToUnderlying(shares);
 
             data = HelpersLib.encodeOutData(amountIn_, amountInReth, OZ, sender_);
