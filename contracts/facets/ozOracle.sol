@@ -75,8 +75,10 @@ contract ozOracle {
         // console.log('valueInETH: ', valueInETH);
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
-        console.log('ETH_USD: ', ETH_USD());
-        console.log('rETH_ETH: ', rETH_ETH());
+        
+        // console.log('ETH_USD: ', ETH_USD());
+        // console.log('rETH_ETH: ', rETH_ETH());
+
         // console.log('rETH_USD: ', rETH_USD());
         // console.log('totalAssets - stables: ', totalAssets * 1e12);
         // console.log('----');

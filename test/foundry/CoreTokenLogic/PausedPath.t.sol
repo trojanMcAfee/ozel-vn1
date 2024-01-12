@@ -11,30 +11,6 @@ import "forge-std/console.sol";
 
 contract PausedPathTest is TestMethods {
 
-    // modifier pauseBalancerPool() {
-    //     vm.mockCall(
-    //         rEthWethPoolBalancer,
-    //         abi.encodeWithSignature('getPausedState()'),
-    //         abi.encode(true, uint(0), uint(0))
-    //     );
-    //     _;
-    //     vm.clearMockedCalls();
-    // }
-
-    modifier rollBlockAndState() {
-        vm.rollFork(secondaryBlockNumber);
-        _runSetup();
-        vm.mockCall(
-            IRocketStorage(rocketPoolStorage)
-                .getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"))),
-            abi.encodeWithSignature('getMaximumDepositPoolSize()'),
-            abi.encode(uint(0))
-        );
-        _;
-        vm.rollFork(mainBlockNumber);
-        vm.clearMockedCalls();
-    }
-
 
     function test_minting_approve_smallMint_paused() public pauseBalancerPool {
         _minting_approve_smallMint();
@@ -64,7 +40,7 @@ contract PausedPathTest is TestMethods {
         _redeeming_bigBalance_smallMint_smallRedeem();
     }
 
-    function test_redeeming_bigBalance_bigMint_smallRedeem_paused() public pauseBalancerPool rollBlockAndState {
+    function test_redeeming_bigBalance_bigMint_smallRedeem_paused() public rollBlockAndState pauseBalancerPool {
         _redeeming_bigBalance_bigMint_smallRedeem();
     }
 
@@ -80,7 +56,7 @@ contract PausedPathTest is TestMethods {
         _redeeming_eip2612();
     }
 
-    function test_redeeming_multipleBigBalances_bigMint_mediumRedeem_paused() public pauseBalancerPool rollBlockAndState {
+    function test_redeeming_multipleBigBalances_bigMint_mediumRedeem_paused() public rollBlockAndState pauseBalancerPool {
         _redeeming_multipleBigBalances_bigMint_mediumRedeem();
     }
 }

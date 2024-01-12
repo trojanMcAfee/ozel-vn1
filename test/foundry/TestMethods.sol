@@ -24,6 +24,7 @@ import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRoute
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import {BaseMethods} from "./BaseMethods.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {IRocketStorage} from "../../contracts/interfaces/IRocketPool.sol";
 
 import "forge-std/console.sol";
 
@@ -48,6 +49,20 @@ contract TestMethods is BaseMethods {
 
         (bool paused,,) = IPool(rEthWethPoolBalancer).getPausedState();
         assertTrue(paused);
+        vm.clearMockedCalls();
+    }
+
+    modifier rollBlockAndState() {
+        vm.rollFork(secondaryBlockNumber);
+        _runSetup();
+        vm.mockCall(
+            IRocketStorage(rocketPoolStorage)
+                .getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"))),
+            abi.encodeWithSignature('getMaximumDepositPoolSize()'),
+            abi.encode(uint(0))
+        );
+        _;
+        vm.rollFork(mainBlockNumber);
         vm.clearMockedCalls();
     }
 
@@ -345,6 +360,7 @@ contract TestMethods is BaseMethods {
 
         //Creates offchain the token-amount variables needed for safe protocol execution.
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+
         /**
          * Action
          */
