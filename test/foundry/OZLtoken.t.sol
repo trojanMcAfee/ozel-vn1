@@ -92,7 +92,6 @@ contract OZLtokenTest is TestMethods {
     }
 
     function approve(IOZL ozl_, uint amount_) public {
-        // vm.prank(alice);
         ozl_.approve(address(ozl_), amount_);
     }
 
@@ -116,8 +115,7 @@ contract OZLtokenTest is TestMethods {
 
         //Action
         vm.startPrank(alice);
-        // ERC20Upgradeable(address(OZL)).approve(address(OZL), ozlBalanceAlice);
-        approve(OZL, ozlBalanceAlice);
+        // approve(OZL, ozlBalanceAlice);
 
         uint amountOut = OZL.redeem(
             alice,

@@ -26,9 +26,7 @@ library TradingLib {
         uint amountInLsd_,
         uint[] memory minAmountsOut_
     ) internal returns(uint) {
-        // IOZL(address(this)).transferFrom(owner_, ozDiamond_, ozlAmountIn_);
         SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, ozlAmountIn_);
-        //put a safeTransfFrom here ^
 
         return _checkPauseAndSwap(
             p,
