@@ -130,13 +130,22 @@ library HelpersLib {
     }
 
 
-
     function callTest(address addr_, string memory method_) internal {
         (bool success,) = addr_.delegatecall(abi.encodeWithSignature(method_));
         require(success, 'delegatecall() failed');
     }
 
+    function calculateMinAmountsOut(
+        uint[2] memory amounts_,
+        uint16[2] memory slippages_
+    ) internal view returns(uint[] memory minAmountsOut) {
+        uint length = amounts_.length;
+        minAmountsOut = new uint[](length);
 
+        for (uint i=0; i<length; i++) {
+            minAmountsOut[i] = calculateMinAmountOut(amounts_[i], slippages_[i]);
+        }
+    }
   
 
 

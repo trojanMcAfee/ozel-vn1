@@ -88,9 +88,6 @@ contract OZLtokenTest is TestMethods {
         assertTrue(ozlBalancePost > 0);
     }
 
-    function approve(IOZL ozl_, uint amount_) public {
-        ozl_.approve(address(ozl_), amount_);
-    }
 
 
     function test_redeem_in_rETH() public {
@@ -189,19 +186,15 @@ contract OZLtokenTest is TestMethods {
 
         uint ozlBalanceAlice = OZL.balanceOf(alice);
 
-        //-- this is off in comparisson to amountOut after swap in USD
         uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
 
         _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5%  / 100 - 1%
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
 
-        uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
-        uint minAmountOutUsd = HelpersLib.calculateMinAmountOut(usdToRedeem, uint16(50));
-        
-        uint[] memory minAmountsOut = new uint[](2);
-        minAmountsOut[0] = minAmountOutWeth;
-        minAmountsOut[1] = minAmountOutUsd;
+        uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
+            [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
+        );
 
         //Action
         vm.startPrank(alice);
