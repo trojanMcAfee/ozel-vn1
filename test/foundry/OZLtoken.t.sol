@@ -156,16 +156,7 @@ contract OZLtokenTest is TestMethods {
 
         //Action
         vm.startPrank(alice);
-        // OZL.approve(address(OZL), ozlBalanceAlice);
-
-        //------
-        bytes32 permitHash = testToken == daiAddr ? _getPermitHashDAI(alice) : _getPermitHash(alice, ozlBalanceAlice);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
-        
-        bytes memory data = abi.encode(minAmountsOut, v, r, s);
-        _sendPermit(alice, ozlBalanceAlice, data);
-
-        //------
+        OZL.approve(address(OZL), ozlBalanceAlice);
 
         uint amountOut = OZL.redeem(
             alice,
@@ -182,6 +173,34 @@ contract OZLtokenTest is TestMethods {
         assertTrue(wethBalancePost > 0);
         assertTrue(wethBalancePost == amountOut);
     }
+
+    // function getPermitHash2(
+    //     address token_,
+    //     address owner_,
+    //     address spender_,
+    //     uint value_,
+    //     uint nonce_,
+    //     uint deadline_
+    // ) internal view returns(bytes32) {
+    //     return keccak256(
+    //                 abi.encodePacked(
+    //                     "\x19\x01",
+    //                     IOZL(token_).DOMAIN_SEPARATOR(),
+    //                     keccak256(
+    //                         abi.encode(
+    //                             keccak256(
+    //                                 "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+    //                             ),
+    //                             owner_,
+    //                             spender_,
+    //                             value_,
+    //                             nonce_,
+    //                             deadline_
+    //                         )
+    //                     )
+    //                 )
+    //             );
+    // }
 
 
     function test_redeem_permit_in_stable() public {
@@ -205,8 +224,28 @@ contract OZLtokenTest is TestMethods {
         );
 
         //Action
+        // OZL.approve(address(OZL), ozlBalanceAlice);
+
+        //------
+        // bytes32 permitHash = 
+        //     testToken == daiAddr ? _getPermitHashDAI(alice, address(OZL)) : 
+        //     _getPermitHash(alice, address(OZL), ozlBalanceAlice);
+
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHashOZL(alice, address(OZL), ozlBalanceAlice));
+        
         vm.startPrank(alice);
-        OZL.approve(address(OZL), ozlBalanceAlice);
+        OZL.permit(
+            alice,
+            address(OZL),
+            ozlBalanceAlice,
+            block.timestamp,
+            v, r, s
+        );
+
+        // bytes memory data = abi.encode(minAmountsOut, v, r, s);
+        // _sendPermit(alice, address(OZL), ozlBalanceAlice, data);
+
+        //------
 
         uint amountOut = OZL.redeem(
             alice,

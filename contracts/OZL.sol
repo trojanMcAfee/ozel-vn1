@@ -15,6 +15,7 @@ import {TradingLib} from "./libraries/TradingLib.sol";
 import {TradingPackage} from "./AppStorage.sol";
 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol";
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
+import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
@@ -211,7 +212,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         bytes32 hash = _hashTypedDataV4(structHash);
         address signer = ECDSAUpgradeable.recover(hash, v, r, s_);
 
-        if (signer != owner) revert OZError09(owner, spender);
+        if (signer != owner) revert OZError09(signer, owner);
 
         _approve(owner, spender, value);
     }

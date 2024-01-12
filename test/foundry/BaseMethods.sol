@@ -44,7 +44,7 @@ contract BaseMethods is Setup {
         vm.startPrank(user_);
 
         if (is2612_) {
-            _sendPermit(user_, amountIn_, data);
+            _sendPermit(user_, address(ozDiamond), amountIn_, data);
         } else {
             IERC20Permit(testToken).approve(address(ozDiamond), amountIn_);
         }
@@ -112,13 +112,18 @@ contract BaseMethods is Setup {
     }
 
 
-    function _sendPermit(address user_, uint amountIn_, bytes memory data_) internal {
+    function _sendPermit(
+        address user_, 
+        address spender_, 
+        uint amountIn_, 
+        bytes memory data_
+    ) internal {
         (,uint8 v, bytes32 r, bytes32 s) = HelpersLib.extract(data_);
 
         if (testToken == daiAddr) {
             IERC20Permit(testToken).permit(
                 user_,
-                address(ozDiamond),
+                spender_,
                 IERC20Permit(testToken).nonces(user_),
                 block.timestamp,
                 true,
@@ -127,7 +132,7 @@ contract BaseMethods is Setup {
         } else {
             IERC20Permit(testToken).permit(
                 user_, 
-                address(ozDiamond), //check if this one and OZ are the same variable
+                spender_, 
                 amountIn_, 
                 block.timestamp, 
                 v, r, s
@@ -155,33 +160,49 @@ contract BaseMethods is Setup {
                 [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), OZ.getDefaultSlippage()
             );
 
-            bytes32 permitHash = testToken == daiAddr ? _getPermitHashDAI(sender_) : _getPermitHash(sender_, amountIn_);
+            bytes32 permitHash = testToken == daiAddr ? _getPermitHashDAI(sender_, address(ozDiamond)) : _getPermitHash(sender_, address(ozDiamond), amountIn_);
             (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPK_, permitHash);
 
             data = abi.encode(minAmountsOut, v, r, s);
         }
     }
 
-    function _getPermitHashDAI(address sender_) internal view returns(bytes32) {
+    function _getPermitHashDAI(address sender_, address spender_) internal view returns(bytes32) {
         return HelpersLib.getPermitHashDAI(
             testToken,
             sender_,
-            address(ozDiamond),
+            spender_,
             IERC20Permit(testToken).nonces(sender_),
             block.timestamp,
             true
         );
     }
 
+    function _getPermitHashOZL(
+        address sender_,
+        address spender_,
+        uint amountIn_
+    ) internal view returns(bytes32) {
+        return HelpersLib.getPermitHash(
+            address(ozlProxy),
+            sender_,
+            spender_,
+            amountIn_,
+            IOZL(address(ozlProxy)).nonces(sender_),
+            block.timestamp
+        );
+    }
+
 
     function _getPermitHash(
         address sender_,
+        address spender_,
         uint amountIn_
     ) internal view returns(bytes32) {
         return HelpersLib.getPermitHash(
             testToken,
             sender_,
-            address(ozDiamond),
+            spender_,
             amountIn_,
             IERC20Permit(testToken).nonces(sender_),
             block.timestamp

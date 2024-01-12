@@ -138,7 +138,7 @@ library HelpersLib {
     function calculateMinAmountsOut(
         uint[2] memory amounts_,
         uint16[2] memory slippages_
-    ) internal view returns(uint[] memory minAmountsOut) {
+    ) internal pure returns(uint[] memory minAmountsOut) {
         uint length = amounts_.length;
         minAmountsOut = new uint[](length);
 

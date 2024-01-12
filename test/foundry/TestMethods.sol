@@ -500,7 +500,7 @@ contract TestMethods is BaseMethods {
         testToken = address(ozERC20);
         
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHash(alice, ozAmountIn));
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHash(alice, address(ozDiamond), ozAmountIn));
 
         //Action
         vm.startPrank(alice);

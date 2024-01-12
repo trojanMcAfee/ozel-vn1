@@ -380,7 +380,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         bytes32 hash = _hashTypedDataV4(structHash);
         address signer = ECDSAUpgradeable.recover(hash, v, r, s_);
 
-        if (signer != owner) revert OZError09(owner, spender);
+        if (signer != owner) revert OZError09(signer, owner);
 
         _approve(owner, spender, value);
     }
