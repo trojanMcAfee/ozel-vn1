@@ -11,15 +11,15 @@ import "forge-std/console.sol";
 
 contract PausedPathTest is TestMethods {
 
-    modifier pauseBalancerPool() {
-        vm.mockCall(
-            rEthWethPoolBalancer,
-            abi.encodeWithSignature('getPausedState()'),
-            abi.encode(true, uint(0), uint(0))
-        );
-        _;
-        vm.clearMockedCalls();
-    }
+    // modifier pauseBalancerPool() {
+    //     vm.mockCall(
+    //         rEthWethPoolBalancer,
+    //         abi.encodeWithSignature('getPausedState()'),
+    //         abi.encode(true, uint(0), uint(0))
+    //     );
+    //     _;
+    //     vm.clearMockedCalls();
+    // }
 
     modifier rollBlockAndState() {
         vm.rollFork(secondaryBlockNumber);

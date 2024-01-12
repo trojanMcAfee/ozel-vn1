@@ -52,6 +52,7 @@ library TradingLib {
         (bool paused,,) = IPool(p.rEthWethPoolBalancer).getPausedState(); 
 
         if (paused) {
+            console.log('here');
             amountOut = _swapUni(
                 tokenIn,
                 tokenOut,
@@ -59,7 +60,7 @@ library TradingLib {
                 p.swapRouterUni,
                 p.uniFee,
                 amountIn_,
-                minAmountsOut_
+                minAmountsOut_[0]
             );
         } else {
             amountOut = _swapBalancer(
@@ -84,7 +85,7 @@ library TradingLib {
                 p.swapRouterUni,
                 p.uniFee,
                 amountOut,
-                minAmountsOut_ //diff from swapBal, but for now it's at 0
+                minAmountsOut_[1] //diff from swapBal, but for now it's at 0
             );
         }
     }
@@ -97,7 +98,7 @@ library TradingLib {
         address router_,
         uint24 poolFee_,
         uint amountIn_, 
-        uint[] memory minAmountsOut_
+        uint minAmountOut_
     ) private returns(uint) {
         SafeERC20.safeApprove(IERC20(tokenIn_), router_, amountIn_);
 
@@ -109,7 +110,7 @@ library TradingLib {
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: minAmountsOut_[1], //minAmountsOut[1] - minAmountOut_.formatMinOut(tokenOut_)
+                amountOutMinimum: minAmountOut_, //minAmountsOut[1] - minAmountOut_.formatMinOut(tokenOut_)
                 sqrtPriceLimitX96: 0
             });
 
@@ -131,6 +132,7 @@ library TradingLib {
         uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint amountOut) {
+        
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(pool_).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,

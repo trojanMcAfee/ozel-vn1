@@ -169,7 +169,6 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-
     function test_redeem_in_stable() public {
         //Pre-conditions
         test_claim_OZL();
@@ -210,6 +209,11 @@ contract OZLtokenTest is TestMethods {
         //Post-condtions
         uint balanceAlicePost = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(balanceAlicePost == amountOut);
+    }
+
+
+    function test_redeem_in_WETH_paused_pool() public pauseBalancerPool {
+        test_redeem_in_WETH();
     }
 
 
@@ -284,6 +288,7 @@ contract OZLtokenTest is TestMethods {
 
         vm.clearMockedCalls();
     }  
+
 
 
 
