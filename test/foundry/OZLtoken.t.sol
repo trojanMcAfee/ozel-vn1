@@ -86,9 +86,6 @@ contract OZLtokenTest is TestMethods {
         assertTrue(wasCharged);
         assertTrue(ozlBalancePre == 0);
         assertTrue(ozlBalancePost > 0);
-
-        vm.prank(alice);
-        OZL.approve(address(OZL), type(uint).max);
     }
 
     function approve(IOZL ozl_, uint amount_) public {
@@ -115,7 +112,7 @@ contract OZLtokenTest is TestMethods {
 
         //Action
         vm.startPrank(alice);
-        // approve(OZL, ozlBalanceAlice);
+        approve(OZL, ozlBalanceAlice);
 
         uint amountOut = OZL.redeem(
             alice,
@@ -161,7 +158,9 @@ contract OZLtokenTest is TestMethods {
         minAmountsOut[0] = minAmountOutWeth;
 
         //Action
-        vm.prank(alice);
+        vm.startPrank(alice);
+        OZL.approve(address(OZL), ozlBalanceAlice);
+
         uint amountOut = OZL.redeem(
             alice,
             alice,
@@ -169,6 +168,8 @@ contract OZLtokenTest is TestMethods {
             ozlBalanceAlice,
             minAmountsOut
         );
+
+        vm.stopPrank();
         
         //Post-condition
         uint wethBalancePost = IWETH(wethAddr).balanceOf(alice);
@@ -202,10 +203,10 @@ contract OZLtokenTest is TestMethods {
         minAmountsOut[0] = minAmountOutWeth;
         minAmountsOut[1] = minAmountOutUsd;
 
-        //***** -----
-
         //Action
-        vm.prank(alice);
+        vm.startPrank(alice);
+        OZL.approve(address(OZL), ozlBalanceAlice);
+
         uint amountOut = OZL.redeem(
             alice,
             alice,
@@ -213,6 +214,8 @@ contract OZLtokenTest is TestMethods {
             ozlBalanceAlice,
             minAmountsOut
         );
+
+        vm.stopPrank();
 
         //Post-condtions
         uint balanceAlicePost = IERC20Permit(testToken).balanceOf(alice);

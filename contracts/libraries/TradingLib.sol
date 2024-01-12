@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 import {IVault, IAsset, IPool, IQueries} from "../interfaces/IBalancer.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
-// import {IOZL} from "../interfaces/IOZL.sol";
+import {IOZL} from "../interfaces/IOZL.sol";
 import {Helpers} from "../libraries/Helpers.sol";
 import "../Errors.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -26,7 +26,9 @@ library TradingLib {
         uint amountInLsd_,
         uint[] memory minAmountsOut_
     ) internal returns(uint) {
-        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, ozlAmountIn_);
+        IOZL(address(this)).transferFrom(owner_, ozDiamond_, ozlAmountIn_);
+        // SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, ozlAmountIn_);
+        //put a safeTransfFrom here ^
 
         return _checkPauseAndSwap(
             p,
