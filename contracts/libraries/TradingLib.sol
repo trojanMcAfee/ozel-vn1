@@ -3,6 +3,7 @@ pragma solidity 0.8.21;
 
 import {IVault, IAsset, IPool, IQueries} from "../interfaces/IBalancer.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
+import {IOZL} from "../interfaces/IOZL.sol";
 import {Helpers} from "../libraries/Helpers.sol";
 import "../Errors.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -17,16 +18,22 @@ library TradingLib {
 
     function useOZL(
         TradingPackage memory p,
+        address owner_,
         address tokenOut_,
         address receiver_,
-        uint amountIn_,
+        address ozDiamond_,
+        uint ozlAmountIn_,
+        uint amountInLsd_,
         uint[] memory minAmountsOut_
     ) internal returns(uint) {
+        IOZL(address(this)).transferFrom(owner_, ozDiamond_, ozlAmountIn_);
+        //put a safeTransfFrom here ^
+
         return _checkPauseAndSwap(
             p,
             tokenOut_,
             receiver_,
-            amountIn_,
+            amountInLsd_,
             minAmountsOut_,
             Action.OZL_IN
         );
@@ -84,7 +91,7 @@ library TradingLib {
                 p.swapRouterUni,
                 p.uniFee,
                 amountOut,
-                minAmountsOut_[1] //diff from swapBal, but for now it's at 0
+                minAmountsOut_[1]
             );
         }
     }

@@ -74,6 +74,7 @@ contract OZL is ERC20Upgradeable {
         return ONE.mulDivDown(totalFeesQuote, c_Supply);
     }
 
+
     function _convertToQuote(QuoteAsset qt_, uint totalFeesRETH_) private view returns(uint) {
         bytes memory data = abi.encodeWithSignature('rETH_ETH()');
         data = Address.functionStaticCall(address(getOZ()), data);
@@ -113,7 +114,8 @@ contract OZL is ERC20Upgradeable {
         }
 
         //get the OZL tokens out of the owner + send them to ozDiamond (holder of OZL dist)
-        SafeERC20.safeTransfer(IERC20(address(this)), address(OZ), ozlAmountIn_);
+        // SafeERC20.safeTransfer(IERC20(address(this)), address(OZ), ozlAmountIn_);
+        // transfer(address(OZ), ozlAmountIn_);
 
         //grabs rETH from the contract and swaps it for tokenOut_
         uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
@@ -126,8 +128,11 @@ contract OZL is ERC20Upgradeable {
 
         return TradingLib.useOZL( 
             p,
+            owner_,
             tokenOut_,
             receiver_,
+            address(OZ),
+            ozlAmountIn_,
             rETHtoRedeem,
             minAmountsOut_
         );

@@ -15,6 +15,8 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/Ag
 import {QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 import {HelpersLib} from "./HelpersLib.sol";
 import {IVault, IAsset, IPool, IQueries} from "../../contracts/interfaces/IBalancer.sol";
+import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol";
+
 
 import "forge-std/console.sol";
 
@@ -84,6 +86,14 @@ contract OZLtokenTest is TestMethods {
         assertTrue(wasCharged);
         assertTrue(ozlBalancePre == 0);
         assertTrue(ozlBalancePost > 0);
+
+        vm.prank(alice);
+        OZL.approve(address(OZL), type(uint).max);
+    }
+
+    function approve(IOZL ozl_, uint amount_) public {
+        vm.prank(alice);
+        ozl_.approve(address(ozl_), amount_);
     }
 
 
@@ -105,7 +115,10 @@ contract OZLtokenTest is TestMethods {
         minAmountsOut[0] = minAmountOutReth;
 
         //Action
-        vm.prank(alice);
+        vm.startPrank(alice);
+        // ERC20Upgradeable(address(OZL)).approve(address(OZL), ozlBalanceAlice);
+        approve(OZL, ozlBalanceAlice);
+
         uint amountOut = OZL.redeem(
             alice,
             alice,
