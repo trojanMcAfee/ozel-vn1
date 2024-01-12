@@ -130,7 +130,7 @@ library TradingLib {
         uint amountIn_,
         uint[] memory minAmountsOut_,
         Action type_
-    ) private returns(uint) {
+    ) private returns(uint amountOut) {
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(pool_).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
@@ -164,18 +164,8 @@ library TradingLib {
         }
 
         SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
-    
-        try IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp) returns(uint amountOut) {
-            if (amountOut == 0) revert OZError02();
 
-            return amountOut;
-        } catch Error(string memory reason) {
-            if (Helpers.compareStrings(reason, 'BAL#507')) {
-                revert OZError20();
-            } else {
-                revert OZError21(reason);
-            }
-        }
+        amountOut = _executeSwap(vault_, singleSwap, funds, minOut, block.timestamp);
     }
 
 
@@ -189,19 +179,31 @@ library TradingLib {
     }
 
 
+    /**
+     * HELPERS
+     */
+
+    function _executeSwap(
+        address vault_,
+        IVault.SingleSwap memory singleSwap_,
+        IVault.FundManagement memory funds_,
+        uint minAmountOut_,
+        uint blockStamp_
+    ) private returns(uint) 
+    {
+        try IVault(vault_).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
+            if (amountOut == 0) revert OZError02();
+            return amountOut;
+        } catch Error(string memory reason) {
+            if (Helpers.compareStrings(reason, 'BAL#507')) {
+                revert OZError20();
+            } else {
+                revert OZError21(reason);
+            }
+        }
+    }
+
+
 }
 
 
-
-// function _executeSwap() private returns(uint amountOut) {
-//     try IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp) returns(uint amountOut) {
-//         if (amountOut == 0) revert OZError02();
-//         return amountOut;
-//     } catch Error(string memory reason) {
-//         if (Helpers.compareStrings(reason, 'BAL#507')) {
-//             revert OZError20();
-//         } else {
-//             revert OZError21(reason);
-//         }
-//     }
-// }
