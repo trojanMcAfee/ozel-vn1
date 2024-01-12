@@ -14,6 +14,7 @@ import {IRocketTokenRETH} from "../../contracts/interfaces/IRocketPool.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 import {HelpersLib} from "./HelpersLib.sol";
+import {IVault, IAsset, IPool, IQueries} from "../../contracts/interfaces/IBalancer.sol";
 
 import "forge-std/console.sol";
 
@@ -120,7 +121,40 @@ contract OZLtokenTest is TestMethods {
         assertTrue(amountOut == rEthBalancePost);
     } 
 
+    function test_x() public {
+        _mock_rETH_ETH();
+        deal(rEthAddr, alice, 1_000 * 1e18);
+        uint amountIn = 1228303536160213939;
 
+        vm.startPrank(alice);
+        IERC20Permit(rEthAddr).approve(vaultBalancer, type(uint).max);
+
+        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+            poolId: IPool(rEthWethPoolBalancer).getPoolId(),
+            kind: IVault.SwapKind.GIVEN_IN,
+            assetIn: IAsset(rEthAddr),
+            assetOut: IAsset(wethAddr),
+            amount: amountIn,
+            userData: new bytes(0)
+        });
+
+        IVault.FundManagement memory funds = IVault.FundManagement({
+            sender: alice,
+            fromInternalBalance: false, 
+            recipient: payable(alice),
+            toInternalBalance: false
+        });
+
+        uint amountOut = IVault(vaultBalancer).swap(singleSwap, funds, 0, block.timestamp);
+        console.log('amountOutWeth: ', amountOut);
+    }
+
+    /**
+     * This tests, and redeem_in_stable requires such a hight slippage for WETH 
+     * because it's reflecting the incresae in the rate of rETH_ETH done by the mock call.
+     * The rETH-WETH Balancer pool doesn't recognize this increase so it's outputting
+     * a value based on the actual rETH-WETH rate, instead of the mocked one.
+     */
     function test_redeem_in_WETH() public {
         //Pre-conditions
         test_claim_OZL();
@@ -175,20 +209,25 @@ contract OZLtokenTest is TestMethods {
         uint ozlBalanceAlice = OZL.balanceOf(alice);
 
         //-- this is off in comparisson to amountOut after swap in USD
-        uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate();
-        console.log('usdToRedeem: ', usdToRedeem / 1 ether);
+        uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
+        console.log('usdToRedeem - rate: ', usdToRedeem);
 
         // uint slippage = 100;
 
         _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5%  / 100 - 1%
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
+        console.log('wethToRedeem - rate ***: ', wethToRedeem);
+
         uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
-        uint minAmountOutUsd = HelpersLib.calculateMinAmountOut(usdToRedeem, OZ.getDefaultSlippage());
+        uint minAmountOutUsd = HelpersLib.calculateMinAmountOut(usdToRedeem, uint16(50));
         
         uint[] memory minAmountsOut = new uint[](2);
         minAmountsOut[0] = minAmountOutWeth;
         minAmountsOut[1] = minAmountOutUsd;
+
+        console.log('minAmountOutUsd: ', minAmountOutUsd);
+        console.log('minAmountOutWeth: ', minAmountOutWeth);
 
         //***** -----
 
@@ -202,7 +241,7 @@ contract OZLtokenTest is TestMethods {
             minAmountsOut
         );
 
-        console.log('amountOut: ', amountOut);
+        console.log('amountOut usd: ', amountOut);
 
         //Post-condtions
         uint balanceAlicePost = IERC20Permit(testToken).balanceOf(alice);

@@ -79,6 +79,7 @@ contract OZL is ERC20Upgradeable {
         data = Address.functionStaticCall(address(getOZ()), data);
 
         uint reth_eth = abi.decode(data, (uint));
+        // console.log('reth_eth ****: ', reth_eth);
 
         uint quote;
 
@@ -120,7 +121,7 @@ contract OZL is ERC20Upgradeable {
         uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
         uint rETHtoRedeem = usdValue.mulDivDown(1 ether, OZ.rETH_USD());
 
-        console.log('rETHtoRedeem: ', rETHtoRedeem);
+        console.log('rETHtoRedeem in - OZL: ', rETHtoRedeem);
 
         if (tokenOut_ == p.rETH) {
             if (rETHtoRedeem < minAmountsOut_[0]) revert OZError19(rETHtoRedeem);
