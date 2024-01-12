@@ -61,7 +61,6 @@ library TradingLib {
                 amountIn_,
                 minAmountsOut_
             );
-            console.log('amountOutWeth - uni: ', amountOut);
         } else {
             amountOut = _swapBalancer(
                 tokenIn,
@@ -101,12 +100,6 @@ library TradingLib {
         uint[] memory minAmountsOut_
     ) private returns(uint) {
         SafeERC20.safeApprove(IERC20(tokenIn_), router_, amountIn_);
-
-        console.log('----');
-        console.log('mintOut usd - uni: ', minAmountsOut_[1]);
-        console.log('amountIn_ uni: ', amountIn_);
-        console.log('tokenIn_: ', tokenIn_);
-        console.log('----');
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 
@@ -174,8 +167,6 @@ library TradingLib {
     
         try IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp) returns(uint amountOut) {
             if (amountOut == 0) revert OZError02();
-
-            console.log('amountOut weth - bal: ', amountOut);
 
             return amountOut;
         } catch Error(string memory reason) {

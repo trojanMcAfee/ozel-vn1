@@ -95,6 +95,7 @@ contract OZLtokenTest is TestMethods {
 
         uint ozlBalanceAlice = OZL.balanceOf(alice);
         uint rEthBalancePre = IERC20Permit(rEthAddr).balanceOf(alice);
+        assertTrue(rEthBalancePre == 0);
         
         uint rEthToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.rETH)) / 1 ether;
         _changeSlippage(uint16(5)); //0.05%
@@ -108,7 +109,7 @@ contract OZLtokenTest is TestMethods {
         uint amountOut = OZL.redeem(
             alice,
             alice,
-            wethAddr,
+            rEthAddr,
             ozlBalanceAlice,
             minAmountsOut
         );
@@ -116,38 +117,10 @@ contract OZLtokenTest is TestMethods {
         //Post-condition
         uint rEthBalancePost = IERC20Permit(rEthAddr).balanceOf(alice);
         
-        assertTrue(rEthBalancePre == 0);
         assertTrue(rEthBalancePost > 0);
         assertTrue(amountOut == rEthBalancePost);
     } 
 
-    function test_x() public {
-        _mock_rETH_ETH();
-        deal(rEthAddr, alice, 1_000 * 1e18);
-        uint amountIn = 1228303536160213939;
-
-        vm.startPrank(alice);
-        IERC20Permit(rEthAddr).approve(vaultBalancer, type(uint).max);
-
-        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: IPool(rEthWethPoolBalancer).getPoolId(),
-            kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(rEthAddr),
-            assetOut: IAsset(wethAddr),
-            amount: amountIn,
-            userData: new bytes(0)
-        });
-
-        IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: alice,
-            fromInternalBalance: false, 
-            recipient: payable(alice),
-            toInternalBalance: false
-        });
-
-        uint amountOut = IVault(vaultBalancer).swap(singleSwap, funds, 0, block.timestamp);
-        console.log('amountOutWeth: ', amountOut);
-    }
 
     /**
      * This tests, and redeem_in_stable requires such a hight slippage for WETH 
@@ -210,14 +183,10 @@ contract OZLtokenTest is TestMethods {
 
         //-- this is off in comparisson to amountOut after swap in USD
         uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
-        console.log('usdToRedeem - rate: ', usdToRedeem);
-
-        // uint slippage = 100;
 
         _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5%  / 100 - 1%
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
-        console.log('wethToRedeem - rate ***: ', wethToRedeem);
 
         uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
         uint minAmountOutUsd = HelpersLib.calculateMinAmountOut(usdToRedeem, uint16(50));
@@ -225,9 +194,6 @@ contract OZLtokenTest is TestMethods {
         uint[] memory minAmountsOut = new uint[](2);
         minAmountsOut[0] = minAmountOutWeth;
         minAmountsOut[1] = minAmountOutUsd;
-
-        console.log('minAmountOutUsd: ', minAmountOutUsd);
-        console.log('minAmountOutWeth: ', minAmountOutWeth);
 
         //***** -----
 
@@ -241,11 +207,8 @@ contract OZLtokenTest is TestMethods {
             minAmountsOut
         );
 
-        console.log('amountOut usd: ', amountOut);
-
         //Post-condtions
         uint balanceAlicePost = IERC20Permit(testToken).balanceOf(alice);
-
         assertTrue(balanceAlicePost == amountOut);
     }
 
