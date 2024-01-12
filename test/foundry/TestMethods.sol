@@ -35,7 +35,7 @@ import "forge-std/console.sol";
 contract TestMethods is BaseMethods {
 
     using FixedPointMathLib for uint;
-    
+
 
     modifier pauseBalancerPool() {
         vm.mockCall(
@@ -43,7 +43,11 @@ contract TestMethods is BaseMethods {
             abi.encodeWithSignature('getPausedState()'),
             abi.encode(true, uint(0), uint(0))
         );
+
         _;
+
+        (bool paused,,) = IPool(rEthWethPoolBalancer).getPausedState();
+        assertTrue(paused);
         vm.clearMockedCalls();
     }
 

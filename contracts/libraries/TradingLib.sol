@@ -52,7 +52,6 @@ library TradingLib {
         (bool paused,,) = IPool(p.rEthWethPoolBalancer).getPausedState(); 
 
         if (paused) {
-            console.log('here');
             amountOut = _swapUni(
                 tokenIn,
                 tokenOut,

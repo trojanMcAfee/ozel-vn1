@@ -140,13 +140,10 @@ contract OZLtokenTest is TestMethods {
         assertTrue(wethBalancePre == 0);
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
-        console.log('wethToRedeem: ', wethToRedeem);
 
         _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5% 
-        //^ this one is outputing 5% of slippage
 
         uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
-        console.log('minAmountOut: ', minAmountOutWeth);
 
         uint[] memory minAmountsOut = new uint[](1);
         minAmountsOut[0] = minAmountOutWeth;
@@ -165,7 +162,6 @@ contract OZLtokenTest is TestMethods {
         uint wethBalancePost = IWETH(wethAddr).balanceOf(alice);
         assertTrue(wethBalancePost > 0);
         assertTrue(wethBalancePost == amountOut);
-        console.log('amountOut: ', amountOut);
     }
 
 
