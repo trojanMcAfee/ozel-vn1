@@ -223,14 +223,6 @@ contract OZLtokenTest is TestMethods {
             [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
         );
 
-        //Action
-        // OZL.approve(address(OZL), ozlBalanceAlice);
-
-        //------
-        // bytes32 permitHash = 
-        //     testToken == daiAddr ? _getPermitHashDAI(alice, address(OZL)) : 
-        //     _getPermitHash(alice, address(OZL), ozlBalanceAlice);
-
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHashOZL(alice, address(OZL), ozlBalanceAlice));
         
         vm.startPrank(alice);
@@ -241,11 +233,6 @@ contract OZLtokenTest is TestMethods {
             block.timestamp,
             v, r, s
         );
-
-        // bytes memory data = abi.encode(minAmountsOut, v, r, s);
-        // _sendPermit(alice, address(OZL), ozlBalanceAlice, data);
-
-        //------
 
         uint amountOut = OZL.redeem(
             alice,
