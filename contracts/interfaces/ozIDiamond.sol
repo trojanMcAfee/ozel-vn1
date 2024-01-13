@@ -58,7 +58,7 @@ interface ozIDiamond {
     function lastTimeRewardApplicable() external view returns(uint);
     function rewardPerToken() external view returns(uint);
     function earned(address user_) external view returns(uint);
-    function claimReward() external;
+    function claimReward() external returns(uint);
     function getRewardRate() external view returns(uint);
 
     function storeOZL(address ozlProxy_) external;
@@ -76,4 +76,5 @@ interface ozIDiamond {
     ) external;
 
     function tradingPackage() external view returns(TradingPackage memory);
+    function pendingAllocation() external view returns(uint);
 }

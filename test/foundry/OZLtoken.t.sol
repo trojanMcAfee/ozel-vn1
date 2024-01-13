@@ -73,18 +73,60 @@ contract OZLtokenTest is TestMethods {
 
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlBalancePre = OZL.balanceOf(alice);
+        assertTrue(ozlBalancePre == 0);
 
         //Actions
         bool wasCharged = OZ.chargeOZLfee();
+        assertTrue(wasCharged);
 
         vm.prank(alice);
         OZ.claimReward();
 
         //Post-condtions
         uint ozlBalancePost = OZL.balanceOf(alice);
+        assertTrue(ozlBalancePost > 0);
+    }
 
-        assertTrue(wasCharged);
+    //Test the claiming process of OZL.
+    //Also checks the pending allocation of OZL. 
+    function test_claim_x() public {
+        //Pre-conditions
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20"
+        ));
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _changeSlippage(uint16(9900));
+
+        _startCampaign();
+        _mintOzTokens(ozERC20, alice, amountIn); 
+
+        uint secs = 10;
+        vm.warp(block.timestamp + secs);
+
+        _mock_rETH_ETH();
+
+        IOZL OZL = IOZL(address(ozlProxy));
+        uint ozlBalancePre = OZL.balanceOf(alice);
         assertTrue(ozlBalancePre == 0);
+
+        uint pendingOZLallocPre = OZ.pendingAllocation();
+        assertTrue(communityAmount == pendingOZLallocPre);
+
+        //Actions
+        bool wasCharged = OZ.chargeOZLfee();
+        assertTrue(wasCharged);
+
+        vm.prank(alice);
+        uint claimedReward = OZ.claimReward();
+
+        uint pendingOZLallocPost = OZ.pendingAllocation();
+        assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
+        // console.log('pendingOZLalloc - post: ', pendingOZLalloc);
+
+        //Post-condtions
+        uint ozlBalancePost = OZL.balanceOf(alice);
         assertTrue(ozlBalancePost > 0);
     }
 
@@ -173,34 +215,6 @@ contract OZLtokenTest is TestMethods {
         assertTrue(wethBalancePost > 0);
         assertTrue(wethBalancePost == amountOut);
     }
-
-    // function getPermitHash2(
-    //     address token_,
-    //     address owner_,
-    //     address spender_,
-    //     uint value_,
-    //     uint nonce_,
-    //     uint deadline_
-    // ) internal view returns(bytes32) {
-    //     return keccak256(
-    //                 abi.encodePacked(
-    //                     "\x19\x01",
-    //                     IOZL(token_).DOMAIN_SEPARATOR(),
-    //                     keccak256(
-    //                         abi.encode(
-    //                             keccak256(
-    //                                 "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
-    //                             ),
-    //                             owner_,
-    //                             spender_,
-    //                             value_,
-    //                             nonce_,
-    //                             deadline_
-    //                         )
-    //                     )
-    //                 )
-    //             );
-    // }
 
 
     function test_redeem_permit_in_stable() public {

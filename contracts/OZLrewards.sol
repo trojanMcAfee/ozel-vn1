@@ -34,7 +34,7 @@ contract OZLrewards is Modifiers {
 
         if (s.r.rewardRate <= 0) revert OZError16();
         if (
-            s.r.rewardRate * s.r.duration > IERC20Permit(s.ozlProxy).balanceOf(address(this))
+            s.r.rewardRate * s.r.duration > IOZL(s.ozlProxy).balanceOf(address(this))
         ) revert OZError17();
 
         s.r.finishAt = block.timestamp + s.r.duration;
@@ -64,13 +64,16 @@ contract OZLrewards is Modifiers {
          + s.r.rewards[user_];
     }
     
-    function claimReward() external override updateReward(msg.sender) { //add a reentrancy check
+    function claimReward() external override updateReward(msg.sender) returns(uint) { //add a reentrancy check
         uint reward = s.r.rewards[msg.sender];
+        
         if (reward > 0) {
             s.r.rewards[msg.sender] = 0;
-            IERC20Permit(s.ozlProxy).transfer(msg.sender, reward);
+            IOZL(s.ozlProxy).transfer(msg.sender, reward); 
             s.r.circulatingSupply += reward;
         }
+
+        return reward;
     }
 
     function getRewardRate() external view override returns(uint) {
@@ -79,6 +82,10 @@ contract OZLrewards is Modifiers {
 
     function getOZLCirculatingSupply() external view override returns(uint) {
         return s.r.circulatingSupply;
+    }
+
+    function pendingAllocation() external view returns(uint) {
+        return IOZL(s.ozlProxy).balanceOf(address(this));
     }
 }
 
