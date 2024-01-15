@@ -110,9 +110,57 @@ contract OZLtokenTest is TestMethods {
 
 
     function test_recicled_supply() public {
-        test_redeem_in_stable();
+        //Pre-conditions
+        test_claim_OZL();
 
-        uint receicledSupply = OZ.getRecicledSupply();
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        uint ozlBalanceAlice = OZL.balanceOf(alice);
+        console.log('ozlBalanceAlice pre / > 0: ', ozlBalanceAlice);
+        assertTrue(ozlBalanceAlice > 0);
+
+        uint recicledSupply = OZ.getRecicledSupply();
+        console.log('recicledSupply - 0: ', recicledSupply);
+        assertTrue(recicledSupply == 0);
+
+        uint rEthBalanceAlice = IERC20Permit(rEthAddr).balanceOf(alice);
+        console.log('rEthBalanceAlice - 0: ', rEthBalanceAlice);
+        assertTrue(rEthBalanceAlice == 0);
+
+        uint[] memory minAmountsOut = new uint[](1);
+        minAmountsOut[0] = HelpersLib.calculateMinAmountOut(
+            (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.rETH)) / 1 ether, 
+            OZ.getDefaultSlippage()
+        );
+
+        //Actions
+        vm.startPrank(alice);
+        approve(OZL, ozlBalanceAlice);
+
+        OZL.redeem(
+            alice,
+            alice,
+            rEthAddr,
+            ozlBalanceAlice,
+            minAmountsOut
+        );
+        vm.stopPrank();
+
+        rEthBalanceAlice = IERC20Permit(rEthAddr).balanceOf(alice);
+        console.log('rEthBalanceAlice / >0: ', rEthBalanceAlice);
+        assertTrue(rEthBalanceAlice > 0);
+
+        recicledSupply = OZ.getRecicledSupply();
+        console.log('recicledSupply - >0: ', recicledSupply);
+        assertTrue(recicledSupply > 0);
+        assertTrue(recicledSupply == ozlBalanceAlice);
+        console.log('recicledSupply == ozlBalanceAlice - true: ', recicledSupply == ozlBalanceAlice);
+
+        ozlBalanceAlice = OZL.balanceOf(alice);
+        console.log('ozlBalanceAlice - 0: ', ozlBalanceAlice);
+        // assertTrue(ozlBalanceAlice > 0);
+
+
     }
 
 

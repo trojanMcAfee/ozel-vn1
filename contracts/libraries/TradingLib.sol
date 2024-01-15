@@ -27,8 +27,15 @@ library TradingLib {
         uint amountInLsd_,
         uint[] memory minAmountsOut_
     ) internal returns(uint) {
-        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, address(this), ozlAmountIn_);
+        uint x = IERC20(address(this)).balanceOf(owner_);
+        console.log('bal alice pre in lib: ', x);
+
+        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, ozlAmountIn_);
+        console.log(2);
         ozIDiamond(ozDiamond_).modifySupply(ozlAmountIn_);
+
+        x = IERC20(address(this)).balanceOf(owner_);
+        console.log('bal alice post in lib: ', x);
 
 
         return _checkPauseAndSwap(
