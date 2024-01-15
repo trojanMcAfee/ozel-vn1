@@ -46,8 +46,8 @@ struct AppStorage {
 
     address ozlProxy; //change this to OZL everywhere
 
-    LastRewards rewards;
-    OZLrewards r;
+    LastRewards rewards; //check where this is used and change the name
+    OZLrewards r; //change this to RewardsPackage or not. Check if I'm returning the struct with the mapping (can't be done)
 
     address adminFeeRecipient; 
     // uint16 adminFeeBps;
@@ -146,6 +146,7 @@ struct OZLrewards {
     uint rewardRate;
     uint rewardPerTokenStored;
     uint circulatingSupply;
+    uint recicledSupply;
     mapping(
         address user => uint rewardPerTokenStoredPerUser
     ) userRewardPerTokenPaid;

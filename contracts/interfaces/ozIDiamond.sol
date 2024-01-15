@@ -8,7 +8,8 @@ import {
     AmountsOut, 
     Asset, 
     LastRewards,
-    TradingPackage
+    TradingPackage,
+    OZLrewards
 } from "../AppStorage.sol";
 
 
@@ -63,7 +64,7 @@ interface ozIDiamond {
 
     function storeOZL(address ozlProxy_) external;
     function changeAdminFeeRecipient(address newRecipient_) external;
-    function getOZLCirculatingSupply() external view returns(uint);
+    function getCirculatingSupply() external view returns(uint);
 
     function ozTokens(address underlying_) external view returns(address);
     function useOZL(
@@ -77,4 +78,7 @@ interface ozIDiamond {
 
     function tradingPackage() external view returns(TradingPackage memory);
     function pendingAllocation() external view returns(uint);
+    function durationLeft() external view returns(int);
+    function getRecicledSupply() external view returns(uint);
+    function modifySupply(uint ozlAmount_) external;
 }

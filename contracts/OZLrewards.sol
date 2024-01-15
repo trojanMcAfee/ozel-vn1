@@ -12,7 +12,7 @@ import "./Errors.sol";
 import "forge-std/console.sol";
 
 
-contract OZLrewards is Modifiers {
+contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead of Modifiers
 
     //Sets the lenght of the reward campaign
     function setRewardsDuration(uint duration_) external override {
@@ -80,12 +80,27 @@ contract OZLrewards is Modifiers {
         return s.r.rewardRate;
     }
 
-    function getOZLCirculatingSupply() external view override returns(uint) {
+    function getCirculatingSupply() external view override returns(uint) {
         return s.r.circulatingSupply;
     }
 
     function pendingAllocation() external view returns(uint) {
         return IOZL(s.ozlProxy).balanceOf(address(this));
+    }
+
+    function durationLeft() external view returns(int) {
+        return int(s.r.finishAt) - int(block.timestamp);
+    }
+
+    function getRecicledSupply() external view override returns(uint) {
+        return s.r.recicledSupply;
+    }
+
+    function modifySupply(uint ozlAmount_) external { //put an onlyOZL modifier here
+        console.log('sender in modifySupply: ', msg.sender);
+        
+        s.r.circulatingSupply -= ozlAmount_;
+        s.r.recicledSupply += ozlAmount_;
     }
 }
 

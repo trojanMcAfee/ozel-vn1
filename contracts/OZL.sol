@@ -12,7 +12,7 @@ import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {TradingLib} from "./libraries/TradingLib.sol";
-import {TradingPackage} from "./AppStorage.sol";
+import {TradingPackage, OZLrewards} from "./AppStorage.sol";
 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol";
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
@@ -143,7 +143,11 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
 
     function circulatingSupply() public view returns(uint) {
-        return getOZ().getOZLCirculatingSupply();
+        return getOZ().getCirculatingSupply();
+    }
+
+    function recicledSupply() public view returns(uint) {
+        return getOZ().getRecicledSupply();
     }
 
     function getOZ() public view returns(ozIDiamond) {

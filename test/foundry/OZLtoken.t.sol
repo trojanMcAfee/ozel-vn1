@@ -53,7 +53,8 @@ contract OZLtokenTest is TestMethods {
 
     // function test_exchangeRate_no_circulatingSupply
 
-    function test_claim_OZL() public {
+
+    function test_x() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -66,8 +67,11 @@ contract OZLtokenTest is TestMethods {
         _startCampaign();
         _mintOzTokens(ozERC20, alice, amountIn); 
 
-        uint secs = 10;
+        uint secs = 10; //campaignDuration
         vm.warp(block.timestamp + secs);
+
+        // int durationLeft = OZ.durationLeft();
+        // console.logInt(durationLeft);
 
         _mock_rETH_ETH();
 
@@ -75,21 +79,47 @@ contract OZLtokenTest is TestMethods {
         uint ozlBalancePre = OZL.balanceOf(alice);
         assertTrue(ozlBalancePre == 0);
 
+        uint pendingOZLallocPre = OZ.pendingAllocation();
+        console.log('pendingOZLallocPre: ', pendingOZLallocPre);
+        assertTrue(communityAmount == pendingOZLallocPre);
+
         //Actions
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
+        uint circulatingSupply = OZ.getCirculatingSupply();
+        console.log('circulatingSupply - 0: ', circulatingSupply);
+
         vm.prank(alice);
-        OZ.claimReward();
+        uint claimedReward = OZ.claimReward();
+
+        circulatingSupply = OZ.getCirculatingSupply();
+        console.log('circulatingSupply > 0: ', circulatingSupply);
 
         //Post-condtions
         uint ozlBalancePost = OZL.balanceOf(alice);
         assertTrue(ozlBalancePost > 0);
+
+        uint pendingOZLallocPost = OZ.pendingAllocation();
+        console.log('pendingOZLallocPost: ', pendingOZLallocPost);
+        assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
+
+        uint recicledSupply = OZ.getRecicledSupply();
+        console.log('recicledSupply: ', recicledSupply);
     }
+
+
+    function test_recicled_supply() public {
+        test_redeem_in_stable();
+
+        uint receicledSupply = OZ.getRecicledSupply();
+    }
+
 
     //Test the claiming process of OZL.
     //Also checks the pending allocation of OZL. 
-    function test_claim_x() public {
+    //Checks circulatingSupply
+    function test_claim_OZL() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -118,16 +148,22 @@ contract OZLtokenTest is TestMethods {
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
+        uint circulatingSupply = OZ.getCirculatingSupply();
+        assertTrue(circulatingSupply == 0);
+
         vm.prank(alice);
         uint claimedReward = OZ.claimReward();
 
-        uint pendingOZLallocPost = OZ.pendingAllocation();
-        assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
-        // console.log('pendingOZLalloc - post: ', pendingOZLalloc);
-
         //Post-condtions
+        circulatingSupply = OZ.getCirculatingSupply();
+        assertTrue(circulatingSupply > 0);
+
         uint ozlBalancePost = OZL.balanceOf(alice);
         assertTrue(ozlBalancePost > 0);
+        assertTrue(circulatingSupply == ozlBalancePost);
+
+        uint pendingOZLallocPost = OZ.pendingAllocation();
+        assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
     }
 
 
@@ -303,6 +339,17 @@ contract OZLtokenTest is TestMethods {
         assertTrue(balanceAlicePost == amountOut);
     }
 
+
+    //-----
+    function test_redeem_x() public {
+        test_redeem_in_stable();
+
+        uint pendingOZLallocPostRedeem = OZ.pendingAllocation();
+        console.log('pendingOZLalloc - post OZL redeem: ', pendingOZLallocPostRedeem);
+
+    }
+
+    //-------------
 
     function test_redeem_in_WETH_paused_pool() public pauseBalancerPool {
         test_redeem_in_WETH_ETH();

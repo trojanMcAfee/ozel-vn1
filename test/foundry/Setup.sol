@@ -315,9 +315,7 @@ contract Setup is Test {
         uint id_
     ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
-        if (id_ == 10) {
-            length = 9;
-        } else if (id_ == 1) {
+        if (id_ == 1) {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
@@ -331,6 +329,8 @@ contract Setup is Test {
             length = 4;
         } else if (id_ == 0) {
             length = 10;
+        } else if (id_ == 10) {
+            length = 12;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -394,8 +394,11 @@ contract Setup is Test {
             selectors[4] = rewardsContract.earned.selector;
             selectors[5] = rewardsContract.claimReward.selector;
             selectors[6] = rewardsContract.getRewardRate.selector;
-            selectors[7] = rewardsContract.getOZLCirculatingSupply.selector;
+            selectors[7] = rewardsContract.getCirculatingSupply.selector;
             selectors[8] = rewardsContract.pendingAllocation.selector;
+            selectors[9] = rewardsContract.durationLeft.selector;
+            selectors[10] = rewardsContract.getRecicledSupply.selector;
+            selectors[11] = rewardsContract.modifySupply.selector;
         }
 
         cut = IDiamondCut.FacetCut({
