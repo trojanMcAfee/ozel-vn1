@@ -85,7 +85,7 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
         return s.r.circulatingSupply;
     }
 
-    function pendingAllocation() external view returns(uint) {
+    function pendingAllocation() external view returns(uint) { //put these 3 funcs into one returning a tuple
         return IOZL(s.ozlProxy).balanceOf(address(this));
     }
 

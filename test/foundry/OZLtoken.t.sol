@@ -54,7 +54,7 @@ contract OZLtokenTest is TestMethods {
     // function test_exchangeRate_no_circulatingSupply
 
     
-    function _checkKeyParams(IOZL OZL) internal returns(uint ozlBalanceAlice) {
+    function _checkChargeFeeClaimOZL(IOZL OZL) internal returns(uint ozlBalanceAlice) {
         uint ozlBalancePre = OZL.balanceOf(alice);
         assertTrue(ozlBalancePre == 0);
 
@@ -106,7 +106,7 @@ contract OZLtokenTest is TestMethods {
         _mock_rETH_ETH();
 
         IOZL OZL = IOZL(address(ozlProxy));
-        uint ozlBalanceAlice = _checkKeyParams(OZL);
+        uint ozlBalanceAlice = _checkChargeFeeClaimOZL(OZL);
 
         //Actions
 
@@ -122,9 +122,12 @@ contract OZLtokenTest is TestMethods {
 
         uint ozlBalanceOZLPreRedeem = OZL.balanceOf(address(OZL));
 
+        uint pendingAllocPreRedeem = OZ.pendingAllocation();
+        assertTrue(pendingAllocPreRedeem < (1 * 1e18) / 1000000);
+
         vm.startPrank(alice);
         OZL.approve(address(OZL), ozlBalanceAlice);
-        
+
         //------
     
         OZL.redeem(
@@ -136,16 +139,22 @@ contract OZLtokenTest is TestMethods {
         );
         vm.stopPrank();
 
-        uint ozlBalanceOZLPostRedeem = OZL.balanceOf(address(OZL));
-        uint recicledSupply = OZ.getRecicledSupply();
+        uint pendingAllocPostRedeem = OZ.pendingAllocation();
+        assertTrue(pendingAllocPostRedeem == ozlBalanceAlice + pendingAllocPreRedeem);
 
+        uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
+        assertTrue(ozlBalanceOZPostRedeem == pendingAllocPostRedeem);
+
+        uint recicledSupply = OZ.getRecicledSupply();
+        assertTrue(recicledSupply == ozlBalanceAlice);
+
+        //Actions
         vm.prank(owner);
         OZ.startNewReciclingCampaign(31560000); //one year
 
+        //doing the new campaign here ^^
 
-        //Post-conditions
-        assertTrue(ozlBalanceOZLPostRedeem == ozlBalanceAlice + ozlBalanceOZLPreRedeem);
-        assertTrue(recicledSupply == ozlBalanceAlice);
+        // //Post-conditions
         
 
 

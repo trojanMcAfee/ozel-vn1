@@ -22,7 +22,7 @@ library TradingLib {
         address ozDiamond_,
         uint amountIn_
     ) internal {
-        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, address(this), amountIn_);
+        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, amountIn_);
         ozIDiamond(ozDiamond_).modifySupply(amountIn_);
     }
 
