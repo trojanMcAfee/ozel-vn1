@@ -97,8 +97,6 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
     }
 
     function modifySupply(uint ozlAmount_) external { //put an onlyOZL modifier here
-        console.log('sender in modifySupply: ', msg.sender);
-        
         s.r.circulatingSupply -= ozlAmount_;
         s.r.recicledSupply += ozlAmount_;
     }

@@ -28,25 +28,11 @@ library TradingLib {
 
     function useOZL(
         TradingPackage memory p,
-        address owner_,
         address tokenOut_,
         address receiver_,
-        address ozDiamond_,
-        uint ozlAmountIn_,
         uint amountInLsd_,
         uint[] memory minAmountsOut_
     ) internal returns(uint) {
-        uint x = IERC20(address(this)).balanceOf(owner_);
-        console.log('bal alice pre in lib: ', x);
-
-        // SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, ozlAmountIn_);
-        console.log(2);
-        // ozIDiamond(ozDiamond_).modifySupply(ozlAmountIn_);
-
-        x = IERC20(address(this)).balanceOf(owner_);
-        console.log('bal alice post in lib: ', x);
-
-
         return _checkPauseAndSwap(
             p,
             tokenOut_,

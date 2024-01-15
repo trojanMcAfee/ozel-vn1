@@ -67,14 +67,14 @@ interface ozIDiamond {
     function getCirculatingSupply() external view returns(uint);
 
     function ozTokens(address underlying_) external view returns(address);
-    function useOZL(
-        address tokenIn_, 
-        address tokenOut_,
-        address sender_,
-        address receiver_,
-        uint amountIn_,
-        uint minAmountOut_
-    ) external;
+    // function useOZL(
+    //     address tokenIn_, 
+    //     address tokenOut_,
+    //     address sender_,
+    //     address receiver_,
+    //     uint amountIn_,
+    //     uint minAmountOut_
+    // ) external;
 
     function tradingPackage() external view returns(TradingPackage memory);
     function pendingAllocation() external view returns(uint);

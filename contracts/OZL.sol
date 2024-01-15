@@ -132,11 +132,8 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
         return TradingLib.useOZL( 
             p,
-            owner_,
             tokenOut_,
             receiver_,
-            address(OZ),
-            ozlAmountIn_,
             rETHtoRedeem,
             minAmountsOut_
         );
