@@ -17,6 +17,15 @@ import "forge-std/console.sol";
 
 library TradingLib {
 
+    function recicleOZL(
+        address owner_,
+        address ozDiamond_,
+        uint amountIn_
+    ) internal {
+        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, amountIn_);
+        ozIDiamond(ozDiamond_).modifySupply(amountIn_);
+    }
+
     function useOZL(
         TradingPackage memory p,
         address owner_,
@@ -30,9 +39,9 @@ library TradingLib {
         uint x = IERC20(address(this)).balanceOf(owner_);
         console.log('bal alice pre in lib: ', x);
 
-        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, ozlAmountIn_);
+        // SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, ozlAmountIn_);
         console.log(2);
-        ozIDiamond(ozDiamond_).modifySupply(ozlAmountIn_);
+        // ozIDiamond(ozDiamond_).modifySupply(ozlAmountIn_);
 
         x = IERC20(address(this)).balanceOf(owner_);
         console.log('bal alice post in lib: ', x);

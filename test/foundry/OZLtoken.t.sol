@@ -127,11 +127,15 @@ contract OZLtokenTest is TestMethods {
         console.log('rEthBalanceAlice - 0: ', rEthBalanceAlice);
         assertTrue(rEthBalanceAlice == 0);
 
+        // _changeSlippage(uint16(5)); //0.05%
+
         uint[] memory minAmountsOut = new uint[](1);
         minAmountsOut[0] = HelpersLib.calculateMinAmountOut(
             (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.rETH)) / 1 ether, 
             OZ.getDefaultSlippage()
         );
+
+        console.log('minAmountOut rETH in test: ', minAmountsOut[0]);
 
         //Actions
         vm.startPrank(alice);
