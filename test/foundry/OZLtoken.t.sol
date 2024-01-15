@@ -53,6 +53,36 @@ contract OZLtokenTest is TestMethods {
 
     // function test_exchangeRate_no_circulatingSupply
 
+    
+    function _checkKeyParams(IOZL OZL) internal returns(uint ozlBalanceAlice) {
+        uint ozlBalancePre = OZL.balanceOf(alice);
+        assertTrue(ozlBalancePre == 0);
+
+        uint pendingOZLallocPre = OZ.pendingAllocation();
+        assertTrue(communityAmount == pendingOZLallocPre);
+
+         bool wasCharged = OZ.chargeOZLfee();
+        assertTrue(wasCharged);
+
+        uint circulatingSupply = OZ.getCirculatingSupply();
+        assertTrue(circulatingSupply == 0);
+
+        vm.prank(alice);
+        uint claimedReward = OZ.claimReward();
+
+        circulatingSupply = OZ.getCirculatingSupply();
+        assertTrue(circulatingSupply > 0);
+
+        ozlBalanceAlice = OZL.balanceOf(alice);
+        assertTrue(ozlBalanceAlice > 0);
+
+        uint pendingOZLallocPost = OZ.pendingAllocation();
+        assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
+
+        uint recicledSupply = OZ.getRecicledSupply();
+        assertTrue(recicledSupply == 0);
+    }
+
 
     function test_x() public {
         //Pre-conditions
@@ -67,45 +97,58 @@ contract OZLtokenTest is TestMethods {
         _startCampaign();
         _mintOzTokens(ozERC20, alice, amountIn); 
 
-        uint secs = 10; //campaignDuration
+        uint secs = 10 + campaignDuration; //campaignDuration
         vm.warp(block.timestamp + secs);
 
-        // int durationLeft = OZ.durationLeft();
-        // console.logInt(durationLeft);
+        int durationLeft = OZ.durationLeft();
+        assertTrue(durationLeft < 0);
 
         _mock_rETH_ETH();
 
         IOZL OZL = IOZL(address(ozlProxy));
-        uint ozlBalancePre = OZL.balanceOf(alice);
-        assertTrue(ozlBalancePre == 0);
-
-        uint pendingOZLallocPre = OZ.pendingAllocation();
-        console.log('pendingOZLallocPre: ', pendingOZLallocPre);
-        assertTrue(communityAmount == pendingOZLallocPre);
+        uint ozlBalanceAlice = _checkKeyParams(OZL);
 
         //Actions
-        bool wasCharged = OZ.chargeOZLfee();
-        assertTrue(wasCharged);
 
-        uint circulatingSupply = OZ.getCirculatingSupply();
-        console.log('circulatingSupply - 0: ', circulatingSupply);
+        //-- params for redeem ---
+        uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
 
-        vm.prank(alice);
-        uint claimedReward = OZ.claimReward();
+        _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5% 
 
-        circulatingSupply = OZ.getCirculatingSupply();
-        console.log('circulatingSupply > 0: ', circulatingSupply);
+        uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
 
-        //Post-condtions
-        uint ozlBalancePost = OZL.balanceOf(alice);
-        assertTrue(ozlBalancePost > 0);
+        uint[] memory minAmountsOut = new uint[](1);
+        minAmountsOut[0] = minAmountOutWeth;
 
-        uint pendingOZLallocPost = OZ.pendingAllocation();
-        console.log('pendingOZLallocPost: ', pendingOZLallocPost);
-        assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
+        uint ozlBalanceOZLPreRedeem = OZL.balanceOf(address(OZL));
 
+        vm.startPrank(alice);
+        OZL.approve(address(OZL), ozlBalanceAlice);
+        
+        //------
+    
+        OZL.redeem(
+            alice,
+            alice,
+            wethAddr,
+            ozlBalanceAlice,
+            minAmountsOut
+        );
+        vm.stopPrank();
+
+        uint ozlBalanceOZLPostRedeem = OZL.balanceOf(address(OZL));
         uint recicledSupply = OZ.getRecicledSupply();
-        console.log('recicledSupply: ', recicledSupply);
+
+        vm.prank(owner);
+        OZ.startNewReciclingCampaign(31560000); //one year
+
+
+        //Post-conditions
+        assertTrue(ozlBalanceOZLPostRedeem == ozlBalanceAlice + ozlBalanceOZLPreRedeem);
+        assertTrue(recicledSupply == ozlBalanceAlice);
+        
+
+
     }
 
 
@@ -145,6 +188,7 @@ contract OZLtokenTest is TestMethods {
         );
         vm.stopPrank();
 
+        //Post-condtions
         rEthBalanceAlice = IERC20Permit(rEthAddr).balanceOf(alice);
         assertTrue(rEthBalanceAlice > 0);
 
@@ -154,8 +198,6 @@ contract OZLtokenTest is TestMethods {
 
         ozlBalanceAlice = OZL.balanceOf(alice);
         assertTrue(ozlBalanceAlice == 0);
-
-
     }
 
 

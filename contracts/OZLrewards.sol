@@ -15,14 +15,15 @@ import "forge-std/console.sol";
 contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead of Modifiers
 
     //Sets the lenght of the reward campaign
-    function setRewardsDuration(uint duration_) external override {
+    function setRewardsDuration(uint duration_) public override {
         LibDiamond.enforceIsContractOwner();
         if (s.r.finishAt >= block.timestamp) revert OZError15();
         s.r.duration = duration_;
     }
 
+    
     //Calculates the reward rate
-    function notifyRewardAmount(uint amount_) external override updateReward(address(0)) { //4:55
+    function notifyRewardAmount(uint amount_) public override updateReward(address(0)) { //4:55
         LibDiamond.enforceIsContractOwner();
 
         if (block.timestamp > s.r.finishAt) {
@@ -99,6 +100,16 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
     function modifySupply(uint ozlAmount_) external { //put an onlyOZL modifier here
         s.r.circulatingSupply -= ozlAmount_;
         s.r.recicledSupply += ozlAmount_;
+    }
+
+    //-----
+    function startNewReciclingCampaign(uint duration_) external {
+        setRewardsDuration(duration_);
+        notifyRewardAmount(s.r.recicledSupply);
+
+        IOZL(s.ozlProxy).transferFrom(s.ozlProxy, address(this), s.r.recicledSupply);
+        console.log('here');
+        s.r.recicledSupply = 0;
     }
 }
 

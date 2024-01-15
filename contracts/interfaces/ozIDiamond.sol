@@ -81,4 +81,5 @@ interface ozIDiamond {
     function durationLeft() external view returns(int);
     function getRecicledSupply() external view returns(uint);
     function modifySupply(uint ozlAmount_) external;
+    function startNewReciclingCampaign(uint duration_) external;
 }

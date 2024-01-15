@@ -330,7 +330,7 @@ contract Setup is Test {
         } else if (id_ == 0) {
             length = 10;
         } else if (id_ == 10) {
-            length = 12;
+            length = 13;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -399,6 +399,7 @@ contract Setup is Test {
             selectors[9] = rewardsContract.durationLeft.selector;
             selectors[10] = rewardsContract.getRecicledSupply.selector;
             selectors[11] = rewardsContract.modifySupply.selector;
+            selectors[12] = rewardsContract.startNewReciclingCampaign.selector;
         }
 
         cut = IDiamondCut.FacetCut({
