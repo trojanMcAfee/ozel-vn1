@@ -54,7 +54,7 @@ contract OZLtokenTest is TestMethods {
     // function test_exchangeRate_no_circulatingSupply
 
     
-    function _checkChargeFeeClaimOZL(IOZL OZL) internal returns(uint ozlBalanceAlice) {
+    function _checkChargeFeeClaimOZL(IOZL OZL) internal returns(uint, uint) {
         uint ozlBalancePre = OZL.balanceOf(alice);
         assertTrue(ozlBalancePre == 0);
 
@@ -73,7 +73,7 @@ contract OZLtokenTest is TestMethods {
         circulatingSupply = OZ.getCirculatingSupply();
         assertTrue(circulatingSupply > 0);
 
-        ozlBalanceAlice = OZL.balanceOf(alice);
+        uint ozlBalanceAlice = OZL.balanceOf(alice);
         assertTrue(ozlBalanceAlice > 0);
 
         uint pendingOZLallocPost = OZ.pendingAllocation();
@@ -81,11 +81,12 @@ contract OZLtokenTest is TestMethods {
 
         uint recicledSupply = OZ.getRecicledSupply();
         assertTrue(recicledSupply == 0);
+
+        return (ozlBalanceAlice, claimedReward);
     }
 
 
-    //Tests that a new recicling campaign is properly set up with the recicled supply.
-    function test_new_recicling_campaing() public {
+    function test_x() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -106,8 +107,96 @@ contract OZLtokenTest is TestMethods {
 
         _mock_rETH_ETH();
 
+        uint earned = OZ.earned(alice);
+        assertTrue(earned > 0);
+
         IOZL OZL = IOZL(address(ozlProxy));
-        uint ozlBalanceAlice = _checkChargeFeeClaimOZL(OZL);
+        (uint ozlBalanceAlice,) = _checkChargeFeeClaimOZL(OZL);
+
+        //Actions
+        uint pendingAllocPreRedeem = OZ.pendingAllocation();
+        assertTrue(pendingAllocPreRedeem < (1 * 1e18) / 1000000);
+
+        vm.startPrank(alice);
+        OZL.approve(address(OZL), ozlBalanceAlice);
+    
+        OZL.redeem(
+            alice,
+            alice,
+            wethAddr,
+            ozlBalanceAlice,
+            _getMinsOut(OZL, ozlBalanceAlice, QuoteAsset.ETH)
+        );
+        vm.stopPrank();
+
+        earned = OZ.earned(alice);
+        assertTrue(earned == 0);
+
+        uint pendingAllocPostRedeem = OZ.pendingAllocation();
+        assertTrue(pendingAllocPreRedeem == pendingAllocPostRedeem);
+
+        uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
+        assertTrue(ozlBalanceOZPostRedeem == communityAmount);
+
+        uint oldRecicledSupply = OZ.getRecicledSupply();
+        assertTrue(oldRecicledSupply == ozlBalanceAlice);
+
+        // uint oldRewardRate = OZ.getRewardRate();
+
+        //-----
+
+        uint newOzlBalanceAlice = OZL.balanceOf(alice);
+        assertTrue(newOzlBalanceAlice == 0);
+    
+
+        earned = OZ.earned(alice);
+        console.log('earned alice post: ', earned);
+
+
+        //Actions
+        // uint oneYear = 31560000;
+        // vm.prank(owner);
+        // OZ.startNewReciclingCampaign(oneYear); 
+
+        //Post-conditions
+       
+    }
+
+
+    //Tests that a new recicling campaign is properly set up with the recicled supply.
+    function test_new_recicling_campaing() public {
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
+            bytes32(0)
+        );
+        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+        
+        //Pre-conditions
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20"
+        ));
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
+        _changeSlippage(uint16(9900));
+
+        _startCampaign();
+        _mintOzTokens(ozERC20, alice, amountIn); 
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+
+        uint oldOzTokenBalance = ozERC20.balanceOf(alice);
+        assertTrue(oldOzTokenBalance > 0);
+
+        uint secs = 10 + campaignDuration; 
+        vm.warp(block.timestamp + secs);
+
+        int durationLeft = OZ.durationLeft();
+        assertTrue(durationLeft < 0);
+
+        _mock_rETH_ETH();
+
+        IOZL OZL = IOZL(address(ozlProxy));
+        (uint ozlBalanceAlice, uint claimedReward) = _checkChargeFeeClaimOZL(OZL);
 
         //Actions
         uint pendingAllocPreRedeem = OZ.pendingAllocation();
@@ -141,9 +230,27 @@ contract OZLtokenTest is TestMethods {
         vm.prank(owner);
         OZ.startNewReciclingCampaign(oneYear); 
 
+        _mintOzTokens(ozERC20, alice, amountIn); 
+        uint newOzTokenBalance = ozERC20.balanceOf(alice);
+        
+        console.log('oldOzTokenBalance: ', oldOzTokenBalance);
+        console.log('newOzTokenBalance: ', newOzTokenBalance);
+        assertTrue(oldOzTokenBalance * 2 == newOzTokenBalance);
+        //this ^ is an slippage error
+
+        vm.warp(block.timestamp + secs);
+
+        uint earned = OZ.earned(alice);
+        
+        console.log('claimedReward: ', claimedReward);
+        console.log('earned: ', earned);
+        assertTrue(claimedReward * 2 == earned);
+        //find out the isue of this ^. If I have twice as much ozTokens, rewards should be double but it's the same (?)
+
         //Post-conditions
         uint newRewardRate = OZ.getRewardRate();
 
+        console.log(3);
         assertTrue(oldRewardRate != newRewardRate);
         assertTrue(oldRecicledSupply / oneYear == newRewardRate);
         assertTrue(OZ.getRecicledSupply() == 0);
