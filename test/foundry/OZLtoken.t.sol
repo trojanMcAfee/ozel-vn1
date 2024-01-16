@@ -84,7 +84,8 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-    function test_x() public {
+    //Tests that a new recicling campaign is properly set up with the recicled supply.
+    function test_new_recicling_campaing() public {
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -97,7 +98,7 @@ contract OZLtokenTest is TestMethods {
         _startCampaign();
         _mintOzTokens(ozERC20, alice, amountIn); 
 
-        uint secs = 10 + campaignDuration; //campaignDuration
+        uint secs = 10 + campaignDuration; 
         vm.warp(block.timestamp + secs);
 
         int durationLeft = OZ.durationLeft();
@@ -109,33 +110,18 @@ contract OZLtokenTest is TestMethods {
         uint ozlBalanceAlice = _checkChargeFeeClaimOZL(OZL);
 
         //Actions
-
-        //-- params for redeem ---
-        uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
-
-        _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5% 
-
-        uint minAmountOutWeth = HelpersLib.calculateMinAmountOut(wethToRedeem, OZ.getDefaultSlippage());
-
-        uint[] memory minAmountsOut = new uint[](1);
-        minAmountsOut[0] = minAmountOutWeth;
-
-        uint ozlBalanceOZLPreRedeem = OZL.balanceOf(address(OZL));
-
         uint pendingAllocPreRedeem = OZ.pendingAllocation();
         assertTrue(pendingAllocPreRedeem < (1 * 1e18) / 1000000);
 
         vm.startPrank(alice);
         OZL.approve(address(OZL), ozlBalanceAlice);
-
-        //------
     
         OZL.redeem(
             alice,
             alice,
             wethAddr,
             ozlBalanceAlice,
-            minAmountsOut
+            _getMinsOut(OZL, ozlBalanceAlice, QuoteAsset.ETH)
         );
         vm.stopPrank();
 
@@ -153,7 +139,7 @@ contract OZLtokenTest is TestMethods {
         //Actions
         uint oneYear = 31560000;
         vm.prank(owner);
-        OZ.startNewReciclingCampaign(oneYear); //one year
+        OZ.startNewReciclingCampaign(oneYear); 
 
         //Post-conditions
         uint newRewardRate = OZ.getRewardRate();
@@ -163,7 +149,23 @@ contract OZLtokenTest is TestMethods {
         assertTrue(OZ.getRecicledSupply() == 0);
     }
 
+    function _getMinsOut(
+        IOZL ozl_, 
+        uint ozlBalance_, 
+        QuoteAsset asset_
+    ) internal view returns(uint[] memory) {
+        uint amountToRedeem = (ozlBalance_ * ozl_.getExchangeRate(asset_)) / 1 ether;
+        uint[] memory minAmountsOut = new uint[](1);
 
+        minAmountsOut[0] = HelpersLib.calculateMinAmountOut(
+            amountToRedeem, 
+            OZ.getDefaultSlippage()
+        );
+
+        return minAmountsOut;
+    }
+
+    //Tests the the recicled supply (redeemed OZL) is properly accounted for.
     function test_recicled_supply() public {
         //Pre-conditions
         test_claim_OZL();
@@ -179,14 +181,6 @@ contract OZLtokenTest is TestMethods {
         uint rEthBalanceAlice = IERC20Permit(rEthAddr).balanceOf(alice);
         assertTrue(rEthBalanceAlice == 0);
 
-        uint rEthToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.rETH)) / 1 ether;
-
-        uint[] memory minAmountsOut = new uint[](1);
-        minAmountsOut[0] = HelpersLib.calculateMinAmountOut(
-            rEthToRedeem, 
-            OZ.getDefaultSlippage()
-        );
-
         //Actions
         vm.startPrank(alice);
         approve(OZL, ozlBalanceAlice);
@@ -196,7 +190,7 @@ contract OZLtokenTest is TestMethods {
             alice,
             rEthAddr,
             ozlBalanceAlice,
-            minAmountsOut
+            _getMinsOut(OZL, ozlBalanceAlice, QuoteAsset.rETH)
         );
         vm.stopPrank();
 

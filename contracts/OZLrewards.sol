@@ -106,9 +106,6 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
     function startNewReciclingCampaign(uint duration_) external {
         setRewardsDuration(duration_);
         notifyRewardAmount(s.r.recicledSupply);
-
-        // IOZL(s.ozlProxy).transferFrom(s.ozlProxy, address(this), s.r.recicledSupply);
-        console.log('here');
         s.r.recicledSupply = 0;
     }
 }
