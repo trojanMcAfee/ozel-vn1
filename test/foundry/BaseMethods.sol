@@ -8,7 +8,7 @@ import {IPool} from "../../contracts/interfaces/IBalancer.sol";
 import {Setup} from "./Setup.sol";
 import {Type} from "./AppStorageTests.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IOZL} from "../../contracts/interfaces/IOZL.sol";
+import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
@@ -265,6 +265,23 @@ contract BaseMethods is Setup {
         OZ.setRewardsDuration(campaignDuration);
         OZ.notifyRewardAmount(communityAmount);
         vm.stopPrank();
+    }
+
+    //Gets the minAmountsOut for OZL redemption
+    function _getMinsOut(
+        IOZL ozl_, 
+        uint ozlBalance_, 
+        QuoteAsset asset_
+    ) internal view returns(uint[] memory) {
+        uint amountToRedeem = (ozlBalance_ * ozl_.getExchangeRate(asset_)) / 1 ether;
+        uint[] memory minAmountsOut = new uint[](1);
+
+        minAmountsOut[0] = HelpersLib.calculateMinAmountOut(
+            amountToRedeem, 
+            OZ.getDefaultSlippage()
+        );
+
+        return minAmountsOut;
     }
 
 

@@ -149,21 +149,6 @@ contract OZLtokenTest is TestMethods {
         assertTrue(OZ.getRecicledSupply() == 0);
     }
 
-    function _getMinsOut(
-        IOZL ozl_, 
-        uint ozlBalance_, 
-        QuoteAsset asset_
-    ) internal view returns(uint[] memory) {
-        uint amountToRedeem = (ozlBalance_ * ozl_.getExchangeRate(asset_)) / 1 ether;
-        uint[] memory minAmountsOut = new uint[](1);
-
-        minAmountsOut[0] = HelpersLib.calculateMinAmountOut(
-            amountToRedeem, 
-            OZ.getDefaultSlippage()
-        );
-
-        return minAmountsOut;
-    }
 
     //Tests the the recicled supply (redeemed OZL) is properly accounted for.
     function test_recicled_supply() public {
@@ -430,15 +415,7 @@ contract OZLtokenTest is TestMethods {
         assertTrue(balanceAlicePost == amountOut);
     }
 
-
-    //-----
-    function test_redeem_x() public {
-        test_redeem_in_stable();
-
-        uint pendingOZLallocPostRedeem = OZ.pendingAllocation();
-        console.log('pendingOZLalloc - post OZL redeem: ', pendingOZLallocPostRedeem);
-
-    }
+   
 
     //-------------
 
