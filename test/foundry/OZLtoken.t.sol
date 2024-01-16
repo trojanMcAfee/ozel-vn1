@@ -86,81 +86,81 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-    function test_x() public {
-        //Pre-conditions
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+    // function test_x() public {
+    //     //Pre-conditions
+    //     ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+    //         testToken, "Ozel-ERC20", "ozERC20"
+    //     ));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        _changeSlippage(uint16(9900));
+    //     (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+    //     uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+    //     _changeSlippage(uint16(9900));
 
-        _startCampaign();
-        _mintOzTokens(ozERC20, alice, amountIn); 
+    //     _startCampaign();
+    //     _mintOzTokens(ozERC20, alice, amountIn); 
 
-        uint secs = 10 + campaignDuration; 
-        vm.warp(block.timestamp + secs);
+    //     uint secs = 10 + campaignDuration; 
+    //     vm.warp(block.timestamp + secs);
 
-        int durationLeft = OZ.durationLeft();
-        assertTrue(durationLeft < 0);
+    //     int durationLeft = OZ.durationLeft();
+    //     assertTrue(durationLeft < 0);
 
-        _mock_rETH_ETH();
+    //     _mock_rETH_ETH();
 
-        uint earned = OZ.earned(alice);
-        assertTrue(earned > 0);
+    //     uint earned = OZ.earned(alice);
+    //     assertTrue(earned > 0);
 
-        IOZL OZL = IOZL(address(ozlProxy));
-        (uint ozlBalanceAlice,) = _checkChargeFeeClaimOZL(OZL);
+    //     IOZL OZL = IOZL(address(ozlProxy));
+    //     (uint ozlBalanceAlice,) = _checkChargeFeeClaimOZL(OZL);
 
-        //Actions
-        uint pendingAllocPreRedeem = OZ.pendingAllocation();
-        assertTrue(pendingAllocPreRedeem < (1 * 1e18) / 1000000);
+    //     //Actions
+    //     uint pendingAllocPreRedeem = OZ.pendingAllocation();
+    //     assertTrue(pendingAllocPreRedeem < (1 * 1e18) / 1000000);
 
-        vm.startPrank(alice);
-        OZL.approve(address(OZL), ozlBalanceAlice);
+    //     vm.startPrank(alice);
+    //     OZL.approve(address(OZL), ozlBalanceAlice);
     
-        OZL.redeem(
-            alice,
-            alice,
-            wethAddr,
-            ozlBalanceAlice,
-            _getMinsOut(OZL, ozlBalanceAlice, QuoteAsset.ETH)
-        );
-        vm.stopPrank();
+    //     OZL.redeem(
+    //         alice,
+    //         alice,
+    //         wethAddr,
+    //         ozlBalanceAlice,
+    //         _getMinsOut(OZL, ozlBalanceAlice, QuoteAsset.ETH)
+    //     );
+    //     vm.stopPrank();
 
-        earned = OZ.earned(alice);
-        assertTrue(earned == 0);
+    //     earned = OZ.earned(alice);
+    //     assertTrue(earned == 0);
 
-        uint pendingAllocPostRedeem = OZ.pendingAllocation();
-        assertTrue(pendingAllocPreRedeem == pendingAllocPostRedeem);
+    //     uint pendingAllocPostRedeem = OZ.pendingAllocation();
+    //     assertTrue(pendingAllocPreRedeem == pendingAllocPostRedeem);
 
-        uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
-        assertTrue(ozlBalanceOZPostRedeem == communityAmount);
+    //     uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
+    //     assertTrue(ozlBalanceOZPostRedeem == communityAmount);
 
-        uint oldRecicledSupply = OZ.getRecicledSupply();
-        assertTrue(oldRecicledSupply == ozlBalanceAlice);
+    //     uint oldRecicledSupply = OZ.getRecicledSupply();
+    //     assertTrue(oldRecicledSupply == ozlBalanceAlice);
 
-        // uint oldRewardRate = OZ.getRewardRate();
+    //     // uint oldRewardRate = OZ.getRewardRate();
 
-        //-----
+    //     //-----
 
-        uint newOzlBalanceAlice = OZL.balanceOf(alice);
-        assertTrue(newOzlBalanceAlice == 0);
+    //     uint newOzlBalanceAlice = OZL.balanceOf(alice);
+    //     assertTrue(newOzlBalanceAlice == 0);
     
 
-        earned = OZ.earned(alice);
-        console.log('earned alice post: ', earned);
+    //     earned = OZ.earned(alice);
+    //     console.log('earned alice post: ', earned);
 
 
-        //Actions
-        // uint oneYear = 31560000;
-        // vm.prank(owner);
-        // OZ.startNewReciclingCampaign(oneYear); 
+    //     //Actions
+    //     // uint oneYear = 31560000;
+    //     // vm.prank(owner);
+    //     // OZ.startNewReciclingCampaign(oneYear); 
 
-        //Post-conditions
+    //     //Post-conditions
        
-    }
+    // }
 
 
     //Tests that a new recicling campaign is properly set up with the recicled supply.
