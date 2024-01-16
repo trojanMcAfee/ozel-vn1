@@ -140,24 +140,27 @@ contract OZLtokenTest is TestMethods {
         vm.stopPrank();
 
         uint pendingAllocPostRedeem = OZ.pendingAllocation();
-        assertTrue(pendingAllocPostRedeem == ozlBalanceAlice + pendingAllocPreRedeem);
+        assertTrue(pendingAllocPreRedeem == pendingAllocPostRedeem);
 
         uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
-        assertTrue(ozlBalanceOZPostRedeem == pendingAllocPostRedeem);
+        assertTrue(ozlBalanceOZPostRedeem == communityAmount);
 
-        uint recicledSupply = OZ.getRecicledSupply();
-        assertTrue(recicledSupply == ozlBalanceAlice);
+        uint oldRecicledSupply = OZ.getRecicledSupply();
+        assertTrue(oldRecicledSupply == ozlBalanceAlice);
+
+        uint oldRewardRate = OZ.getRewardRate();
 
         //Actions
+        uint oneYear = 31560000;
         vm.prank(owner);
-        OZ.startNewReciclingCampaign(31560000); //one year
+        OZ.startNewReciclingCampaign(oneYear); //one year
 
-        //doing the new campaign here ^^
+        //Post-conditions
+        uint newRewardRate = OZ.getRewardRate();
 
-        // //Post-conditions
-        
-
-
+        assertTrue(oldRewardRate != newRewardRate);
+        assertTrue(oldRecicledSupply / oneYear == newRewardRate);
+        assertTrue(OZ.getRecicledSupply() == 0);
     }
 
 
