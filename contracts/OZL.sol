@@ -119,7 +119,6 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
-
         uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
         uint rETHtoRedeem = usdValue.mulDivDown(1 ether, OZ.rETH_USD());
 

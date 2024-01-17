@@ -222,7 +222,7 @@ contract OZLtokenTest is TestMethods {
     //Test the claiming process of OZL.
     //Also checks the pending allocation of OZL. 
     //Checks circulatingSupply
-    function test_claim_OZL() public {
+    function test_claim_OZL() public returns(ozIToken) { 
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -267,7 +267,42 @@ contract OZLtokenTest is TestMethods {
 
         uint pendingOZLallocPost = OZ.pendingAllocation();
         assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
+
+        return ozERC20;
     }
+
+    /**
+     * Tests that the rewardPerToken in OZLrewards doesn't overflow due to low totalSupply
+     * of ozTokens, during the beginning of the ozToken contracts' lifeciles, which is
+     * used in its final division.
+     */
+    function test_overflow_rewardPerToken() public {
+        //Pre-conditions
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20"
+        ));
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        uint amountIn = (rawAmount * 10 ** IERC20Permit(testToken).decimals()) / 10;
+
+        _startCampaign(); 
+        _mock_rETH_ETH();
+
+        uint timePassed;
+
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        //Actions
+        for (uint i=0; i< 10; i++) {
+            _mintOzTokens(ozERC20, alice, amountIn); 
+
+            timePassed += 10; 
+            vm.warp(block.timestamp + timePassed);
+
+            OZ.earned(alice);
+        }        
+    }
+
 
 
     function test_exchange_rate_equilibrium() public {
@@ -303,6 +338,8 @@ contract OZLtokenTest is TestMethods {
         vm.stopPrank();
 
         uint ratePostRedeem = OZL.getExchangeRate();
+
+        //Divides by 1e5 due to slippage
         assertTrue(ratePreRedeem / 1e5 == ratePostRedeem / 1e5);
 
         //Post-condition
