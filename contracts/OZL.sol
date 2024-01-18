@@ -70,8 +70,10 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
     function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
         uint ONE = 1 ether;
-        address rETH = getOZ().tradingPackage().rETH;
-        uint totalFeesRETH = IERC20Permit(rETH).balanceOf(address(this));
+
+        uint totalFeesRETH = IERC20Permit(
+            getOZ().tradingPackage().rETH
+        ).balanceOf(address(this));
 
         uint totalFeesQuote = asset_ == QuoteAsset.rETH ?
          totalFeesRETH : 
@@ -119,8 +121,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
-        uint usdValue = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.USD), 1 ether);
-        uint rETHtoRedeem = usdValue.mulDivDown(1 ether, OZ.rETH_USD());
+        uint rETHtoRedeem = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.rETH), 1 ether);
 
         TradingLib.recicleOZL(owner_, address(OZ), ozlAmountIn_);
         
