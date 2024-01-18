@@ -17,16 +17,10 @@ import "forge-std/console.sol";
 
 library TradingLib { //change this to ExecutionLib
 
+
     /**
     * Main methods
     */
-    // function useUnderlying( 
-    //     address underlying_, 
-    //     address owner_,
-    //     AmountsIn memory amounts_
-    // ) external onlyOzToken
-
-
     function useOZL(
         TradingPackage memory p,
         address tokenOut_,
