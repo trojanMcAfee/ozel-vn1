@@ -16,7 +16,7 @@ import {TradingPackage, OZLrewards} from "./AppStorage.sol";
 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol";
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
-import {Helpers} from "./Helpers.sol";
+import {Helpers} from "./libraries/Helpers.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
@@ -154,18 +154,21 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         //     address(OZ), 'recicleOZL(address,address,uint256)', owner_, address(this), ozlAmountIn_
         // );
 
-        address(OZ).delegateOZ(
-            'recicleOZL(address,address,uint256)', owner_, address(this), ozlAmountIn_
-        );
+        // address(OZ).delegateOZ(
+        //     'recicleOZL(address,address,uint256)', owner_, address(this), ozlAmountIn_
+        // );
+
+        OZ.recicleOZL(owner_, address(this), ozlAmountIn_);
+        
         //-------
         
         if (tokenOut_ == p.rETH) {
             if (rETHtoRedeem < minAmountsOut_[0]) revert OZError19(rETHtoRedeem);
-            // return OZ.sendLSD(p.rETH, receiver_, rETHtoRedeem);
+            return OZ.sendLSD(p.rETH, receiver_, rETHtoRedeem);
             
-            return address(OZ).delegateOZ(
-                'sendLSD(address,address,uint256)', p.rETH, receiver_, rETHtoRedeem
-            );
+            // return address(OZ).delegateOZ(
+            //     'sendLSD(address,address,uint256)', p.rETH, receiver_, rETHtoRedeem
+            // );
         }
 
         return OZ.useOZL( 

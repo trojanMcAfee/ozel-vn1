@@ -16,6 +16,7 @@ enum TotalType {
 library Helpers {
 
     using FixedPointMathLib for uint;
+    using Address for address;
 
 
     function delegateOZ(
@@ -24,12 +25,13 @@ library Helpers {
         address addr1_, 
         address addr2_, 
         uint amount_
-    ) internal {
+    ) internal returns(uint) {
         bytes memory data = abi.encodeWithSignature(
             method_, 
             addr1_, addr2_, amount_
         );
-        ozDiamond_.functionDelegateCall(data);
+        (bool success,) = ozDiamond_.call(data);
+        require(success, 'fff');
         return amount_;
     }
 
