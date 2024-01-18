@@ -15,16 +15,17 @@ import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRoute
 import "forge-std/console.sol";
 
 
-library TradingLib {
+library TradingLib { //change this to ExecutionLib
 
-    function recicleOZL(
-        address owner_,
-        address ozDiamond_,
-        uint amountIn_
-    ) internal {
-        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, amountIn_);
-        ozIDiamond(ozDiamond_).modifySupply(amountIn_);
-    }
+    /**
+    * Main methods
+    */
+    // function useUnderlying( 
+    //     address underlying_, 
+    //     address owner_,
+    //     AmountsIn memory amounts_
+    // ) external onlyOzToken
+
 
     function useOZL(
         TradingPackage memory p,
@@ -44,6 +45,29 @@ library TradingLib {
     }
 
 
+    function recicleOZL(
+        address owner_,
+        address ozDiamond_,
+        uint amountIn_
+    ) internal {
+        SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, amountIn_);
+        ozIDiamond(ozDiamond_).modifySupply(amountIn_);
+    }
+
+
+    function sendLSD(
+        address lsd_, 
+        address receiver_, 
+        uint amount_
+    ) internal returns(uint) {
+        SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
+        return amount_;
+    }
+
+
+    /**
+     * Swap methods
+     */
     function _checkPauseAndSwap(
         TradingPackage memory p,
         address tokenOut_,
@@ -178,16 +202,6 @@ library TradingLib {
         SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
 
         amountOut = _executeSwap(vault_, singleSwap, funds, minOut, block.timestamp);
-    }
-
-
-    function sendLSD(
-        address lsd_, 
-        address receiver_, 
-        uint amount_
-    ) internal returns(uint) {
-        SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
-        return amount_;
     }
 
 

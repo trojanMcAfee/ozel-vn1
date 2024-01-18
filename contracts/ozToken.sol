@@ -248,7 +248,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(msg.sender, data_);
         //^ put the owner_ here instead of msg.sender so contracts can act in behalf of the user
         //check other places where I've done the same: https://www.rareskills.io/post/compound-v3-bulker (non-custodial section)
-        //test this ^
+        //test this ^ (in mint also)
 
         accountShares = sharesOf(_ozDiamond);
 
