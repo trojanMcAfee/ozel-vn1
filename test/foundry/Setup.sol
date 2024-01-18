@@ -319,9 +319,9 @@ contract Setup is Test {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
-        } else if (id_ == 3 || id_ == 5) {
+        } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 7) {
+        } else if (id_ == 7 || id_ == 5) {
             length = 5;
         } else if (id_ == 9 || id_ == 6) {
             length = 6; 
@@ -361,6 +361,8 @@ contract Setup is Test {
             selectors[0] = roi.useUnderlying.selector;
             selectors[1] = roi.useOzTokens.selector;
             selectors[2] = roi.useOZL.selector;
+            selectors[3] = roi.sendLSD.selector;
+            selectors[4] = roi.recicleOZL.selector;
         } else if (id_ == 6) {
             selectors[0] = oracle.rETH_ETH.selector;
             selectors[1] = oracle.getUnderlyingValue.selector;

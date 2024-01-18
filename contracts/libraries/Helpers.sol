@@ -5,6 +5,7 @@ pragma solidity 0.8.21;
 import {IVault, IAsset} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 import {FixedPointMathLib} from "./FixedPointMathLib.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 enum TotalType {
     ASSETS,
@@ -15,6 +16,22 @@ enum TotalType {
 library Helpers {
 
     using FixedPointMathLib for uint;
+
+
+    function delegateOZ(
+        address ozDiamond_,
+        string memory method_, 
+        address addr1_, 
+        address addr2_, 
+        uint amount_
+    ) internal {
+        bytes memory data = abi.encodeWithSignature(
+            method_, 
+            addr1_, addr2_, amount_
+        );
+        ozDiamond_.functionDelegateCall(data);
+        return amount_;
+    }
 
 
     function extract(bytes32 assetsAndShares_, TotalType type_) internal pure returns(uint) {

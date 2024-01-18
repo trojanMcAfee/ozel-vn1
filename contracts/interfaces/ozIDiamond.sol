@@ -91,4 +91,16 @@ interface ozIDiamond {
     function getRecicledSupply() external view returns(uint);
     function modifySupply(uint ozlAmount_) external;
     function startNewReciclingCampaign(uint duration_) external;
+
+    function sendLSD(
+        address lsd_, 
+        address receiver_, 
+        uint amount_
+    ) external returns(uint);
+
+    function recicleOZL(
+        address owner_,
+        address ozDiamond_,
+        uint amountIn_
+    ) external;
 }

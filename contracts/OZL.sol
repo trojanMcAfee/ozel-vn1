@@ -16,6 +16,7 @@ import {TradingPackage, OZLrewards} from "./AppStorage.sol";
 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol";
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
+import {Helpers} from "./Helpers.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
@@ -26,6 +27,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
     using FixedPointMathLib for uint;
+    using Helpers for address;
 
     bytes32 private constant _OZ_DIAMOND_SLOT = bytes32(uint(keccak256('ozDiamond.storage.slot')) - 1);
 
@@ -101,6 +103,22 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
     }
 
 
+    // function delegateOZ(
+    //     address ozDiamond_,
+    //     string memory method_, 
+    //     address addr1_, 
+    //     address addr2_, 
+    //     uint amount_
+    // ) internal {
+    //     bytes memory data = abi.encodeWithSignature(
+    //         method_, 
+    //         addr1_, addr2_, amount_
+    //     );
+    //     ozDiamond_.functionDelegateCall(data);
+    //     return amount_;
+    // }
+
+
     function redeem(
         address owner_,
         address receiver_,
@@ -123,14 +141,34 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
         uint rETHtoRedeem = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.rETH), 1 ether);
 
-        TradingLib.recicleOZL(owner_, address(OZ), ozlAmountIn_);
+        //-----
+        // OZ.recicleOZL(owner_, address(OZ), ozlAmountIn_);
+
+        // bytes memory data = abi.encodeWithSignature(
+        //     'recicleOZL(address,address,uint256)', 
+        //     owner_, address(this), ozlAmountIn_
+        // );
+        // Address.functionDelegateCall(address(OZ), data);
+
+        // delegateOZ(
+        //     address(OZ), 'recicleOZL(address,address,uint256)', owner_, address(this), ozlAmountIn_
+        // );
+
+        address(OZ).delegateOZ(
+            'recicleOZL(address,address,uint256)', owner_, address(this), ozlAmountIn_
+        );
+        //-------
         
         if (tokenOut_ == p.rETH) {
             if (rETHtoRedeem < minAmountsOut_[0]) revert OZError19(rETHtoRedeem);
-            return TradingLib.sendLSD(p.rETH, receiver_, rETHtoRedeem);
+            // return OZ.sendLSD(p.rETH, receiver_, rETHtoRedeem);
+            
+            return address(OZ).delegateOZ(
+                'sendLSD(address,address,uint256)', p.rETH, receiver_, rETHtoRedeem
+            );
         }
 
-        return TradingLib.useOZL( 
+        return OZ.useOZL( 
             p,
             tokenOut_,
             receiver_,

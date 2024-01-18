@@ -10,7 +10,8 @@ import {
     AmountsIn, 
     AmountsOut, 
     Asset,
-    TradingPackage
+    TradingPackage,
+    Action
 } from "../AppStorage.sol";
 import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
@@ -29,6 +30,7 @@ import {
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "../Errors.sol";
 import {TradingLib} from "../libraries/TradingLib.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -48,44 +50,44 @@ contract ROImoduleL1 {
     }
 
 
-    function useOZL(
-        address tokenIn_, 
-        address tokenOut_,
-        address sender_,
-        address receiver_,
-        uint amountIn_,
-        uint minAmountOut_
-    ) external {
-        console.log('sender in useOZL: ', msg.sender);
-        console.log('address(this): ', address(this));
-        console.log('rETH bal sender in use: ', IERC20Permit(tokenIn_).balanceOf(msg.sender));
+    // function useOZL2(
+    //     address tokenIn_, 
+    //     address tokenOut_,
+    //     address sender_,
+    //     address receiver_,
+    //     uint amountIn_,
+    //     uint minAmountOut_
+    // ) external {
+    //     console.log('sender in useOZL: ', msg.sender);
+    //     console.log('address(this): ', address(this));
+    //     console.log('rETH bal sender in use: ', IERC20Permit(tokenIn_).balanceOf(msg.sender));
 
-        // IERC20Permit(tokenIn_).approve(s.vaultBalancer, amountIn_);
+    //     // IERC20Permit(tokenIn_).approve(s.vaultBalancer, amountIn_);
 
-        // uint x = IERC20Permit(tokenIn_).allowance(msg.sender, s.vaultBalancer);
-        // console.log('allowancee: ', x);
+    //     // uint x = IERC20Permit(tokenIn_).allowance(msg.sender, s.vaultBalancer);
+    //     // console.log('allowancee: ', x);
 
-        _checkPauseAndSwap2(
-            tokenIn_,
-            s.WETH,
-            sender_,
-            sender_, //receiver
-            amountIn_,
-            minAmountOut_ //here it's 0 for both, but it must be different
-        );
+    //     _checkPauseAndSwap2(
+    //         tokenIn_,
+    //         s.WETH,
+    //         sender_,
+    //         sender_, //receiver
+    //         amountIn_,
+    //         minAmountOut_ //here it's 0 for both, but it must be different
+    //     );
 
-        console.log('good here');
+    //     console.log('good here');
 
-        // if (tokenOut_ != rETH or ETH) {}
+    //     // if (tokenOut_ != rETH or ETH) {}
 
-        _swapUni(
-            s.WETH,
-            tokenOut_,
-            IWETH(s.WETH).balanceOf(address(this)),
-            minAmountOut_,
-            receiver_
-        );
-    }
+    //     _swapUni(
+    //         s.WETH,
+    //         tokenOut_,
+    //         IWETH(s.WETH).balanceOf(address(this)),
+    //         minAmountOut_,
+    //         receiver_
+    //     );
+    // }
 
     //----------
 
@@ -125,7 +127,7 @@ contract ROImoduleL1 {
         (bool paused,,) = IPool(p.rEthWethPoolBalancer).getPausedState(); 
 
         if (paused) {
-            amountOut = _swapUni(
+            amountOut = _swapUni3(
                 tokenIn,
                 tokenOut,
                 address(this),
@@ -135,7 +137,7 @@ contract ROImoduleL1 {
                 minAmountsOut_[0]
             );
         } else {
-            amountOut = _swapBalancer(
+            amountOut = _swapBalancer3(
                 tokenIn,
                 tokenOut,
                 p.rEthWethPoolBalancer,
@@ -150,7 +152,7 @@ contract ROImoduleL1 {
         if (tokenOut_ == p.WETH) { //put a safeTransfer here
             IWETH(p.WETH).transfer(receiver_, amountOut);
         } else {
-            amountOut = _swapUni(
+            amountOut = _swapUni3(
                 p.WETH,
                 tokenOut_,
                 receiver_,
@@ -240,6 +242,61 @@ contract ROImoduleL1 {
 
         amountOut = _executeSwap(vault_, singleSwap, funds, minOut, block.timestamp);
     }
+
+
+    function _executeSwap(
+        address vault_,
+        IVault.SingleSwap memory singleSwap_,
+        IVault.FundManagement memory funds_,
+        uint minAmountOut_,
+        uint blockStamp_
+    ) private returns(uint) 
+    {
+        try IVault(vault_).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
+            if (amountOut == 0) revert OZError02();
+            return amountOut;
+        } catch Error(string memory reason) {
+            if (Helpers.compareStrings(reason, 'BAL#507')) {
+                revert OZError20();
+            } else {
+                revert OZError21(reason);
+            }
+        }
+    }
+
+
+    function recicleOZL(
+        address owner_,
+        address ozl_
+        uint amountIn_
+    ) external {
+        SafeERC20.safeTransferFrom(IERC20(ozl_), owner_, address(this), amountIn_);
+        ozIDiamond(address(this)).modifySupply(amountIn_);
+    }
+
+
+    // function recicleOZL(
+    //     address owner_,
+    //     address ozDiamond_,
+    //     uint amountIn_
+    // ) external {
+    //     SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, amountIn_);
+    //     ozIDiamond(ozDiamond_).modifySupply(amountIn_);
+    // }
+
+    
+
+
+    function sendLSD(
+        address lsd_, 
+        address receiver_, 
+        uint amount_
+    ) external returns(uint) {
+        SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
+        return amount_;
+    }
+
+
 
     //-------------
 
