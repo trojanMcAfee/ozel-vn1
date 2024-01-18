@@ -86,14 +86,14 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
 
     function _convertToQuote(QuoteAsset qt_, uint totalFeesRETH_) private view returns(uint quote) {
-        bytes memory data = abi.encodeWithSignature('rETH_ETH()');
-        data = Address.functionStaticCall(address(getOZ()), data);
-
-        uint reth_eth = abi.decode(data, (uint));
-
         if (qt_ == QuoteAsset.USD) {
             quote = totalFeesRETH_.mulDivDown(getOZ().rETH_USD(), 1 ether);
-        } else if(qt_ == QuoteAsset.ETH) {
+        } else if(qt_ == QuoteAsset.ETH) 
+        {
+            bytes memory data = abi.encodeWithSignature('rETH_ETH()');
+            data = Address.functionStaticCall(address(getOZ()), data);
+            
+            uint reth_eth = abi.decode(data, (uint));
             quote = totalFeesRETH_.mulDivDown(reth_eth, 1 ether);
         }
     }
