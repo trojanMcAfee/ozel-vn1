@@ -64,7 +64,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
 
     function getExchangeRate() external view returns(uint) {
-        return this.getExchangeRate(QuoteAsset.USD);
+        return getExchangeRate(QuoteAsset.USD);
     }
 
 

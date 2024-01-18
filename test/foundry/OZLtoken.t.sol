@@ -272,11 +272,11 @@ contract OZLtokenTest is TestMethods {
     }
 
     /**
-     * Tests that the rewardPerToken in OZLrewards doesn't overflow due to low totalSupply
+     * Tests that rewardPerToken() in OZLrewards doesn't overflow due to low totalSupply
      * of ozTokens, during the beginning of the ozToken contracts' lifeciles, which is
      * used in its final division.
      */
-    function test_overflow_rewardPerToken() public {
+    function test_overflow_rewardPerToken() public { //move this test to OZLrewards
         //Pre-conditions
         ozIToken ozERC20 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20", "ozERC20"
@@ -289,8 +289,6 @@ contract OZLtokenTest is TestMethods {
         _mock_rETH_ETH();
 
         uint timePassed;
-
-        IOZL OZL = IOZL(address(ozlProxy));
 
         //Actions
         for (uint i=0; i< 10; i++) {
