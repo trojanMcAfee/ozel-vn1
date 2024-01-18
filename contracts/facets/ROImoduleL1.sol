@@ -9,7 +9,8 @@ import {
     AppStorage, 
     AmountsIn, 
     AmountsOut, 
-    Asset
+    Asset,
+    TradingPackage
 } from "../AppStorage.sol";
 import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
@@ -85,6 +86,162 @@ contract ROImoduleL1 {
             receiver_
         );
     }
+
+    //----------
+
+    function useOZL(
+        TradingPackage memory p,
+        address tokenOut_,
+        address receiver_,
+        uint amountInLsd_,
+        uint[] memory minAmountsOut_
+    ) external returns(uint) {
+        return _checkPauseAndSwap3(
+            p,
+            tokenOut_,
+            receiver_,
+            amountInLsd_,
+            minAmountsOut_,
+            Action.OZL_IN
+        );
+    }
+
+    function _checkPauseAndSwap3(
+        TradingPackage memory p,
+        address tokenOut_,
+        address receiver_,
+        uint amountIn_,
+        uint[] memory minAmountsOut_,
+        Action type_
+    ) private returns(uint amountOut) {
+        address tokenIn;
+        address tokenOut;
+
+        if (type_ == Action.OZL_IN) {
+            tokenIn = p.rETH;
+            tokenOut = p.WETH;
+        } 
+
+        (bool paused,,) = IPool(p.rEthWethPoolBalancer).getPausedState(); 
+
+        if (paused) {
+            amountOut = _swapUni(
+                tokenIn,
+                tokenOut,
+                address(this),
+                p.swapRouterUni,
+                p.uniFee,
+                amountIn_,
+                minAmountsOut_[0]
+            );
+        } else {
+            amountOut = _swapBalancer(
+                tokenIn,
+                tokenOut,
+                p.rEthWethPoolBalancer,
+                p.queriesBalancer,
+                p.vaultBalancer,
+                amountIn_,
+                minAmountsOut_,
+                Action.OZL_IN
+            );
+        }
+
+        if (tokenOut_ == p.WETH) { //put a safeTransfer here
+            IWETH(p.WETH).transfer(receiver_, amountOut);
+        } else {
+            amountOut = _swapUni(
+                p.WETH,
+                tokenOut_,
+                receiver_,
+                p.swapRouterUni,
+                p.uniFee,
+                amountOut,
+                minAmountsOut_[1]
+            );
+        }
+    }
+
+    function _swapUni3(
+        address tokenIn_,
+        address tokenOut_,
+        address receiver_,
+        address router_,
+        uint24 poolFee_,
+        uint amountIn_, 
+        uint minAmountOut_
+    ) private returns(uint) {
+        SafeERC20.safeApprove(IERC20(tokenIn_), router_, amountIn_);
+
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({ 
+                tokenIn: tokenIn_,
+                tokenOut: tokenOut_, 
+                fee: poolFee_, 
+                recipient: receiver_,
+                deadline: block.timestamp,
+                amountIn: amountIn_,
+                amountOutMinimum: minAmountOut_, //minAmountsOut[1] - minAmountOut_.formatMinOut(tokenOut_)
+                sqrtPriceLimitX96: 0
+            });
+
+        try ISwapRouter(router_).exactInputSingle(params) returns(uint amountOut) { 
+            return amountOut;
+        } catch Error(string memory reason) {
+            revert OZError01(reason);
+        }
+    }
+
+
+    function _swapBalancer3(
+        address tokenIn_, 
+        address tokenOut_, 
+        address pool_,
+        address queries_,
+        address vault_,
+        uint amountIn_,
+        uint[] memory minAmountsOut_,
+        Action type_
+    ) private returns(uint amountOut) {
+        
+        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+            poolId: IPool(pool_).getPoolId(),
+            kind: IVault.SwapKind.GIVEN_IN,
+            assetIn: IAsset(tokenIn_),
+            assetOut: IAsset(tokenOut_),
+            amount: amountIn_,
+            userData: new bytes(0)
+        });
+
+        IVault.FundManagement memory funds = IVault.FundManagement({
+            sender: address(this),
+            fromInternalBalance: false, 
+            recipient: payable(address(this)),
+            toInternalBalance: false
+        });
+
+        uint minOut;
+        
+        if (type_ == Action.OZL_IN) {
+            minOut = minAmountsOut_[0]; //minAmountOutOffchain_
+        } else if (type_ != Action.OZL_IN) {
+            try IQueries(queries_).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
+                uint minAmountOutOffchain = minAmountsOut_[0];
+                minOut = minAmountOutOffchain > minOutOnchain ? minAmountOutOffchain : minOutOnchain;
+
+                // SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
+                // amountOut = IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp);
+            } catch Error(string memory reason) {
+                revert OZError10(reason);
+            }
+        }
+
+        SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
+
+        amountOut = _executeSwap(vault_, singleSwap, funds, minOut, block.timestamp);
+    }
+
+    //-------------
 
 
     function useUnderlying( 

@@ -76,6 +76,15 @@ interface ozIDiamond {
     //     uint minAmountOut_
     // ) external;
 
+
+    function useOZL(
+        TradingPackage memory p,
+        address tokenOut_,
+        address receiver_,
+        uint amountInLsd_,
+        uint[] memory minAmountsOut_
+    ) external returns(uint);
+
     function tradingPackage() external view returns(TradingPackage memory);
     function pendingAllocation() external view returns(uint);
     function durationLeft() external view returns(int);
