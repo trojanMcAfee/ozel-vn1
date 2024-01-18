@@ -19,21 +19,7 @@ library Helpers {
     using Address for address;
 
 
-    function delegateOZ(
-        address ozDiamond_,
-        string memory method_, 
-        address addr1_, 
-        address addr2_, 
-        uint amount_
-    ) internal returns(uint) {
-        bytes memory data = abi.encodeWithSignature(
-            method_, 
-            addr1_, addr2_, amount_
-        );
-        (bool success,) = ozDiamond_.call(data);
-        require(success, 'fff');
-        return amount_;
-    }
+   
 
 
     function extract(bytes32 assetsAndShares_, TotalType type_) internal pure returns(uint) {

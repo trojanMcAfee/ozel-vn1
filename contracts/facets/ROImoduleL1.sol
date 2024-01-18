@@ -270,22 +270,12 @@ contract ROImoduleL1 {
         address ozl_,
         uint amountIn_
     ) external {
-        console.log('sender: ', msg.sender);
-        console.log('address(this): ', address(this));
-
         SafeERC20.safeTransferFrom(IERC20(ozl_), owner_, address(this), amountIn_);
         ozIDiamond(address(this)).modifySupply(amountIn_);
     }
 
 
-    // function recicleOZL(
-    //     address owner_,
-    //     address ozDiamond_,
-    //     uint amountIn_
-    // ) external {
-    //     SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, amountIn_);
-    //     ozIDiamond(ozDiamond_).modifySupply(amountIn_);
-    // }
+    
 
     
 
@@ -296,7 +286,6 @@ contract ROImoduleL1 {
         uint amount_
     ) external returns(uint) {
         SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
-        console.log('yes');
         return amount_;
     }
 

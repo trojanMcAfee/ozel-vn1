@@ -141,37 +141,14 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
         uint rETHtoRedeem = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.rETH), 1 ether);
 
-        //-----
-        // OZ.recicleOZL(owner_, address(OZ), ozlAmountIn_);
-
-        // bytes memory data = abi.encodeWithSignature(
-        //     'recicleOZL(address,address,uint256)', 
-        //     owner_, address(this), ozlAmountIn_
-        // );
-        // Address.functionDelegateCall(address(OZ), data);
-
-        // delegateOZ(
-        //     address(OZ), 'recicleOZL(address,address,uint256)', owner_, address(this), ozlAmountIn_
-        // );
-
-        // address(OZ).delegateOZ(
-        //     'recicleOZL(address,address,uint256)', owner_, address(this), ozlAmountIn_
-        // );
-
         OZ.recicleOZL(owner_, address(this), ozlAmountIn_);
-        
-        //-------
         
         if (tokenOut_ == p.rETH) {
             if (rETHtoRedeem < minAmountsOut_[0]) revert OZError19(rETHtoRedeem);
             return OZ.sendLSD(p.rETH, receiver_, rETHtoRedeem);
-            
-            // return address(OZ).delegateOZ(
-            //     'sendLSD(address,address,uint256)', p.rETH, receiver_, rETHtoRedeem
-            // );
         }
 
-        return OZ.useOZL( 
+        return OZ.useOZL( //<--- fix this one now
             p,
             tokenOut_,
             receiver_,
