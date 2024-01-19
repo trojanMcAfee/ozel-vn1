@@ -338,6 +338,10 @@ contract OZLtokenTest is TestMethods {
         uint ratePostRedeem = OZL.getExchangeRate();
 
         //Divides by 1e5 due to slippage
+        console.log('*****');
+        console.log('ratePreRedeem: ', ratePreRedeem);
+        console.log('ratePostRedeem: ', ratePostRedeem);
+
         assertTrue(ratePreRedeem / 1e5 == ratePostRedeem / 1e5);
 
         //Post-condition
