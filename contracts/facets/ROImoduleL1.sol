@@ -10,7 +10,6 @@ import {
     AmountsIn, 
     AmountsOut, 
     Asset,
-    TradingPackage,
     Action
 } from "../AppStorage.sol";
 import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
@@ -29,7 +28,6 @@ import {
 } from "../interfaces/IRocketPool.sol";
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "../Errors.sol";
-import {TradingLib} from "../libraries/TradingLib.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "forge-std/console.sol";
@@ -54,7 +52,6 @@ contract ROImoduleL1 {
     //----------
 
     function useOZL(
-        // TradingPackage memory p,
         address tokenOut_,
         address receiver_,
         uint amountInLsd_,
@@ -71,7 +68,6 @@ contract ROImoduleL1 {
     }
 
     function _checkPauseAndSwap3(
-        // TradingPackage memory p,
         address tokenOut_,
         address receiver_,
         uint amountIn_,
@@ -93,8 +89,6 @@ contract ROImoduleL1 {
                 tokenIn,
                 tokenOut,
                 address(this),
-                // p.swapRouterUni,
-                // p.uniFee,
                 amountIn_,
                 minAmountsOut_[0]
             );
@@ -102,9 +96,6 @@ contract ROImoduleL1 {
             amountOut = _swapBalancer3(
                 tokenIn,
                 tokenOut,
-                // p.rEthWethPoolBalancer,
-                // p.queriesBalancer,
-                // p.vaultBalancer,
                 amountIn_,
                 minAmountsOut_,
                 Action.OZL_IN
@@ -112,15 +103,12 @@ contract ROImoduleL1 {
         }
 
         if (tokenOut_ == s.WETH) { 
-            // IWETH(s.WETH).transfer(receiver_, amountOut);
             IERC20(s.WETH).safeTransfer(receiver_, amountOut);
         } else {
             amountOut = _swapUni3(
                 s.WETH,
                 tokenOut_,
                 receiver_,
-                // p.swapRouterUni,
-                // p.uniFee,
                 amountOut,
                 minAmountsOut_[1]
             );
@@ -131,8 +119,6 @@ contract ROImoduleL1 {
         address tokenIn_,
         address tokenOut_,
         address receiver_,
-        // address router_,
-        // uint24 poolFee_,
         uint amountIn_, 
         uint minAmountOut_
     ) private returns(uint) {
@@ -161,9 +147,6 @@ contract ROImoduleL1 {
     function _swapBalancer3(
         address tokenIn_, 
         address tokenOut_, 
-        // address pool_,
-        // address queries_,
-        // address vault_,
         uint amountIn_,
         uint[] memory minAmountsOut_,
         Action type_
@@ -208,7 +191,6 @@ contract ROImoduleL1 {
 
 
     function _executeSwap(
-        // address vault_,
         IVault.SingleSwap memory singleSwap_,
         IVault.FundManagement memory funds_,
         uint minAmountOut_,

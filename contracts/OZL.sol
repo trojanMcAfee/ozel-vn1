@@ -11,8 +11,7 @@ import {QuoteAsset} from "./interfaces/IOZL.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {TradingLib} from "./libraries/TradingLib.sol";
-import {TradingPackage, OZLrewards} from "./AppStorage.sol";
+import {OZLrewards} from "./AppStorage.sol";
 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol";
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
@@ -28,6 +27,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
     using CountersUpgradeable for CountersUpgradeable.Counter;
     using FixedPointMathLib for uint;
     using Helpers for address;
+    using Helpers for address[];
 
     bytes32 private constant _OZ_DIAMOND_SLOT = bytes32(uint(keccak256('ozDiamond.storage.slot')) - 1);
 
@@ -74,7 +74,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         uint ONE = 1 ether;
 
         uint totalFeesRETH = IERC20Permit(
-            getOZ().tradingPackage().rETH
+            0xae78736Cd615f374D3085123A210448E74Fc6393 //rETH - put it in an array of LSDs
         ).balanceOf(address(this));
 
         uint totalFeesQuote = asset_ == QuoteAsset.rETH ?
@@ -103,22 +103,6 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
     }
 
 
-    // function delegateOZ(
-    //     address ozDiamond_,
-    //     string memory method_, 
-    //     address addr1_, 
-    //     address addr2_, 
-    //     uint amount_
-    // ) internal {
-    //     bytes memory data = abi.encodeWithSignature(
-    //         method_, 
-    //         addr1_, addr2_, amount_
-    //     );
-    //     ozDiamond_.functionDelegateCall(data);
-    //     return amount_;
-    // }
-
-
     function redeem(
         address owner_,
         address receiver_,
@@ -127,12 +111,14 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         uint[] memory minAmountsOut_
     ) external returns(uint amountOut) {
         ozIDiamond OZ = getOZ();
-        TradingPackage memory p = OZ.tradingPackage();
+
+        address[] memory LSDs = _LSDs();
 
         if (
             OZ.ozTokens(tokenOut_) == address(0) &&
-            tokenOut_ != p.WETH &&
-            tokenOut_ != p.rETH
+            // tokenOut_ != tokens[0] &&
+            // tokenOut_ != tokens[1]
+            LSDs.indexOf(tokenOut_) < 0
         ) revert OZError18(tokenOut_);
 
         if (msg.sender != owner_) {
@@ -143,13 +129,13 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
         OZ.recicleOZL(owner_, address(this), ozlAmountIn_);
         
-        if (tokenOut_ == p.rETH) {
+        //rETH branch
+        if (tokenOut_ == LSDs[0]) {
             if (rETHtoRedeem < minAmountsOut_[0]) revert OZError19(rETHtoRedeem);
-            return OZ.sendLSD(p.rETH, receiver_, rETHtoRedeem);
+            return OZ.sendLSD(LSDs[0], receiver_, rETHtoRedeem);
         }
 
         return OZ.useOZL( 
-            // p,
             tokenOut_,
             receiver_,
             rETHtoRedeem,
@@ -170,6 +156,10 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
     function getOZ() public view returns(ozIDiamond) {
         return ozIDiamond(StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value);
+    }
+
+    function _LSDs() private view returns(address[] memory) {
+        return getOZ().getLSDs();
     }
 
 

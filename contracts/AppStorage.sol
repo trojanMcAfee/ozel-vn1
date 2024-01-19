@@ -50,10 +50,9 @@ struct AppStorage {
     OZLrewards r; //change this to RewardsPackage or not. Check if I'm returning the struct with the mapping (can't be done)
 
     address adminFeeRecipient; 
-    // uint16 adminFeeBps;
+    // uint16 adminFeeBps; <--- change the hardcoded admin fee for this var and the way for changing it
 
-    TradingPackage p;
-  
+    address[] LSDs;
 }
 
 enum Action {
@@ -67,20 +66,6 @@ struct AmountsIn {
     uint amountIn;
     uint minWethOut;
     uint minRethOut;
-}
-
-struct TradingPackage {
-    //Uniswap
-    address swapRouterUni;
-    uint24 uniFee;
-    //Balancer
-    address rEthWethPoolBalancer;
-    address queriesBalancer;
-    address vaultBalancer;
-    //Addresses
-    address ETH;
-    address rETH;
-    address WETH;
 }
 
 

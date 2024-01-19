@@ -19,8 +19,7 @@ import {
     Tokens,
     Dexes,
     Oracles,
-    Infra,
-    TradingPackage
+    Infra
 } from "../AppStorage.sol";
 
 import {IRocketStorage} from "../interfaces/IRocketPool.sol";
@@ -67,22 +66,16 @@ contract DiamondInit {
         s.uniFee = infra_.uniFee;
         s.protocolFee = infra_.protocolFee;
         s.adminFeeRecipient = ds.contractOwner;
-        s.p = TradingPackage(
-            s.swapRouterUni,
-            s.uniFee,
-            s.rEthWethPoolBalancer,
-            s.queriesBalancer,
-            s.vaultBalancer,
-            0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, //<-- put this in Setup.sol
-            tokens_.reth,
-            tokens_.weth
-        );
 
         //ERC20s
         s.WETH = tokens_.weth;
         s.USDC = tokens_.usdc;
         s.USDT = tokens_.usdt;
         s.rETH = tokens_.reth;
+
+        //LSDs + WETH
+        s.LSDs.push(s.rETH);
+        s.LSDs.push(s.WETH);
 
         //External infra
         s.rocketPoolStorage = infra_.rocketPoolStorage;
