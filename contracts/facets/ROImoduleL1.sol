@@ -41,6 +41,7 @@ contract ROImoduleL1 {
     using TransferHelper for address;
     using FixedPointMathLib for uint;
     using Helpers for uint;
+    using SafeERC20 for IERC20;
   
     AppStorage internal s;
 
@@ -120,11 +121,11 @@ contract ROImoduleL1 {
         address tokenOut;
 
         if (type_ == Action.OZL_IN) {
-            tokenIn = p.rETH;
-            tokenOut = p.WETH;
+            tokenIn = s.rETH;
+            tokenOut = s.WETH;
         } 
 
-        (bool paused,,) = IPool(p.rEthWethPoolBalancer).getPausedState(); 
+        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
 
         if (paused) {
             amountOut = _swapUni3(
@@ -150,7 +151,8 @@ contract ROImoduleL1 {
         }
 
         if (tokenOut_ == p.WETH) { //put a safeTransfer here
-            IWETH(p.WETH).transfer(receiver_, amountOut);
+            // IWETH(s.WETH).transfer(receiver_, amountOut);
+            IERC20(s.WETH).safeTransfer(receiver_, amountOut);
         } else {
             amountOut = _swapUni3(
                 p.WETH,
@@ -207,7 +209,7 @@ contract ROImoduleL1 {
     ) private returns(uint amountOut) {
         
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: IPool(pool_).getPoolId(),
+            poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
             assetIn: IAsset(tokenIn_),
             assetOut: IAsset(tokenOut_),
@@ -227,7 +229,7 @@ contract ROImoduleL1 {
         if (type_ == Action.OZL_IN) {
             minOut = minAmountsOut_[0]; //minAmountOutOffchain_
         } else if (type_ != Action.OZL_IN) {
-            try IQueries(queries_).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
+            try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
                 uint minAmountOutOffchain = minAmountsOut_[0];
                 minOut = minAmountOutOffchain > minOutOnchain ? minAmountOutOffchain : minOutOnchain;
 
@@ -238,7 +240,7 @@ contract ROImoduleL1 {
             }
         }
 
-        SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
+        SafeERC20.safeApprove(IERC20(tokenIn_), s.vaultBalancer, singleSwap.amount);
 
         amountOut = _executeSwap(vault_, singleSwap, funds, minOut, block.timestamp);
     }
@@ -252,7 +254,7 @@ contract ROImoduleL1 {
         uint blockStamp_
     ) private returns(uint) 
     {
-        try IVault(vault_).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
+        try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
             if (amountOut == 0) revert OZError02();
             return amountOut;
         } catch Error(string memory reason) {
@@ -270,14 +272,12 @@ contract ROImoduleL1 {
         address ozl_,
         uint amountIn_
     ) external {
-        SafeERC20.safeTransferFrom(IERC20(ozl_), owner_, address(this), amountIn_);
+        console.log(1);
+        IERC20(ozl_).safeTransferFrom(owner_, address(this), amountIn_);
+        console.log(2);
         ozIDiamond(address(this)).modifySupply(amountIn_);
     }
 
-
-    
-
-    
 
 
     function sendLSD(
