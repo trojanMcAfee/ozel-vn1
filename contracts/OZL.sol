@@ -18,6 +18,8 @@ import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/
 import {Helpers} from "./libraries/Helpers.sol";
 import "./Errors.sol";
 
+import {TradingLib} from "./libraries/TradingLib.sol";
+
 import "forge-std/console.sol";
 
 

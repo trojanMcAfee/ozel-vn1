@@ -192,8 +192,8 @@
       }
     },
     "contracts/OZL.sol": {
-      "lastModificationDate": 1705696811914,
-      "contentHash": "25248c77a20998fc2afe5f161ee668a6",
+      "lastModificationDate": 1705697404126,
+      "contentHash": "99b88b32ec149acc434ab1547ef6ddbd",
       "sourceName": "contracts/OZL.sol",
       "solcConfig": {
         "settings": {
@@ -231,9 +231,11 @@
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
+        "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
+        "contracts/libraries/TradingLib.sol",
         "lib/forge-std/src/console.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
@@ -1766,8 +1768,8 @@
       }
     },
     "contracts/libraries/TradingLib.sol": {
-      "lastModificationDate": 1705671461794,
-      "contentHash": "de6075f16ec7c5c5a57ce5c3dce7eb5b",
+      "lastModificationDate": 1705697392177,
+      "contentHash": "30fa48b869f3f1179cefa3cad051d0c5",
       "sourceName": "contracts/libraries/TradingLib.sol",
       "solcConfig": {
         "settings": {
@@ -1798,8 +1800,27 @@
           "libraries": {}
         }
       },
-      "imports": [],
-      "versionRequirement": null,
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Errors.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IOZL.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
+        "lib/forge-std/src/console.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
+      ],
+      "versionRequirement": "=0.8.21",
       "artifacts": {
         "TradingLib": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "TradingLib.sol/TradingLib.json"
@@ -4789,6 +4810,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -4931,6 +4953,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5075,6 +5098,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5219,6 +5243,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5419,6 +5444,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5496,7 +5522,7 @@
       }
     },
     "test/foundry/OZLtoken.t.sol": {
-      "lastModificationDate": 1705696794777,
+      "lastModificationDate": 1705697214549,
       "contentHash": "335f04c0c9212e19f051cfc0c277dba5",
       "sourceName": "test/foundry/OZLtoken.t.sol",
       "solcConfig": {
@@ -5563,6 +5589,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5707,6 +5734,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5851,6 +5879,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
