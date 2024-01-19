@@ -326,8 +326,8 @@ contract OZLtokenTest is TestMethods {
 
         uint ratePreRedeem = OZL.getExchangeRate();
 
-        uint rEthBalAlice = IERC20Permit(rEthAddr).balanceOf(alice);
-        console.log('>>> rEthBalAlice pre: ', rEthBalAlice);
+        uint bal = IERC20Permit(rEthAddr).balanceOf(alice);
+        console.log('>>> reth bal alice pre: ', bal);
 
         uint amountOut = OZL.redeem(
             alice,
@@ -338,16 +338,15 @@ contract OZLtokenTest is TestMethods {
         );
         vm.stopPrank();
 
-        rEthBalAlice = IERC20Permit(rEthAddr).balanceOf(alice);
-        console.log('>>> rEthBalAlice post: ', rEthBalAlice);
+        bal = IERC20Permit(rEthAddr).balanceOf(alice);
+        console.log('>>> reth bal alice post: ', bal);
 
         uint ratePostRedeem = OZL.getExchangeRate();
 
         //Divides by 1e5 due to slippage
-        console.log('*****');
         console.log('ratePreRedeem: ', ratePreRedeem);
         console.log('ratePostRedeem: ', ratePostRedeem);
-
+        
         assertTrue(ratePreRedeem / 1e5 == ratePostRedeem / 1e5);
 
         //Post-condition
@@ -355,7 +354,7 @@ contract OZLtokenTest is TestMethods {
         
         assertTrue(rEthBalancePost > 0);
         assertTrue(amountOut == rEthBalancePost);
-    } 
+    }  
 
 
 

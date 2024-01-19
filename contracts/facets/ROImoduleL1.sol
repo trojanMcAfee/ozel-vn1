@@ -225,6 +225,7 @@ contract ROImoduleL1 {
         address receiver_, 
         uint amount_
     ) external returns(uint) {
+        console.log('should not log');
         SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
         return amount_;
     }
