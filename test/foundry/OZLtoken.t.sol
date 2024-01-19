@@ -503,7 +503,7 @@ contract OZLtokenTest is TestMethods {
 
         //Action
         vm.startPrank(alice);
-        OZL.approve(address(OZL), ozlBalanceAlice);
+        OZL.approve(address(OZ), ozlBalanceAlice);
 
         uint amountOut = OZL.redeem(
             alice,
