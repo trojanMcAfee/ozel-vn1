@@ -327,7 +327,7 @@ contract OZLtokenTest is TestMethods {
         uint ratePreRedeem = OZL.getExchangeRate();
 
         uint rEthBalAlice = IERC20Permit(rEthAddr).balanceOf(alice);
-        console.log('rEthBalAlice pre: ', rEthBalAlice);
+        console.log('>>> rEthBalAlice pre: ', rEthBalAlice);
 
         uint amountOut = OZL.redeem(
             alice,
@@ -339,7 +339,7 @@ contract OZLtokenTest is TestMethods {
         vm.stopPrank();
 
         rEthBalAlice = IERC20Permit(rEthAddr).balanceOf(alice);
-        console.log('rEthBalAlice post: ', rEthBalAlice);
+        console.log('>>> rEthBalAlice post: ', rEthBalAlice);
 
         uint ratePostRedeem = OZL.getExchangeRate();
 

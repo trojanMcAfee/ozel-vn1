@@ -85,6 +85,8 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
         if (c_Supply == 0) return ONE;
 
+        console.log('asset: ', uint(asset_));
+        console.log('totalFeesRETH: ', totalFeesRETH);
         console.log('totalFeesQuote: ', totalFeesQuote);
         console.log('c_Supply: ', c_Supply);
         console.log('----');
