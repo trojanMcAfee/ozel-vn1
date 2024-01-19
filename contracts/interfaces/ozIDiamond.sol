@@ -78,7 +78,6 @@ interface ozIDiamond {
 
 
     function useOZL(
-        TradingPackage memory p,
         address tokenOut_,
         address receiver_,
         uint amountInLsd_,

@@ -51,56 +51,17 @@ contract ROImoduleL1 {
     }
 
 
-    // function useOZL2(
-    //     address tokenIn_, 
-    //     address tokenOut_,
-    //     address sender_,
-    //     address receiver_,
-    //     uint amountIn_,
-    //     uint minAmountOut_
-    // ) external {
-    //     console.log('sender in useOZL: ', msg.sender);
-    //     console.log('address(this): ', address(this));
-    //     console.log('rETH bal sender in use: ', IERC20Permit(tokenIn_).balanceOf(msg.sender));
-
-    //     // IERC20Permit(tokenIn_).approve(s.vaultBalancer, amountIn_);
-
-    //     // uint x = IERC20Permit(tokenIn_).allowance(msg.sender, s.vaultBalancer);
-    //     // console.log('allowancee: ', x);
-
-    //     _checkPauseAndSwap2(
-    //         tokenIn_,
-    //         s.WETH,
-    //         sender_,
-    //         sender_, //receiver
-    //         amountIn_,
-    //         minAmountOut_ //here it's 0 for both, but it must be different
-    //     );
-
-    //     console.log('good here');
-
-    //     // if (tokenOut_ != rETH or ETH) {}
-
-    //     _swapUni(
-    //         s.WETH,
-    //         tokenOut_,
-    //         IWETH(s.WETH).balanceOf(address(this)),
-    //         minAmountOut_,
-    //         receiver_
-    //     );
-    // }
-
     //----------
 
     function useOZL(
-        TradingPackage memory p,
+        // TradingPackage memory p,
         address tokenOut_,
         address receiver_,
         uint amountInLsd_,
         uint[] memory minAmountsOut_
     ) external returns(uint) {
         return _checkPauseAndSwap3(
-            p,
+            // p,
             tokenOut_,
             receiver_,
             amountInLsd_,
@@ -110,7 +71,7 @@ contract ROImoduleL1 {
     }
 
     function _checkPauseAndSwap3(
-        TradingPackage memory p,
+        // TradingPackage memory p,
         address tokenOut_,
         address receiver_,
         uint amountIn_,
@@ -132,8 +93,8 @@ contract ROImoduleL1 {
                 tokenIn,
                 tokenOut,
                 address(this),
-                p.swapRouterUni,
-                p.uniFee,
+                // p.swapRouterUni,
+                // p.uniFee,
                 amountIn_,
                 minAmountsOut_[0]
             );
@@ -141,25 +102,25 @@ contract ROImoduleL1 {
             amountOut = _swapBalancer3(
                 tokenIn,
                 tokenOut,
-                p.rEthWethPoolBalancer,
-                p.queriesBalancer,
-                p.vaultBalancer,
+                // p.rEthWethPoolBalancer,
+                // p.queriesBalancer,
+                // p.vaultBalancer,
                 amountIn_,
                 minAmountsOut_,
                 Action.OZL_IN
             );
         }
 
-        if (tokenOut_ == p.WETH) { //put a safeTransfer here
+        if (tokenOut_ == s.WETH) { 
             // IWETH(s.WETH).transfer(receiver_, amountOut);
             IERC20(s.WETH).safeTransfer(receiver_, amountOut);
         } else {
             amountOut = _swapUni3(
-                p.WETH,
+                s.WETH,
                 tokenOut_,
                 receiver_,
-                p.swapRouterUni,
-                p.uniFee,
+                // p.swapRouterUni,
+                // p.uniFee,
                 amountOut,
                 minAmountsOut_[1]
             );
@@ -170,18 +131,18 @@ contract ROImoduleL1 {
         address tokenIn_,
         address tokenOut_,
         address receiver_,
-        address router_,
-        uint24 poolFee_,
+        // address router_,
+        // uint24 poolFee_,
         uint amountIn_, 
         uint minAmountOut_
     ) private returns(uint) {
-        SafeERC20.safeApprove(IERC20(tokenIn_), router_, amountIn_);
+        IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 
                 tokenIn: tokenIn_,
                 tokenOut: tokenOut_, 
-                fee: poolFee_, 
+                fee: s.uniFee, 
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
@@ -189,7 +150,7 @@ contract ROImoduleL1 {
                 sqrtPriceLimitX96: 0
             });
 
-        try ISwapRouter(router_).exactInputSingle(params) returns(uint amountOut) { 
+        try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) { 
             return amountOut;
         } catch Error(string memory reason) {
             revert OZError01(reason);
@@ -200,9 +161,9 @@ contract ROImoduleL1 {
     function _swapBalancer3(
         address tokenIn_, 
         address tokenOut_, 
-        address pool_,
-        address queries_,
-        address vault_,
+        // address pool_,
+        // address queries_,
+        // address vault_,
         uint amountIn_,
         uint[] memory minAmountsOut_,
         Action type_
@@ -242,12 +203,12 @@ contract ROImoduleL1 {
 
         SafeERC20.safeApprove(IERC20(tokenIn_), s.vaultBalancer, singleSwap.amount);
 
-        amountOut = _executeSwap(vault_, singleSwap, funds, minOut, block.timestamp);
+        amountOut = _executeSwap(singleSwap, funds, minOut, block.timestamp);
     }
 
 
     function _executeSwap(
-        address vault_,
+        // address vault_,
         IVault.SingleSwap memory singleSwap_,
         IVault.FundManagement memory funds_,
         uint minAmountOut_,
@@ -272,9 +233,7 @@ contract ROImoduleL1 {
         address ozl_,
         uint amountIn_
     ) external {
-        console.log(1);
         IERC20(ozl_).safeTransferFrom(owner_, address(this), amountIn_);
-        console.log(2);
         ozIDiamond(address(this)).modifySupply(amountIn_);
     }
 

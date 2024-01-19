@@ -148,8 +148,8 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             return OZ.sendLSD(p.rETH, receiver_, rETHtoRedeem);
         }
 
-        return OZ.useOZL( //<--- fix this one now
-            p,
+        return OZ.useOZL( 
+            // p,
             tokenOut_,
             receiver_,
             rETHtoRedeem,
