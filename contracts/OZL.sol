@@ -116,8 +116,6 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
         if (
             OZ.ozTokens(tokenOut_) == address(0) &&
-            // tokenOut_ != tokens[0] &&
-            // tokenOut_ != tokens[1]
             LSDs.indexOf(tokenOut_) < 0
         ) revert OZError18(tokenOut_);
 

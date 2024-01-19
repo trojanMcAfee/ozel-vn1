@@ -127,7 +127,7 @@ contract OZLtokenTest is TestMethods {
         assertTrue(pendingAllocPreRedeem < (1 * 1e18) / 1000000);
 
         vm.startPrank(alice);
-        OZL.approve(address(OZL), ozlBalanceAlice);
+        OZL.approve(address(OZ), ozlBalanceAlice);
     
         OZL.redeem(
             alice,
@@ -195,7 +195,7 @@ contract OZLtokenTest is TestMethods {
 
         //Actions
         vm.startPrank(alice);
-        approve(OZL, ozlBalanceAlice);
+        OZL.approve(address(OZ), ozlBalanceAlice);
 
         OZL.redeem(
             alice,
@@ -322,7 +322,7 @@ contract OZLtokenTest is TestMethods {
 
         //Action
         vm.startPrank(alice);
-        approve(OZL, ozlBalanceAlice);
+        OZL.approve(address(OZ), ozlBalanceAlice);
 
         uint ratePreRedeem = OZL.getExchangeRate();
 

@@ -58,7 +58,6 @@ contract ROImoduleL1 {
         uint[] memory minAmountsOut_
     ) external returns(uint) {
         return _checkPauseAndSwap3(
-            // p,
             tokenOut_,
             receiver_,
             amountInLsd_,
@@ -132,7 +131,7 @@ contract ROImoduleL1 {
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: minAmountOut_, //minAmountsOut[1] - minAmountOut_.formatMinOut(tokenOut_)
+                amountOutMinimum: minAmountOut_.formatMinOut(tokenOut_),
                 sqrtPriceLimitX96: 0
             });
 
@@ -322,57 +321,6 @@ contract ROImoduleL1 {
         }
     }
 
-
-
-    function _swapBalancer2(
-        address tokenIn_, 
-        address tokenOut_, 
-        address sender_,
-        address receiver_,
-        uint amountIn_,
-        uint minAmountOutOffchain_
-    ) private {
-        uint amountOut;
-
-        // IERC20Permit(s.rETH).approve(0xBA12222222228d8Ba445958a75a0704d566BF2C8, type(uint).max);
-
-        // uint x = IERC20Permit(tokenIn_).allowance(msg.sender, s.vaultBalancer);
-        // console.log('allowance: ', x);
-
-        // console.log('rETH bal sender: ', IERC20Permit(tokenIn_).balanceOf(sender_));
-        // console.log('rETH bal msg.sender: ', IERC20Permit(tokenIn_).balanceOf(msg.sender));
-        // console.log('rETH bal address(this): ', IERC20Permit(tokenIn_).balanceOf(address(this)));
-        // console.log('amountIn: ', amountIn_);
-
-        // IVault(s.vaultBalancer).setRelayerApproval(msg.sender, msg.sender, true);
-        
-        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
-            kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(tokenIn_),
-            assetOut: IAsset(tokenOut_),
-            amount: amountIn_,
-            userData: new bytes(0)
-        });
-
-        IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: sender_,
-            fromInternalBalance: false, 
-            recipient: payable(receiver_),
-            toInternalBalance: false
-        });
-        
-        try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
-            uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
-
-            tokenIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
-            amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
-        } catch Error(string memory reason) {
-            revert OZError10(reason);
-        }
-        
-        if (amountOut == 0) revert OZError02();
-    }
 
 
     
