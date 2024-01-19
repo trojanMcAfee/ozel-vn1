@@ -225,8 +225,9 @@ contract ROImoduleL1 {
         address receiver_, 
         uint amount_
     ) external returns(uint) {
-        console.log('should not log');
+        // console.log('<<< reth bal ozl - pre: ', IERC20(lsd_).balanceOf(address(this)));
         SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
+        // console.log('<<< reth bal ozl - post: ', IERC20(lsd_).balanceOf(address(this)));
         return amount_;
     }
 
