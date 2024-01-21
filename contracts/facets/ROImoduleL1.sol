@@ -58,6 +58,7 @@ contract ROImoduleL1 {
         uint[] memory minAmountsOut_
     ) external returns(uint) {
         return _checkPauseAndSwap3(
+            s.rETH,
             tokenOut_,
             receiver_,
             amountInLsd_,
@@ -67,25 +68,26 @@ contract ROImoduleL1 {
     }
 
     function _checkPauseAndSwap3(
+        address tokenIn_,
         address tokenOut_,
         address receiver_,
         uint amountIn_,
         uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint amountOut) {
-        address tokenIn;
+        // address tokenIn;
         address tokenOut;
 
         if (type_ == Action.OZL_IN) {
-            tokenIn = s.rETH;
+            // tokenIn = s.rETH;
             tokenOut = s.WETH;
-        } 
+        }
 
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
 
         if (paused) {
             amountOut = _swapUni3(
-                tokenIn,
+                tokenIn_,
                 tokenOut,
                 address(this),
                 amountIn_,
@@ -93,24 +95,26 @@ contract ROImoduleL1 {
             );
         } else {
             amountOut = _swapBalancer3(
-                tokenIn,
+                tokenIn_,
                 tokenOut,
                 amountIn_,
-                minAmountsOut_,
+                minAmountsOut_[0],
                 Action.OZL_IN
             );
         }
 
-        if (tokenOut_ == s.WETH) { 
-            IERC20(s.WETH).safeTransfer(receiver_, amountOut);
-        } else {
-            amountOut = _swapUni3(
-                s.WETH,
-                tokenOut_,
-                receiver_,
-                amountOut,
-                minAmountsOut_[1]
-            );
+        if (type_ == Action.OZL_IN) {
+            if (tokenOut_ == s.WETH) { 
+                IERC20(s.WETH).safeTransfer(receiver_, amountOut);
+            } else {
+                amountOut = _swapUni3(
+                    s.WETH,
+                    tokenOut_,
+                    receiver_,
+                    amountOut,
+                    minAmountsOut_[1]
+                );
+            }
         }
     }
 
@@ -147,7 +151,7 @@ contract ROImoduleL1 {
         address tokenIn_, 
         address tokenOut_, 
         uint amountIn_,
-        uint[] memory minAmountsOut_,
+        uint minAmountOut_,
         Action type_
     ) private returns(uint amountOut) {
         
@@ -170,14 +174,16 @@ contract ROImoduleL1 {
         uint minOut;
         
         if (type_ == Action.OZL_IN) {
-            minOut = minAmountsOut_[0]; //minAmountOutOffchain_
+            minOut = minAmountOut_; //minAmountOutOffchain_
         } else if (type_ != Action.OZL_IN) {
             try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
-                uint minAmountOutOffchain = minAmountsOut_[0];
+                uint minAmountOutOffchain = minAmountOut_;
                 minOut = minAmountOutOffchain > minOutOnchain ? minAmountOutOffchain : minOutOnchain;
 
-                // SafeERC20.safeApprove(IERC20(tokenIn_), vault_, singleSwap.amount);
-                // amountOut = IVault(vault_).swap(singleSwap, funds, minOut, block.timestamp);
+                if (type_ == Action.OZ_IN) {
+                    IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
+                    amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
+                }
             } catch Error(string memory reason) {
                 revert OZError10(reason);
             }
@@ -242,11 +248,20 @@ contract ROImoduleL1 {
             
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         } else {
-            _checkPauseAndSwap(
+            // _checkPauseAndSwap(
+            //     s.WETH, 
+            //     s.rETH, 
+            //     amountOut,
+            //     amounts_.minRethOut
+            // );
+
+            _checkPauseAndSwap3(
                 s.WETH, 
                 s.rETH, 
+                address(this),
                 amountOut,
-                amounts_.minRethOut
+                amounts_.minRethOut,
+                Action.OZ_IN
             );
         }
     }
