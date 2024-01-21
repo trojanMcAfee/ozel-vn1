@@ -214,45 +214,9 @@ contract ROImoduleL1 {
         address ozl_,
         uint amountIn_
     ) external {
-        // console.log('*** in recicle ***');
-        // console.log('address(this): ', address(this));
-        // console.log('msg.sender: ', msg.sender);
-        // console.log('---');
-
-        // IERC20 ozl = IERC20(ozl_);
-
-        // uint x = ozl.balanceOf(owner_);
-        // console.log('ozl balance owner pre: ', x);
-
-        // x = ozl.balanceOf(address(this));
-        // console.log('ozl balance diamond pre: ', x);
-        // console.log('---');
-
         IERC20(ozl_).safeTransferFrom(owner_, address(this), amountIn_);
-
-        // x = ozl.balanceOf(owner_);
-        // console.log('ozl balance owner post: ', x);
-
-        // x = ozl.balanceOf(address(this));
-        // console.log('ozl balance diamond post: ', x);
-        // console.log('*** ***');
-
         ozIDiamond(address(this)).modifySupply(amountIn_);
     }
-
-
-
-    function sendLSD(
-        address lsd_, 
-        address receiver_, 
-        uint amount_
-    ) external returns(uint) {
-        console.log('## reth bal ozl - pre: ', IERC20(lsd_).balanceOf(address(this)));
-        SafeERC20.safeTransfer(IERC20(lsd_), receiver_, amount_);
-        console.log('## reth bal ozl - post: ', IERC20(lsd_).balanceOf(address(this)));
-        return amount_;
-    }
-
 
 
     //-------------
