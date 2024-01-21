@@ -73,6 +73,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
 
     function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
+        console.log('ONE TIME');
         uint ONE = 1 ether;
 
         uint totalFeesRETH = IERC20Permit(
@@ -129,8 +130,8 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
-        console.log('%% ozlAmountIn_: ', ozlAmountIn_);
-        console.log('%% getExchangeRate(QuoteAsset.rETH): ', getExchangeRate(QuoteAsset.rETH));
+        // console.log('%% ozlAmountIn_: ', ozlAmountIn_);
+        // console.log('%% getExchangeRate(QuoteAsset.rETH): ', getExchangeRate(QuoteAsset.rETH));
 
         uint rETHtoRedeem = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.rETH), 1 ether);
 
