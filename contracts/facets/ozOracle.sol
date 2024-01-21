@@ -102,8 +102,8 @@ contract ozOracle {
 
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards); //this too (further testing)
 
-        console.logInt(currentRewards);
-        console.log('currentRewards ^^');
+        // console.logInt(currentRewards);
+        // console.log('currentRewards ^^');
 
         if (currentRewards <= 0) return false;
 

@@ -87,10 +87,6 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
         if (c_Supply == 0) return ONE;
 
-        console.log('totalFeesRETH: ', totalFeesRETH);
-        console.log('totalFeesQuote: ', totalFeesQuote);
-        console.log('----');
-
         return ONE.mulDivDown(totalFeesQuote, c_Supply);
     }
 
@@ -129,20 +125,16 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
-        // console.log('%% ozlAmountIn_: ', ozlAmountIn_);
-        // console.log('%% getExchangeRate(QuoteAsset.rETH): ', getExchangeRate(QuoteAsset.rETH));
-
         uint rETHtoRedeem = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.rETH), 1 ether);
 
         OZ.recicleOZL(owner_, address(this), ozlAmountIn_);
-        // TradingLib.recicleOZL(owner_, address(this), address(OZ), ozlAmountIn_);
         
         //rETH branch
         if (tokenOut_ == LSDs[0]) {
             if (rETHtoRedeem < minAmountsOut_[0]) revert OZError19(rETHtoRedeem);
+
             SafeERC20.safeTransfer(IERC20(LSDs[0]), receiver_, rETHtoRedeem);
             return rETHtoRedeem;
-            // return OZ.sendLSD(LSDs[0], receiver_, rETHtoRedeem);
         }
 
         return OZ.useOZL( 
