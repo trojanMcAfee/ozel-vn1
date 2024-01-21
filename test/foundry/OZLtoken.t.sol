@@ -453,12 +453,12 @@ contract OZLtokenTest is TestMethods {
             [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
         );
 
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHashOZL(alice, address(OZL), ozlBalanceAlice));
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHashOZL(alice, address(OZ), ozlBalanceAlice));
         
         vm.startPrank(alice);
         OZL.permit(
             alice,
-            address(OZL),
+            address(OZ),
             ozlBalanceAlice,
             block.timestamp,
             v, r, s
