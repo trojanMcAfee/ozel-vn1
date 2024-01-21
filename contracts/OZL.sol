@@ -73,7 +73,6 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
 
     function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
-        console.log('ONE TIME');
         uint ONE = 1 ether;
 
         uint totalFeesRETH = IERC20Permit(
