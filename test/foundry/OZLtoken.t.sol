@@ -329,6 +329,7 @@ contract OZLtokenTest is TestMethods {
         uint bal = IERC20Permit(rEthAddr).balanceOf(alice);
         console.log('>>> reth bal alice pre: ', bal);
 
+        console.log('$ reth bal ozl - pre: ', IERC20Permit(rEthAddr).balanceOf(address(OZL)));
         uint amountOut = OZL.redeem(
             alice,
             alice,
@@ -337,6 +338,7 @@ contract OZLtokenTest is TestMethods {
             minAmountsOut
         );
         vm.stopPrank();
+        console.log('$ reth bal ozl - post: ', IERC20Permit(rEthAddr).balanceOf(address(OZL)));
 
         bal = IERC20Permit(rEthAddr).balanceOf(alice);
         console.log('>>> reth bal alice post: ', bal);
