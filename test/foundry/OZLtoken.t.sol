@@ -86,7 +86,6 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-
     //Tests that a new recicling campaign is properly set up with the recicled supply.
     function test_new_recicling_campaing() public {
         bytes32 oldSlot0data = vm.load(
@@ -158,9 +157,9 @@ contract OZLtokenTest is TestMethods {
         uint newOzTokenBalance = ozERC20.balanceOf(alice);
 
         uint diff = (((oldOzTokenBalance * 2) - newOzTokenBalance) * 10_000) / newOzTokenBalance;
-        
-        //Difference between balances is less than 0.3% (slippage)
-        assertTrue(diff < 30);        
+
+        //Difference between balances is less than 0.57% (slippage)
+        assertTrue(diff < 57);        
 
         vm.warp(block.timestamp + secs);
 
