@@ -140,7 +140,9 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         //rETH branch
         if (tokenOut_ == LSDs[0]) {
             if (rETHtoRedeem < minAmountsOut_[0]) revert OZError19(rETHtoRedeem);
-            return OZ.sendLSD(LSDs[0], receiver_, rETHtoRedeem);
+            SafeERC20.safeTransfer(IERC20(LSDs[0]), receiver_, rETHtoRedeem);
+            return rETHtoRedeem;
+            // return OZ.sendLSD(LSDs[0], receiver_, rETHtoRedeem);
         }
 
         return OZ.useOZL( 
