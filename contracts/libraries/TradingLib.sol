@@ -17,6 +17,8 @@ import "forge-std/console.sol";
 
 library TradingLib { //change this to ExecutionLib
 
+    using SafeERC20 for IERC20;
+
 
     /**
     * Main methods
@@ -47,6 +49,19 @@ library TradingLib { //change this to ExecutionLib
     //     SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, amountIn_);
     //     ozIDiamond(ozDiamond_).modifySupply(amountIn_);
     // }
+
+    function recicleOZL(
+        address owner_,
+        address ozl_,
+        address ozDiamond_,
+        uint amountIn_
+    ) internal {
+        // SafeERC20.safeTransferFrom(IERC20(address(this)), owner_, ozDiamond_, amountIn_);
+
+        IERC20(ozl_).safeTransferFrom(owner_, ozDiamond_, amountIn_);
+
+        ozIDiamond(ozDiamond_).modifySupply(amountIn_);
+    }
 
 
     function sendLSD(

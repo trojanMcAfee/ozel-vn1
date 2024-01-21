@@ -129,9 +129,13 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             _spendAllowance(owner_, msg.sender, ozlAmountIn_);
         }
 
+        console.log('%% ozlAmountIn_: ', ozlAmountIn_);
+        console.log('%% getExchangeRate(QuoteAsset.rETH): ', getExchangeRate(QuoteAsset.rETH));
+
         uint rETHtoRedeem = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.rETH), 1 ether);
 
         OZ.recicleOZL(owner_, address(this), ozlAmountIn_);
+        // TradingLib.recicleOZL(owner_, address(this), address(OZ), ozlAmountIn_);
         
         //rETH branch
         if (tokenOut_ == LSDs[0]) {
