@@ -20,7 +20,7 @@ import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/
 
 import "forge-std/console.sol";
 
-
+//test when redeeming OZL when the balancer pool is paused (didn't do that test)
 contract OZLtokenTest is TestMethods {
 
     using FixedPointMathLib for uint;

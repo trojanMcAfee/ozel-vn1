@@ -92,6 +92,7 @@ contract Setup is Test {
     address internal uniFactory;
 
     address internal testToken;
+    address internal secondTestToken;
 
 
     //Default diamond contracts and facets
@@ -210,6 +211,7 @@ contract Setup is Test {
     function _runSetup() internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
         testToken = daiAddr;
+        secondTestToken = testToken == daiAddr ? usdcAddr : daiAddr;
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
 
         //Initial users config
