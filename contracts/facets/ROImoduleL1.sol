@@ -34,7 +34,7 @@ import "forge-std/console.sol";
 
 
 
-contract ROImoduleL1 {
+contract ROImoduleL1 { //change name to ozExecutor
 
     using TransferHelper for address;
     using FixedPointMathLib for uint;
@@ -127,7 +127,7 @@ contract ROImoduleL1 {
         _checkPauseAndSwap(
             s.rETH,
             s.WETH,
-            address(this), //add this receiver to all _swapBalancer3 usages
+            address(this), 
             amountInReth,
             minAmountsOut,
             Action.OZ_OUT
@@ -138,7 +138,7 @@ contract ROImoduleL1 {
             s.WETH,
             ozIToken(msg.sender).asset(),
             receiver,
-            IWETH(s.WETH).balanceOf(address(this)),
+            IWETH(s.WETH).balanceOf(address(this)), //fix this so it's amountOut and not address(this) balance
             minAmountsOut[1]
         );
     }
@@ -166,20 +166,6 @@ contract ROImoduleL1 {
         Action type_
     ) private returns(uint amountOut) {
 
-        // address tokenOutInternal;
-        // uint minAmountOutFirstLeg;
-
-        // if (type_ == Action.OZL_IN) {
-        //     tokenOutInternal = s.WETH;
-        //     minAmountOutFirstLeg = minAmountsOut_[0];
-        // } else if (type_ == Action.OZ_IN) {
-        //     tokenOutInternal = tokenOut_;
-        //     minAmountOutFirstLeg = minAmountsOut_[1];
-        // } else if (type_ == Action.OZ_OUT) {
-        //     tokenOutInternal = tokenOut_;
-        //     minAmountOutFirstLeg = minAmountsOut_[0];
-        // }
-
         (address tokenOutInternal, uint minAmountOutFirstLeg) = 
             _triageInternalVars(type_, minAmountsOut_, tokenOut_);
 
@@ -199,7 +185,7 @@ contract ROImoduleL1 {
                 tokenOutInternal,
                 amountIn_,
                 minAmountOutFirstLeg,
-                Action.OZL_IN
+                type_
             );
         }
 
@@ -274,23 +260,33 @@ contract ROImoduleL1 {
 
         uint minOut;
         
-        if (type_ == Action.OZL_IN) {
-            minOut = minAmountOut_; //minAmountOutOffchain_
-        } else if (type_ != Action.OZL_IN) {
+        if (type_ == Action.OZL_IN || type_ == Action.OZ_OUT) {
+            // console.log(1);
+            minOut = minAmountOut_; 
+        } else if (type_ == Action.OZ_IN) {
             try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
+                console.log(2);
                 uint minAmountOutOffchain = minAmountOut_;
                 minOut = minAmountOutOffchain > minOutOnchain ? minAmountOutOffchain : minOutOnchain;
 
-                if (type_ == Action.OZ_IN) {
-                    IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
-                    amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
-                }
+                // if (type_ == Action.OZ_IN) {
+                    // IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
+                    
+                    // uint x = IERC20(tokenIn_).balanceOf(address(this));
+                    // console.log('pre: ', x);
+
+                    // amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
+
+                    // x = IERC20(tokenIn_).balanceOf(address(this));
+                    // console.log('post: ', x);
+                // }
             } catch Error(string memory reason) {
+                console.log(3);
                 revert OZError10(reason);
             }
         }
 
-        SafeERC20.safeApprove(IERC20(tokenIn_), s.vaultBalancer, singleSwap.amount);
+        IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
 
         amountOut = _executeSwap(singleSwap, funds, minOut, block.timestamp);
     }
