@@ -29,7 +29,10 @@ contract Modifiers is IOZLrewards {
         _;
     }
 
-
+    modifier onlyOzToken { 
+        if (!s.ozTokenRegistryMap[msg.sender]) revert OZError13(msg.sender);
+        _;
+    }
 
 }
 

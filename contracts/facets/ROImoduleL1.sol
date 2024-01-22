@@ -28,26 +28,20 @@ import {
 } from "../interfaces/IRocketPool.sol";
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "../Errors.sol";
+import {Modifiers} from "../Modifiers.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "forge-std/console.sol";
 
 
 
-contract ROImoduleL1 { //change name to ozExecutor
+contract ROImoduleL1 is Modifiers { //change name to ozExecutor
 
     using TransferHelper for address;
     using FixedPointMathLib for uint;
     using Helpers for uint;
     using SafeERC20 for IERC20;
-  
-    AppStorage internal s;
-
-    modifier onlyOzToken {
-        if (!s.ozTokenRegistryMap[msg.sender]) revert OZError13(msg.sender);
-        _;
-    }
-
+    
 
     //----------
 
@@ -74,13 +68,14 @@ contract ROImoduleL1 { //change name to ozExecutor
         AmountsIn memory amounts_
     ) external onlyOzToken { 
         uint amountIn = amounts_.amountIn;
+
+        //minAmountsOut[0] - minWethOut
+        //minAmountsOut[1] - minRethOut
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
       
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
 
         //Swaps underlying to WETH in Uniswap
-        //minAmountsOut[0] - minWethOut
-        //minAmountsOut[1] - minRethOut
         uint amountOut = _swapUni(
             underlying_, 
             s.WETH, 
@@ -143,7 +138,8 @@ contract ROImoduleL1 { //change name to ozExecutor
         );
     }
 
-
+    //Sends the OZL tokens from the owner back to the ozDiamond to be 
+    //used once again in a new distribution campaign
     function recicleOZL(
         address owner_,
         address ozl_,
