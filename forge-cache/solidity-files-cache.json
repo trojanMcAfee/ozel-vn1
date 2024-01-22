@@ -372,47 +372,6 @@
         }
       }
     },
-    "contracts/StakingRewards.sol": {
-      "lastModificationDate": 1704211519421,
-      "contentHash": "b3c2b8ce57b63a13c53bb68062d6702a",
-      "sourceName": "contracts/StakingRewards.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": null,
-      "artifacts": {
-        "StakingRewards": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "StakingRewards.sol/StakingRewards.json"
-        }
-      }
-    },
     "contracts/facets/DiamondCutFacet.sol": {
       "lastModificationDate": 1697894671794,
       "contentHash": "e4ef88a55e3f841c72e68872d39d12a5",
@@ -688,77 +647,6 @@
         }
       }
     },
-    "contracts/facets/ROImoduleL1.sol": {
-      "lastModificationDate": 1705947084704,
-      "contentHash": "02f91496710400a69c4b335108118586",
-      "sourceName": "contracts/facets/ROImoduleL1.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "contracts/AppStorage.sol",
-        "contracts/Errors.sol",
-        "contracts/Modifiers.sol",
-        "contracts/interfaces/IBalancer.sol",
-        "contracts/interfaces/IDiamondCut.sol",
-        "contracts/interfaces/IERC20Permit.sol",
-        "contracts/interfaces/IOZLrewards.sol",
-        "contracts/interfaces/IRocketPool.sol",
-        "contracts/interfaces/IWETH.sol",
-        "contracts/interfaces/ozIDiamond.sol",
-        "contracts/interfaces/ozIToken.sol",
-        "contracts/libraries/FixedPointMathLib.sol",
-        "contracts/libraries/Helpers.sol",
-        "lib/forge-std/src/console.sol",
-        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "node_modules/@openzeppelin/contracts/utils/Address.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol"
-      ],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "ROImoduleL1": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ROImoduleL1.sol/ROImoduleL1.json"
-        }
-      }
-    },
     "contracts/facets/ozBeacon.sol": {
       "lastModificationDate": 1697916203208,
       "contentHash": "0cedc2ce99a580989eda0cfb53dc6305",
@@ -856,6 +744,77 @@
       "artifacts": {
         "ozCut": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "ozCut.sol/ozCut.json"
+        }
+      }
+    },
+    "contracts/facets/ozExecutor.sol": {
+      "lastModificationDate": 1705950596646,
+      "contentHash": "08b9b645063c96e2d449a771cfed12fd",
+      "sourceName": "contracts/facets/ozExecutor.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Errors.sol",
+        "contracts/Modifiers.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IRocketPool.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
+        "lib/forge-std/src/console.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozExecutor": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozExecutor.sol/ozExecutor.json"
         }
       }
     },
@@ -1029,7 +988,7 @@
       }
     },
     "contracts/interfaces/IBalancer.sol": {
-      "lastModificationDate": 1704754583362,
+      "lastModificationDate": 1704756983705,
       "contentHash": "d5a450476d3e75dba40a7257d83ec437",
       "sourceName": "contracts/interfaces/IBalancer.sol",
       "solcConfig": {
@@ -1243,7 +1202,7 @@
       }
     },
     "contracts/interfaces/IERC20Permit.sol": {
-      "lastModificationDate": 1701100010798,
+      "lastModificationDate": 1701263634365,
       "contentHash": "8e3873dce1e8f30b89e0269986dfa23e",
       "sourceName": "contracts/interfaces/IERC20Permit.sol",
       "solcConfig": {
@@ -1506,7 +1465,7 @@
       }
     },
     "contracts/interfaces/ozIDiamond.sol": {
-      "lastModificationDate": 1705672303070,
+      "lastModificationDate": 1705849743550,
       "contentHash": "132728df855225b6e2d87083c4325792",
       "sourceName": "contracts/interfaces/ozIDiamond.sol",
       "solcConfig": {
@@ -1640,7 +1599,7 @@
       }
     },
     "contracts/libraries/Helpers.sol": {
-      "lastModificationDate": 1705620718999,
+      "lastModificationDate": 1705853129083,
       "contentHash": "dc8efe1410e4ca8645b600c8ce485fc2",
       "sourceName": "contracts/libraries/Helpers.sol",
       "solcConfig": {
@@ -1729,7 +1688,7 @@
       }
     },
     "contracts/libraries/SafeMath.sol": {
-      "lastModificationDate": 1700830246635,
+      "lastModificationDate": 1701263129663,
       "contentHash": "1fbef163603f0c4732275f44c033238a",
       "sourceName": "contracts/libraries/SafeMath.sol",
       "solcConfig": {
@@ -3035,7 +2994,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/console.sol",
         "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
         "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
@@ -3085,7 +3043,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/console.sol",
         "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
         "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
@@ -3264,7 +3221,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/console.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
@@ -3311,7 +3267,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/console.sol",
         "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
         "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
@@ -3409,7 +3364,7 @@
       "versionRequirement": "^0.8.0",
       "artifacts": {
         "IERC20Permit": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "IERC20Permit.sol/IERC20Permit.json"
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "extensions/IERC20Permit.sol/IERC20Permit.json"
         }
       }
     },
@@ -4791,9 +4746,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -4934,9 +4889,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -5079,9 +5034,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -5224,9 +5179,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -5425,9 +5380,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -5570,9 +5525,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -5715,9 +5670,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -5813,150 +5768,9 @@
         }
       }
     },
-    "test/foundry/ROImoduleL1.t.sol": {
-      "lastModificationDate": 1705926515241,
-      "contentHash": "2034d9123d013ab4a4fbfaff49516491",
-      "sourceName": "test/foundry/ROImoduleL1.t.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "contracts/AppStorage.sol",
-        "contracts/Diamond.sol",
-        "contracts/Errors.sol",
-        "contracts/Modifiers.sol",
-        "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
-        "contracts/ProxyAdmin.sol",
-        "contracts/facets/DiamondCutFacet.sol",
-        "contracts/facets/DiamondLoupeFacet.sol",
-        "contracts/facets/MirrorExchange.sol",
-        "contracts/facets/OZLadmin.sol",
-        "contracts/facets/OwnershipFacet.sol",
-        "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
-        "contracts/facets/ozBeacon.sol",
-        "contracts/facets/ozCut.sol",
-        "contracts/facets/ozLoupe.sol",
-        "contracts/facets/ozOracle.sol",
-        "contracts/facets/ozTokenFactory.sol",
-        "contracts/interfaces/IBalancer.sol",
-        "contracts/interfaces/IDiamondCut.sol",
-        "contracts/interfaces/IDiamondLoupe.sol",
-        "contracts/interfaces/IERC165.sol",
-        "contracts/interfaces/IERC173.sol",
-        "contracts/interfaces/IERC20Permit.sol",
-        "contracts/interfaces/IOZL.sol",
-        "contracts/interfaces/IOZLrewards.sol",
-        "contracts/interfaces/IRocketPool.sol",
-        "contracts/interfaces/IWETH.sol",
-        "contracts/interfaces/ozIDiamond.sol",
-        "contracts/interfaces/ozIToken.sol",
-        "contracts/libraries/FixedPointMathLib.sol",
-        "contracts/libraries/Helpers.sol",
-        "contracts/libraries/LibDiamond.sol",
-        "contracts/libraries/TradingLib.sol",
-        "contracts/ozToken.sol",
-        "contracts/ozTokenProxy.sol",
-        "contracts/upgradeInitializers/DiamondInit.sol",
-        "lib/forge-std/lib/ds-test/src/test.sol",
-        "lib/forge-std/src/Base.sol",
-        "lib/forge-std/src/StdAssertions.sol",
-        "lib/forge-std/src/StdChains.sol",
-        "lib/forge-std/src/StdCheats.sol",
-        "lib/forge-std/src/StdError.sol",
-        "lib/forge-std/src/StdInvariant.sol",
-        "lib/forge-std/src/StdJson.sol",
-        "lib/forge-std/src/StdMath.sol",
-        "lib/forge-std/src/StdStorage.sol",
-        "lib/forge-std/src/StdStyle.sol",
-        "lib/forge-std/src/StdUtils.sol",
-        "lib/forge-std/src/Test.sol",
-        "lib/forge-std/src/Vm.sol",
-        "lib/forge-std/src/console.sol",
-        "lib/forge-std/src/console2.sol",
-        "lib/forge-std/src/interfaces/IMulticall3.sol",
-        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
-        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
-        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "node_modules/@openzeppelin/contracts/utils/Address.sol",
-        "node_modules/@openzeppelin/contracts/utils/Context.sol",
-        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
-        "test/foundry/AppStorageTests.sol",
-        "test/foundry/Setup.sol"
-      ],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "ROImoduleL1Test": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ROImoduleL1.t.sol/ROImoduleL1Test.json"
-        }
-      }
-    },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1705945823282,
-      "contentHash": "62d0489bd57253d7be7b6b114bae785d",
+      "lastModificationDate": 1705950596646,
+      "contentHash": "619bf49133492180c0711e0bb97277a3",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -6001,9 +5815,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -6141,9 +5955,9 @@
         "contracts/facets/OZLadmin.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
-        "contracts/facets/ROImoduleL1.sol",
         "contracts/facets/ozBeacon.sol",
         "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
@@ -6235,6 +6049,147 @@
       "artifacts": {
         "TestMethods": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "TestMethods.sol/TestMethods.json"
+        }
+      }
+    },
+    "test/foundry/ozExecutor.t.sol": {
+      "lastModificationDate": 1705950662371,
+      "contentHash": "2266002dac82112c138937eb9eab64ec",
+      "sourceName": "test/foundry/ozExecutor.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Diamond.sol",
+        "contracts/Errors.sol",
+        "contracts/Modifiers.sol",
+        "contracts/OZL.sol",
+        "contracts/OZLrewards.sol",
+        "contracts/ProxyAdmin.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
+        "contracts/facets/ozBeacon.sol",
+        "contracts/facets/ozCut.sol",
+        "contracts/facets/ozExecutor.sol",
+        "contracts/facets/ozLoupe.sol",
+        "contracts/facets/ozOracle.sol",
+        "contracts/facets/ozTokenFactory.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IOZL.sol",
+        "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IRocketPool.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/TradingLib.sol",
+        "contracts/ozToken.sol",
+        "contracts/ozTokenProxy.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
+        "test/foundry/AppStorageTests.sol",
+        "test/foundry/Setup.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozExecutorTest": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozExecutor.t.sol/ozExecutorTest.json"
         }
       }
     }
