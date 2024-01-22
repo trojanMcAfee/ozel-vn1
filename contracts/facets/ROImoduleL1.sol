@@ -300,12 +300,20 @@ contract ROImoduleL1 {
         );
 
         //swap WETH to underlying
-        amountOut = _swapUni(
+        // amountOut = _swapUni(
+        //     s.WETH,
+        //     ozIToken(msg.sender).asset(),
+        //     IERC20Permit(s.WETH).balanceOf(address(this)),
+        //     minAmountOutUnderlying,
+        //     receiver
+        // );
+
+        amountOut = _swapUni3(
             s.WETH,
             ozIToken(msg.sender).asset(),
-            IERC20Permit(s.WETH).balanceOf(address(this)),
-            minAmountOutUnderlying,
-            receiver
+            receiver,
+            IWETH(s.WETH).balanceOf(address(this)),
+            minAmountOutUnderlying
         );
     }
 
