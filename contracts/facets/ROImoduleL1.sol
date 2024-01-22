@@ -85,6 +85,9 @@ contract ROImoduleL1 {
         } else if (type_ == Action.OZ_IN) {
             tokenOutInternal = tokenOut_;
             minAmountOutFirstLeg = minAmountsOut_[1];
+        } else if (type_ == Action.OZ_OUT) {
+            tokenOutInternal = tokenOut_;
+            minAmountOutFirstLeg = minAmountsOut_[0];
         }
 
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
@@ -282,7 +285,19 @@ contract ROImoduleL1 {
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         //Swap rETH to WETH
-        _checkPauseAndSwap(s.rETH, s.WETH, amountInReth, minAmountOutWeth);
+        // _checkPauseAndSwap(s.rETH, s.WETH, amountInReth, minAmountOutWeth);
+
+        uint[] memory minOuts = new uint[](1);
+        minOuts[0] = minAmountOutWeth;
+
+        _checkPauseAndSwap3(
+            s.rETH,
+            s.WETH,
+            address(this), //add this receiver to all _swapBalancer3 usages
+            amountInReth,
+            minOuts,
+            Action.OZ_OUT
+        );
 
         //swap WETH to underlying
         amountOut = _swapUni(
