@@ -26,7 +26,7 @@ pragma solidity 0.8.21;
 
 error OZError01(string errorMsg); //_swapUni - error string from uniswap
 error OZError02(); //_swapBalancer - amount was 0
-error OZError10(string errorCode); //_swapBalancer
+error OZError10(string errorCode); //_swapBalancer --> this error might not exist anymore (replaced by OZError21())
 error OZError11(address token); //createOzToken - can't be 0 address
 error OZError12(address token); //createOzToken - TokenAlreadyInRegistry
 error OZError13(address caller); //onlyOzToken & changeAdminFeeRecipient - Not authorized

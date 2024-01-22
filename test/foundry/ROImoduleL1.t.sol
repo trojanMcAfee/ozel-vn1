@@ -10,13 +10,7 @@ import {OZError13} from "../../contracts/Errors.sol";
 
 contract ROImoduleL1Test is Setup {
 
-    // AmountsIn amts = AmountsIn(uint(0), uint(0), uint(0));
     AmountsIn amts;
-
-    // function _setUpAmounts() private pure returns(AmountsIn memory) {
-    //     uint[] memory nums = new uint[](2);
-    //     AmountsIn memory amts = AmountsIn(uint(0), );
-    // }
 
     /**
      * Tests unauthorized access directly to the useUnderlying.

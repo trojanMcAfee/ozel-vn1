@@ -75,12 +75,11 @@ contract ROImoduleL1 {
         uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint amountOut) {
-        // address tokenIn;
+
         address tokenOutInternal;
         uint minAmountOutFirstLeg;
 
         if (type_ == Action.OZL_IN) {
-            // tokenIn = s.rETH;
             tokenOutInternal = s.WETH;
             minAmountOutFirstLeg = minAmountsOut_[0];
         } else if (type_ == Action.OZ_IN) {
@@ -256,13 +255,6 @@ contract ROImoduleL1 {
             
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
         } else {
-            // _checkPauseAndSwap(
-            //     s.WETH, 
-            //     s.rETH, 
-            //     amountOut,
-            //     amounts_.minRethOut
-            // );
-
             _checkPauseAndSwap3(
                 s.WETH, 
                 s.rETH, 
