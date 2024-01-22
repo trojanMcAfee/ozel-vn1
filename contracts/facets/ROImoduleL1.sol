@@ -248,8 +248,16 @@ contract ROImoduleL1 {
         //Swaps underlying to WETH in Uniswap
         //minAmountsOut[0] - minWethOut
         //minAmountsOut[1] - minRethOut
-        uint amountOut = _swapUni(
-            underlying_, s.WETH, amountIn, minAmountsOut[0], address(this)
+        // uint amountOut = _swapUni(
+        //     underlying_, s.WETH, amountIn, minAmountsOut[0], address(this)
+        // );
+
+        uint amountOut = _swapUni3(
+            underlying_, 
+            s.WETH, 
+            address(this),
+            amountIn, 
+            minAmountsOut[0]
         );
 
         if (_checkRocketCapacity(amountOut)) {
@@ -344,99 +352,99 @@ contract ROImoduleL1 {
 
 
     
-    function _swapBalancer(
-        address tokenIn_, 
-        address tokenOut_, 
-        uint amountIn_,
-        uint minAmountOutOffchain_
-    ) private {
-        uint amountOut;
+    // function _swapBalancer(
+    //     address tokenIn_, 
+    //     address tokenOut_, 
+    //     uint amountIn_,
+    //     uint minAmountOutOffchain_
+    // ) private {
+    //     uint amountOut;
         
-        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
-            poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
-            kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(tokenIn_),
-            assetOut: IAsset(tokenOut_),
-            amount: amountIn_,
-            userData: new bytes(0)
-        });
+    //     IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+    //         poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
+    //         kind: IVault.SwapKind.GIVEN_IN,
+    //         assetIn: IAsset(tokenIn_),
+    //         assetOut: IAsset(tokenOut_),
+    //         amount: amountIn_,
+    //         userData: new bytes(0)
+    //     });
 
-        IVault.FundManagement memory funds = IVault.FundManagement({
-            sender: address(this),
-            fromInternalBalance: false, 
-            recipient: payable(address(this)),
-            toInternalBalance: false
-        });
+    //     IVault.FundManagement memory funds = IVault.FundManagement({
+    //         sender: address(this),
+    //         fromInternalBalance: false, 
+    //         recipient: payable(address(this)),
+    //         toInternalBalance: false
+    //     });
         
-        try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
-            uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
+    //     try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
+    //         uint minOut = minAmountOutOffchain_ > minOutOnchain ? minAmountOutOffchain_ : minOutOnchain;
 
-            tokenIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
-            amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
-        } catch Error(string memory reason) {
-            revert OZError10(reason);
-        }
+    //         tokenIn_.safeApprove(s.vaultBalancer, singleSwap.amount);
+    //         amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
+    //     } catch Error(string memory reason) {
+    //         revert OZError10(reason);
+    //     }
         
-        if (amountOut == 0) revert OZError02();
-    }
+    //     if (amountOut == 0) revert OZError02();
+    // }
 
 
-    function _checkPauseAndSwap2(
-        address tokenIn_, 
-        address tokenOut_, 
-        address sender_,
-        address receiver_,
-        uint amountIn_,
-        uint minAmountOut_
-    ) private {
-        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
+    // function _checkPauseAndSwap2(
+    //     address tokenIn_, 
+    //     address tokenOut_, 
+    //     address sender_,
+    //     address receiver_,
+    //     uint amountIn_,
+    //     uint minAmountOut_
+    // ) private {
+    //     (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
 
-        if (paused) {
-            _swapUni(
-                tokenIn_,
-                tokenOut_,
-                amountIn_,
-                minAmountOut_,
-                receiver_
-            );
-        } else {
-            // TradingLib._swapBalancer2(
-            //     tokenIn_,
-            //     tokenOut_,
-            //     sender_,
-            //     receiver_,
-            //     amountIn_,
-            //     minAmountOut_
-            // );
-        }
-    }
+    //     if (paused) {
+    //         _swapUni(
+    //             tokenIn_,
+    //             tokenOut_,
+    //             amountIn_,
+    //             minAmountOut_,
+    //             receiver_
+    //         );
+    //     } else {
+    //         // TradingLib._swapBalancer2(
+    //         //     tokenIn_,
+    //         //     tokenOut_,
+    //         //     sender_,
+    //         //     receiver_,
+    //         //     amountIn_,
+    //         //     minAmountOut_
+    //         // );
+    //     }
+    // }
 
 
-    function _checkPauseAndSwap(
-        address tokenIn_, 
-        address tokenOut_, 
-        uint amountIn_,
-        uint minAmountOut_
-    ) private {
-        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
+    // function _checkPauseAndSwap(
+    //     address tokenIn_, 
+    //     address tokenOut_, 
+    //     uint amountIn_,
+    //     uint minAmountOut_
+    // ) private {
+    //     (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
 
-        if (paused) {
-            _swapUni(
-                tokenIn_,
-                tokenOut_,
-                amountIn_,
-                minAmountOut_,
-                address(this)
-            );
-        } else {
-            _swapBalancer(
-                tokenIn_,
-                tokenOut_,
-                amountIn_,
-                minAmountOut_
-            );
-        }
-    }
+    //     if (paused) {
+    //         _swapUni(
+    //             tokenIn_,
+    //             tokenOut_,
+    //             amountIn_,
+    //             minAmountOut_,
+    //             address(this)
+    //         );
+    //     } else {
+    //         _swapBalancer(
+    //             tokenIn_,
+    //             tokenOut_,
+    //             amountIn_,
+    //             minAmountOut_
+    //         );
+    //     }
+    // }
 
 
     function _checkRocketCapacity(uint amountIn_) private view returns(bool) {
