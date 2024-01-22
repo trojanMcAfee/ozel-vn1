@@ -77,12 +77,15 @@ contract ROImoduleL1 {
     ) private returns(uint amountOut) {
         // address tokenIn;
         address tokenOutInternal;
+        uint minAmountOutFirstLeg;
 
         if (type_ == Action.OZL_IN) {
             // tokenIn = s.rETH;
             tokenOutInternal = s.WETH;
-        } else {
+            minAmountOutFirstLeg = minAmountsOut_[0];
+        } else if (type_ == Action.OZ_IN) {
             tokenOutInternal = tokenOut_;
+            minAmountOutFirstLeg = minAmountsOut_[1];
         }
 
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
@@ -93,14 +96,14 @@ contract ROImoduleL1 {
                 tokenOutInternal,
                 address(this),
                 amountIn_,
-                minAmountsOut_[0]
+                minAmountOutFirstLeg
             );
         } else {
             amountOut = _swapBalancer3(
                 tokenIn_,
                 tokenOutInternal,
                 amountIn_,
-                minAmountsOut_[0],
+                minAmountOutFirstLeg,
                 Action.OZL_IN
             );
         }
@@ -236,12 +239,15 @@ contract ROImoduleL1 {
         AmountsIn memory amounts_
     ) external onlyOzToken { 
         uint amountIn = amounts_.amountIn;
+        uint[] memory minAmountsOut = amounts_.minAmountsOut;
       
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
 
         //Swaps underlying to WETH in Uniswap
+        //minAmountsOut[0] - minWethOut
+        //minAmountsOut[1] - minRethOut
         uint amountOut = _swapUni(
-            underlying_, s.WETH, amountIn, amounts_.minWethOut, address(this)
+            underlying_, s.WETH, amountIn, minAmountsOut[0], address(this)
         );
 
         if (_checkRocketCapacity(amountOut)) {
@@ -262,7 +268,7 @@ contract ROImoduleL1 {
                 s.rETH, 
                 address(this),
                 amountOut,
-                amounts_.minRethOut,
+                minAmountsOut,
                 Action.OZ_IN
             );
         }

@@ -51,8 +51,7 @@ contract BaseMethods is Setup {
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
-            minAmountsOut[0],
-            minAmountsOut[1]
+            minAmountsOut
         );
 
         bytes memory mintData = abi.encode(amounts, user_);
@@ -103,8 +102,7 @@ contract BaseMethods is Setup {
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
-            minAmountsOut[0],
-            minAmountsOut[1]
+            minAmountsOut
         );
 
         ozERC20_.mint(abi.encode(amounts, user_));         
@@ -321,7 +319,7 @@ contract BaseMethods is Setup {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
     }
 
-    function approve(IOZL ozl_, uint amount_) public {
+    function approve(IOZL ozl_, uint amount_) public { //remove this if not used
         ozl_.approve(address(ozl_), amount_);
     }
 
