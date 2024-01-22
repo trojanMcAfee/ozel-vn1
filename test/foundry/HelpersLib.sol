@@ -93,8 +93,12 @@ library HelpersLib {
         uint16 slippage = oz_.getDefaultSlippage();
         uint minAmountOutWeth = calculateMinAmountOut(amountInReth_, oz_.rETH_ETH(), slippage);
         uint minAmountOutUnderlying = calculateMinAmountOut(minAmountOutWeth, oz_.ETH_USD(), slippage);
+
+        uint[] memory minAmountsOut = new uint[](2);
+        minAmountsOut[0] = minAmountOutWeth;
+        minAmountsOut[1] = minAmountOutUnderlying;
         
-        data = abi.encode(ozAmountIn_, amountInReth_, minAmountOutWeth, minAmountOutUnderlying, receiver_);
+        data = abi.encode(ozAmountIn_, amountInReth_, minAmountsOut, receiver_);
     }
 
 

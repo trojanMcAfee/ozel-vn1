@@ -274,46 +274,40 @@ contract ROImoduleL1 {
         address owner_,
         bytes memory data_
     ) external onlyOzToken returns(uint amountOut) {
+
+        //minAmountsOut[0] = minAmountOutWeth
+        //minAmountsOut[1] = minAmountOutUnderlying
         (
             uint ozAmountIn,
             uint amountInReth,
-            uint minAmountOutWeth,
-            uint minAmountOutUnderlying, 
+            uint[] memory minAmountsOut, 
             address receiver
-        ) = abi.decode(data_, (uint, uint, uint, uint, address));
+        ) = abi.decode(data_, (uint, uint, uint[], address));
 
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         //Swap rETH to WETH
         // _checkPauseAndSwap(s.rETH, s.WETH, amountInReth, minAmountOutWeth);
 
-        uint[] memory minOuts = new uint[](1);
-        minOuts[0] = minAmountOutWeth;
+        // uint[] memory minOuts = new uint[](1);
+        // minOuts[0] = minAmountOutWeth;
 
         _checkPauseAndSwap3(
             s.rETH,
             s.WETH,
             address(this), //add this receiver to all _swapBalancer3 usages
             amountInReth,
-            minOuts,
+            minAmountsOut,
             Action.OZ_OUT
         );
 
         //swap WETH to underlying
-        // amountOut = _swapUni(
-        //     s.WETH,
-        //     ozIToken(msg.sender).asset(),
-        //     IERC20Permit(s.WETH).balanceOf(address(this)),
-        //     minAmountOutUnderlying,
-        //     receiver
-        // );
-
         amountOut = _swapUni3(
             s.WETH,
             ozIToken(msg.sender).asset(),
             receiver,
             IWETH(s.WETH).balanceOf(address(this)),
-            minAmountOutUnderlying
+            minAmountsOut[1]
         );
     }
 
