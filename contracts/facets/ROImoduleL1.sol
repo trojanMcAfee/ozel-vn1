@@ -166,19 +166,22 @@ contract ROImoduleL1 {
         Action type_
     ) private returns(uint amountOut) {
 
-        address tokenOutInternal;
-        uint minAmountOutFirstLeg;
+        // address tokenOutInternal;
+        // uint minAmountOutFirstLeg;
 
-        if (type_ == Action.OZL_IN) {
-            tokenOutInternal = s.WETH;
-            minAmountOutFirstLeg = minAmountsOut_[0];
-        } else if (type_ == Action.OZ_IN) {
-            tokenOutInternal = tokenOut_;
-            minAmountOutFirstLeg = minAmountsOut_[1];
-        } else if (type_ == Action.OZ_OUT) {
-            tokenOutInternal = tokenOut_;
-            minAmountOutFirstLeg = minAmountsOut_[0];
-        }
+        // if (type_ == Action.OZL_IN) {
+        //     tokenOutInternal = s.WETH;
+        //     minAmountOutFirstLeg = minAmountsOut_[0];
+        // } else if (type_ == Action.OZ_IN) {
+        //     tokenOutInternal = tokenOut_;
+        //     minAmountOutFirstLeg = minAmountsOut_[1];
+        // } else if (type_ == Action.OZ_OUT) {
+        //     tokenOutInternal = tokenOut_;
+        //     minAmountOutFirstLeg = minAmountsOut_[0];
+        // }
+
+        (address tokenOutInternal, uint minAmountOutFirstLeg) = 
+            _triageInternalVars(type_, minAmountsOut_, tokenOut_);
 
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
 
@@ -322,4 +325,25 @@ contract ROImoduleL1 {
 
         return capacityNeeded < maxDepositSize;
     }   
+
+
+    function _triageInternalVars(
+        Action type_, 
+        uint[] memory minAmountsOut_,
+        address tokenOut_
+    ) private view returns(
+        address tokenOutInternal, 
+        uint minAmountOutFirstLeg
+    ) {
+        if (type_ == Action.OZL_IN) {
+            tokenOutInternal = s.WETH;
+            minAmountOutFirstLeg = minAmountsOut_[0];
+        } else if (type_ == Action.OZ_IN) {
+            tokenOutInternal = tokenOut_;
+            minAmountOutFirstLeg = minAmountsOut_[1];
+        } else if (type_ == Action.OZ_OUT) {
+            tokenOutInternal = tokenOut_;
+            minAmountOutFirstLeg = minAmountsOut_[0];
+        }
+    }
 }
