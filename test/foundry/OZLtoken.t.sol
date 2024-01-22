@@ -104,7 +104,7 @@ contract OZLtokenTest is TestMethods {
         _changeSlippage(uint16(9900));
 
         _startCampaign();
-        _mintOzTokens(ozERC20, alice, amountIn); 
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
         uint oldOzTokenBalance = ozERC20.balanceOf(alice);
@@ -153,7 +153,7 @@ contract OZLtokenTest is TestMethods {
         vm.prank(owner);
         OZ.startNewReciclingCampaign(oneYear); 
 
-        _mintOzTokens(ozERC20, alice, amountIn); 
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         uint newOzTokenBalance = ozERC20.balanceOf(alice);
 
         uint diff = (((oldOzTokenBalance * 2) - newOzTokenBalance) * 10_000) / newOzTokenBalance;
@@ -232,7 +232,7 @@ contract OZLtokenTest is TestMethods {
         _changeSlippage(uint16(9900));
 
         _startCampaign();
-        _mintOzTokens(ozERC20, alice, amountIn); 
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
         uint secs = 10;
         vm.warp(block.timestamp + secs);
@@ -291,7 +291,7 @@ contract OZLtokenTest is TestMethods {
 
         //Actions
         for (uint i=0; i< 10; i++) {
-            _mintOzTokens(ozERC20, alice, amountIn); 
+            _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
             timePassed += 10; 
             vm.warp(block.timestamp + timePassed);
@@ -618,7 +618,7 @@ contract OZLtokenTest is TestMethods {
         _changeSlippage(uint16(9900));
 
         _startCampaign();
-        _mintOzTokens(ozERC20, alice, amountIn); 
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
         uint secs = 10;
         vm.warp(block.timestamp + secs);
@@ -626,7 +626,7 @@ contract OZLtokenTest is TestMethods {
         _mock_rETH_ETH();
 
         _dealUnderlying(Quantity.BIG);
-        _mintOzTokens(ozERC20, alice, amountIn); //<-- part the makes this function fail
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); //<-- part the makes this function fail
 
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);

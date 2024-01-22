@@ -35,7 +35,7 @@ contract BaseMethods is Setup {
             ozERC20 = ozIToken(testToken_);
         }
 
-        (bytes memory data) = _createDataOffchain(
+        (bytes memory data) = _createDataOffchain( //adding here the testToken per se (also in the signature)
             ozERC20, amountIn_, userPk_, user_, flowType_
         );
 
@@ -80,7 +80,12 @@ contract BaseMethods is Setup {
     }
 
 
-    function _mintOzTokens(ozIToken ozERC20_, address user_, uint amountIn_) internal {
+    function _mintOzTokens(
+        ozIToken ozERC20_, 
+        address user_, 
+        address token_, 
+        uint amountIn_
+    ) internal {
         uint pk;
 
         if (user_ == alice) {
@@ -92,13 +97,13 @@ contract BaseMethods is Setup {
         }
 
         (bytes memory data) = _createDataOffchain(
-            ozERC20_, amountIn_, pk, user_, Type.IN
+            ozERC20_, amountIn_, pk, user_, token_, Type.IN
         );
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         vm.startPrank(user_);
-        IERC20Permit(testToken).approve(address(OZ), amountIn_);
+        IERC20Permit(token_).approve(address(OZ), amountIn_);
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
@@ -144,6 +149,7 @@ contract BaseMethods is Setup {
         uint amountIn_,
         uint userPK_,
         address sender_,
+        address token_,
         Type reqType_
     ) internal returns(bytes memory data) {
         if (reqType_ == Type.OUT) {
@@ -155,10 +161,13 @@ contract BaseMethods is Setup {
 
         } else if (reqType_ == Type.IN) { 
             uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(testToken).decimals(), OZ.getDefaultSlippage()
+                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(token_).decimals(), OZ.getDefaultSlippage()
             );
 
-            bytes32 permitHash = testToken == daiAddr ? _getPermitHashDAI(sender_, address(ozDiamond)) : _getPermitHash(sender_, address(ozDiamond), amountIn_);
+            bytes32 permitHash = 
+                token_ == daiAddr ? _getPermitHashDAI(sender_, address(ozDiamond)) :
+                _getPermitHash(sender_, address(ozDiamond), amountIn_);
+
             (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPK_, permitHash);
 
             data = abi.encode(minAmountsOut, v, r, s);
