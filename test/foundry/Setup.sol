@@ -84,7 +84,6 @@ contract Setup is Test {
     address internal swapRouterUni;
     address internal ethUsdChainlink;
     address internal vaultBalancer; 
-    address internal queriesBalancer;
     address internal rEthWethPoolBalancer;
     address internal rEthEthChainlink;
     //-- L1----
@@ -154,7 +153,6 @@ contract Setup is Test {
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
             ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
-            queriesBalancer = 0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5;
             rEthAddr = 0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8;
             rEthWethPoolBalancer = 0xadE4A71BB62bEc25154CFc7e6ff49A513B491E81;
             accessControlledOffchainAggregator = 0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7;
@@ -178,7 +176,6 @@ contract Setup is Test {
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
             ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
-            queriesBalancer = 0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5; //same as arb
             rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
@@ -269,7 +266,6 @@ contract Setup is Test {
         Dexes memory dexes = Dexes({
             swapRouterUni: swapRouterUni,
             vaultBalancer: vaultBalancer,
-            queriesBalancer: queriesBalancer,
             rEthWethPoolBalancer: rEthWethPoolBalancer
         });
 
@@ -452,7 +448,6 @@ contract Setup is Test {
         vm.label(wethUsdPoolUni, "wethUsdPoolUni");
         vm.label(rEthWethPoolBalancer, "rETHWETHpoolBalancer");
         vm.label(vaultBalancer, "VaultBalancer");
-        vm.label(queriesBalancer, "BalancerQueries");
         vm.label(accessControlledOffchainAggregator, "AccessControlledOffchainAggregator");
         vm.label(aeWETH, "aeWETH");
         vm.label(rEthAddr, "rETH");

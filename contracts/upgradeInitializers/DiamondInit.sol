@@ -52,7 +52,6 @@ contract DiamondInit {
         //DEXs
         s.swapRouterUni = dexes_.swapRouterUni;
         s.vaultBalancer = dexes_.vaultBalancer;
-        s.queriesBalancer = dexes_.queriesBalancer;
         s.rEthWethPoolBalancer = dexes_.rEthWethPoolBalancer;
 
         //Oracles

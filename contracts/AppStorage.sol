@@ -22,7 +22,6 @@ struct AppStorage {
 
     uint16 defaultSlippage;
     address vaultBalancer;
-    address queriesBalancer;
 
     address rETH;
     address rEthEthChainlink;
@@ -104,7 +103,6 @@ struct Tokens {
 struct Dexes {
     address swapRouterUni;
     address vaultBalancer;
-    address queriesBalancer;
     address rEthWethPoolBalancer;
 }
 
