@@ -76,11 +76,13 @@ contract ROImoduleL1 {
         Action type_
     ) private returns(uint amountOut) {
         // address tokenIn;
-        address tokenOut;
+        address tokenOutInternal;
 
         if (type_ == Action.OZL_IN) {
             // tokenIn = s.rETH;
-            tokenOut = s.WETH;
+            tokenOutInternal = s.WETH;
+        } else {
+            tokenOutInternal = tokenOut_;
         }
 
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
@@ -88,7 +90,7 @@ contract ROImoduleL1 {
         if (paused) {
             amountOut = _swapUni3(
                 tokenIn_,
-                tokenOut,
+                tokenOutInternal,
                 address(this),
                 amountIn_,
                 minAmountsOut_[0]
@@ -96,7 +98,7 @@ contract ROImoduleL1 {
         } else {
             amountOut = _swapBalancer3(
                 tokenIn_,
-                tokenOut,
+                tokenOutInternal,
                 amountIn_,
                 minAmountsOut_[0],
                 Action.OZL_IN
