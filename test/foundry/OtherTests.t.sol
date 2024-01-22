@@ -9,7 +9,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {Type} from "./AppStorageTests.sol";
 import {HelpersLib} from "./HelpersLib.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
-import {OZError10} from "../../contracts/Errors.sol";
+import {OZError21} from "../../contracts/Errors.sol";
 
 import "forge-std/console.sol";
 
@@ -64,7 +64,7 @@ contract OtherTests is TestMethods {
 
         //The flow of the attack would revert here before the attack even happens.
         vm.expectRevert(
-            abi.encodeWithSelector(OZError10.selector, 'BAL#510')
+            abi.encodeWithSelector(OZError21.selector, 'BAL#510')
         );
         ozERC20.mint(mintData); 
 

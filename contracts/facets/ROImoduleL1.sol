@@ -184,8 +184,7 @@ contract ROImoduleL1 { //change name to ozExecutor
                 tokenIn_,
                 tokenOutInternal,
                 amountIn_,
-                minAmountOutFirstLeg,
-                type_
+                minAmountOutFirstLeg
             );
         }
 
@@ -238,8 +237,7 @@ contract ROImoduleL1 { //change name to ozExecutor
         address tokenIn_, 
         address tokenOut_, 
         uint amountIn_,
-        uint minAmountOut_,
-        Action type_
+        uint minAmountOut_
     ) private returns(uint amountOut) {
         
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
@@ -258,37 +256,8 @@ contract ROImoduleL1 { //change name to ozExecutor
             toInternalBalance: false
         });
 
-        uint minOut;
-        
-        if (type_ == Action.OZL_IN || type_ == Action.OZ_OUT) {
-            // console.log(1);
-            minOut = minAmountOut_; 
-        } else if (type_ == Action.OZ_IN) {
-            try IQueries(s.queriesBalancer).querySwap(singleSwap, funds) returns(uint minOutOnchain) {
-                console.log(2);
-                uint minAmountOutOffchain = minAmountOut_;
-                minOut = minAmountOutOffchain > minOutOnchain ? minAmountOutOffchain : minOutOnchain;
-
-                // if (type_ == Action.OZ_IN) {
-                    // IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
-                    
-                    // uint x = IERC20(tokenIn_).balanceOf(address(this));
-                    // console.log('pre: ', x);
-
-                    // amountOut = IVault(s.vaultBalancer).swap(singleSwap, funds, minOut, block.timestamp);
-
-                    // x = IERC20(tokenIn_).balanceOf(address(this));
-                    // console.log('post: ', x);
-                // }
-            } catch Error(string memory reason) {
-                console.log(3);
-                revert OZError10(reason);
-            }
-        }
-
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
-
-        amountOut = _executeSwap(singleSwap, funds, minOut, block.timestamp);
+        amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
     }
 
 
