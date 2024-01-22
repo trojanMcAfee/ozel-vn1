@@ -124,7 +124,7 @@ contract ROImoduleL1 { //change name to ozExecutor
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         //Swap rETH to WETH
-        _checkPauseAndSwap(
+        amountOut = _checkPauseAndSwap(
             s.rETH,
             s.WETH,
             address(this), 
@@ -138,7 +138,7 @@ contract ROImoduleL1 { //change name to ozExecutor
             s.WETH,
             ozIToken(msg.sender).asset(),
             receiver,
-            IWETH(s.WETH).balanceOf(address(this)), //fix this so it's amountOut and not address(this) balance
+            amountOut,
             minAmountsOut[1]
         );
     }
