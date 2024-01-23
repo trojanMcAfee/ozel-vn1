@@ -85,6 +85,25 @@ contract OZLtokenTest is TestMethods {
         return (ozlBalanceAlice, claimedReward);
     }
 
+    function _checkSupplyAndRate(
+        uint pendingAllocPreRedeem_,
+        IOZL OZL,
+        uint ozlBalanceAlice_
+    ) private returns(uint, uint) {
+        uint pendingAllocPostRedeem = OZ.pendingAllocation();
+        assertTrue(pendingAllocPreRedeem_ == pendingAllocPostRedeem);
+
+        uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
+        assertTrue(ozlBalanceOZPostRedeem == communityAmount);
+
+        uint oldRecicledSupply = OZ.getRecicledSupply();
+        assertTrue(oldRecicledSupply == ozlBalanceAlice_);
+
+        uint oldRewardRate = OZ.getRewardRate();
+
+        return (oldRecicledSupply, oldRewardRate);
+    }
+
 
     //Tests that a new recicling campaign is properly set up with the recicled supply.
     function test_new_recicling_campaing() public {
@@ -137,16 +156,19 @@ contract OZLtokenTest is TestMethods {
         );
         vm.stopPrank();
 
-        uint pendingAllocPostRedeem = OZ.pendingAllocation();
-        assertTrue(pendingAllocPreRedeem == pendingAllocPostRedeem);
+        // uint pendingAllocPostRedeem = OZ.pendingAllocation();
+        // assertTrue(pendingAllocPreRedeem == pendingAllocPostRedeem);
 
-        uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
-        assertTrue(ozlBalanceOZPostRedeem == communityAmount);
+        // uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
+        // assertTrue(ozlBalanceOZPostRedeem == communityAmount);
 
-        uint oldRecicledSupply = OZ.getRecicledSupply();
-        assertTrue(oldRecicledSupply == ozlBalanceAlice);
+        // uint oldRecicledSupply = OZ.getRecicledSupply();
+        // assertTrue(oldRecicledSupply == ozlBalanceAlice);
 
-        uint oldRewardRate = OZ.getRewardRate();
+        // uint oldRewardRate = OZ.getRewardRate();
+
+        (uint oldRecicledSupply, uint oldRewardRate) = 
+            _checkSupplyAndRate(pendingAllocPreRedeem, OZL, ozlBalanceAlice);
 
         //Actions
         uint oneYear = 31560000;
@@ -573,7 +595,7 @@ contract OZLtokenTest is TestMethods {
 
         //BOB
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
-        _mintOzTokens(ozERC20, bob, amountIn);
+        _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
         _mock_rETH_ETH();
 

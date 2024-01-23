@@ -268,7 +268,9 @@ contract TestMethods is BaseMethods {
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
 
-        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        bytes memory redeemData = _createDataOffchain(
+            ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT
+        );
 
         //Action
         vm.startPrank(alice);
@@ -303,7 +305,7 @@ contract TestMethods is BaseMethods {
         assertTrue(ozAmountIn > 99 * 1 ether && ozAmountIn < 100 * 1 ether);
         testToken = address(ozERC20);
 
-        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
         //Action
         vm.startPrank(alice);
@@ -359,7 +361,7 @@ contract TestMethods is BaseMethods {
         testToken = address(ozERC20);
 
         //Creates offchain the token-amount variables needed for safe protocol execution.
-        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
         /**
          * Action
@@ -406,7 +408,7 @@ contract TestMethods is BaseMethods {
 
         uint ozAmountIn = amountToRedeem * 1 ether;
         testToken = address(ozERC20);
-        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
         //Action
         vm.startPrank(alice);
@@ -458,7 +460,7 @@ contract TestMethods is BaseMethods {
         uint ozAmountIn = ozERC20.balanceOf(alice) / 10;
         testToken = address(ozERC20);
 
-        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
         //Action
         vm.startPrank(alice);
@@ -499,7 +501,7 @@ contract TestMethods is BaseMethods {
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
         
-        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHash(alice, address(ozDiamond), ozAmountIn));
 
         //Action
@@ -554,7 +556,7 @@ contract TestMethods is BaseMethods {
         uint ozAmountIn = ozERC20.balanceOf(alice) / 10;
         testToken = address(ozERC20);
 
-        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, Type.OUT);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
         // //Action
         vm.startPrank(alice);

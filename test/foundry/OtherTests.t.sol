@@ -46,7 +46,7 @@ contract OtherTests is TestMethods {
         ));
         
         (bytes memory data) = _createDataOffchain(
-            ozERC20, amountIn, ALICE_PK, attacker, Type.IN
+            ozERC20, amountIn, ALICE_PK, attacker, testToken, Type.IN
         );
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);

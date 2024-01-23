@@ -13,7 +13,7 @@ import "forge-std/console.sol";
 contract MultipleTokensTest is TestMethods {
 
     
-    function test_x() public {
+    function test_x() internal {
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
             bytes32(0)
@@ -30,7 +30,7 @@ contract MultipleTokensTest is TestMethods {
         ));
 
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
         _changeSlippage(uint16(9900));
 

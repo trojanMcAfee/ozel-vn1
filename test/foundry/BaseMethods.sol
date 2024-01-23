@@ -35,8 +35,8 @@ contract BaseMethods is Setup {
             ozERC20 = ozIToken(testToken_);
         }
 
-        (bytes memory data) = _createDataOffchain( //adding here the testToken per se (also in the signature)
-            ozERC20, amountIn_, userPk_, user_, flowType_
+        (bytes memory data) = _createDataOffchain( 
+            ozERC20, amountIn_, userPk_, user_, testToken, flowType_
         );
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);

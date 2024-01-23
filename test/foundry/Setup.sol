@@ -208,6 +208,25 @@ contract Setup is Test {
         return (baseAmount, amountBob, amountCharlie);
     }
 
+    function _dealUnderlying(Quantity qnt_, bool isSecond_) internal returns(uint, uint, uint) {
+        uint baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
+        uint amountBob = baseAmount * 2;
+        uint amountCharlie = baseAmount * 3;
+
+        address[] memory tokens = new address[](isSecond_ ? 2 : 1);
+        tokens[0] = testToken;
+        if (isSecond_) tokens[1] = secondTestToken;
+        
+
+        for (uint i=0; i<tokens.length; i++) {
+            deal(tokens[i], alice, baseAmount * (10 ** IERC20Permit(tokens[i]).decimals()));
+            deal(tokens[i], bob, amountBob * (10 ** IERC20Permit(tokens[i]).decimals()));
+            deal(tokens[i], charlie, amountCharlie * (10 ** IERC20Permit(tokens[i]).decimals()));
+        }
+
+        return (baseAmount, amountBob, amountCharlie);
+    }
+
     function _runSetup() internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
         testToken = daiAddr;
