@@ -118,7 +118,7 @@ contract OZLtokenTest is TestMethods {
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
         _changeSlippage(uint16(9900));
 
@@ -249,7 +249,7 @@ contract OZLtokenTest is TestMethods {
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         _changeSlippage(uint16(9900));
 
@@ -303,7 +303,7 @@ contract OZLtokenTest is TestMethods {
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount * 10 ** IERC20Permit(testToken).decimals()) / 10;
 
         _startCampaign(); 
@@ -580,7 +580,7 @@ contract OZLtokenTest is TestMethods {
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
 
         /**
          * Actions
@@ -635,7 +635,7 @@ contract OZLtokenTest is TestMethods {
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         _changeSlippage(uint16(9900));
 
@@ -647,7 +647,7 @@ contract OZLtokenTest is TestMethods {
 
         _mock_rETH_ETH();
 
-        _dealUnderlying(Quantity.BIG);
+        _dealUnderlying(Quantity.BIG, false);
         _mintOzTokens(ozERC20, alice, testToken, amountIn); //<-- part the makes this function fail
 
         bool wasCharged = OZ.chargeOZLfee();

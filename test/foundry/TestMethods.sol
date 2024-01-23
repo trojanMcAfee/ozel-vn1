@@ -72,7 +72,7 @@ contract TestMethods is BaseMethods {
      */
     function _minting_approve_smallMint() internal {
         //Pre-condition
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
         //Action
@@ -94,7 +94,7 @@ contract TestMethods is BaseMethods {
      */
     function _minting_approve_bigMint() internal {
         //Pre-condition
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         _changeSlippage(uint16(9900));
 
@@ -128,7 +128,7 @@ contract TestMethods is BaseMethods {
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
 
         /**
          * Actions
@@ -186,7 +186,7 @@ contract TestMethods is BaseMethods {
 
         _changeSlippage(uint16(9900));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
 
         //Actions
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -224,7 +224,7 @@ contract TestMethods is BaseMethods {
      */
     function _transfer() internal {
         //Pre-conditions
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
 
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         (ozIToken ozERC20,) = _createAndMintOzTokens(
@@ -255,7 +255,7 @@ contract TestMethods is BaseMethods {
     function _redeeming_bigBalance_bigMint_bigRedeem() internal {
         //Pre-conditions
         _changeSlippage(uint16(9900));
-        _dealUnderlying(Quantity.BIG);
+        _dealUnderlying(Quantity.BIG, false);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
@@ -292,7 +292,7 @@ contract TestMethods is BaseMethods {
     function _redeeming_bigBalance_smallMint_smallRedeem() internal {
         //Pre-conditions
         _changeSlippage(uint16(9900));
-        _dealUnderlying(Quantity.BIG);
+        _dealUnderlying(Quantity.BIG, false);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = 100 * decimalsUnderlying;
@@ -333,7 +333,7 @@ contract TestMethods is BaseMethods {
          * Pre-conditions
          */
         //Deals big amounts of USDC to testers.
-        _dealUnderlying(Quantity.BIG);
+        _dealUnderlying(Quantity.BIG, false);
         uint underlyingDecimals = IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         uint rawAmount = 100;
@@ -392,7 +392,7 @@ contract TestMethods is BaseMethods {
      * In this test, the "bigMint" is in relation to the amount being redeem (100:1)
      */
     function _redeeming_multipleBigBalances_bigMints_smallRedeem() internal {
-        (,uint initMintAmountBob, uint initMintAmountCharlie) = _dealUnderlying(Quantity.SMALL);
+        (,uint initMintAmountBob, uint initMintAmountCharlie) = _dealUnderlying(Quantity.SMALL, false);
         uint amountToRedeem = 1;
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
@@ -439,7 +439,7 @@ contract TestMethods is BaseMethods {
     function _redeeming_bigBalance_bigMint_mediumRedeem() internal {
         //Pre-conditions
         _changeSlippage(uint16(9900));
-        _dealUnderlying(Quantity.BIG);
+        _dealUnderlying(Quantity.BIG, false);
 
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee),
@@ -492,7 +492,7 @@ contract TestMethods is BaseMethods {
      */
     function _redeeming_eip2612() internal {
         //Pre-conditions
-        _dealUnderlying(Quantity.SMALL);
+        _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = IERC20Permit(testToken).balanceOf(alice); 
         assertTrue(amountIn > 0);
 
@@ -537,7 +537,7 @@ contract TestMethods is BaseMethods {
     function _redeeming_multipleBigBalances_bigMint_mediumRedeem() internal {
         //Pre-conditions
         _changeSlippage(uint16(9900));
-        _dealUnderlying(Quantity.BIG);
+        _dealUnderlying(Quantity.BIG, false);
 
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 

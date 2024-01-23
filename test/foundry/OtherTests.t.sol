@@ -36,7 +36,7 @@ contract OtherTests is TestMethods {
         /**
          * Pre-conditions
          */
-        _dealUnderlying(Quantity.BIG);
+        _dealUnderlying(Quantity.BIG, false);
         address attacker = alice;
         address victim = charlie;
         uint amountIn = 1;

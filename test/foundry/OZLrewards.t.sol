@@ -45,7 +45,7 @@ contract OZLrewardsTest is TestMethods {
             testToken, "Ozel-ERC20", "ozERC20"
         ));
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
         //Actions

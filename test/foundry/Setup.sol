@@ -196,17 +196,17 @@ contract Setup is Test {
         }
     }
 
-    function _dealUnderlying(Quantity qnt_) internal returns(uint, uint, uint) {
-        uint baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
-        uint amountBob = baseAmount * 2;
-        uint amountCharlie = baseAmount * 3;
+    // function _dealUnderlying(Quantity qnt_) internal returns(uint, uint, uint) {
+    //     uint baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
+    //     uint amountBob = baseAmount * 2;
+    //     uint amountCharlie = baseAmount * 3;
 
-        deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, bob, amountBob * (10 ** IERC20Permit(testToken).decimals()));
-        deal(testToken, charlie, amountCharlie * (10 ** IERC20Permit(testToken).decimals()));
+    //     deal(testToken, alice, baseAmount * (10 ** IERC20Permit(testToken).decimals()));
+    //     deal(testToken, bob, amountBob * (10 ** IERC20Permit(testToken).decimals()));
+    //     deal(testToken, charlie, amountCharlie * (10 ** IERC20Permit(testToken).decimals()));
 
-        return (baseAmount, amountBob, amountCharlie);
-    }
+    //     return (baseAmount, amountBob, amountCharlie);
+    // }
 
     function _dealUnderlying(Quantity qnt_, bool isSecond_) internal returns(uint, uint, uint) {
         uint baseAmount = qnt_ == Quantity.SMALL ? 100 : 1_000_000;
