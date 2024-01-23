@@ -66,7 +66,7 @@ contract ozExecutor is Modifiers { //change name to ozExecutor
         address underlying_, 
         address owner_,
         AmountsIn memory amounts_
-    ) external onlyOzToken { 
+    ) external onlyOzToken returns(uint amountRethOut) { 
         uint amountIn = amounts_.amountIn;
 
         //minAmountsOut[0] - minWethOut
@@ -88,9 +88,13 @@ contract ozExecutor is Modifiers { //change name to ozExecutor
             IWETH(s.WETH).withdraw(amountOut);
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
             
+            uint preAmountReth = IERC20Permit(s.rETH).balanceOf(address(this));
             IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
+            uint postAmountReth = IERC20Permit(s.rETH).balanceOf(address(this));
+
+            amountRethOut = postAmountReth - preAmountReth;
         } else {
-            _checkPauseAndSwap(
+            amountRethOut = _checkPauseAndSwap(
                 s.WETH, 
                 s.rETH, 
                 address(this),

@@ -52,6 +52,9 @@ struct AppStorage {
     // uint16 adminFeeBps; <--- change the hardcoded admin fee for this var and the way for changing it
 
     address[] LSDs;
+
+    mapping(address ozToken => uint totalValue) valuePerOzToken;
+
 }
 
 enum Action {
