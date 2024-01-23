@@ -72,7 +72,7 @@ contract ozExecutor is Modifiers { //change name to ozExecutor
         //minAmountsOut[0] - minWethOut
         //minAmountsOut[1] - minRethOut
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
-      
+
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
 
         //Swaps underlying to WETH in Uniswap
