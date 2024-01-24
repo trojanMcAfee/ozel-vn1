@@ -44,14 +44,7 @@ contract ozOracle {
     function rETH_USD() public view returns(uint) {
         return (rETH_ETH() * ETH_USD()) / 1 ether ^ 2;
     }
-
-
-    // function getUnderlyingValue2() public view returns(uint) {
-    //     uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
-    //     uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
-
-    //     return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
-    // }
+    
 
     function setValuePerOzToken(address ozToken_, uint amountRethOut_) external { //put here an onlyOzToken mod
         s.valuePerOzToken[ozToken_] += amountRethOut_;
@@ -59,9 +52,6 @@ contract ozOracle {
 
 
     function getUnderlyingValue(address ozToken_) external view returns(uint) {
-        console.log('ozToken in under: ', ozToken_);
-        console.log('s.valuePerOzToken[ozToken_] in under: ', s.valuePerOzToken[ozToken_]);
-
         uint amountReth = ozToken_ == address(this) ?
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_];

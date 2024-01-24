@@ -46,7 +46,10 @@ contract MultipleTokensTest is TestMethods {
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
         _mintOzTokens(ozERC20_2, alice, secondTestToken, amountInSecond);
-        // _mintOzTokens(ozERC20_2, alice, secondTestToken, amountInSecond);
+
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        
+        // _mintOzTokens(ozERC20_2, charlie, secondTestToken, amountInSecond);
 
         uint bal1 = ozERC20_1.balanceOf(alice);
         uint bal2 = ozERC20_2.balanceOf(alice);
