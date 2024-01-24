@@ -49,13 +49,24 @@ contract MultipleTokensTest is TestMethods {
 
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
         
-        // _mintOzTokens(ozERC20_2, charlie, secondTestToken, amountInSecond);
+        _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond);
+
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+
+        _mintOzTokens(ozERC20_1, charlie, testToken, amountInFirst / 3);
 
         uint bal1 = ozERC20_1.balanceOf(alice);
         uint bal2 = ozERC20_2.balanceOf(alice);
+        uint bal3 = ozERC20_2.balanceOf(bob);
+        
+        // console.log('--- start of bal4 ---');
+        uint bal4 = ozERC20_1.balanceOf(charlie);
+        // console.log('--- end of bal4 ---');
 
-        console.log('bal1 ****: ', bal1); 
-        console.log('bal2 ****: ', bal2);
+        console.log('bal1 - dai ****: ', bal1); 
+        console.log('bal2 - usdc ****: ', bal2);
+        console.log('bal3 - usdc ****: ', bal3);
+        console.log('bal4 - dai ****: ', bal4);
 
     }
 

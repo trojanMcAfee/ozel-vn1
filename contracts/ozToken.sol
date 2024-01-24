@@ -296,6 +296,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_) private view returns (uint256 assets) {  
+        // console.log('-- in _convert ---');
+        // console.log('shares: ', shares_);
+        // console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)));
+        // console.log('totalShares: ', totalShares());
+        // console.log(' --- end of _convert ---');
+        
         return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)) / (totalShares() == 0 ? 1: totalShares())), 1);
     }
 
