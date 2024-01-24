@@ -46,11 +46,15 @@ contract ozOracle {
     }
 
 
-    function getUnderlyingValue2() public view returns(uint) {
-        uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
-        uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
+    // function getUnderlyingValue2() public view returns(uint) {
+    //     uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
+    //     uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
 
-        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
+    //     return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
+    // }
+
+    function setValuePerOzToken(address ozToken_, uint amountRethOut_) external { //put here an onlyOzToken mod
+        s.valuePerOzToken[ozToken_] += amountRethOut_;
     }
 
 

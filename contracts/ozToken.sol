@@ -45,7 +45,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     using Helpers for uint;
     using Helpers for bytes32;
 
-    address private _ozDiamond;
+    address private _ozDiamond; 
     address private _underlying;
     
     bytes32 private _assetsAndShares;
@@ -196,13 +196,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function mint(bytes memory data_) external updateReward(msg.sender) returns(uint) { 
+    function mint(bytes memory data_) external updateReward(msg.sender, _ozDiamond) returns(uint) { 
         (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
 
         uint assets = amounts.amountIn.format(FORMAT_DECIMALS); 
 
         uint amountRethOut = ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
-        s.valuePerOzToken[address(this)] += amountRethOut;
+        // s.valuePerOzToken[address(this)] += amountRethOut;
+        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountRethOut);
 
         uint shares = totalShares() == 0 ? assets : previewMint(assets);
 
@@ -234,7 +235,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function redeem(bytes memory data_) external updateReward(msg.sender) returns(uint) {
+    function redeem(bytes memory data_) external updateReward(msg.sender, _ozDiamond) returns(uint) {
         (
             uint ozAmountIn,,,,
         ) = abi.decode(data_, (uint, uint, uint, uint, address));
@@ -333,6 +334,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         _assetsAndShares = bytes32((shares << 128) + assets);
     }
+    
+
+    // function _setValuePerOzToken(uint amountRethOut_) private {
+    //     ozIDiamond(_ozDiamond).setValuePerOzToken(amountRethOut_);
+    // }
 
 
     //----------------------

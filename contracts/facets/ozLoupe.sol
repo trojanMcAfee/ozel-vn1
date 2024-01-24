@@ -36,6 +36,10 @@ contract ozLoupe is DiamondLoupeFacet {
     function getLSDs() external view returns(address[] memory) {
         return s.LSDs;
     }
+
+    // function getRewardsData() external view returns(OZLrewards memory) {
+    //     return s.r;
+    // }
    
 
 }

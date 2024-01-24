@@ -334,9 +334,9 @@ contract Setup is Test {
         } else if (id_ == 8 || id_ == 5) {
             length = 4;
         } else if (id_ == 0) {
-            length = 10;
+            length = 11;
         } else if (id_ == 10) {
-            length = 13;
+            length = 14;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -352,6 +352,7 @@ contract Setup is Test {
             selectors[7] = loupe.getProtocolFee.selector;
             selectors[8] = loupe.ozTokens.selector;
             selectors[9] = loupe.getLSDs.selector;
+            selectors[10] = loupe.getRewardsData.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -407,6 +408,7 @@ contract Setup is Test {
             selectors[10] = rewardsContract.getRecicledSupply.selector;
             selectors[11] = rewardsContract.modifySupply.selector;
             selectors[12] = rewardsContract.startNewReciclingCampaign.selector;
+            selectors[13] = rewardsContract.setRewardDataExternally.selector;
         }
 
         cut = IDiamondCut.FacetCut({
