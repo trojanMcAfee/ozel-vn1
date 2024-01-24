@@ -46,7 +46,7 @@ contract ozOracle {
     }
 
 
-    function getUnderlyingValue() public view returns(uint) {
+    function getUnderlyingValue2() public view returns(uint) {
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
 
@@ -54,7 +54,7 @@ contract ozOracle {
     }
 
 
-    function getUnderlyingValue2(address ozToken_) external view returns(uint) {
+    function getUnderlyingValue(address ozToken_) external view returns(uint) {
         console.log('ozToken in under: ', ozToken_);
         console.log('s.valuePerOzToken[ozToken_] in under: ', s.valuePerOzToken[ozToken_]);
 

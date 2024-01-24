@@ -37,7 +37,7 @@ interface ozIDiamond {
 
     function getDiamondAddr() external view returns(address);
     function getDefaultSlippage() external view returns(uint16);
-    function getUnderlyingValue() external view returns(uint);
+    function getUnderlyingValue(address ozToken_) external view returns(uint);
     function totalUnderlying(Asset) external view returns(uint);
     function changeDefaultSlippage(uint16 newBasisPoints_) external;
 
