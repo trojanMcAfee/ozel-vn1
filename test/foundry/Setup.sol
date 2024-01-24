@@ -329,14 +329,16 @@ contract Setup is Test {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
-        } else if (id_ == 9 || id_ == 6) {
+        } else if (id_ == 9) {
             length = 6; 
         } else if (id_ == 8 || id_ == 5) {
             length = 4;
         } else if (id_ == 0) {
-            length = 11;
+            length = 10;
         } else if (id_ == 10) {
             length = 14;
+        } else if (id_ == 6) {
+            length = 7;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -352,7 +354,6 @@ contract Setup is Test {
             selectors[7] = loupe.getProtocolFee.selector;
             selectors[8] = loupe.ozTokens.selector;
             selectors[9] = loupe.getLSDs.selector;
-            selectors[10] = loupe.getRewardsData.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -376,6 +377,7 @@ contract Setup is Test {
             selectors[3] = oracle.rETH_USD.selector;
             selectors[4] = oracle.chargeOZLfee.selector;
             selectors[5] = oracle.getLastRewards.selector;
+            selectors[6] = oracle.setValuePerOzToken.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;
