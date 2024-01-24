@@ -332,4 +332,25 @@ contract BaseMethods is Setup {
         ozl_.approve(address(ozl_), amount_);
     }
 
+
+    function _getPendingAllocation() internal view returns(uint) {
+        (,,,uint pendingAllocation,) = OZ.getCampaignData();
+        return pendingAllocation;
+    }
+
+    function _getCirculatingSupply() internal view returns(uint) {
+        (,uint circulatingSupply,,,) = OZ.getCampaignData();
+        return circulatingSupply;
+    }
+
+    function _getRecicledSupply() internal view returns(uint) {
+        (,,uint recicledSupply,,) = OZ.getCampaignData();
+        return recicledSupply;
+    }
+
+    function _getRewardRate() internal view returns(uint) {
+        (uint rewardRate,,,,) = OZ.getCampaignData();
+        return rewardRate;
+    }
+
 }

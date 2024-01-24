@@ -333,10 +333,8 @@ contract Setup is Test {
             length = 6; 
         } else if (id_ == 8 || id_ == 5) {
             length = 4;
-        } else if (id_ == 0) {
+        } else if (id_ == 0 || id_ == 10) {
             length = 10;
-        } else if (id_ == 10) {
-            length = 14;
         } else if (id_ == 6) {
             length = 7;
         }
@@ -403,14 +401,15 @@ contract Setup is Test {
             selectors[3] = rewardsContract.rewardPerToken.selector;
             selectors[4] = rewardsContract.earned.selector;
             selectors[5] = rewardsContract.claimReward.selector;
-            selectors[6] = rewardsContract.getRewardRate.selector;
-            selectors[7] = rewardsContract.getCirculatingSupply.selector;
-            selectors[8] = rewardsContract.pendingAllocation.selector;
-            selectors[9] = rewardsContract.durationLeft.selector;
-            selectors[10] = rewardsContract.getRecicledSupply.selector;
-            selectors[11] = rewardsContract.modifySupply.selector;
-            selectors[12] = rewardsContract.startNewReciclingCampaign.selector;
-            selectors[13] = rewardsContract.setRewardDataExternally.selector;
+            // selectors[6] = rewardsContract.getRewardRate.selector;
+            // selectors[7] = rewardsContract.getCirculatingSupply.selector;
+            // selectors[8] = rewardsContract.pendingAllocation.selector;
+            // selectors[9] = rewardsContract.durationLeft.selector;
+            // selectors[10] = rewardsContract.getRecicledSupply.selector;
+            selectors[6] = rewardsContract.modifySupply.selector;
+            selectors[7] = rewardsContract.startNewReciclingCampaign.selector;
+            selectors[8] = rewardsContract.setRewardDataExternally.selector;
+            selectors[9] = rewardsContract.getCampaignData.selector;
         }
 
         cut = IDiamondCut.FacetCut({

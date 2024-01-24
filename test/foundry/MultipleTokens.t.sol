@@ -56,6 +56,9 @@ contract MultipleTokensTest is TestMethods {
 
 
     function test_multiple_OZL_claim() public {
+        //Pre-conditions
+        test_multiple_ozToken_balances();
+
 
     }
 

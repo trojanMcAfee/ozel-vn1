@@ -59,11 +59,11 @@ interface ozIDiamond {
     function rewardPerToken() external view returns(uint);
     function earned(address user_) external view returns(uint);
     function claimReward() external returns(uint);
-    function getRewardRate() external view returns(uint);
+    // function getRewardRate() external view returns(uint);
 
     function storeOZL(address ozlProxy_) external;
     function changeAdminFeeRecipient(address newRecipient_) external;
-    function getCirculatingSupply() external view returns(uint);
+    // function getCirculatingSupply() external view returns(uint);
 
     function ozTokens(address underlying_) external view returns(address);
 
@@ -74,9 +74,9 @@ interface ozIDiamond {
         uint[] memory minAmountsOut_
     ) external returns(uint);
 
-    function pendingAllocation() external view returns(uint);
-    function durationLeft() external view returns(int);
-    function getRecicledSupply() external view returns(uint);
+    // function pendingAllocation() external view returns(uint);
+    // function durationLeft() external view returns(int);
+    // function getRecicledSupply() external view returns(uint);
     function modifySupply(uint ozlAmount_) external;
     function startNewReciclingCampaign(uint duration_) external;
 
@@ -95,4 +95,12 @@ interface ozIDiamond {
     function getLSDs() external view returns(address[] memory);
     function setRewardDataExternally(address user_) external;
     function setValuePerOzToken(address ozToken_, uint amountRethOut_) external;
+
+    function getCampaignData() external view returns(
+        uint rewardRate,
+        uint circulatingSupply,
+        uint recicledSupply,
+        uint pendingAllocation,
+        int durationLeft
+    );
 }

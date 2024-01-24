@@ -77,24 +77,42 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
         return reward;
     }
 
-    function getRewardRate() external view override returns(uint) { //also this one into 3 funcs below
-        return s.r.rewardRate;
-    }
+    // function getRewardRate() external view override returns(uint) { //also this one into 3 funcs below
+    //     return s.r.rewardRate;
+    // }
 
-    function getCirculatingSupply() external view override returns(uint) {
-        return s.r.circulatingSupply;
-    }
+    // function getCirculatingSupply() external view override returns(uint) {
+    //     return s.r.circulatingSupply;
+    // }
 
-    function pendingAllocation() external view returns(uint) { //put these 3 funcs into one returning a tuple
-        return IOZL(s.ozlProxy).balanceOf(address(this)) - s.r.recicledSupply;
-    }
+    // function pendingAllocation() external view returns(uint) { //put these 3 funcs into one returning a tuple
+    //     return IOZL(s.ozlProxy).balanceOf(address(this)) - s.r.recicledSupply;
+    // }
 
-    function durationLeft() external view returns(int) {
-        return int(s.r.finishAt) - int(block.timestamp);
-    }
+    // function durationLeft() external view returns(int) {
+    //     return int(s.r.finishAt) - int(block.timestamp);
+    // }
 
-    function getRecicledSupply() external view override returns(uint) {
-        return s.r.recicledSupply;
+    // function getRecicledSupply() external view override returns(uint) {
+    //     return s.r.recicledSupply;
+    // }
+
+    ^^^ finish up checking this and the continue with test_multiple_OZL_claim
+
+    function getCampaignData() external view returns(
+        uint rewardRate,
+        uint circulatingSupply,
+        uint recicledSupply,
+        uint pendingAllocation,
+        int durationLeft
+    ) {
+        return (
+            s.r.rewardRate,
+            s.r.circulatingSupply,
+            s.r.recicledSupply,
+            IOZL(s.ozlProxy).balanceOf(address(this)) - s.r.recicledSupply,
+            int(s.r.finishAt) - int(block.timestamp)
+        );
     }
 
     function modifySupply(uint ozlAmount_) external { //put an onlyOZL modifier here

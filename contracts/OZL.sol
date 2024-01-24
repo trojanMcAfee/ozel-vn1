@@ -149,11 +149,14 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
 
     function circulatingSupply() public view returns(uint) {
-        return getOZ().getCirculatingSupply();
+        (,uint circulatingSupply,,,) = getOZ().getCampaignData();
+        return circulatingSupply;
     }
 
     function recicledSupply() public view returns(uint) {
-        return getOZ().getRecicledSupply();
+        // return getOZ().getRecicledSupply();
+        (,,uint recicledSupply,,) = getOZ().getCampaignData();
+        return recicledSupply;
     }
 
     function getOZ() public view returns(ozIDiamond) {
