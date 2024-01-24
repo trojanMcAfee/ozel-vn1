@@ -27,7 +27,7 @@ interface ozIDiamond {
         address underlying_, 
         address owner_, 
         AmountsIn memory amounts_
-    ) external;
+    ) external returns(uint);
 
 
     function useOzTokens(
