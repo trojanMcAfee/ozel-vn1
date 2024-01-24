@@ -327,11 +327,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         _assetsAndShares = bytes32((shares << 128) + assets);
     }
-    
-
-    // function _setValuePerOzToken(uint amountRethOut_) private {
-    //     ozIDiamond(_ozDiamond).setValuePerOzToken(amountRethOut_);
-    // }
 
 
     //----------------------

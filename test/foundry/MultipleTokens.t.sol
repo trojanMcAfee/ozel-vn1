@@ -16,14 +16,7 @@ contract MultipleTokensTest is TestMethods {
     using FixedPointMathLib for uint;
 
     
-    function test_x() public {
-        bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
-            bytes32(0)
-        );
-        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
-        
-        //--------
+    function test_multiple_ozToken_balances() public {
         ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20-1", "ozERC20_1"
         ));
@@ -36,12 +29,7 @@ contract MultipleTokensTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountInFirst = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         uint amountInSecond = (rawAmount / 2) * 10 ** IERC20Permit(secondTestToken).decimals();
-        // _changeSlippage(uint16(9900));
 
-        console.log('amount in dai: ', amountInFirst / 1e18);
-        console.log('amount in usdc: ', amountInSecond / 1e6);
-
-        //----------
         _startCampaign();
 
         _mintOzTokens(ozERC20_1, alice, testToken, amountInFirst);
@@ -56,19 +44,11 @@ contract MultipleTokensTest is TestMethods {
 
         //Difference between non-equal stablecoin balances is less than 0.02%
         uint diff = (balAlice_oz2 + balBob_oz2) - balAlice_oz1;
-        // assertTrue((diff * 10_000) < 2);
         assertTrue(diff.mulDivDown(10_000, balAlice_oz1) < 2);
 
         //Difference between equal stablecoin balances is less than 0.01%
         diff = balAlice_oz1 - (balCharlie_oz1 * 3);
-        // assertTrue(diff < 1);
         assertTrue(diff.mulDivDown(10_000, balAlice_oz1) < 1);
-
-        // console.log('bal1 - dai ****: ', bal1); 
-        // console.log('bal2 - usdc ****: ', bal2);
-        // console.log('bal3 - usdc ****: ', bal3);
-        // console.log('bal4 - dai ****: ', bal4);
-
     }
 
 
