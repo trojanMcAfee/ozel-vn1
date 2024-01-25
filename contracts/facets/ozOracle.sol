@@ -68,14 +68,11 @@ contract ozOracle {
 
         uint amountReth = ozToken_ == address(this) ?
             IERC20Permit(s.rETH).balanceOf(address(this)) :
-            s.valuePerOzToken[ozToken_];
-
-        console.log('amountReth: ', amountReth);
+            s.valuePerOzToken[ozToken_]; //<--- this value doesn't get updated when redeeming. Do it. Needs to be substracted. Tested it out
    
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
 
-        uint x = ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;
-        return x;        
+        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 
 
