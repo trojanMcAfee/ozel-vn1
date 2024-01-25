@@ -203,6 +203,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint amountRethOut = ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
         // s.valuePerOzToken[address(this)] += amountRethOut;
+
         ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountRethOut);
 
         uint shares = totalShares() == 0 ? assets : previewMint(assets);
@@ -296,14 +297,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_) private view returns (uint256 assets) {  
-        console.log('--- in _convert ---');
-        console.log('asset: ', asset());
-        console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue(_ozDiamond));
-        console.log('shares: ', shares_);
-        console.log('totalShares: ', totalShares());
-        console.log('--- in _convert ---');
+        // console.log('--- in _convert ---');
+        // console.log('asset: ', asset());
+        // console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue(_ozDiamond));
+        // console.log('shares: ', shares_);
+        // console.log('totalShares: ', totalShares());
+        // console.log('--- in _convert ---');
 
-        return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue(_ozDiamond) / (totalShares() == 0 ? 1: totalShares())), 1);
+        return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)) / (totalShares() == 0 ? 1: totalShares())), 1);
     }
 
     function _convertToAssetsFromUnderlying(uint shares_) private view returns(uint){

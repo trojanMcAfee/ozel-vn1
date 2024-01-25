@@ -54,21 +54,28 @@ contract ozOracle {
     }
 
     function setValuePerOzToken(address ozToken_, uint amount_) external { //put an onlyOzToken mod
+        // console.log('ozToken in oracle: ', ozToken_);
+        // console.log('amount in orac: ', amount_);
+        
         s.valuePerOzToken[ozToken_] += amount_;
+        // console.log('s.valuePerOzToken[ozToken_]: ', s.valuePerOzToken[ozToken_]);
     }
 
 
     function getUnderlyingValue(address ozToken_) external view returns(uint) {
-        console.log('ozToken in under: ', ozToken_);
-        console.log('s.valuePerOzToken[ozToken_] in under: ', s.valuePerOzToken[ozToken_]);
+        // console.log('ozToken in under: ', ozToken_);
+        // console.log('s.valuePerOzToken[ozToken_] in under: ', s.valuePerOzToken[ozToken_]);
 
         uint amountReth = ozToken_ == address(this) ?
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_];
+
+        console.log('amountReth: ', amountReth);
    
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
 
-        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
+        uint x = ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;
+        return x;        
     }
 
 

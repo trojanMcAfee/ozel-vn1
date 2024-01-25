@@ -38,6 +38,7 @@ contract RocketPoolPathTest is TestMethods {
         _transfer();
     }
 
+    //what's the point of checking RP when redeeming? RP interacts when minting only
     function test_redeeming_bigBalance_bigMint_bigRedeem_rocketPool() public confirmRethSupplyIncrease {
        _redeeming_bigBalance_bigMint_bigRedeem();
     }
