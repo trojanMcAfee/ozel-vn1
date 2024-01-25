@@ -107,7 +107,7 @@ contract ozExecutor is Modifiers { //change name to ozExecutor
         address owner_,
         bytes memory data_
     ) external onlyOzToken returns(uint amountOut) {
-
+        console.log('yes');
         //minAmountsOut[0] = minAmountOutWeth
         //minAmountsOut[1] = minAmountOutUnderlying
         (

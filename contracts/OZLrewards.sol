@@ -102,6 +102,10 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
         s.r.recicledSupply += ozlAmount_;
     }
 
+    function setRewardsDataExternally(address user_) external { //put an onlySender modifier
+
+    }
+
     //-----
     function startNewReciclingCampaign(uint duration_) external {
         setRewardsDuration(duration_);

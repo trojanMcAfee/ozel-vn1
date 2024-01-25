@@ -53,6 +53,10 @@ contract ozOracle {
         return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 
+    function setValuePerOzToken(address ozToken_, uint amount) external { //put an onlyOzToken mod
+
+    }
+
 
     function getUnderlyingValue(address ozToken_) external view returns(uint) {
         console.log('ozToken in under: ', ozToken_);

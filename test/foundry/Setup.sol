@@ -329,14 +329,16 @@ contract Setup is Test {
             length = 3;
         } else if (id_ == 7) {
             length = 5;
-        } else if (id_ == 9 || id_ == 6) {
+        } else if (id_ == 9) {
             length = 6; 
         } else if (id_ == 8 || id_ == 5) {
             length = 4;
         } else if (id_ == 0) {
             length = 10;
         } else if (id_ == 10) {
-            length = 13;
+            length = 14;
+        } else if (id_ == 6) {
+            length = 7;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -375,6 +377,7 @@ contract Setup is Test {
             selectors[3] = oracle.rETH_USD.selector;
             selectors[4] = oracle.chargeOZLfee.selector;
             selectors[5] = oracle.getLastRewards.selector;
+            selectors[6] = oracle.setValuePerOzToken.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;
@@ -407,6 +410,7 @@ contract Setup is Test {
             selectors[10] = rewardsContract.getRecicledSupply.selector;
             selectors[11] = rewardsContract.modifySupply.selector;
             selectors[12] = rewardsContract.startNewReciclingCampaign.selector;
+            selectors[13] = rewardsContract.setRewardsDataExternally.selector;
         }
 
         cut = IDiamondCut.FacetCut({
