@@ -12,30 +12,19 @@ import "forge-std/console.sol";
 contract Modifiers is IOZLrewards {
 
     AppStorage internal s;
-
-    modifier updateReward2(address user_) {
-        s.r.rewardPerTokenStored = rewardPerToken();
-        s.r.updatedAt = lastTimeRewardApplicable();
-
-        if (user_ != address(0)) {
-            s.r.rewards[user_] = earned(user_);
-            s.r.userRewardPerTokenPaid[user_] = s.r.rewardPerTokenStored;
-        }
-
-        _;
-    }
+    
 
     modifier updateReward(address user_, address ozDiamond_) {
         if (ozDiamond_ != address(0)) {
             ozIDiamond(ozDiamond_).setRewardsDataExternally(user_);
-        } else if (user_ != address(0) && ozDiamond_ == address(0)) {
+        } else {
             s.r.rewardPerTokenStored = rewardPerToken();
             s.r.updatedAt = lastTimeRewardApplicable();
-            s.r.rewards[user_] = earned(user_);
-            s.r.userRewardPerTokenPaid[user_] = s.r.rewardPerTokenStored;
-        } else if (user_ == address(0) && ozDiamond_ == address(0)) {
-            s.r.rewardPerTokenStored = rewardPerToken();
-            s.r.updatedAt = lastTimeRewardApplicable();
+
+            if (user_ != address(0)) {
+                s.r.rewards[user_] = earned(user_);
+                s.r.userRewardPerTokenPaid[user_] = s.r.rewardPerTokenStored;
+            }
         }
 
         _;
