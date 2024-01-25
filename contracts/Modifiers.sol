@@ -13,7 +13,7 @@ contract Modifiers is IOZLrewards {
 
     AppStorage internal s;
 
-    modifier updateReward(address user_) {
+    modifier updateReward2(address user_) {
         s.r.rewardPerTokenStored = rewardPerToken();
         s.r.updatedAt = lastTimeRewardApplicable();
 
@@ -25,9 +25,17 @@ contract Modifiers is IOZLrewards {
         _;
     }
 
-    modifier updateReward2(address user_, address ozDiamond_) {
+    modifier updateReward(address user_, address ozDiamond_) {
         if (ozDiamond_ != address(0)) {
             ozIDiamond(ozDiamond_).setRewardsDataExternally(user_);
+        } else if (user_ != address(0) && ozDiamond_ == address(0)) {
+            s.r.rewardPerTokenStored = rewardPerToken();
+            s.r.updatedAt = lastTimeRewardApplicable();
+            s.r.rewards[user_] = earned(user_);
+            s.r.userRewardPerTokenPaid[user_] = s.r.rewardPerTokenStored;
+        } else if (user_ == address(0) && ozDiamond_ == address(0)) {
+            s.r.rewardPerTokenStored = rewardPerToken();
+            s.r.updatedAt = lastTimeRewardApplicable();
         }
 
         _;
