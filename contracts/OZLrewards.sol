@@ -103,11 +103,14 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
     }
 
     function setRewardsDataExternally(address user_) external { //put an onlySender modifier
-
+        s.r.rewardPerTokenStored = rewardPerToken();
+        s.r.updatedAt = lastTimeRewardApplicable();
+        s.r.rewards[user_] = earned(user_);
+        s.r.userRewardPerTokenPaid[user_] = s.r.rewardPerTokenStored;
     }
 
     //-----
-    function startNewReciclingCampaign(uint duration_) external {
+    function startNewReciclingCampaign(uint duration_) external { //put an onlyOnwer
         setRewardsDuration(duration_);
         notifyRewardAmount(s.r.recicledSupply);
         s.r.recicledSupply = 0;

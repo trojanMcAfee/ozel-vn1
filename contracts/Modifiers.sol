@@ -3,6 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {IOZLrewards} from "./interfaces/IOZLrewards.sol";
+import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {AppStorage} from "./AppStorage.sol";
 import "./Errors.sol";
 
@@ -19,6 +20,14 @@ contract Modifiers is IOZLrewards {
         if (user_ != address(0)) {
             s.r.rewards[user_] = earned(user_);
             s.r.userRewardPerTokenPaid[user_] = s.r.rewardPerTokenStored;
+        }
+
+        _;
+    }
+
+    modifier updateReward2(address user_, address ozDiamond_) {
+        if (ozDiamond_ != address(0)) {
+            ozIDiamond(ozDiamond_).setRewardsDataExternally(user_);
         }
 
         _;

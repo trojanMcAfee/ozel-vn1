@@ -93,4 +93,6 @@ interface ozIDiamond {
     ) external;
 
     function getLSDs() external view returns(address[] memory);
+    function setRewardsDataExternally(address user_) external;
+    function setValuePerOzToken(address ozToken_, uint amount) external;
 }
