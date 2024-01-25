@@ -53,8 +53,8 @@ contract ozOracle {
         return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 
-    function setValuePerOzToken(address ozToken_, uint amount) external { //put an onlyOzToken mod
-
+    function setValuePerOzToken(address ozToken_, uint amount_) external { //put an onlyOzToken mod
+        s.valuePerOzToken[ozToken_] += amount_;
     }
 
 

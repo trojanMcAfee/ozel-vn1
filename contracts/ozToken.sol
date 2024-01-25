@@ -203,6 +203,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint amountRethOut = ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
         // s.valuePerOzToken[address(this)] += amountRethOut;
+        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountRethOut);
 
         uint shares = totalShares() == 0 ? assets : previewMint(assets);
 
