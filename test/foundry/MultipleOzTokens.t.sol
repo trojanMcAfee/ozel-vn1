@@ -83,9 +83,12 @@ contract MultipleOzTokensTest is TestMethods {
         uint ozlBalanceBob_1 = ozERC20_1.balanceOf(bob);
         uint ozlBalanceAlice_2 = ozERC20_2.balanceOf(alice);
 
-        console.log('ozlBalanceAlice_1: ', ozlBalanceAlice_1);
-        console.log('ozlBalanceBob_1: ', ozlBalanceBob_1);
-        console.log('ozlBalanceAlice_2: ', ozlBalanceAlice_2);
+        assertTrue(ozlBalanceAlice_1 == ozlBalanceBob_1);
+        assertTrue(ozlBalanceAlice_2 > 0);
+
+        // console.log('ozlBalanceAlice_1: ', ozlBalanceAlice_1);
+        // console.log('ozlBalanceBob_1: ', ozlBalanceBob_1);
+        // console.log('ozlBalanceAlice_2: ', ozlBalanceAlice_2);
 
         vm.prank(alice);
         uint rewardsAlice = OZ.claimReward();
@@ -93,8 +96,16 @@ contract MultipleOzTokensTest is TestMethods {
         vm.prank(bob);
         uint rewardsBob = OZ.claimReward();
 
-        console.log('rewardsAlice: ', rewardsAlice);
-        console.log('rewardsBob: ', rewardsBob);
+        // console.log('rewardsAlice: ', rewardsAlice / 10000);
+        // console.log('rewardsBob: ', rewardsBob);
+
+        uint rewardRate = _getRewardRate();
+
+        // console.log('rewardsBob / 100: ', rewardsBob / 10000);
+        // console.log('(rewardRate * secs) / 100: ', (rewardRate * secs) / 10000);
+
+        assertTrue((rewardsBob + rewardsAlice) / 10000 == (rewardRate * secs) / 10000);
+        assertTrue(rewardsBob < rewardsAlice);
 
 
 
