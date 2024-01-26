@@ -12,8 +12,10 @@ import "forge-std/console.sol";
 
 contract MultipleTokensTest is TestMethods {
 
-    
-    function test_x() public {
+    //Tests the creation of different ozTokens and that their minting of tokens is 
+    //done properly. 
+    function test_createAndMint_two_tokens() public {
+        //Pre-conditions
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
             bytes32(0)
@@ -33,12 +35,8 @@ contract MultipleTokensTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountInFirst = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         uint amountInSecond = (rawAmount / 2) * 10 ** IERC20Permit(secondTestToken).decimals();
-        // _changeSlippage(uint16(9900));
 
-        console.log('amount in dai: ', amountInFirst / 1e18);
-        console.log('amount in usdc: ', amountInSecond / 1e6);
-
-        //----------
+        //Actions
         _startCampaign();
 
         _mintOzTokens(ozERC20_1, alice, testToken, amountInFirst);
@@ -46,14 +44,15 @@ contract MultipleTokensTest is TestMethods {
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
         _mintOzTokens(ozERC20_2, alice, secondTestToken, amountInSecond);
-        // _mintOzTokens(ozERC20_2, alice, secondTestToken, amountInSecond);
 
-        // uint bal1 = ozERC20_1.balanceOf(alice);
-        uint bal2 = ozERC20_2.balanceOf(alice);
+        //Pre-conditions
+        uint ozBalance_1 = ozERC20_1.balanceOf(alice);
+        uint ozBalance_2 = ozERC20_2.balanceOf(alice);
 
-        // console.log('bal1: ', bal1); 
-        console.log('bal2: ', bal2);
+        uint amountInSecond_18dec = amountInSecond * 1e12;
 
+        assertTrue(ozBalance_1 < amountInFirst && ozBalance_1 > (amountInFirst - 1 * 1e18));
+        assertTrue(ozBalance_2 < amountInSecond_18dec && ozBalance_2 > (amountInSecond_18dec - 1 * 1e18));
     }
 
 
