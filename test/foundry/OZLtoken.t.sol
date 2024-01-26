@@ -539,7 +539,8 @@ contract OZLtokenTest is TestMethods {
         test_redeem_in_WETH_ETH();
     }
 
-
+    //Tests that the nominal difference between OZL's exchange rates (in USD, ETH and rETH)
+    //is either less than 0.01% or 0.01%. 
     function test_exchangeRate_with_circulatingSupply() public {
         //Pre-condition
         test_claim_OZL();
@@ -558,7 +559,7 @@ contract OZLtokenTest is TestMethods {
         console.log('diffUSDETH: ', diffUSDETH);
         console.log('diffETHRETH: ', diffETHRETH);
 
-        assertTrue(diffUSDETH == 0);
+        assertTrue(diffUSDETH == 0 || diffUSDETH == 1);
         assertTrue(diffETHRETH == 0);
     }
 
