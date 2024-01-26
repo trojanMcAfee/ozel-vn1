@@ -49,7 +49,7 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
 
     //Computes the amount of reward per ozToken created
     function rewardPerToken() public view override returns(uint) {
-        uint totalSupply = IERC20Permit(s.ozTokenRegistry[0]).totalSupply();
+        uint totalSupply = _getOzTokensTotalSupply();
 
         if (totalSupply == 0) return s.r.rewardPerTokenStored;
 
@@ -58,9 +58,10 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
         ) / totalSupply;
     }
 
+
     //Computes the rewards earned by an user
     function earned(address user_) public view override returns(uint) {
-        return (IERC20Permit(s.ozTokenRegistry[0]).balanceOf(user_) * 
+        return (_getUserTotalOzTokens(user_) * 
             (rewardPerToken() - s.r.userRewardPerTokenPaid[user_])) / 1e18
          + s.r.rewards[user_];
     }
@@ -106,11 +107,29 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
         s.r.userRewardPerTokenPaid[user_] = s.r.rewardPerTokenStored;
     }
 
-    //-----
+    
     function startNewReciclingCampaign(uint duration_) external { //put an onlyOnwer
         setRewardsDuration(duration_);
         notifyRewardAmount(s.r.recicledSupply);
         s.r.recicledSupply = 0;
+    }
+
+
+    //-----
+    function _getUserTotalOzTokens(address user_) private view returns(uint total) {    
+        uint length = s.ozTokenRegistry.length;
+        
+        for (uint8 i=0; i < length; i++) {
+            total += IERC20Permit(s.ozTokenRegistry[i]).balanceOf(user_);
+        }
+    }
+
+    function _getOzTokensTotalSupply() private view returns(uint total) {
+        uint length = s.ozTokenRegistry.length;
+
+        for (uint8 i=0 ; i < length; i++) {
+            total += IERC20Permit(s.ozTokenRegistry[i]).totalSupply();
+        }
     }
 }
 
