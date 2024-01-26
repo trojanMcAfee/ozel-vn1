@@ -60,13 +60,13 @@ contract ozOracle {
         // s.valuePerOzToken[ozToken_] += amount_;
         // console.log('s.valuePerOzToken[ozToken_]: ', s.valuePerOzToken[ozToken_]);
 
-        // if (addOrSub_) {
-        //     s.valuePerOzToken[ozToken_] += amount_;
-        // } else {
-        //     s.valuePerOzToken[ozToken_] -= amount_;
-        // }
+        if (addOrSub_) {
+            s.valuePerOzToken[ozToken_] += amount_;
+        } else {
+            s.valuePerOzToken[ozToken_] -= amount_;
+        }
 
-        addOrSub_ ? s.valuePerOzToken[ozToken_] += amount_ : s.valuePerOzToken[ozToken_] -= amount_; 
+        // addOrSub_ ? s.valuePerOzToken[ozToken_] += amount_ : s.valuePerOzToken[ozToken_] -= amount_; 
     }
 
 

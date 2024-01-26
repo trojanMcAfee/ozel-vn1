@@ -156,8 +156,6 @@ contract OZLtokenTest is TestMethods {
         );
         vm.stopPrank();
 
-        console.log(4);
-
         (uint oldRecicledSupply, uint oldRewardRate) = 
             _checkSupplyAndRate(pendingAllocPreRedeem, OZL, ozlBalanceAlice);
 
@@ -165,26 +163,15 @@ contract OZLtokenTest is TestMethods {
         uint oneYear = 31560000;
         vm.prank(owner);
 
-        console.log(41);
-
         OZ.startNewReciclingCampaign(oneYear); 
 
-        console.log(42);
-
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
-        console.log(43);
         uint newOzTokenBalance = ozERC20.balanceOf(alice);
-        console.log(44);
 
-        console.log('oldOzTokenBalance:' , oldOzTokenBalance);
-        console.log('newOzTokenBalance: ', newOzTokenBalance);
+        uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
 
-        uint diff = (((oldOzTokenBalance * 2) - newOzTokenBalance) * 10_000) / newOzTokenBalance;
-
-        console.log(5);
-
-        //Difference between balances is less than 0.57% (slippage)
-        assertTrue(diff < 57);        
+        //Difference between balances (old and new) is less than 0.01%
+        assertTrue(diff == 0);        
 
         vm.warp(block.timestamp + secs);
 
