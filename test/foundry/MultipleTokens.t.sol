@@ -14,7 +14,7 @@ contract MultipleTokensTest is TestMethods {
 
     //Tests the creation of different ozTokens and that their minting of tokens is 
     //done properly. 
-    function test_createAndMint_two_tokens() public {
+    function test_createAndMint_two_ozTokens() public {
         //Pre-conditions
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
@@ -22,7 +22,6 @@ contract MultipleTokensTest is TestMethods {
         );
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
         
-        //--------
         ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20-1", "ozERC20_1"
         ));
@@ -52,15 +51,24 @@ contract MultipleTokensTest is TestMethods {
         assertTrue(ozBalance_2 < amountInSecond_18dec && ozBalance_2 > (amountInSecond_18dec - 1 * 1e18));
     }
 
-
-    function test_claim_OZL_from_two_ozTokens() public {
+    
+    //Tests that the OZL reward of one user is properly claimed with two ozTokens
+    function test_claim_OZL_two_ozTokens() public {
         //Pre-conditions
-        test_createAndMint_two_tokens();
+        test_createAndMint_two_ozTokens();
 
-        
+        uint secs = 15;
+        vm.warp(block.timestamp + secs);
 
+        _mock_rETH_ETH();
 
+        //Action
+        vm.prank(alice);
+        uint claimedReward = OZ.claimReward();
 
+        //Post-condition
+        uint rewardRate = _getRewardRate();
+        assertTrue(claimedReward / 100 == (rewardRate * secs) / 100);
     }
 
 

@@ -26,20 +26,6 @@ contract OZLtokenTest is TestMethods {
     using FixedPointMathLib for uint;
 
 
-   function _mock_rETH_ETH() internal {
-        uint bpsIncrease = 400; //92 - 400
-        uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
-
-        vm.mockCall( 
-            address(rEthEthChainlink),
-            abi.encodeWithSignature('latestRoundData()'),
-            abi.encode(uint80(0), int(rETHETHmock), uint(0), uint(0), uint80(0))
-        ); 
-    }
-
-    
-    //-------
-
     function test_chargeOZLfee_noFeesToDistribute() public {
         //Pre-condtion
         _minting_approve_smallMint();
@@ -52,57 +38,6 @@ contract OZLtokenTest is TestMethods {
     }
 
     // function test_exchangeRate_no_circulatingSupply
-
-    
-    function _checkChargeFeeClaimOZL(IOZL OZL) private returns(uint, uint) {
-        uint ozlBalancePre = OZL.balanceOf(alice);
-        assertTrue(ozlBalancePre == 0);
-
-        uint pendingOZLallocPre = _getPendingAllocation();
-        assertTrue(communityAmount == pendingOZLallocPre);
-
-         bool wasCharged = OZ.chargeOZLfee();
-        assertTrue(wasCharged);
-
-        uint circulatingSupply = _getCirculatingSupply();
-        assertTrue(circulatingSupply == 0);
-
-        vm.prank(alice);
-        uint claimedReward = OZ.claimReward();
-
-        circulatingSupply = _getCirculatingSupply();
-        assertTrue(circulatingSupply > 0);
-
-        uint ozlBalanceAlice = OZL.balanceOf(alice);
-        assertTrue(ozlBalanceAlice > 0);
-
-        uint pendingOZLallocPost = _getPendingAllocation();
-        assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
-
-        uint recicledSupply = _getRecicledSupply();
-        assertTrue(recicledSupply == 0);
-
-        return (ozlBalanceAlice, claimedReward);
-    }
-
-    function _checkSupplyAndRate(
-        uint pendingAllocPreRedeem_,
-        IOZL OZL,
-        uint ozlBalanceAlice_
-    ) private returns(uint, uint) {
-        uint pendingAllocPostRedeem = _getPendingAllocation();
-        assertTrue(pendingAllocPreRedeem_ == pendingAllocPostRedeem);
-
-        uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
-        assertTrue(ozlBalanceOZPostRedeem == communityAmount);
-
-        uint oldRecicledSupply = _getRecicledSupply();
-        assertTrue(oldRecicledSupply == ozlBalanceAlice_);
-
-        uint oldRewardRate = _getRewardRate();
-
-        return (oldRecicledSupply, oldRewardRate);
-    }
 
 
     //Tests that a new recicling campaign is properly set up with the recicled supply.
@@ -652,6 +587,58 @@ contract OZLtokenTest is TestMethods {
 
         uint rate = OZL.getExchangeRate(QuoteAsset.USD);
         console.log('rate3: ', rate);
+    }
+
+    //-------------
+
+    function _checkChargeFeeClaimOZL(IOZL OZL) private returns(uint, uint) {
+        uint ozlBalancePre = OZL.balanceOf(alice);
+        assertTrue(ozlBalancePre == 0);
+
+        uint pendingOZLallocPre = _getPendingAllocation();
+        assertTrue(communityAmount == pendingOZLallocPre);
+
+         bool wasCharged = OZ.chargeOZLfee();
+        assertTrue(wasCharged);
+
+        uint circulatingSupply = _getCirculatingSupply();
+        assertTrue(circulatingSupply == 0);
+
+        vm.prank(alice);
+        uint claimedReward = OZ.claimReward();
+
+        circulatingSupply = _getCirculatingSupply();
+        assertTrue(circulatingSupply > 0);
+
+        uint ozlBalanceAlice = OZL.balanceOf(alice);
+        assertTrue(ozlBalanceAlice > 0);
+
+        uint pendingOZLallocPost = _getPendingAllocation();
+        assertTrue(claimedReward ==  pendingOZLallocPre - pendingOZLallocPost);
+
+        uint recicledSupply = _getRecicledSupply();
+        assertTrue(recicledSupply == 0);
+
+        return (ozlBalanceAlice, claimedReward);
+    }
+
+    function _checkSupplyAndRate(
+        uint pendingAllocPreRedeem_,
+        IOZL OZL,
+        uint ozlBalanceAlice_
+    ) private returns(uint, uint) {
+        uint pendingAllocPostRedeem = _getPendingAllocation();
+        assertTrue(pendingAllocPreRedeem_ == pendingAllocPostRedeem);
+
+        uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
+        assertTrue(ozlBalanceOZPostRedeem == communityAmount);
+
+        uint oldRecicledSupply = _getRecicledSupply();
+        assertTrue(oldRecicledSupply == ozlBalanceAlice_);
+
+        uint oldRewardRate = _getRewardRate();
+
+        return (oldRecicledSupply, oldRewardRate);
     }
 
 }

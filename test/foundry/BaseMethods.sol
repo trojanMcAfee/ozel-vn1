@@ -9,6 +9,7 @@ import {Setup} from "./Setup.sol";
 import {Type} from "./AppStorageTests.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
+import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
@@ -17,6 +18,8 @@ import "forge-std/console.sol";
 
 
 contract BaseMethods is Setup {
+
+    using FixedPointMathLib for uint;
 
     function _createAndMintOzTokens(
         address testToken_,
@@ -363,6 +366,17 @@ contract BaseMethods is Setup {
     function _getDurationLeft() internal view returns(int) {
         (,,,,int duration) = OZ.getRewardsData();
         return duration;
+    }
+
+    function _mock_rETH_ETH() internal {
+        uint bpsIncrease = 400; //92 - 400
+        uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
+
+        vm.mockCall( 
+            address(rEthEthChainlink),
+            abi.encodeWithSignature('latestRoundData()'),
+            abi.encode(uint80(0), int(rETHETHmock), uint(0), uint(0), uint80(0))
+        ); 
     }
 
 }
