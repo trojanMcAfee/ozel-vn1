@@ -67,7 +67,8 @@ contract MultipleOzTokensTest is TestMethods {
     }
 
 
-    function test_createAndMint_two_ozTokens_twoUsers() public {
+    //Tests that two users can claim OZL rewards from minting from the same ozToken
+    function test_two_ozTokens_twoUsers_same_mint() public {
         //Pre-conditions
         (ozIToken ozERC20_1, ozIToken ozERC20_2, uint amountInFirst) =
              test_createAndMint_two_ozTokens_oneUser();
@@ -79,6 +80,16 @@ contract MultipleOzTokensTest is TestMethods {
 
         _mock_rETH_ETH();
 
+        //Actions
+        vm.prank(alice);
+        uint rewardsAlice = OZ.claimReward();
+
+        vm.prank(bob);
+        uint rewardsBob = OZ.claimReward();
+
+        //Post-condtions
+        uint rewardRate = _getRewardRate();
+
         uint ozlBalanceAlice_1 = ozERC20_1.balanceOf(alice);
         uint ozlBalanceBob_1 = ozERC20_1.balanceOf(bob);
         uint ozlBalanceAlice_2 = ozERC20_2.balanceOf(alice);
@@ -86,29 +97,8 @@ contract MultipleOzTokensTest is TestMethods {
         assertTrue(ozlBalanceAlice_1 == ozlBalanceBob_1);
         assertTrue(ozlBalanceAlice_2 > 0);
 
-        // console.log('ozlBalanceAlice_1: ', ozlBalanceAlice_1);
-        // console.log('ozlBalanceBob_1: ', ozlBalanceBob_1);
-        // console.log('ozlBalanceAlice_2: ', ozlBalanceAlice_2);
-
-        vm.prank(alice);
-        uint rewardsAlice = OZ.claimReward();
-
-        vm.prank(bob);
-        uint rewardsBob = OZ.claimReward();
-
-        // console.log('rewardsAlice: ', rewardsAlice / 10000);
-        // console.log('rewardsBob: ', rewardsBob);
-
-        uint rewardRate = _getRewardRate();
-
-        // console.log('rewardsBob / 100: ', rewardsBob / 10000);
-        // console.log('(rewardRate * secs) / 100: ', (rewardRate * secs) / 10000);
-
-        assertTrue((rewardsBob + rewardsAlice) / 10000 == (rewardRate * secs) / 10000);
+        assertTrue((rewardsBob + rewardsAlice) / 1000 == (rewardRate * secs) / 1000);
         assertTrue(rewardsBob < rewardsAlice);
-
-
-
     }
 
 
