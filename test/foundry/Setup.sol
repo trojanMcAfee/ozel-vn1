@@ -401,11 +401,6 @@ contract Setup is Test {
             selectors[3] = rewardsContract.rewardPerToken.selector;
             selectors[4] = rewardsContract.earned.selector;
             selectors[5] = rewardsContract.claimReward.selector;
-            // selectors[6] = rewardsContract.getRewardRate.selector;
-            // selectors[7] = rewardsContract.getCirculatingSupply.selector;
-            // selectors[8] = rewardsContract.pendingAllocation.selector;
-            // selectors[9] = rewardsContract.durationLeft.selector;
-            // selectors[10] = rewardsContract.getRecicledSupply.selector;
             selectors[6] = rewardsContract.modifySupply.selector;
             selectors[7] = rewardsContract.startNewReciclingCampaign.selector;
             selectors[8] = rewardsContract.setRewardsDataExternally.selector;

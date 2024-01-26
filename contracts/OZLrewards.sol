@@ -94,26 +94,6 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
         );
     }
 
-    // function getRewardRate() external view override returns(uint) { //also this one into 3 funcs below
-    //     return s.r.rewardRate;
-    // }
-
-    // function getCirculatingSupply() external view override returns(uint) {
-    //     return s.r.circulatingSupply;
-    // }
-
-    // function pendingAllocation() external view returns(uint) { //put these 3 funcs into one returning a tuple
-    //     return IOZL(s.ozlProxy).balanceOf(address(this)) - s.r.recicledSupply;
-    // }
-
-    // function durationLeft() external view returns(int) {
-    //     return int(s.r.finishAt) - int(block.timestamp);
-    // }
-
-    // function getRecicledSupply() external view override returns(uint) {
-    //     return s.r.recicledSupply;
-    // }
-
     function modifySupply(uint ozlAmount_) external { //put an onlyOZL modifier here
         s.r.circulatingSupply -= ozlAmount_;
         s.r.recicledSupply += ozlAmount_;
