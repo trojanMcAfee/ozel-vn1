@@ -46,41 +46,20 @@ contract ozOracle {
     }
 
 
-    function getUnderlyingValue2() public view returns(uint) {
-        uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this));    
-        uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
-
-        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
-    }
-
     function setValuePerOzToken(address ozToken_, uint amount_, bool addOrSub_) external { //put an onlyOzToken mod
-        // console.log('ozToken in oracle: ', ozToken_);
-        // console.log('amount in orac: ', amount_);
-        
-        // s.valuePerOzToken[ozToken_] += amount_;
-        // console.log('s.valuePerOzToken[ozToken_]: ', s.valuePerOzToken[ozToken_]);
-
         if (addOrSub_) {
             s.valuePerOzToken[ozToken_] += amount_;
         } else {
             s.valuePerOzToken[ozToken_] -= amount_;
         }
-
-        // addOrSub_ ? s.valuePerOzToken[ozToken_] += amount_ : s.valuePerOzToken[ozToken_] -= amount_; 
     }
 
 
     function getUnderlyingValue(address ozToken_) external view returns(uint) {
-        // console.log('ozToken in under: ', ozToken_);
-        // console.log('s.valuePerOzToken[ozToken_] in under: ', s.valuePerOzToken[ozToken_]);
-
         uint amountReth = ozToken_ == address(this) ?
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_]; 
    
-        // console.log('s.valuePerOzToken[ozToken_] in under: ', s.valuePerOzToken[ozToken_]);
-        // console.log('reth bal: ', IERC20Permit(s.rETH).balanceOf(address(this)));
-
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
 
         return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
