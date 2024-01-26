@@ -156,16 +156,7 @@ contract OZLtokenTest is TestMethods {
         );
         vm.stopPrank();
 
-        // uint pendingAllocPostRedeem = OZ.pendingAllocation();
-        // assertTrue(pendingAllocPreRedeem == pendingAllocPostRedeem);
-
-        // uint ozlBalanceOZPostRedeem = OZL.balanceOf(address(OZ));
-        // assertTrue(ozlBalanceOZPostRedeem == communityAmount);
-
-        // uint oldRecicledSupply = OZ.getRecicledSupply();
-        // assertTrue(oldRecicledSupply == ozlBalanceAlice);
-
-        // uint oldRewardRate = OZ.getRewardRate();
+        console.log(4);
 
         (uint oldRecicledSupply, uint oldRewardRate) = 
             _checkSupplyAndRate(pendingAllocPreRedeem, OZL, ozlBalanceAlice);
@@ -173,12 +164,24 @@ contract OZLtokenTest is TestMethods {
         //Actions
         uint oneYear = 31560000;
         vm.prank(owner);
+
+        console.log(41);
+
         OZ.startNewReciclingCampaign(oneYear); 
 
+        console.log(42);
+
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
+        console.log(43);
         uint newOzTokenBalance = ozERC20.balanceOf(alice);
+        console.log(44);
+
+        console.log('oldOzTokenBalance:' , oldOzTokenBalance);
+        console.log('newOzTokenBalance: ', newOzTokenBalance);
 
         uint diff = (((oldOzTokenBalance * 2) - newOzTokenBalance) * 10_000) / newOzTokenBalance;
+
+        console.log(5);
 
         //Difference between balances is less than 0.57% (slippage)
         assertTrue(diff < 57);        
@@ -565,6 +568,9 @@ contract OZLtokenTest is TestMethods {
         uint diffUSDETH = _getRateDifference(rateUsd, rateEth, OZ.ETH_USD());
         uint diffETHRETH = _getRateDifference(rateEth, rateReth, OZ.rETH_ETH());
 
+        console.log('diffUSDETH: ', diffUSDETH);
+        console.log('diffETHRETH: ', diffETHRETH);
+
         assertTrue(diffUSDETH == 0);
         assertTrue(diffETHRETH == 0);
     }
@@ -663,12 +669,4 @@ contract OZLtokenTest is TestMethods {
         console.log('rate3: ', rate);
     }
 
-
-    function _getRateDifference(
-        uint baseRate_, 
-        uint quoteRate_,
-        uint exchangeRate_
-    ) internal pure returns(uint) {
-        return baseRate_ / 1000 - ((quoteRate_ * exchangeRate_) / 1 ether) / 1000;
-    }
 }

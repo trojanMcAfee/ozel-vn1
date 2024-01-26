@@ -78,8 +78,8 @@ contract ozOracle {
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_]; 
    
-        console.log('s.valuePerOzToken[ozToken_] in under: ', s.valuePerOzToken[ozToken_]);
-        console.log('reth bal: ', IERC20Permit(s.rETH).balanceOf(address(this)));
+        // console.log('s.valuePerOzToken[ozToken_] in under: ', s.valuePerOzToken[ozToken_]);
+        // console.log('reth bal: ', IERC20Permit(s.rETH).balanceOf(address(this)));
 
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
 

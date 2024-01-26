@@ -332,4 +332,12 @@ contract BaseMethods is Setup {
         ozl_.approve(address(ozl_), amount_);
     }
 
+    function _getRateDifference(
+        uint baseRate_, 
+        uint quoteRate_,
+        uint exchangeRate_
+    ) internal pure returns(uint) {
+        return baseRate_ / 1000 - ((quoteRate_ * exchangeRate_) / 1 ether) / 1000;
+    }
+
 }
