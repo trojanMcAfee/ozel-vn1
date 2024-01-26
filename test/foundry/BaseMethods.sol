@@ -330,10 +330,7 @@ contract BaseMethods is Setup {
     function _extractSlot(bytes32 key_, bytes32 pos_, uint offset_) internal pure returns(bytes32) {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
     }
-
-    function approve(IOZL ozl_, uint amount_) public { //remove this if not used
-        ozl_.approve(address(ozl_), amount_);
-    }
+    
 
     function _getRateDifference(
         uint baseRate_, 

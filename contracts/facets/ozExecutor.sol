@@ -73,7 +73,12 @@ contract ozExecutor is Modifiers { //change name to ozExecutor
         //minAmountsOut[1] - minRethOut
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
 
+        console.log(1);
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
+        console.log(2);
+        //^^^ finishg with SafeOzERC20 and put it here and in all safeTransfers
+        //with the custom ozErrors. Test that it works. Right now it fails wit the
+        //safeTransfer error
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(

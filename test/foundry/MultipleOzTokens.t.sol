@@ -106,10 +106,10 @@ contract MultipleOzTokensTest is TestMethods {
 
     function test_two_ozTokens_twoUsers_different_mint() public {
         //Pre-conditions
-        (ozIToken ozERC20_1, ozIToken ozERC20_2, uint amountInFirst, uint amountInSecond) =
+        (, ozIToken ozERC20_2,, uint amountInSecond) =
              test_createAndMint_two_ozTokens_oneUser();
 
-        _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond);
+        _mintOzTokens(ozERC20_2, bob, testToken, amountInSecond); //secondTestToken
 
         uint secs = 15;
         vm.warp(block.timestamp + secs);
@@ -126,8 +126,6 @@ contract MultipleOzTokensTest is TestMethods {
         //Post-condtions
         uint rewardRate = _getRewardRate();
 
-        uint ozlBalanceAlice_1 = ozERC20_1.balanceOf(alice);
-        // uint ozlBalanceBob_1 = ozERC20_1.balanceOf(bob);
         uint ozlBalanceAlice_2 = ozERC20_2.balanceOf(alice);
         uint ozlBalanceBob_2 = ozERC20_2.balanceOf(bob);
 
