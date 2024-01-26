@@ -14,7 +14,7 @@ contract MultipleOzTokensTest is TestMethods {
 
     //Tests the creation of different ozTokens and that their minting of tokens is 
     //done properly. 
-    function test_createAndMint_two_ozTokens() public {
+    function test_createAndMint_two_ozTokens_oneUser() public returns(ozIToken, ozIToken, uint) {
         //Pre-conditions  
         ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20-1", "ozERC20_1"
@@ -42,13 +42,15 @@ contract MultipleOzTokensTest is TestMethods {
 
         assertTrue(ozBalance_1 < amountInFirst && ozBalance_1 > (amountInFirst - 1 * 1e18));
         assertTrue(ozBalance_2 < amountInSecond_18dec && ozBalance_2 > (amountInSecond_18dec - 1 * 1e18));
+
+        return (ozERC20_1, ozERC20_2, amountInFirst);
     }
 
     
     //Tests that the OZL reward of one user is properly claimed with two ozTokens
     function test_claim_OZL_two_ozTokens() public {
         //Pre-conditions
-        test_createAndMint_two_ozTokens();
+        test_createAndMint_two_ozTokens_oneUser();
 
         uint secs = 15;
         vm.warp(block.timestamp + secs);
@@ -62,6 +64,40 @@ contract MultipleOzTokensTest is TestMethods {
         //Post-condition
         uint rewardRate = _getRewardRate();
         assertTrue(claimedReward / 100 == (rewardRate * secs) / 100);
+    }
+
+
+    function test_createAndMint_two_ozTokens_twoUsers() public {
+        //Pre-conditions
+        (ozIToken ozERC20_1, ozIToken ozERC20_2, uint amountInFirst) =
+             test_createAndMint_two_ozTokens_oneUser();
+
+        _mintOzTokens(ozERC20_1, bob, testToken, amountInFirst);
+
+        uint secs = 15;
+        vm.warp(block.timestamp + secs);
+
+        _mock_rETH_ETH();
+
+        uint ozlBalanceAlice_1 = ozERC20_1.balanceOf(alice);
+        uint ozlBalanceBob_1 = ozERC20_1.balanceOf(bob);
+        uint ozlBalanceAlice_2 = ozERC20_2.balanceOf(alice);
+
+        console.log('ozlBalanceAlice_1: ', ozlBalanceAlice_1);
+        console.log('ozlBalanceBob_1: ', ozlBalanceBob_1);
+        console.log('ozlBalanceAlice_2: ', ozlBalanceAlice_2);
+
+        vm.prank(alice);
+        uint rewardsAlice = OZ.claimReward();
+
+        vm.prank(bob);
+        uint rewardsBob = OZ.claimReward();
+
+        console.log('rewardsAlice: ', rewardsAlice);
+        console.log('rewardsBob: ', rewardsBob);
+
+
+
     }
 
 
