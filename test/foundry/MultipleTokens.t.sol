@@ -38,11 +38,8 @@ contract MultipleTokensTest is TestMethods {
 
         //Actions
         _startCampaign();
-
         _mintOzTokens(ozERC20_1, alice, testToken, amountInFirst);
-
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
-
         _mintOzTokens(ozERC20_2, alice, secondTestToken, amountInSecond);
 
         //Pre-conditions
@@ -53,6 +50,17 @@ contract MultipleTokensTest is TestMethods {
 
         assertTrue(ozBalance_1 < amountInFirst && ozBalance_1 > (amountInFirst - 1 * 1e18));
         assertTrue(ozBalance_2 < amountInSecond_18dec && ozBalance_2 > (amountInSecond_18dec - 1 * 1e18));
+    }
+
+
+    function test_claim_OZL_from_two_ozTokens() public {
+        //Pre-conditions
+        test_createAndMint_two_tokens();
+
+        
+
+
+
     }
 
 

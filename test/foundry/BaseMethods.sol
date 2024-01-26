@@ -340,4 +340,29 @@ contract BaseMethods is Setup {
         return baseRate_ / 1000 - ((quoteRate_ * exchangeRate_) / 1 ether) / 1000;
     }
 
+    function _getRewardRate() internal view returns(uint) {
+        (uint rate,,,,) = OZ.getRewardsData();
+        return rate;
+    }
+
+    function _getCirculatingSupply() internal view returns(uint) {
+        (,uint c_supply,,,) = OZ.getRewardsData();
+        return c_supply;
+    }
+
+    function _getPendingAllocation() internal view returns(uint) {
+        (,,uint p_alloc,,) = OZ.getRewardsData();
+        return p_alloc;
+    }
+
+    function _getRecicledSupply() internal view returns(uint) {
+        (,,,uint r_supply,) = OZ.getRewardsData();
+        return r_supply;
+    }
+
+    function _getDurationLeft() internal view returns(int) {
+        (,,,,int duration) = OZ.getRewardsData();
+        return duration;
+    }
+
 }

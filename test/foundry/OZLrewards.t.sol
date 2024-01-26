@@ -31,7 +31,7 @@ contract OZLrewardsTest is TestMethods {
         uint ozlBalanceOZLproxy = OZL.balanceOf(address(ozlProxy));
         assertTrue(ozlBalanceOZLproxy == totalSupplyOZL - ozlBalanceDiamond);
 
-        uint rewardRate =  OZ.getRewardRate();
+        uint rewardRate =  _getRewardRate();
         assertTrue(rewardRate == communityAmount / campaignDuration);
     }
 
@@ -57,7 +57,7 @@ contract OZLrewardsTest is TestMethods {
 
         //Post-conditions
         uint ozlEarned = OZ.earned(alice);
-        uint rewardsEarned = OZ.getRewardRate() * secs;
+        uint rewardsEarned = _getRewardRate() * secs;
         uint earnedDiff = rewardsEarned - ozlEarned;
 
         assertTrue(earnedDiff <= 1 && earnedDiff >= 0);
