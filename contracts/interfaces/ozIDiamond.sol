@@ -33,7 +33,7 @@ interface ozIDiamond {
     function useOzTokens(
         address owner_,
         bytes memory data_
-    ) external returns(uint);
+    ) external returns(uint, uint);
 
     function getDiamondAddr() external view returns(address);
     function getDefaultSlippage() external view returns(uint16);
@@ -94,5 +94,5 @@ interface ozIDiamond {
 
     function getLSDs() external view returns(address[] memory);
     function setRewardsDataExternally(address user_) external;
-    function setValuePerOzToken(address ozToken_, uint amount) external;
+    function setValuePerOzToken(address ozToken_, uint amount, bool addOrSub_) external;
 }

@@ -203,7 +203,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint amountRethOut = ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts); 
 
-        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountRethOut);
+        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountRethOut, true);
 
         uint shares = totalShares() == 0 ? assets : previewMint(assets);
 
@@ -234,7 +234,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         amountUnderlying = (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
     }
 
-
+    //properly check the data_ that's passed here, like if user's ozAmtIn corresponds to the rEthAmount they're passing also
     function redeem(bytes memory data_) external updateReward(msg.sender, _ozDiamond) returns(uint) {
         (
             uint ozAmountIn,,,,
@@ -247,10 +247,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint assets = previewRedeem(shares);
 
-        uint amountOut = ozIDiamond(_ozDiamond).useOzTokens(msg.sender, data_);
+        (uint amountRethOut, uint amountUnderlyingOut) = ozIDiamond(_ozDiamond).useOzTokens(msg.sender, data_);
         //^ put the owner_ here instead of msg.sender so contracts can act in behalf of the user
         //check other places where I've done the same: https://www.rareskills.io/post/compound-v3-bulker (non-custodial section)
         //test this ^ (in mint also)
+
+        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountRethOut, false);
 
         accountShares = sharesOf(_ozDiamond);
 
@@ -260,7 +262,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             _shares[_ozDiamond] = 0;
         }
 
-        return amountOut;
+        return amountUnderlyingOut;
     }
 
 

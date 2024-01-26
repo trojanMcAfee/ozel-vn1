@@ -111,7 +111,7 @@ contract ozExecutor is Modifiers { //change name to ozExecutor
     function useOzTokens(
         address owner_,
         bytes memory data_
-    ) external onlyOzToken returns(uint amountOut) {
+    ) external onlyOzToken returns(uint, uint) {
         //minAmountsOut[0] = minAmountOutWeth
         //minAmountsOut[1] = minAmountOutUnderlying
         (
@@ -124,7 +124,7 @@ contract ozExecutor is Modifiers { //change name to ozExecutor
         msg.sender.safeTransferFrom(owner_, address(this), ozAmountIn);
 
         //Swap rETH to WETH
-        amountOut = _checkPauseAndSwap(
+        uint amountOut = _checkPauseAndSwap(
             s.rETH,
             s.WETH,
             address(this), 
@@ -141,6 +141,8 @@ contract ozExecutor is Modifiers { //change name to ozExecutor
             amountOut,
             minAmountsOut[1]
         );
+
+        return (amountInReth, amountOut);
     }
 
     //Sends the OZL tokens from the owner back to the ozDiamond to be 

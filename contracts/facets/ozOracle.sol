@@ -53,12 +53,20 @@ contract ozOracle {
         return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 
-    function setValuePerOzToken(address ozToken_, uint amount_) external { //put an onlyOzToken mod
+    function setValuePerOzToken(address ozToken_, uint amount_, bool addOrSub_) external { //put an onlyOzToken mod
         // console.log('ozToken in oracle: ', ozToken_);
         // console.log('amount in orac: ', amount_);
         
-        s.valuePerOzToken[ozToken_] += amount_;
+        // s.valuePerOzToken[ozToken_] += amount_;
         // console.log('s.valuePerOzToken[ozToken_]: ', s.valuePerOzToken[ozToken_]);
+
+        // if (addOrSub_) {
+        //     s.valuePerOzToken[ozToken_] += amount_;
+        // } else {
+        //     s.valuePerOzToken[ozToken_] -= amount_;
+        // }
+
+        addOrSub_ ? s.valuePerOzToken[ozToken_] += amount_ : s.valuePerOzToken[ozToken_] -= amount_; 
     }
 
 
