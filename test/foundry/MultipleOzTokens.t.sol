@@ -63,7 +63,7 @@ contract MultipleOzTokensTest is TestMethods {
 
         //Post-condition
         uint rewardRate = _getRewardRate();
-        assertTrue(claimedReward / 100 == (rewardRate * secs) / 100);
+        assertTrue(claimedReward / 1000 == (rewardRate * secs) / 1000);
     }
 
 
@@ -99,6 +99,14 @@ contract MultipleOzTokensTest is TestMethods {
 
         assertTrue((rewardsBob + rewardsAlice) / 1000 == (rewardRate * secs) / 1000);
         assertTrue(rewardsBob < rewardsAlice);
+    }
+
+
+    function test_two_ozTokens_twoUsers_different_mint() internal {
+
+
+
+
     }
 
 
