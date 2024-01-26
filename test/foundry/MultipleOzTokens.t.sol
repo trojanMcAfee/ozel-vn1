@@ -10,18 +10,12 @@ import {TestMethods} from "./TestMethods.sol";
 import "forge-std/console.sol";
 
 
-contract MultipleTokensTest is TestMethods {
+contract MultipleOzTokensTest is TestMethods {
 
     //Tests the creation of different ozTokens and that their minting of tokens is 
     //done properly. 
     function test_createAndMint_two_ozTokens() public {
-        //Pre-conditions
-        bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
-            bytes32(0)
-        );
-        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
-        
+        //Pre-conditions  
         ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20-1", "ozERC20_1"
         ));
@@ -38,7 +32,6 @@ contract MultipleTokensTest is TestMethods {
         //Actions
         _startCampaign();
         _mintOzTokens(ozERC20_1, alice, testToken, amountInFirst);
-        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
         _mintOzTokens(ozERC20_2, alice, secondTestToken, amountInSecond);
 
         //Pre-conditions
