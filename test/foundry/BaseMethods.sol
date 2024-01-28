@@ -109,19 +109,14 @@ contract BaseMethods is Setup {
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         vm.startPrank(user_);
-        console.log(1);
         IERC20(token_).safeApprove(address(OZ), amountIn_);
-        console.log('allowance in test: ', IERC20(token_).allowance(user_, address(OZ)));
-        console.log(2);
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
             minAmountsOut
         );
-        console.log(3);
 
         ozERC20_.mint(abi.encode(amounts, user_));         
-        console.log(4);
         vm.stopPrank();
     }
 

@@ -73,11 +73,7 @@ contract ozEngine is Modifiers { //change name to ozEngine
         //minAmountsOut[1] - minRethOut
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
 
-        console.log('---');
-        console.log('amountIn: ', amountIn);
-        console.log('allow in engine: ', IERC20Permit(underlying_).allowance(owner_, address(this)));
         underlying_.safeTransferFrom(owner_, address(this), amountIn);
-        console.log(12);
         //^^^ finishg with SafeOzERC20 and put it here and in all safeTransfers
         //with the custom ozErrors.
         //To make it fail, change secondTestToken for testToken in test_two_ozTokens_twoUsers_different_mint()
