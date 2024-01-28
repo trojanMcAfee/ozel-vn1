@@ -93,6 +93,7 @@ contract Setup is Test {
 
     address internal testToken;
     address internal secondTestToken;
+    address internal thirdTestToken;
 
 
     //Default diamond contracts and facets
@@ -202,9 +203,13 @@ contract Setup is Test {
         uint amountBob = baseAmount * 2;
         uint amountCharlie = baseAmount * 3;
 
-        address[] memory tokens = new address[](isSecond_ ? 2 : 1);
+        address[] memory tokens = new address[](isSecond_ ? 3 : 1);
         tokens[0] = testToken;
-        if (isSecond_) tokens[1] = secondTestToken;
+        
+        if (isSecond_) {
+            tokens[1] = secondTestToken;
+            tokens[2] = thirdTestToken;
+        }
         
 
         for (uint i=0; i<tokens.length; i++) {
@@ -220,6 +225,7 @@ contract Setup is Test {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
         testToken = daiAddr;
         secondTestToken = testToken == daiAddr ? usdcAddr : daiAddr;
+        thirdTestToken = usdtAddr;
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
 
         //Initial users config

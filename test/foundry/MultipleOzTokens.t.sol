@@ -15,22 +15,24 @@ contract MultipleOzTokensTest is TestMethods {
 
     function test_x() public {
         //Pre-conditions
-        (ozIToken ozERC20_1, ozIToken ozERC20_2,,) =
+        (ozIToken ozERC20_1, ozIToken ozERC20_2,,, uint amountInThird) =
              test_createAndMint_two_ozTokens_oneUser();
 
         ozIToken ozERC20_3 = ozIToken(OZ.createOzToken(
-            usdtAddr, "Ozel-ERC20-3", "ozERC20_3"
+            thirdTestToken, "Ozel-ERC20-3", "ozERC20_3"
         ));
 
-        bool is2 = OZ.isInRegistry(usdtAddr);
-        console.log('is: ', is2);
+        _mintOzTokens(ozERC20_3, alice, thirdTestToken, amountInThird);
+
+        uint x = ozERC20_3.balanceOf(alice);
+        console.log('bal: ', x);
     }
 
 
     //Tests the creation of different ozTokens and that their minting of tokens is 
     //done properly. 
     function test_createAndMint_two_ozTokens_oneUser() public returns(
-        ozIToken, ozIToken, uint, uint
+        ozIToken, ozIToken, uint, uint, uint
     ) {
         //Pre-conditions  
         ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
@@ -45,6 +47,7 @@ contract MultipleOzTokensTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountInFirst = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         uint amountInSecond = (rawAmount / 2) * 10 ** IERC20Permit(secondTestToken).decimals();
+        uint amountInThird = (rawAmount / 3) * 10 ** IERC20Permit(thirdTestToken).decimals();
 
         //Actions
         _startCampaign();
@@ -60,7 +63,7 @@ contract MultipleOzTokensTest is TestMethods {
         assertTrue(ozBalance_1 < amountInFirst && ozBalance_1 > (amountInFirst - 1 * 1e18));
         assertTrue(ozBalance_2 < amountInSecond_18dec && ozBalance_2 > (amountInSecond_18dec - 1 * 1e18));
 
-        return (ozERC20_1, ozERC20_2, amountInFirst, amountInSecond);
+        return (ozERC20_1, ozERC20_2, amountInFirst, amountInSecond, amountInThird);
     }
 
     
@@ -87,7 +90,7 @@ contract MultipleOzTokensTest is TestMethods {
     //Tests that two users can claim OZL rewards from minting from two different ozTokens
     function test_two_ozTokens_twoUsers_same_mint() public {
         //Pre-conditions
-        (ozIToken ozERC20_1, ozIToken ozERC20_2, uint amountInFirst,) =
+        (ozIToken ozERC20_1, ozIToken ozERC20_2, uint amountInFirst,,) =
              test_createAndMint_two_ozTokens_oneUser();
 
         _mintOzTokens(ozERC20_1, bob, testToken, amountInFirst);
@@ -123,7 +126,7 @@ contract MultipleOzTokensTest is TestMethods {
     //from the same ozToken
     function test_two_ozTokens_twoUsers_different_mint() public {
         //Pre-conditions
-        (, ozIToken ozERC20_2,, uint amountInSecond) =
+        (, ozIToken ozERC20_2,, uint amountInSecond,) =
              test_createAndMint_two_ozTokens_oneUser();
 
         _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond);

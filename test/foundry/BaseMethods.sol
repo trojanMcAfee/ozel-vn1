@@ -13,6 +13,8 @@ import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol
 import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -20,6 +22,7 @@ import "forge-std/console.sol";
 contract BaseMethods is Setup {
 
     using FixedPointMathLib for uint;
+    using SafeERC20 for IERC20;
 
     function _createAndMintOzTokens(
         address testToken_,
@@ -106,14 +109,19 @@ contract BaseMethods is Setup {
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         vm.startPrank(user_);
-        IERC20Permit(token_).approve(address(OZ), amountIn_);
+        console.log(1);
+        IERC20(token_).safeApprove(address(OZ), amountIn_);
+        console.log('allowance in test: ', IERC20(token_).allowance(user_, address(OZ)));
+        console.log(2);
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
             minAmountsOut
         );
+        console.log(3);
 
         ozERC20_.mint(abi.encode(amounts, user_));         
+        console.log(4);
         vm.stopPrank();
     }
 
@@ -330,7 +338,7 @@ contract BaseMethods is Setup {
     function _extractSlot(bytes32 key_, bytes32 pos_, uint offset_) internal pure returns(bytes32) {
         return bytes32(uint(keccak256(abi.encodePacked(key_, pos_))) + offset_);
     }
-    
+
 
     function _getRateDifference(
         uint baseRate_, 
