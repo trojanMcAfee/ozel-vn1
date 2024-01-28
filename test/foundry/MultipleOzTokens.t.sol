@@ -12,6 +12,21 @@ import "forge-std/console.sol";
 
 contract MultipleOzTokensTest is TestMethods {
 
+
+    function test_x() public {
+        //Pre-conditions
+        (ozIToken ozERC20_1, ozIToken ozERC20_2,,) =
+             test_createAndMint_two_ozTokens_oneUser();
+
+        ozIToken ozERC20_3 = ozIToken(OZ.createOzToken(
+            usdtAddr, "Ozel-ERC20-3", "ozERC20_3"
+        ));
+
+        bool is2 = OZ.isInRegistry(usdtAddr);
+        console.log('is: ', is2);
+    }
+
+
     //Tests the creation of different ozTokens and that their minting of tokens is 
     //done properly. 
     function test_createAndMint_two_ozTokens_oneUser() public returns(
