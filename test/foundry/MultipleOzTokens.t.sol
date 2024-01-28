@@ -37,24 +37,25 @@ contract MultipleOzTokensTest is TestMethods {
         uint balBob_2 = ozERC20_2.balanceOf(bob);
         uint balCharlie_3 = ozERC20_3.balanceOf(charlie);
 
-        console.log('balAlice_1: ', balAlice_1);
-        console.log('balAlice_2: ', balAlice_2);
-        console.log('balBob_2: ', balBob_2);
-        console.log('balCharlie_3: ', balCharlie_3);
-        
-        console.log('---');
+        (
+            , uint circulatingSupplyPre,
+            uint pendingAllocationPre,
+            uint recicledSupplyPre,
+        ) = OZ.getRewardsData();
 
+        assertTrue(circulatingSupplyPre == 0);
+        assertTrue(pendingAllocationPre == communityAmount);
+        assertTrue(recicledSupplyPre == 0);
+
+        //Actions
         vm.prank(alice);
         uint claimedAlice = OZ.claimReward();
-        console.log('claimedAlice: ', claimedAlice);
 
         vm.prank(bob);
         uint claimedBob = OZ.claimReward();
-        console.log('claimedBob: ', claimedBob);
 
         vm.prank(charlie);
         uint claimedCharlie = OZ.claimReward();
-        console.log('claimedCharlie: ', claimedCharlie);
 
         //Post-conditions
         assertTrue((balBob_2 * 3) / 1e17 == (balAlice_1 + balAlice_2) / 1e17);
@@ -62,6 +63,16 @@ contract MultipleOzTokensTest is TestMethods {
 
         assertTrue((claimedBob * 3) / 1e15 == claimedAlice / 1e15);
         assertTrue(((claimedBob / 3) + claimedCharlie) / 1e16 == claimedBob / 1e16);
+
+        (
+            , uint circulatingSupplyPost,
+            uint pendingAllocationPost,
+            uint recicledSupplyPost,
+        ) = OZ.getRewardsData();
+
+        assertTrue(circulatingSupplyPost / 1e4 == (claimedAlice + claimedBob + claimedCharlie) / 1e4);
+        assertTrue(pendingAllocationPost + circulatingSupplyPost == communityAmount);
+        assertTrue(recicledSupplyPre == 0);
     }
 
 
