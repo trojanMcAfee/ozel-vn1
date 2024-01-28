@@ -69,7 +69,7 @@ contract MultipleOzTokensTest is TestMethods {
     }
 
 
-    //Tests that two users can claim OZL rewards from minting from the same ozToken
+    //Tests that two users can claim OZL rewards from minting from two different ozTokens
     function test_two_ozTokens_twoUsers_same_mint() public {
         //Pre-conditions
         (ozIToken ozERC20_1, ozIToken ozERC20_2, uint amountInFirst,) =
@@ -104,6 +104,8 @@ contract MultipleOzTokensTest is TestMethods {
     }
 
 
+    //Tests that OZL rewards are properly acrrued between two different users minting
+    //from the same ozToken
     function test_two_ozTokens_twoUsers_different_mint() public {
         //Pre-conditions
         (, ozIToken ozERC20_2,, uint amountInSecond) =
@@ -134,8 +136,6 @@ contract MultipleOzTokensTest is TestMethods {
 
         assertTrue((rewardsBob + rewardsAlice) / 1000 == (rewardRate * secs) / 1000);
         assertTrue(rewardsBob < rewardsAlice);
-
-
     }
 
 
