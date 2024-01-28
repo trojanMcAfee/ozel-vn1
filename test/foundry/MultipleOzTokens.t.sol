@@ -109,7 +109,7 @@ contract MultipleOzTokensTest is TestMethods {
         (, ozIToken ozERC20_2,, uint amountInSecond) =
              test_createAndMint_two_ozTokens_oneUser();
 
-        _mintOzTokens(ozERC20_2, bob, testToken, amountInSecond); //secondTestToken
+        _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond);
 
         uint secs = 15;
         vm.warp(block.timestamp + secs);
