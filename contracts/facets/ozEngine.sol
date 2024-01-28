@@ -33,7 +33,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 
 import "forge-std/console.sol";
 
-
+error MyErr2(string reason);
 
 contract ozEngine is Modifiers { //change name to ozEngine
 
@@ -73,7 +73,7 @@ contract ozEngine is Modifiers { //change name to ozEngine
         //minAmountsOut[1] - minRethOut
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
 
-        underlying_.safeTransferFrom(owner_, address(this), amountIn);
+        IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
         //^^^ finishg with SafeOzERC20 and put it here and in all safeTransfers
         //with the custom ozErrors.
         //To make it fail, change secondTestToken for testToken in test_two_ozTokens_twoUsers_different_mint()

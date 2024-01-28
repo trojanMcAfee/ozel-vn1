@@ -107,13 +107,13 @@ contract MultipleOzTokensTest is TestMethods {
 
 
     //Tests that OZL rewards are properly acrrued between two different users minting
-    //from the same ozToken
+    //from the same ozToken.
     function test_two_ozTokens_twoUsers_different_mint() public {
         //Pre-conditions
         (, ozIToken ozERC20_2,, uint amountInSecond,) =
              test_createAndMint_two_ozTokens_oneUser();
 
-        _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond);
+        _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond); //secondTestToken
 
         uint secs = 15;
         vm.warp(block.timestamp + secs);
