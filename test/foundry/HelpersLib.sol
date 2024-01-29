@@ -130,8 +130,6 @@ library HelpersLib {
             minAmountsOut[i] = expectedOut - expectedOut.mulDivDown(uint(slippage_), 10000);
         }
 
-        // console.log('minAmountsOut: ', minAmountsOut);
-
         return minAmountsOut;
     }
 

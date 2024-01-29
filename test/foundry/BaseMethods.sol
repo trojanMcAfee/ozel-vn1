@@ -166,9 +166,13 @@ contract BaseMethods is Setup {
             data = HelpersLib.encodeOutData(amountIn_, amountInReth, OZ, sender_);
 
         } else if (reqType_ == Type.IN) { 
-            uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-                [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(token_).decimals(), OZ.getDefaultSlippage()
-            );
+            // uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
+            //     [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(token_).decimals(), OZ.getDefaultSlippage()
+            // );
+
+            uint[] memory minAmountsOut = OZ.quoteAmountsIn(
+                amountIn_, testToken, OZ.getDefaultSlippage()
+            ).minAmountsOut;
 
             bytes32 permitHash = 
                 token_ == daiAddr ? _getPermitHashDAI(sender_, address(ozDiamond)) :

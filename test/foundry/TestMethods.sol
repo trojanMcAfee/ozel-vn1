@@ -73,7 +73,7 @@ contract TestMethods is BaseMethods {
     function _minting_approve_smallMint() internal {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();        
 
         //Action
         (ozIToken ozERC20, uint sharesAlice) = _createAndMintOzTokens(

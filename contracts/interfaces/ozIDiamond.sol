@@ -74,9 +74,6 @@ interface ozIDiamond {
         uint[] memory minAmountsOut_
     ) external returns(uint);
 
-    // function pendingAllocation() external view returns(uint);
-    // function durationLeft() external view returns(int);
-    // function getRecicledSupply() external view returns(uint);
     function modifySupply(uint ozlAmount_) external;
     function startNewReciclingCampaign(uint duration_) external;
 
@@ -103,4 +100,17 @@ interface ozIDiamond {
         uint recicledSupply,
         int durationLeft
     );
+
+    function quoteAmountsIn(
+        uint amountIn_,
+        address underlying_,
+        uint16 slippage_
+    ) external view returns(AmountsIn memory);
+
+    function getMintData(
+        uint amountIn_,
+        address underlying_,
+        uint16 slippage_,
+        address owner_
+    ) external view returns(bytes memory);
 }
