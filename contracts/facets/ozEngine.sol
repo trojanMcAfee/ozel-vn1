@@ -74,10 +74,6 @@ contract ozEngine is Modifiers { //change name to ozEngine
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
 
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
-        //^^^ finishg with SafeOzERC20 and put it here and in all safeTransfers
-        //with the custom ozErrors.
-        //To make it fail, change secondTestToken for testToken in test_two_ozTokens_twoUsers_different_mint()
-        //To test, put USDT as the testToken, but will need to modify stuff since it reverts with USDT
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(

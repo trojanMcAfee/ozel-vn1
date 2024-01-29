@@ -19,6 +19,7 @@ contract ozTokenTest is TestMethods {
 
     using SafeERC20 for IERC20;
 
+    //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
     function test_mint_catch_internal_errors() public {
         //Pre-conditions  
         ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
@@ -52,6 +53,7 @@ contract ozTokenTest is TestMethods {
     }
 
 
+    //Tests that the try/catch on ozToken's redeem() catches errors on safeTransfers
     function test_redeem_catch_internal_errors() public {
         //Pre-conditions
         _changeSlippage(uint16(9900));
@@ -75,14 +77,12 @@ contract ozTokenTest is TestMethods {
         //Action
         vm.startPrank(alice);
 
-        // ozERC20.approve(address(OZ), ozAmountIn);
         vm.expectRevert(
             abi.encodeWithSelector(OZError22.selector, 'STF')
         );
         ozERC20.redeem(redeemData); 
 
         vm.stopPrank();
-
     }
 
 
