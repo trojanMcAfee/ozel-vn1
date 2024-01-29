@@ -12,6 +12,8 @@ import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../../contracts/Errors.sol";
 
+import {Dummy1} from "./Dummy1.sol";
+
 import "forge-std/console.sol";
 
 
@@ -74,7 +76,7 @@ contract ozTokenTest is TestMethods {
             ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT
         );
 
-        //Action
+        //Actions
         vm.startPrank(alice);
 
         vm.expectRevert(
@@ -83,6 +85,40 @@ contract ozTokenTest is TestMethods {
         ozERC20.redeem(redeemData); 
 
         vm.stopPrank();
+    }
+
+
+    function test_z() public {
+        //Pre-conditions  
+        ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20-1", "ozERC20_1"
+        ));
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        (bytes memory data) = _createDataOffchain(
+            ozERC20_1, amountIn, ALICE_PK, alice, testToken, Type.IN
+        );
+
+        (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
+
+        Dummy1 dummy1 = Dummy1(address(ozERC20_1), address(OZ));
+
+        vm.startPrank(alice);
+        bool success = dummy1.mintOz();
+
+
+        // IERC20(testToken).approve(address(dummy1), amountIn);
+
+        // AmountsIn memory amounts = AmountsIn(
+        //     amountIn,
+        //     minAmountsOut
+        // );
+
+        // //Actions
+        // ozERC20_1.mint(abi.encode(amounts, alice));         
+        // vm.stopPrank();
     }
 
 

@@ -69,8 +69,10 @@ contract ozEngine is Modifiers { //change name to ozEngine
     ) external onlyOzToken returns(uint) { 
         uint amountIn = amounts_.amountIn;
 
-        //minAmountsOut[0] - minWethOut
-        //minAmountsOut[1] - minRethOut
+        /**
+         * minAmountsOut[0] - minWethOut
+         * minAmountsOut[1] - minRethOut
+         */
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
 
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
