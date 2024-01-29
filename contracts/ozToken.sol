@@ -202,7 +202,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint assets = amounts.amountIn.format(FORMAT_DECIMALS); 
 
         try ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts) returns(uint amountRethOut) {
-            ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountRethOut, true);
+            _setValuePerOzToken(amountRethOut, true);
 
             uint shares = totalShares() == 0 ? assets : previewMint(assets);
 
@@ -220,6 +220,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
     //-------------
 
+    function _setValuePerOzToken(uint amountOut, bool addOrSub_) private {
+        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountOut, addOrSub_);
+    }
 
     function _convertToSharesFromUnderlying(uint assets_) private view returns(uint) {
         return assets_.mulDivDown(totalShares(), totalAssets());
