@@ -19,7 +19,7 @@ contract ozTokenTest is TestMethods {
 
     using SafeERC20 for IERC20;
 
-    function test_catch_internal_errors_mint() public {
+    function test_mint_catch_internal_errors() public {
         //Pre-conditions  
         ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
             usdtAddr, "Ozel-ERC20-1", "ozERC20_1"
@@ -49,6 +49,40 @@ contract ozTokenTest is TestMethods {
 
         ozERC20_1.mint(abi.encode(amounts, alice));         
         vm.stopPrank();
+    }
+
+
+    function test_redeem_catch_internal_errors() public {
+        //Pre-conditions
+        _changeSlippage(uint16(9900));
+        _dealUnderlying(Quantity.BIG, false);
+
+        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        uint amountIn = IERC20Permit(testToken).balanceOf(alice);
+        assertTrue(amountIn == 1_000_000 * decimalsUnderlying);
+
+        (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
+        uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
+        assertTrue(balanceOzUsdcAlice > 977_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
+
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+        testToken = address(ozERC20);
+
+        bytes memory redeemData = _createDataOffchain(
+            ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT
+        );
+
+        //Action
+        vm.startPrank(alice);
+
+        // ozERC20.approve(address(OZ), ozAmountIn);
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError22.selector, 'STF')
+        );
+        ozERC20.redeem(redeemData); 
+
+        vm.stopPrank();
+
     }
 
 

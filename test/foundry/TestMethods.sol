@@ -275,12 +275,7 @@ contract TestMethods is BaseMethods {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-
-        console.log('value pre redeem: ', OZ.getUnderlyingValue(address(ozERC20)));
-
         ozERC20.redeem(redeemData); 
-
-        console.log('value post redeem: ', OZ.getUnderlyingValue(address(ozERC20)));
 
         //Post-conditions
         testToken = ozERC20.asset();
