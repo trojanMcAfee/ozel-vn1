@@ -103,10 +103,10 @@ contract ozTokenTest is TestMethods {
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
-        Dummy1 dummy1 = Dummy1(address(ozERC20_1), address(OZ));
+        Dummy1 dummy1 = new Dummy1(address(ozERC20_1), address(OZ));
 
         vm.startPrank(alice);
-        bool success = dummy1.mintOz();
+        bool success = dummy1.mintOz(address(0), uint(1)); //change
 
 
         // IERC20(testToken).approve(address(dummy1), amountIn);

@@ -4,6 +4,7 @@ pragma solidity 0.8.21;
 
 import {IVault, IAsset} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
+import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {FixedPointMathLib} from "./FixedPointMathLib.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
@@ -18,8 +19,6 @@ library Helpers {
     using FixedPointMathLib for uint;
     using Address for address;
 
-
-   
 
 
     function extract(bytes32 assetsAndShares_, TotalType type_) internal pure returns(uint) {
@@ -121,7 +120,7 @@ library Helpers {
         );
     }
 
-    function createRequest(
+    function createRequest( //perhaps join these two (below)
         address[] memory assets_,
         uint[] memory maxAmountsIn_, 
         bytes memory userData_
@@ -165,6 +164,12 @@ library Helpers {
         string memory str2_
     ) internal pure returns(bool) {
         return keccak256(abi.encodePacked(str1_)) == keccak256(abi.encodePacked(str2_));
+    }
+
+    function rETH_ETH(ozIDiamond OZ_) internal view returns(uint) {
+        bytes memory data = abi.encodeWithSignature('rETH_ETH()');
+        data = Address.functionStaticCall(address(OZ_), data);
+        return abi.decode(data, (uint));
     }
 
   

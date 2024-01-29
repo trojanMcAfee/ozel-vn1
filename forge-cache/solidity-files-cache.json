@@ -194,8 +194,8 @@
       }
     },
     "contracts/OZL.sol": {
-      "lastModificationDate": 1706483872503,
-      "contentHash": "664a1dcfc4c6e7c957a9a6706333741e",
+      "lastModificationDate": 1706557004049,
+      "contentHash": "4446cdff5d8852ba768b45b3181c4025",
       "sourceName": "contracts/OZL.sol",
       "solcConfig": {
         "settings": {
@@ -821,8 +821,8 @@
       }
     },
     "contracts/facets/ozLoupe.sol": {
-      "lastModificationDate": 1706117446382,
-      "contentHash": "ff15290104631e587e63a9cf5e00e33e",
+      "lastModificationDate": 1706561439657,
+      "contentHash": "0e48eeba71b649612ef8503892062a7a",
       "sourceName": "contracts/facets/ozLoupe.sol",
       "solcConfig": {
         "settings": {
@@ -856,14 +856,19 @@
       "imports": [
         "contracts/AppStorage.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
         "contracts/interfaces/IERC165.sol",
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/ozIDiamond.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
         "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
         "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
       ],
@@ -964,7 +969,9 @@
         "contracts/AppStorage.sol",
         "contracts/Errors.sol",
         "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
@@ -1601,8 +1608,8 @@
       }
     },
     "contracts/libraries/Helpers.sol": {
-      "lastModificationDate": 1705853129083,
-      "contentHash": "dc8efe1410e4ca8645b600c8ce485fc2",
+      "lastModificationDate": 1706561121750,
+      "contentHash": "758d800e2f72c8737053054395138092",
       "sourceName": "contracts/libraries/Helpers.sol",
       "solcConfig": {
         "settings": {
@@ -1634,10 +1641,16 @@
         }
       },
       "imports": [
+        "contracts/AppStorage.sol",
         "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/ozIDiamond.sol",
         "contracts/libraries/FixedPointMathLib.sol",
-        "node_modules/@openzeppelin/contracts/utils/Address.sol"
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
       ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
@@ -2651,6 +2664,47 @@
       "artifacts": {
         "console2": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "console2.sol/console2.json"
+        }
+      }
+    },
+    "lib/forge-std/src/interfaces/IERC20.sol": {
+      "lastModificationDate": 1679244653613,
+      "contentHash": "8099161d518e5862a76750349d58e801",
+      "sourceName": "lib/forge-std/src/interfaces/IERC20.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.6.2",
+      "artifacts": {
+        "IERC20": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "IERC20.sol/IERC20.json"
         }
       }
     },
@@ -4687,6 +4741,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -4829,6 +4884,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -4973,6 +5029,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -5117,6 +5174,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -5175,8 +5233,8 @@
       }
     },
     "test/foundry/Dummy1.sol": {
-      "lastModificationDate": 1706541192171,
-      "contentHash": "ae15994f0e9e232ee1e416a2266fbd54",
+      "lastModificationDate": 1706556890395,
+      "contentHash": "6a4d9f2a4fa05508c1c6138f62ba3ec5",
       "sourceName": "test/foundry/Dummy1.sol",
       "solcConfig": {
         "settings": {
@@ -5209,8 +5267,12 @@
       },
       "imports": [
         "contracts/AppStorage.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
         "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
       ],
@@ -5364,6 +5426,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -5508,6 +5571,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -5652,6 +5716,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -5796,6 +5861,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -5921,7 +5987,6 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
-        "contracts/libraries/TradingLib.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -6223,6 +6288,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
@@ -6277,8 +6343,8 @@
       }
     },
     "test/foundry/ozToken.t.sol": {
-      "lastModificationDate": 1706541419219,
-      "contentHash": "92953afe9395750889c21c22971bc583",
+      "lastModificationDate": 1706556890044,
+      "contentHash": "9111001574c6344334c37dd7985b5043",
       "sourceName": "test/foundry/ozToken.t.sol",
       "solcConfig": {
         "settings": {
@@ -6363,6 +6429,7 @@
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
         "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/access/Ownable.sol",
