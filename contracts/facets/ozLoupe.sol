@@ -65,6 +65,34 @@ contract ozLoupe is DiamondLoupeFacet {
         return AmountsIn(amountIn_, minAmountsOut);
     }
 
+
+    function quoteAmountsOut(
+        uint ozAmountIn_,
+        address ozToken_,
+        uint16 slippage_
+    ) public view returns(AmountsOut memory) {
+        uint amountInReth = ozERC20_.convertToUnderlying(
+            ozIToken(ozToken_).previewWithdraw(ozAmountIn_)
+        );
+
+        ozIDiamond OZ = ozIDiamond(address(this));
+        uint minAmountOutWeth = amountInReth.calculateMinAmountOut(Helpers.rETH_ETH(OZ), slippage_);
+        uint minAmountOutAsset = minAmountOutWeth.calculateMinAmountOut(OZ.ETH_USD(), slippage_);
+
+        uint[] memory minAmountsOut = new uint[](2);
+        minAmountsOut[0] = minAmountOutWeth;
+        minAmountsOut[1] = minAmountOutAsset;
+
+        return AmountsOut(ozAmountIn_, amountInReth, minAmountsOut);
+    }
+
+
+    function getRedeemData() external view returns(bytes memory) {
+        return abi.encode(quoteAmountsOut())
+    } //^^^ finish this, substitue these in ozToken.sol - redeem
+    //substitue in the tests for redeemin. Test everything
+
+
     function getMintData(
         uint amountIn_,
         address underlying_,

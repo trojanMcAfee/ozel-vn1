@@ -63,22 +63,25 @@ enum Action {
 }
 
 
-
-
 struct AmountsIn {
     uint amountIn;
     uint[] minAmountsOut;
 }
 
-
-
-
 struct AmountsOut {
-    uint128 ozAmountIn;
-    uint128 minWethOut;
-    uint bptAmountIn;
-    uint minUsdcOut;
+    uint ozAmmountIn;
+    uint amountInReth;
+    uint[] minAmountsOut;
 }
+
+
+
+// struct AmountsOut { //remove - think it's not used
+//     uint128 ozAmountIn;
+//     uint128 minWethOut;
+//     uint bptAmountIn;
+//     uint minUsdcOut;
+// }
 
 
 

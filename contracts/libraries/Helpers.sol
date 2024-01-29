@@ -172,5 +172,14 @@ library Helpers {
         return abi.decode(data, (uint));
     }
 
+    function calculateMinAmountOut(
+        uint amountIn_,
+        uint price_, 
+        uint16 slippage_
+    ) internal pure returns(uint minAmountOut) {
+        uint amountOut = amountIn_.mulDivDown(price_, 1 ether);
+        minAmountOut = amountOut - amountOut.mulDivDown(uint(slippage_), 10_000);
+    }
+
   
 }

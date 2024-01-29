@@ -71,7 +71,7 @@ library HelpersLib {
     }
 
   
-    function calculateMinAmountOut(
+    function calculateMinAmountOut( //check if this can be deleted since i put this func in Helpers.sol also
         uint amountIn_,
         uint price_, 
         uint16 slippage_
