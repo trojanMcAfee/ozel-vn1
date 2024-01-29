@@ -28,12 +28,6 @@ contract ozTokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
-        // vm.expectRevert(
-        //     abi.encodeWithSelector(OZError22.selector, 'SafeERC20: low-level call failed')
-        // );
-
-        // _mintOzTokens(ozERC20_1, alice, testToken, amountIn);
-
         (bytes memory data) = _createDataOffchain(
             ozERC20_1, amountIn, ALICE_PK, alice, testToken, Type.IN
         );
@@ -48,16 +42,14 @@ contract ozTokenTest is TestMethods {
             minAmountsOut
         );
 
+        //Actions
         vm.expectRevert(
             abi.encodeWithSelector(OZError22.selector, 'SafeERC20: low-level call failed')
         );
 
         ozERC20_1.mint(abi.encode(amounts, alice));         
         vm.stopPrank();
-
     }
-
-    //^^^ fix the terminal errors of this test
 
 
 }
