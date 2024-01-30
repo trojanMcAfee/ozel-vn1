@@ -95,9 +95,9 @@ contract ozLoupe is DiamondLoupeFacet {
         uint ozAmountIn_,
         address ozToken_,
         uint16 slippage_,
-        address owner_
+        address receiver_
     ) external view returns(bytes memory) {
-        return abi.encode(quoteAmountsOut(ozAmountIn_, ozToken_, slippage_), owner_);
+        return abi.encode(quoteAmountsOut(ozAmountIn_, ozToken_, slippage_), receiver_);
     } 
    
 
@@ -106,9 +106,9 @@ contract ozLoupe is DiamondLoupeFacet {
         uint amountIn_,
         address underlying_,
         uint16 slippage_,
-        address owner_
+        address receiver_
     ) external view returns(bytes memory) {
-        return abi.encode(quoteAmountsIn(amountIn_, underlying_, slippage_), owner_);
+        return abi.encode(quoteAmountsIn(amountIn_, underlying_, slippage_), receiver_);
     }
    
 

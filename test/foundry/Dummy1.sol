@@ -5,40 +5,37 @@ pragma solidity 0.8.21;
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {ozIDiamond} from "../../contracts/interfaces/ozIDiamond.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-// import {HelpersLib} from "../../contracts/libraries/HelpersLib.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+import "forge-std/console.sol";
 
 
 contract Dummy1 {
 
-    ozIToken ozToken;
+    ozIToken ozERC20;
     ozIDiamond OZ;
 
-    address ethUsdChainlink;
-    address rEthEthChainlink;
 
     constructor(address ozToken_, address oz_) {
-        ozToken = ozIToken(ozToken_);
+        ozERC20 = ozIToken(ozToken_);
         OZ = ozIDiamond(oz_);
     }
 
     function mintOz(address underlying_, uint amountIn_) external returns(bool) {
-        // uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-        //     [ethUsdChainlink, rEthEthChainlink], amountIn_ / 10 ** IERC20Permit(token_).decimals(), OZ.getDefaultSlippage()
-        // );
-        
-        // AmountsIn memory amounts = AmountsIn(
-        //     amountIn,
-        //     minAmountsOut
-        // );
+        bytes memory mintData = OZ.getMintData(
+            amountIn_,
+            underlying_,
+            OZ.getDefaultSlippage(),
+            msg.sender
+        );
 
-        // bytes memory data = abi.encode(amounts, msg.sender);
+        IERC20(underlying_).approve(address(OZ), amountIn_);
+        uint shares = ozERC20.mint(mintData);
 
-        // IERC20(underlying_).approve(address(OZ), amountIn_);
+        console.log('shares in dummy: ', shares);
 
-        // OZ.mint(data);
-
+        return shares > 0;
     }
 
 }

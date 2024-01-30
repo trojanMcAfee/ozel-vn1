@@ -97,17 +97,20 @@ contract ozTokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
-        (bytes memory data) = _createDataOffchain(
-            ozERC20_1, amountIn, ALICE_PK, alice, testToken, Type.IN
-        );
+        // (bytes memory data) = _createDataOffchain(
+        //     ozERC20_1, amountIn, ALICE_PK, alice, testToken, Type.IN
+        // );
 
-        (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
+        // (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         Dummy1 dummy1 = new Dummy1(address(ozERC20_1), address(OZ));
 
         vm.startPrank(alice);
-        bool success = dummy1.mintOz(address(0), uint(1)); //change
 
+        // IERC20(testToken).approve(address(OZ), amountIn);
+        bool success = dummy1.mintOz(testToken, amountIn); 
+
+        assertTrue(success);
 
         // IERC20(testToken).approve(address(dummy1), amountIn);
 
