@@ -109,6 +109,8 @@ contract ozTokenTest is TestMethods {
        
         vm.stopPrank();
 
+        _accrueRewards();
+
         uint x = OZ.earned(alice);
         console.log('earned - 0: ', x);
     }

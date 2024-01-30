@@ -381,4 +381,10 @@ contract BaseMethods is Setup {
         ); 
     }
 
+    function _accrueRewards() internal {
+        uint secs = 15;
+        vm.warp(block.timestamp + secs);
+        _mock_rETH_ETH();
+    }
+
 }
