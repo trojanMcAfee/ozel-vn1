@@ -196,14 +196,17 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function mint(bytes memory data_) external updateReward(msg.sender, _ozDiamond) returns(uint) { 
+    function mint(
+        bytes memory data_, 
+        address owner_
+    ) external updateReward(owner_, _ozDiamond) returns(uint) { 
         
-        (AmountsIn memory amts, address owner, address receiver) = 
-            abi.decode(data_, (AmountsIn, address, address));
+        (AmountsIn memory amts, address receiver) = 
+            abi.decode(data_, (AmountsIn, address));
 
         uint assets = amts.amountIn.format(FORMAT_DECIMALS); 
 
-        try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner, amts) returns(uint amountRethOut) {
+        try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner_, amts) returns(uint amountRethOut) {
             _setValuePerOzToken(amountRethOut, true);
 
             uint shares = totalShares() == 0 ? assets : previewMint(assets);

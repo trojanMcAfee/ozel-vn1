@@ -27,11 +27,10 @@ contract Dummy1 {
             amountIn_,
             underlying_,
             OZ.getDefaultSlippage(),
-            msg.sender,
             msg.sender
         );
 
-        uint shares = ozERC20.mint(mintData);
+        uint shares = ozERC20.mint(mintData, msg.sender);
 
         return shares > 0;
     }

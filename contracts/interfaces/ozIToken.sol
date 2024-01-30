@@ -46,12 +46,8 @@ interface ozIToken {
     function decimals() external view returns (uint8);
 
     function mint( 
-        AmountsIn memory amounts_,
-        address receiver
-    ) external returns(uint);
-
-    function mint( 
-        bytes memory data_
+        bytes memory data_,
+        address owner
     ) external returns(uint);
 
     function implementation() external view returns (address);

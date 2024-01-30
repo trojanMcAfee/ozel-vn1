@@ -111,7 +111,6 @@ interface ozIDiamond {
         uint amountIn_,
         address underlying_,
         uint16 slippage_,
-        address owner_,
         address receiver_
     ) external view returns(bytes memory);
 

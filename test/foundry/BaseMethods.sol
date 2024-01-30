@@ -61,7 +61,7 @@ contract BaseMethods is Setup {
         );
 
         bytes memory mintData = abi.encode(amounts, user_);
-        shares = ozERC20.mint(mintData); 
+        shares = ozERC20.mint(mintData, user_); 
         
         vm.stopPrank();
     }
@@ -116,7 +116,7 @@ contract BaseMethods is Setup {
             minAmountsOut
         );
 
-        ozERC20_.mint(abi.encode(amounts, user_));         
+        ozERC20_.mint(abi.encode(amounts, user_), user_);         
         vm.stopPrank();
     }
 
@@ -166,7 +166,7 @@ contract BaseMethods is Setup {
                 OZ.getDefaultSlippage(), 
                 sender_
             );
-            
+
         } else if (reqType_ == Type.IN) { 
             uint[] memory minAmountsOut = OZ.quoteAmountsIn(
                 amountIn_, testToken, OZ.getDefaultSlippage()

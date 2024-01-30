@@ -50,7 +50,7 @@ contract ozTokenTest is TestMethods {
             abi.encodeWithSelector(OZError22.selector, 'SafeERC20: low-level call failed')
         );
 
-        ozERC20_1.mint(abi.encode(amounts, alice));         
+        ozERC20_1.mint(abi.encode(amounts, alice), alice);         
         vm.stopPrank();
     }
 

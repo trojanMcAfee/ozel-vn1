@@ -66,7 +66,7 @@ contract OtherTests is TestMethods {
         vm.expectRevert(
             abi.encodeWithSelector(OZError21.selector, 'BAL#510')
         );
-        ozERC20.mint(mintData); 
+        ozERC20.mint(mintData, attacker); 
 
         /**
          * Action (attack)
