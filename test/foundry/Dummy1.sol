@@ -33,8 +33,6 @@ contract Dummy1 {
 
         uint shares = ozERC20.mint(mintData);
 
-        console.log('shares in dummy: ', shares);
-
         return shares > 0;
     }
 
