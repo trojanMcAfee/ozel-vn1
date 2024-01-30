@@ -107,7 +107,7 @@ contract ozTokenTest is TestMethods {
 
         vm.startPrank(alice);
 
-        // IERC20(testToken).approve(address(OZ), amountIn);
+        IERC20(testToken).approve(address(OZ), amountIn);
         bool success = dummy1.mintOz(testToken, amountIn); 
 
         assertTrue(success);

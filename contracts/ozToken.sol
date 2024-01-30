@@ -197,11 +197,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function mint(bytes memory data_) external updateReward(msg.sender, _ozDiamond) returns(uint) { 
-        (AmountsIn memory amounts, address receiver_) = abi.decode(data_, (AmountsIn, address));
+        
+        (AmountsIn memory amounts, address owner, address receiver) = 
+            abi.decode(data_, (AmountsIn, address, address));
 
         uint assets = amounts.amountIn.format(FORMAT_DECIMALS); 
 
-        try ozIDiamond(_ozDiamond).useUnderlying(asset(), msg.sender, amounts) returns(uint amountRethOut) {
+        try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner, amounts) returns(uint amountRethOut) {
             _setValuePerOzToken(amountRethOut, true);
 
             uint shares = totalShares() == 0 ? assets : previewMint(assets);
@@ -209,7 +211,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             _setAssetsAndShares(assets, shares, true);
 
             unchecked {
-                _shares[receiver_] += shares;
+                _shares[receiver] += shares;
             }
 
             return shares;
@@ -242,7 +244,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //properly check the data_ that's passed here, like if user's ozAmtIn corresponds to the rEthAmount they're passing also
     function redeem(bytes memory data_) external updateReward(msg.sender, _ozDiamond) returns(uint) {
-        
+
         (AmountsOut memory amts,) = abi.decode(data_, (AmountsOut, address));
 
         uint256 accountShares = sharesOf(msg.sender);

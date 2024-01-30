@@ -27,10 +27,10 @@ contract Dummy1 {
             amountIn_,
             underlying_,
             OZ.getDefaultSlippage(),
+            msg.sender,
             msg.sender
         );
 
-        IERC20(underlying_).approve(address(OZ), amountIn_);
         uint shares = ozERC20.mint(mintData);
 
         console.log('shares in dummy: ', shares);
