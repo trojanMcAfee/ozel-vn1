@@ -242,10 +242,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //properly check the data_ that's passed here, like if user's ozAmtIn corresponds to the rEthAmount they're passing also
     function redeem(bytes memory data_) external updateReward(msg.sender, _ozDiamond) returns(uint) {
-        // (
-        //     uint ozAmountIn,,,,
-        // ) = abi.decode(data_, (uint, uint, uint, uint, address));
-
+        
         (AmountsOut memory amts,) = abi.decode(data_, (AmountsOut, address));
 
         uint256 accountShares = sharesOf(msg.sender);

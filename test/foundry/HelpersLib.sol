@@ -88,19 +88,6 @@ library HelpersLib {
         return amountIn_ - amountIn_.mulDivDown(uint(slippage_), 10000);
     }
 
-    //remove this one below if not used (thinks it's not)
-    function encodeOutData(uint ozAmountIn_, uint amountInReth_, ozIDiamond oz_, address receiver_) internal returns(bytes memory data) {
-        uint16 slippage = oz_.getDefaultSlippage();
-        uint minAmountOutWeth = calculateMinAmountOut(amountInReth_, oz_.rETH_ETH(), slippage);
-        uint minAmountOutUnderlying = calculateMinAmountOut(minAmountOutWeth, oz_.ETH_USD(), slippage);
-
-        uint[] memory minAmountsOut = new uint[](2);
-        minAmountsOut[0] = minAmountOutWeth;
-        minAmountsOut[1] = minAmountOutUnderlying;
-        
-        data = abi.encode(ozAmountIn_, amountInReth_, minAmountsOut, receiver_);
-    }
-
 
     function extract(bytes memory data_) internal pure returns(
         uint[] memory minAmountsOut,
