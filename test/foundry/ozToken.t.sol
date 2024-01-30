@@ -88,7 +88,7 @@ contract ozTokenTest is TestMethods {
     }
 
 
-    function test_z() public {
+    function test_minting_different_owner_msgSender() public {
         //Pre-conditions  
         ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
             testToken, "Ozel-ERC20-1", "ozERC20_1"
@@ -104,15 +104,21 @@ contract ozTokenTest is TestMethods {
         vm.startPrank(alice);
         IERC20(testToken).approve(address(OZ), amountIn);
 
+        //Actions
         bool success = dummy1.mintOz(testToken, amountIn); 
         assertTrue(success);
-       
+
+        uint secs = 15;
+        _accrueRewards(secs);
+
+        uint claimed = OZ.claimReward();
         vm.stopPrank();
 
-        _accrueRewards(15);
+        //Post-conditions
+        uint ozBalanceAlice = ozERC20_1.balanceOf(alice);
 
-        uint x = OZ.earned(alice);
-        console.log('earned - 0: ', x);
+        assertTrue(ozBalanceAlice > 99 * 1e18 && ozBalanceAlice < rawAmount * 1e18);
+        assertTrue((_getRewardRate() * secs) / 100 == claimed / 100);
     }
 
 
