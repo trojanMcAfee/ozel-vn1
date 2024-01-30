@@ -52,8 +52,8 @@ contract OZLrewardsTest is TestMethods {
         _startCampaign();
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
 
-        uint secs = 10;
-        vm.warp(block.timestamp + secs);
+        uint secs = 15;
+        _accrueRewards(secs);
 
         //Post-conditions
         uint ozlEarned = OZ.earned(alice);

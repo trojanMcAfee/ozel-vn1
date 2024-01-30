@@ -181,10 +181,7 @@ contract OZLtokenTest is TestMethods {
         _startCampaign();
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
-        uint secs = 10;
-        vm.warp(block.timestamp + secs);
-
-        _mock_rETH_ETH();
+        _accrueRewards(15);
 
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlBalancePre = OZL.balanceOf(alice);
@@ -568,10 +565,7 @@ contract OZLtokenTest is TestMethods {
         _startCampaign();
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
-        uint secs = 10;
-        vm.warp(block.timestamp + secs);
-
-        _mock_rETH_ETH();
+        _accrueRewards(15);
 
         _dealUnderlying(Quantity.BIG, false);
         _mintOzTokens(ozERC20, alice, testToken, amountIn); //<-- part the makes this function fail

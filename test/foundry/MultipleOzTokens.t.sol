@@ -57,9 +57,7 @@ contract MultipleOzTokensTest is TestMethods {
         test_createAndMint_two_ozTokens_oneUser();
 
         uint secs = 15;
-        vm.warp(block.timestamp + secs);
-
-        _mock_rETH_ETH();
+        _accrueRewards(secs);
 
         //Action
         vm.prank(alice);
@@ -80,9 +78,7 @@ contract MultipleOzTokensTest is TestMethods {
         _mintOzTokens(ozERC20_1, bob, testToken, amountInFirst);
 
         uint secs = 15;
-        vm.warp(block.timestamp + secs);
-
-        _mock_rETH_ETH();
+        _accrueRewards(secs);
 
         //Actions
         vm.prank(alice);
@@ -116,9 +112,7 @@ contract MultipleOzTokensTest is TestMethods {
         _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond); //secondTestToken
 
         uint secs = 15;
-        vm.warp(block.timestamp + secs);
-
-        _mock_rETH_ETH();
+        _accrueRewards(secs);
 
         //Actions
         vm.prank(alice);
@@ -154,10 +148,7 @@ contract MultipleOzTokensTest is TestMethods {
         _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond);
         _mintOzTokens(ozERC20_3, charlie, thirdTestToken, amountInThird);
 
-        uint secs = 15;
-        vm.warp(block.timestamp + secs);
-
-        _mock_rETH_ETH();
+        _accrueRewards(15);
 
         uint balAlice_1 = ozERC20_1.balanceOf(alice);
         uint balAlice_2 = ozERC20_2.balanceOf(alice);

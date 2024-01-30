@@ -381,9 +381,8 @@ contract BaseMethods is Setup {
         ); 
     }
 
-    function _accrueRewards() internal {
-        uint secs = 15;
-        vm.warp(block.timestamp + secs);
+    function _accrueRewards(uint secs_) internal {
+        vm.warp(block.timestamp + secs_);
         _mock_rETH_ETH();
     }
 
