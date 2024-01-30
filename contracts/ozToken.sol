@@ -266,7 +266,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         //check other places where I've done the same: https://www.rareskills.io/post/compound-v3-bulker (non-custodial section)
         //test this ^ (in mint also)
 
-        try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountUnderlyingOut) {
+        try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
             _setValuePerOzToken(amountRethOut, false);
 
             accountShares = sharesOf(_ozDiamond);
@@ -277,7 +277,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _shares[_ozDiamond] = 0;
             }
 
-            return amountUnderlyingOut;
+            return amountAssetOut;
         } catch Error(string memory reason) {
             revert OZError22(reason);
         }

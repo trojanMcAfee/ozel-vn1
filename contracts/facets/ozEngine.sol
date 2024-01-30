@@ -114,11 +114,12 @@ contract ozEngine is Modifiers { //change name to ozEngine
         address owner_,
         bytes memory data_
     ) external onlyOzToken returns(uint, uint) {
-        //minAmountsOut[0] = minAmountOutWeth
-        //minAmountsOut[1] = minAmountOutUnderlying
-
         (AmountsOut memory amts, address receiver) = abi.decode(data_, (AmountsOut, address));
         
+        /**
+         * minAmountsOut[0] = minAmountOutWeth
+         * minAmountsOut[1] = minAmountOutUnderlying
+         */
         uint[] memory minAmountsOut = amts.minAmountsOut;
         uint amountInReth = amts.amountInReth;
 
@@ -259,6 +260,10 @@ contract ozEngine is Modifiers { //change name to ozEngine
             recipient: payable(address(this)),
             toInternalBalance: false
         });
+
+        console.log('---');
+        console.log('amountIn_: ', amountIn_);
+        console.log('minAmountOut_: ', minAmountOut_);
 
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);

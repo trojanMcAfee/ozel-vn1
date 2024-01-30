@@ -11,6 +11,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "forge-std/console.sol";
 
 
+//Contract used to simulate minting/redeeming on behalf of an ozToken holder.
 contract Dummy1 {
 
     ozIToken ozERC20;
@@ -33,6 +34,19 @@ contract Dummy1 {
         uint shares = ozERC20.mint(mintData, msg.sender);
 
         return shares > 0;
+    }
+
+    function redeemOz(uint ozAmountIn_) external returns(bool) {
+        bytes memory redeemData = OZ.getRedeemData(
+            ozAmountIn_,
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            msg.sender
+        );
+
+        uint amountAssetOut = ozERC20.redeem(redeemData, msg.sender);
+        
+        return amountAssetOut > 0;
     }
 
 }
