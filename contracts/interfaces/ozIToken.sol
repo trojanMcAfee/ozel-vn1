@@ -47,7 +47,7 @@ interface ozIToken {
 
     function mint( 
         bytes memory data_,
-        address owner
+        address owner_
     ) external returns(uint);
 
     function implementation() external view returns (address);
@@ -57,7 +57,10 @@ interface ozIToken {
     function totalAssets() external view returns(uint);
 
 
-    function redeem(bytes memory data_) external returns(uint);
+    function redeem(
+        bytes memory data_,
+        address owner_
+    ) external returns(uint);
 
 
     function previewWithdraw(uint256 assets) external view returns (uint256 shares);

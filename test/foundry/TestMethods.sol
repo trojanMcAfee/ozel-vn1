@@ -275,7 +275,7 @@ contract TestMethods is BaseMethods {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        ozERC20.redeem(redeemData); 
+        ozERC20.redeem(redeemData, alice); 
 
         //Post-conditions
         testToken = ozERC20.asset();
@@ -310,7 +310,7 @@ contract TestMethods is BaseMethods {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.redeem(redeemData); 
+        uint underlyingOut = ozERC20.redeem(redeemData, alice); 
 
         //Post-conditions
         testToken = ozERC20.asset();
@@ -370,7 +370,7 @@ contract TestMethods is BaseMethods {
 
         //Redeems ozTokens for underlying.
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.redeem(redeemData);
+        uint underlyingOut = ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
 
         /**
@@ -413,7 +413,7 @@ contract TestMethods is BaseMethods {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.redeem(redeemData);
+        uint underlyingOut = ozERC20.redeem(redeemData, alice);
 
         //Post-conditions
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
@@ -465,7 +465,7 @@ contract TestMethods is BaseMethods {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.redeem(redeemData);
+        uint underlyingOut = ozERC20.redeem(redeemData, alice);
 
         //Post-conditions
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
@@ -514,7 +514,7 @@ contract TestMethods is BaseMethods {
             v, r, s
         );
 
-        ozERC20.redeem(redeemData); 
+        ozERC20.redeem(redeemData, alice); 
 
         //Post-conditions
         testToken = ozERC20.asset();
@@ -561,7 +561,7 @@ contract TestMethods is BaseMethods {
         // //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        uint underlyingOut = ozERC20.redeem(redeemData);
+        uint underlyingOut = ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
 
         // //Post-conditions

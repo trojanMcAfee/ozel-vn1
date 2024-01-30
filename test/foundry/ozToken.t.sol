@@ -82,7 +82,7 @@ contract ozTokenTest is TestMethods {
         vm.expectRevert(
             abi.encodeWithSelector(OZError22.selector, 'STF')
         );
-        ozERC20.redeem(redeemData); 
+        ozERC20.redeem(redeemData, alice); 
 
         vm.stopPrank();
     }

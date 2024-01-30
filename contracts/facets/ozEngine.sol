@@ -116,13 +116,6 @@ contract ozEngine is Modifiers { //change name to ozEngine
     ) external onlyOzToken returns(uint, uint) {
         //minAmountsOut[0] = minAmountOutWeth
         //minAmountsOut[1] = minAmountOutUnderlying
-        
-        // (
-        //     uint ozAmountIn,
-        //     uint amountInReth,
-        //     uint[] memory minAmountsOut, 
-        //     address receiver
-        // ) = abi.decode(data_, (uint, uint, uint[], address));
 
         (AmountsOut memory amts, address receiver) = abi.decode(data_, (AmountsOut, address));
         
