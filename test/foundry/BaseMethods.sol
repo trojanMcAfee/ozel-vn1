@@ -157,13 +157,20 @@ contract BaseMethods is Setup {
         address sender_,
         address token_,
         Type reqType_
-    ) internal returns(bytes memory data) {
+    ) internal view returns(bytes memory data) {
         if (reqType_ == Type.OUT) {
 
-            uint shares = ozERC20_.previewWithdraw(amountIn_); 
-            uint amountInReth = ozERC20_.convertToUnderlying(shares);
+            // uint shares = ozERC20_.previewWithdraw(amountIn_); 
+            // uint amountInReth = ozERC20_.convertToUnderlying(shares);
 
-            data = HelpersLib.encodeOutData(amountIn_, amountInReth, OZ, sender_);
+            // data = HelpersLib.encodeOutData(amountIn_, amountInReth, OZ, sender_);
+
+            data = OZ.getRedeemData(
+                amountIn_, 
+                address(ozERC20_), 
+                OZ.getDefaultSlippage(), 
+                sender_
+            );
 
         } else if (reqType_ == Type.IN) { 
             uint[] memory minAmountsOut = OZ.quoteAmountsIn(

@@ -3,11 +3,12 @@ pragma solidity 0.8.21;
 
 
 import {DiamondLoupeFacet} from "./DiamondLoupeFacet.sol";
-import {AppStorage, Asset, OZLrewards, AmountsIn} from "../AppStorage.sol";
+import {AppStorage, Asset, OZLrewards, AmountsIn, AmountsOut} from "../AppStorage.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {Helpers} from "../../contracts/libraries/Helpers.sol";
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
+import {ozIToken} from "../interfaces/ozIToken.sol";
+import {Helpers} from "../libraries/Helpers.sol";
+import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
 // import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20} from "../../lib/forge-std/src/interfaces/IERC20.sol";
 
@@ -17,6 +18,7 @@ import "forge-std/console.sol";
 contract ozLoupe is DiamondLoupeFacet {
 
     using FixedPointMathLib for uint;
+    using Helpers for uint;
 
     AppStorage private s;
 
@@ -71,8 +73,10 @@ contract ozLoupe is DiamondLoupeFacet {
         address ozToken_,
         uint16 slippage_
     ) public view returns(AmountsOut memory) {
-        uint amountInReth = ozERC20_.convertToUnderlying(
-            ozIToken(ozToken_).previewWithdraw(ozAmountIn_)
+        ozIToken ozERC20 = ozIToken(ozToken_);
+
+        uint amountInReth = ozERC20.convertToUnderlying(
+            ozERC20.previewWithdraw(ozAmountIn_)
         );
 
         ozIDiamond OZ = ozIDiamond(address(this));
@@ -87,10 +91,15 @@ contract ozLoupe is DiamondLoupeFacet {
     }
 
 
-    function getRedeemData() external view returns(bytes memory) {
-        return abi.encode(quoteAmountsOut())
-    } //^^^ finish this, substitue these in ozToken.sol - redeem
-    //substitue in the tests for redeemin. Test everything
+    function getRedeemData(
+        uint ozAmountIn_,
+        address ozToken_,
+        uint16 slippage_,
+        address owner_
+    ) external view returns(bytes memory) {
+        return abi.encode(quoteAmountsOut(ozAmountIn_, ozToken_, slippage_), owner_);
+    } 
+   
 
 
     function getMintData(

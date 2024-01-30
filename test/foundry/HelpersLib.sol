@@ -88,7 +88,7 @@ library HelpersLib {
         return amountIn_ - amountIn_.mulDivDown(uint(slippage_), 10000);
     }
 
-
+    //remove this one below if not used (thinks it's not)
     function encodeOutData(uint ozAmountIn_, uint amountInReth_, ozIDiamond oz_, address receiver_) internal returns(bytes memory data) {
         uint16 slippage = oz_.getDefaultSlippage();
         uint minAmountOutWeth = calculateMinAmountOut(amountInReth_, oz_.rETH_ETH(), slippage);

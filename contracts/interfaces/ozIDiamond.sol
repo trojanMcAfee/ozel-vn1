@@ -113,4 +113,17 @@ interface ozIDiamond {
         uint16 slippage_,
         address owner_
     ) external view returns(bytes memory);
+
+    function quoteAmountsOut(
+        uint ozAmountIn_,
+        address ozToken_,
+        uint16 slippage_
+    ) external view returns(AmountsOut memory);
+
+    function getRedeemData(
+        uint ozAmountIn_,
+        address ozToken_,
+        uint16 slippage_,
+        address owner_
+    ) external view returns(bytes memory);
 }

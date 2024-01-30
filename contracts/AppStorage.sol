@@ -69,20 +69,10 @@ struct AmountsIn {
 }
 
 struct AmountsOut {
-    uint ozAmmountIn;
+    uint ozAmountIn;
     uint amountInReth;
     uint[] minAmountsOut;
 }
-
-
-
-// struct AmountsOut { //remove - think it's not used
-//     uint128 ozAmountIn;
-//     uint128 minWethOut;
-//     uint bptAmountIn;
-//     uint minUsdcOut;
-// }
-
 
 
 enum Asset {
