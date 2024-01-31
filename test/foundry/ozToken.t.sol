@@ -109,7 +109,7 @@ contract ozTokenTest is TestMethods {
         assertTrue(success);
 
         uint secs = 15;
-        // _accrueRewards(secs);
+        _accrueRewards(secs);
 
         uint claimed = OZ.claimReward();
         vm.stopPrank();
@@ -117,8 +117,8 @@ contract ozTokenTest is TestMethods {
         //Post-conditions
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-        // assertTrue(ozBalanceAlice > 99 * 1e18 && ozBalanceAlice < rawAmount * 1e18);
-        // assertTrue((_getRewardRate() * secs) / 100 == claimed / 100);
+        assertTrue(ozBalanceAlice > 99 * 1e18 && ozBalanceAlice < rawAmount * 1e18);
+        assertTrue((_getRewardRate() * secs) / 100 == claimed / 100);
 
         return (dummy1, ozERC20);
     }
@@ -126,27 +126,39 @@ contract ozTokenTest is TestMethods {
 
     function test_redeeming_different_owner_msgSender() public {
         //Pre-conditions
-        (Dummy1 dummy1, ozIToken ozERC20) = test_minting_different_owner_msgSender();
+        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
+            testToken, "Ozel-ERC20", "ozERC20"
+        ));
 
-        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
-        console.log('ozBalanceAlice pre: ', ozBalanceAlice);
-        console.log('testToken bal pre: ', IERC20(testToken).balanceOf(alice));
-        console.log('----');
+        Dummy1 dummy1 = new Dummy1(address(ozERC20), address(OZ));
 
         vm.startPrank(alice);
+        IERC20(testToken).approve(address(OZ), amountIn);
 
-        ozERC20.approve(address(OZ), ozBalanceAlice);
-        bool success = dummy1.redeemOz(ozBalanceAlice);
+        bool success = dummy1.mintOz(testToken, amountIn); 
+        assertTrue(success);
+        
+        uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
+        uint testTokenBalanceAlicePre = IERC20(testToken).balanceOf(alice);
+
+        //Action
+        ozERC20.approve(address(OZ), ozBalanceAlicePre);
+        success = dummy1.redeemOz(ozBalanceAlicePre);
         assertTrue(success);
 
         vm.stopPrank();
 
+        //Post-conditions
         uint ozBalanceAlicePost = ozERC20.balanceOf(alice);
-        
-        console.log('ozBalanceAlicePost: ', ozBalanceAlicePost);
-        console.log('testToken bal ppost: ', IERC20(testToken).balanceOf(alice));
+        uint testTokenBalanceAlicePost = IERC20(testToken).balanceOf(alice);
 
+        assertTrue(ozBalanceAlicePre > 99 * 1e18 && ozBalanceAlicePre < rawAmount * 1e18);
+        assertTrue(ozBalanceAlicePost == 0);
+        assertTrue(testTokenBalanceAlicePre == 0);
+        assertTrue(testTokenBalanceAlicePost > 99 * 1e18 && testTokenBalanceAlicePost < rawAmount * 1e18);
 
 
     }

@@ -261,10 +261,6 @@ contract ozEngine is Modifiers { //change name to ozEngine
             toInternalBalance: false
         });
 
-        console.log('---');
-        console.log('amountIn_: ', amountIn_);
-        console.log('minAmountOut_: ', minAmountOut_);
-
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
     }

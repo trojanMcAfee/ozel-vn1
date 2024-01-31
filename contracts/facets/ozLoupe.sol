@@ -87,11 +87,6 @@ contract ozLoupe is DiamondLoupeFacet {
         minAmountsOut[0] = minAmountOutWeth;
         minAmountsOut[1] = minAmountOutAsset;
 
-        console.log('minAmountOutWeth in loupe ***: ', minAmountOutWeth);
-        console.log('amountInReth: ', amountInReth);
-        console.log('ozAmountIn_: ', ozAmountIn_);
-        console.log('slippage: ', slippage_);
-
         return AmountsOut(ozAmountIn_, amountInReth, minAmountsOut);
     }
 
