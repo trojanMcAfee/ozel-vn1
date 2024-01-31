@@ -36,9 +36,29 @@ contract ozOracle {
         return uint(price);
     }
 
+    // function ETH_USD() public view returns(uint) {
+    //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+    //     return uint(price) * 1e10;
+    // }
+
     function ETH_USD() public view returns(uint) {
         (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+        
+        
+        
+        
+        
         return uint(price) * 1e10;
+    }
+
+    function getTwapEth() public view returns(int256) { 
+        (int24 tick,) = OracleLibrary.consult(s.uniPoolETHUSD, uint32(10));
+
+        uint256 amountOut = OracleLibrary.getQuoteAtTick(
+            tick, 1 ether, s.WETH, s.USDC
+        );
+    
+        return int256(amountOut * 1e12); 
     }
 
     function rETH_USD() public view returns(uint) {
