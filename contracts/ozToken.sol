@@ -222,6 +222,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         } catch Error(string memory reason) {
             revert OZError22(reason);
         }
+
+        //put a mint even here
     }
     //-------------
 
@@ -281,6 +283,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         } catch Error(string memory reason) {
             revert OZError22(reason);
         }
+
+        //put a redeem event here
     }
 
 
