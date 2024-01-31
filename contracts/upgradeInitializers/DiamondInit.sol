@@ -64,6 +64,7 @@ contract DiamondInit {
         s.defaultSlippage = infra_.defaultSlippage;
         s.uniFee = infra_.uniFee;
         s.protocolFee = infra_.protocolFee;
+        s.uniFactory = infra_.uniFactory;
         s.adminFeeRecipient = ds.contractOwner;
 
         //ERC20s

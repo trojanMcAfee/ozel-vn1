@@ -296,7 +296,8 @@ contract Setup is Test {
             rocketPoolStorage: rocketPoolStorage,
             defaultSlippage: defaultSlippage,
             uniFee: uniPoolFee, //0.05 - 500,
-            protocolFee: protocolFee
+            protocolFee: protocolFee,
+            uniFactory: uniFactory
         });
 
         bytes memory initData = abi.encodeWithSelector(

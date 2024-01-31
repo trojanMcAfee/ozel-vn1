@@ -54,6 +54,8 @@ struct AppStorage {
     address[] LSDs;
 
     mapping(address ozToken => uint value) valuePerOzToken;
+
+    address uniFactory;
 }
 
 enum Action {
@@ -109,6 +111,7 @@ struct Infra {
     uint16 defaultSlippage; 
     uint24 uniFee;
     uint24 protocolFee;
+    address uniFactory;
 }
 
 //-----
