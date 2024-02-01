@@ -56,6 +56,7 @@ struct AppStorage {
     mapping(address ozToken => uint value) valuePerOzToken;
 
     address uniFactory;
+    address tellorOracle;
 }
 
 enum Action {
@@ -102,6 +103,7 @@ struct Dexes {
 struct Oracles {
     address ethUsdChainlink;
     address rEthEthChainlink;
+    address tellorOracle;
 }
 
 struct Infra { 

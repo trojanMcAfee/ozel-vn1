@@ -82,6 +82,9 @@ contract ozOracle {
     
         int priceUni = int(amountOut * 1e12);
         return uint(priceUni);
+
+        //-------
+        IUsingTellor(tellorOracle).getDataBefore()
     }
 
 

@@ -86,6 +86,7 @@ contract Setup is Test {
     address internal vaultBalancer; 
     address internal rEthWethPoolBalancer;
     address internal rEthEthChainlink;
+    address internal tellorOracle;
     //-- L1----
     address internal rocketPoolStorage;
     address internal rocketDAOProtocolSettingsDeposit;
@@ -190,6 +191,7 @@ contract Setup is Test {
             rocketPoolStorage = 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46;
             rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
             uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
+            tellorOracle = 0x8cFc184c877154a8F9ffE0fe75649dbe5e2DBEbf;
 
             network = "ethereum";
             mainBlockNumber = 18413614; //*18413614* - 18413618 - 18785221 (paused)
@@ -287,7 +289,8 @@ contract Setup is Test {
 
         Oracles memory oracles = Oracles({
             ethUsdChainlink: ethUsdChainlink,
-            rEthEthChainlink: rEthEthChainlink
+            rEthEthChainlink: rEthEthChainlink,
+            tellorOracle: tellorOracle
         });
 
         Infra memory infra = Infra({
