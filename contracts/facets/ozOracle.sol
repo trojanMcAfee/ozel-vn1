@@ -13,7 +13,7 @@ import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 import "../Errors.sol";
 
 import {OracleLibrary} from "../libraries/oracle/OracleLibrary.sol";
-import {IUniswapV3Factory} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol';
+import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 
 
 import "forge-std/console.sol";
@@ -44,13 +44,44 @@ contract ozOracle {
     //     return uint(price) * 1e10;
     // }
 
-    function ETH_USD() public view returns(uint) {
-        (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-        
-        //------
-        address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
+    function _getLinkPrice(address priceFeed_) private view returns(
+        bool, uint80, int, uint
+    ) {
+        (
+            uint80 roundId,
+            int answer,,
+            uint updatedAt,
+        ) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
 
-        // IUniswapV3Pool(pool).consult();
+        return (true, roundId, answer, updatedAt);
+    }
+
+    function ETH_USD() public view returns(uint price) {
+        (
+            bool success,
+            uint80 roundId,
+            int answer,
+            uint updatedAt
+        ) = _getLinkPrice(s.ethUsdChainlink);
+
+        if (
+            success &&
+            roundId != 0 && 
+            answer > 0 && 
+            updatedAt != 0 && 
+            updatedAt <= block.timestamp
+        ) {
+            price = uint(answer) * 1e10;
+        } else {
+            price = _callFallbackOracle();
+        }
+        console.log('price: ', price);
+        
+    }
+
+
+    function _callFallbackOracle() private view returns(uint) {
+        address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
 
         (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
 
@@ -58,25 +89,10 @@ contract ozOracle {
             tick, 1 ether, s.WETH, s.USDC
         );
     
-        int priceUni = int(amountOut * 1e12); 
-        console.log('priceUni ETHUSD: ', uint(priceUni));
-        //------
-        
-        uint x = uint(price) * 1e10;
-        console.log('x: ', uint(price) * 1e10);
-        
-        return x;
+        int priceUni = int(amountOut * 1e12);
+        return uint(priceUni);
     }
 
-    // function getTwapEth() public view returns(int256) { 
-    //     (int24 tick,) = OracleLibrary.consult(s.uniPoolETHUSD, uint32(10));
-
-    //     uint256 amountOut = OracleLibrary.getQuoteAtTick(
-    //         tick, 1 ether, s.WETH, s.USDC
-    //     );
-    
-    //     return int256(amountOut * 1e12); 
-    // }
 
     function rETH_USD() public view returns(uint) {
         return (rETH_ETH() * ETH_USD()) / 1 ether ^ 2;

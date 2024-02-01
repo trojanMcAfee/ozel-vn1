@@ -12,7 +12,7 @@ contract ozOracleTest is TestMethods {
     function test_ETH_USD() public {
 
         uint ethPrice = OZ.ETH_USD();
-        console.log('ethPrice in test: ', ethPrice);
+        console.log("ethPrice in test: ", ethPrice);
 
     }
 
