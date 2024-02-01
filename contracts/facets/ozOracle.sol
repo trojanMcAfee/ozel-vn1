@@ -26,8 +26,9 @@ contract ozOracle {
 
     AppStorage private s;
 
-    uint constant public TIMEOUT = 14400; //4 hours - put this inside AppStorage
+    uint constant public TIMEOUT = 4 hours; //14400 secs - put this inside AppStorage
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
+    
 
     event OzRewards(
         uint blockNumber, 
@@ -73,30 +74,38 @@ contract ozOracle {
         }
     }
 
-    function _callFallbackOracle() private view returns(uint) {
-        // address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
+    function _getUniPrice() private view returns(uint) {
+        address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
 
-        // (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
+        (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
 
-        // uint256 amountOut = OracleLibrary.getQuoteAtTick(
-        //     tick, 1 ether, s.WETH, s.USDC
-        // );
+        uint256 amountOut = OracleLibrary.getQuoteAtTick(
+            tick, 1 ether, s.WETH, s.USDC
+        );
     
-        // int priceUni = int(amountOut * 1e12);
-        // return uint(priceUni); //fix this
+        int priceUni = int(amountOut * 1e12);
+        return uint(priceUni); //fix this
+    }
 
-        //-------
-        console.log('here');
-        bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd"));
+
+    function _getTellorPrice() private view returns(uint) {
+        bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd")));
 
         (bool success, bytes memory value, uint timestamp) = 
-            IUsingTellor(payable(s.tellorOracle)).getDataBefore(queryId, block.timestamp - DISPUTE_BUFFER);
+            IUsingTellor(s.tellorOracle).getDataBefore(queryId, block.timestamp - DISPUTE_BUFFER);
 
-        console.logBytes(value);
-        uint price = abi.decode(value, (uint256));
-        console.log('price: ', price);
+        if (!success || block.timestamp - timestamp > TIMEOUT) revert OZError23();
 
-        return price;
+        return abi.decode(value, (uint));
+    }
+
+
+    function _callFallbackOracle() private view returns(uint) {
+    
+        uint uniPrice = _getUniPrice();
+        uint tellorPrice = _getTellorPrice();
+
+        return tellorPrice;
     }
 
 
