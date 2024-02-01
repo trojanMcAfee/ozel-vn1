@@ -25,6 +25,8 @@ contract ozOracle {
 
     AppStorage private s;
 
+    uint constant public TIMEOUT = 14400; //4 hours - put this inside AppStorage
+
     event OzRewards(
         uint blockNumber, 
         uint ozelFeesInRETH, 
@@ -33,74 +35,41 @@ contract ozOracle {
     );
 
 
-    //validate with lastTimeUpdated
     function rETH_ETH() public view returns(uint) {
         (,int price,,,) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
         return uint(price);
     }
 
-    // function ETH_USD() public view returns(uint) {
-    //     (,int price,,,) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
-    //     return uint(price) * 1e10;
-    // }
+
+    function ETH_USD() public view returns(uint) {
+        (bool success, uint price) = _getLinkPrice(s.ethUsdChainlink);
+        return success ? price : _callFallbackOracle();  
+    }
+
+    function rETH_USD() public view returns(uint) {
+        return (rETH_ETH() * ETH_USD()) / 1 ether ^ 2;
+    }
+
 
     function _getLinkPrice(address priceFeed_) private view returns(bool, uint) {
         (
             uint80 roundId,
             int answer,,
             uint updatedAt,
-        ) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
+        ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
         if (
             roundId != 0 && 
             answer > 0 && 
             updatedAt != 0 && 
-            updatedAt <= block.timestamp
+            updatedAt <= block.timestamp &&
+            block.timestamp - updatedAt <= TIMEOUT
         ) {
-            // price = uint(answer) * 1e10;
-            return (false, uint(answer) * 1e10);
+            return (true, uint(answer) * 1e10);
         } else {
             return (false, 0);
         }
-
-        // return (true, roundId, answer, updatedAt);
     }
-
-    function ETH_USD() public view returns(uint) {
-        // (
-        //     bool success,
-        //     uint80 roundId,
-        //     int answer,
-        //     uint updatedAt
-        // ) = _getLinkPrice(s.ethUsdChainlink);
-
-        // if (
-        //     success &&
-        //     roundId != 0 && 
-        //     answer > 0 && 
-        //     updatedAt != 0 && 
-        //     updatedAt <= block.timestamp
-        // ) {
-        //     price = uint(answer) * 1e10;
-        // } else {
-        //     price = _callFallbackOracle();
-        // }
-
-        //---------
-        (bool success, uint price) = _getLinkPrice(s.ethUsdChainlink);
-        return success ? price : _callFallbackOracle();
-
-        // if (success) {
-        //     return price;
-        // } else {
-        //     return _callFallbackOracle();
-        // }
-
-
-        // console.log('price: ', price);
-        
-    }
-
 
     function _callFallbackOracle() private view returns(uint) {
         address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
@@ -115,10 +84,6 @@ contract ozOracle {
         return uint(priceUni);
     }
 
-
-    function rETH_USD() public view returns(uint) {
-        return (rETH_ETH() * ETH_USD()) / 1 ether ^ 2;
-    }
 
 
     function setValuePerOzToken(address ozToken_, uint amount_, bool addOrSub_) external { //put an onlyOzToken mod
