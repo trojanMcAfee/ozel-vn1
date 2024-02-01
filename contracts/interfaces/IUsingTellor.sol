@@ -12,21 +12,15 @@ interface IUsingTellor {
  * @return _timestampRetrieved the value's timestamp
  */
 function getDataAfter(bytes32 _queryId, uint256 _timestamp)
-    public
+    external
     view
     returns (bytes memory _value, uint256 _timestampRetrieved);
 
-/**
-  * @dev Retrieves the latest value for the queryId before the specified timestamp
-  * @param _queryId is the queryId to look up the value for
-  * @param _timestamp before which to search for latest value
-  * @return _value the value retrieved
-  * @return _timestampRetrieved the value's timestamp
-  */
+
 function getDataBefore(bytes32 _queryId, uint256 _timestamp)
-    public
+    external
     view
-    returns (bytes memory _value, uint256 _timestampRetrieved);
+    returns (bool _ifRetrieve, bytes memory _value, uint256 _timestampRetrieved);
 
 /**
  * @dev Retrieves next array index of data after the specified timestamp for the queryId
@@ -36,7 +30,7 @@ function getDataBefore(bytes32 _queryId, uint256 _timestamp)
  * @return _index the next index found after the specified timestamp
  */
 function getIndexForDataAfter(bytes32 _queryId, uint256 _timestamp)
-    public
+    external
     view
     returns (bool _found, uint256 _index);
 
@@ -48,7 +42,7 @@ function getIndexForDataAfter(bytes32 _queryId, uint256 _timestamp)
  * @return _index the latest index found before the specified timestamp
  */
 function getIndexForDataBefore(bytes32 _queryId, uint256 _timestamp)
-    public
+    external
     view
     returns (bool _found, uint256 _index);
 
@@ -67,7 +61,7 @@ function getMultipleValuesBefore(
   uint256 _maxAge,
   uint256 _maxCount
 )
-  public
+  external
   view
   returns (bytes[] memory _values, uint256[] memory _timestamps);
 
@@ -77,7 +71,7 @@ function getMultipleValuesBefore(
  * @return uint256 count of the number of values received for the queryId
  */
 function getNewValueCountbyQueryId(bytes32 _queryId)
-  public
+  external
   view
   returns (uint256);
 
@@ -88,7 +82,7 @@ function getNewValueCountbyQueryId(bytes32 _queryId)
  * @return address of the reporter who reported the value for the data ID at the given timestamp
  */
 function getReporterByTimestamp(bytes32 _queryId, uint256 _timestamp)
-  public
+  external
   view
   returns (address);
 
@@ -99,7 +93,7 @@ function getReporterByTimestamp(bytes32 _queryId, uint256 _timestamp)
  * @return uint256 timestamp
  */
 function getTimestampbyQueryIdandIndex(bytes32 _queryId, uint256 _index)
-  public
+  external
   view
   returns (uint256);
 
@@ -110,7 +104,7 @@ function getTimestampbyQueryIdandIndex(bytes32 _queryId, uint256 _index)
  * @return bool true if queryId/timestamp is under dispute
  */
 function isInDispute(bytes32 _queryId, uint256 _timestamp)
-  public
+  external
   view
   returns (bool);
 
@@ -121,7 +115,7 @@ function isInDispute(bytes32 _queryId, uint256 _timestamp)
  * @return bytes value for query/timestamp submitted
  */
 function retrieveData(bytes32 _queryId, uint256 _timestamp)
-  public
+  external
   view
   returns (bytes memory);
 }

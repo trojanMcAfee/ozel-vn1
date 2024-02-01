@@ -10,6 +10,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
+import {IUsingTellor} from "../interfaces/IUsingTellor.sol";
 import "../Errors.sol";
 
 import {OracleLibrary} from "../libraries/oracle/OracleLibrary.sol";
@@ -26,6 +27,7 @@ contract ozOracle {
     AppStorage private s;
 
     uint constant public TIMEOUT = 14400; //4 hours - put this inside AppStorage
+    uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
 
     event OzRewards(
         uint blockNumber, 
@@ -65,26 +67,36 @@ contract ozOracle {
             updatedAt <= block.timestamp &&
             block.timestamp - updatedAt <= TIMEOUT
         ) {
-            return (true, uint(answer) * 1e10);
+            return (false, uint(answer) * 1e10);
         } else {
             return (false, 0);
         }
     }
 
     function _callFallbackOracle() private view returns(uint) {
-        address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
+        // address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
 
-        (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
+        // (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
 
-        uint256 amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, s.WETH, s.USDC
-        );
+        // uint256 amountOut = OracleLibrary.getQuoteAtTick(
+        //     tick, 1 ether, s.WETH, s.USDC
+        // );
     
-        int priceUni = int(amountOut * 1e12);
-        return uint(priceUni);
+        // int priceUni = int(amountOut * 1e12);
+        // return uint(priceUni); //fix this
 
         //-------
-        IUsingTellor(tellorOracle).getDataBefore()
+        console.log('here');
+        bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd"));
+
+        (bool success, bytes memory value, uint timestamp) = 
+            IUsingTellor(payable(s.tellorOracle)).getDataBefore(queryId, block.timestamp - DISPUTE_BUFFER);
+
+        console.logBytes(value);
+        uint price = abi.decode(value, (uint256));
+        console.log('price: ', price);
+
+        return price;
     }
 
 

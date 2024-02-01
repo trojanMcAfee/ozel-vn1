@@ -490,5 +490,6 @@ contract Setup is Test {
         vm.label(address(ozlProxy), "OZL_Proxy");
         vm.label(address(ozlAdmin), "OZL_Owner");
         vm.label(address(rewardsContract), "OZL_Rewards");
+        vm.label(tellorOracle, "tellorOracle");
     }
 }
