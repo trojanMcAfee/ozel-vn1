@@ -44,38 +44,60 @@ contract ozOracle {
     //     return uint(price) * 1e10;
     // }
 
-    function _getLinkPrice(address priceFeed_) private view returns(
-        bool, uint80, int, uint
-    ) {
+    function _getLinkPrice(address priceFeed_) private view returns(bool, uint) {
         (
             uint80 roundId,
             int answer,,
             uint updatedAt,
         ) = AggregatorV3Interface(s.ethUsdChainlink).latestRoundData();
 
-        return (true, roundId, answer, updatedAt);
-    }
-
-    function ETH_USD() public view returns(uint price) {
-        (
-            bool success,
-            uint80 roundId,
-            int answer,
-            uint updatedAt
-        ) = _getLinkPrice(s.ethUsdChainlink);
-
         if (
-            success &&
             roundId != 0 && 
             answer > 0 && 
             updatedAt != 0 && 
             updatedAt <= block.timestamp
         ) {
-            price = uint(answer) * 1e10;
+            // price = uint(answer) * 1e10;
+            return (false, uint(answer) * 1e10);
         } else {
-            price = _callFallbackOracle();
+            return (false, 0);
         }
-        console.log('price: ', price);
+
+        // return (true, roundId, answer, updatedAt);
+    }
+
+    function ETH_USD() public view returns(uint) {
+        // (
+        //     bool success,
+        //     uint80 roundId,
+        //     int answer,
+        //     uint updatedAt
+        // ) = _getLinkPrice(s.ethUsdChainlink);
+
+        // if (
+        //     success &&
+        //     roundId != 0 && 
+        //     answer > 0 && 
+        //     updatedAt != 0 && 
+        //     updatedAt <= block.timestamp
+        // ) {
+        //     price = uint(answer) * 1e10;
+        // } else {
+        //     price = _callFallbackOracle();
+        // }
+
+        //---------
+        (bool success, uint price) = _getLinkPrice(s.ethUsdChainlink);
+        return success ? price : _callFallbackOracle();
+
+        // if (success) {
+        //     return price;
+        // } else {
+        //     return _callFallbackOracle();
+        // }
+
+
+        // console.log('price: ', price);
         
     }
 
