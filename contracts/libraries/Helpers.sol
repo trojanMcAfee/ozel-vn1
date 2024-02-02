@@ -181,5 +181,16 @@ library Helpers {
         minAmountOut = amountOut - amountOut.mulDivDown(uint(slippage_), 10_000);
     }
 
+
+    function getMedium(uint num1, uint num2, uint num3) internal pure returns (uint) {
+        if ((num1 >= num2 && num1 <= num3) || (num1 <= num2 && num1 >= num3)) {
+            return num1;
+        } else if ((num2 >= num1 && num2 <= num3) || (num2 <= num1 && num2 >= num3)) {
+            return num2;
+        } else {
+            return num3;
+        }
+    }
+
   
 }

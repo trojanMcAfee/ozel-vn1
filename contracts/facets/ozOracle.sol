@@ -9,6 +9,7 @@ import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {Helpers} from "../../contracts/libraries/Helpers.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 import {IUsingTellor} from "../interfaces/IUsingTellor.sol";
 import "../Errors.sol";
@@ -16,8 +17,21 @@ import "../Errors.sol";
 import {OracleLibrary} from "../libraries/oracle/OracleLibrary.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 
-
 import "forge-std/console.sol";
+
+
+interface IChronicle {
+    function latestRoundData()
+        external
+        view
+        returns (
+            uint80 roundId,
+            int answer,
+            uint startedAt,
+            uint updatedAt,
+            uint80 answeredInRound
+        );
+}
 
 
 contract ozOracle {
@@ -46,7 +60,7 @@ contract ozOracle {
 
 
     function ETH_USD() public view returns(uint) {
-        (bool success, uint price) = _getLinkPrice(s.ethUsdChainlink);
+        (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
         return success ? price : _callFallbackOracle();  
     }
 
@@ -55,21 +69,34 @@ contract ozOracle {
     }
 
 
-    function _getLinkPrice(address priceFeed_) private view returns(bool, uint) {
+    function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
+        uint timeout = TIMEOUT_LINK;
+        uint BASE = 1e10;
+
+        if (!isLink_) {
+            timeout = TIMEOUT_CHRONICLE;
+            BASE = 1;
+
+            (, int answer2,,,) = IChronicle(priceFeed_).latestRoundData();
+            console.log('answer2: ', uint(answer2));
+        }
+
+        console.log(1);
         (
             uint80 roundId,
             int answer,,
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
+        console.log(2);
 
         if (
             roundId != 0 && 
             answer > 0 && 
             updatedAt != 0 && 
             updatedAt <= block.timestamp &&
-            block.timestamp - updatedAt <= TIMEOUT_LINK
+            block.timestamp - updatedAt <= timeout
         ) {
-            return (false, uint(answer) * 1e10);
+            return (false, uint(answer) * BASE);
         } else {
             return (false, 0); //check the heartbeat of this oracle - CL data feeds
         }
@@ -95,18 +122,20 @@ contract ozOracle {
         (bool success, bytes memory value, uint timestamp) = 
             IUsingTellor(s.tellorOracle).getDataBefore(queryId, block.timestamp - DISPUTE_BUFFER);
 
-        if (!success || block.timestamp - timestamp > TIMEOUT) revert OZError23();
+        if (!success || block.timestamp - timestamp > TIMEOUT_LINK) revert OZError23();
 
         return abi.decode(value, (uint));
     }
 
 
     function _callFallbackOracle() private view returns(uint) {
-    
         uint uniPrice = _getUniPrice();
         uint tellorPrice = _getTellorPrice();
+        (,uint chroniclePrice) = _useLinkInterface(s.chronicleFeedETHUSD, false);
 
-        return tellorPrice;
+        console.log('chroniclePrice: ', chroniclePrice);
+
+        return Helpers.getMedium(uniPrice, tellorPrice, chroniclePrice);
     }
 
 
