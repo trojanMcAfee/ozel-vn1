@@ -70,11 +70,26 @@ contract ozOracle {
 
 
     function _getRedPrice() private view returns(uint) {
-        
+        (,uint weETH_ETH) = _useLinkInterface2(s.weETHETHredStone, false);
+        (,uint weETH_USD) = _useLinkInterface2(s.weETHUSDredStone, false);
+        //why are these ^^^ reverting???
+
+        // 1 weETH -- weETH_ETH(1.02)
+        //     x(0.8) -----  1 eth
+
+        // 1 weETH ------- weETH_USD(2450)
+        //     x weETH  --- y
+
+
+        uint x = (1 ether / weETH_ETH).mulDivDown(weETH_USD, 1 ether);
+        console.log('red price: ', x);
+
+        return x;
+
     }
 
 
-    function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
+    function _useLinkInterface2(address priceFeed_, bool isLink_) private view returns(bool, uint) {
         uint timeout = TIMEOUT_LINK;
         uint BASE = 1e10;
 
@@ -89,6 +104,34 @@ contract ozOracle {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
         console.log(2);
+
+        if (
+            roundId != 0 && 
+            answer > 0 && 
+            updatedAt != 0 && 
+            updatedAt <= block.timestamp &&
+            block.timestamp - updatedAt <= timeout
+        ) {
+            return (true, uint(answer) * BASE);
+        } else {
+            return (false, 0); 
+        }
+    }
+
+    //real
+    function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
+        uint timeout = TIMEOUT_LINK;
+        uint BASE = 1e10;
+
+        if (!isLink_) {
+            timeout = TIMEOUT_EXTENDED;
+        }
+
+        (
+            uint80 roundId,
+            int answer,,
+            uint updatedAt,
+        ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
         if (
             roundId != 0 && 
@@ -129,20 +172,15 @@ contract ozOracle {
     }
 
 
-    function _getRedPrice() private view returns(uint) {
-        s.weETHUSDredStone
-        s.weETHETHredStone
-    }
-
 
     function _callFallbackOracle() private view returns(uint) {
         uint uniPrice = _getUniPrice();
         uint tellorPrice = _getTellorPrice();
-        (,uint chroniclePrice) = _useLinkInterface(s.chronicleFeedETHUSD, false);
+        
+        uint redPrice = _getRedPrice();
+        return redPrice;
 
-        console.log('chroniclePrice: ', chroniclePrice);
-
-        return Helpers.getMedium(uniPrice, tellorPrice, chroniclePrice);
+        // return Helpers.getMedium(uniPrice, tellorPrice, chroniclePrice);
     }
 
 

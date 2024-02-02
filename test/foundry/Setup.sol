@@ -294,7 +294,9 @@ contract Setup is Test {
         Oracles memory oracles = Oracles({
             ethUsdChainlink: ethUsdChainlink,
             rEthEthChainlink: rEthEthChainlink,
-            tellorOracle: tellorOracle
+            tellorOracle: tellorOracle,
+            weETHETHredStone: weETHETHredStone,
+            weETHUSDredStone: weETHUSDredStone
         });
 
         Infra memory infra = Infra({
@@ -495,5 +497,7 @@ contract Setup is Test {
         vm.label(address(ozlAdmin), "OZL_Owner");
         vm.label(address(rewardsContract), "OZL_Rewards");
         vm.label(tellorOracle, "tellorOracle");
+        vm.label(weETHETHredStone, "weETHETHredStone");
+        vm.label(weETHUSDredStone, "weETHUSDredStone");
     }
 }
