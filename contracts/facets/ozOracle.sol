@@ -70,7 +70,7 @@ contract ozOracle {
         ) {
             return (false, uint(answer) * 1e10);
         } else {
-            return (false, 0);
+            return (false, 0); //check the heartbeat of this oracle - CL data feeds
         }
     }
 
@@ -84,7 +84,7 @@ contract ozOracle {
         );
     
         int priceUni = int(amountOut * 1e12);
-        return uint(priceUni); //fix this
+        return uint(priceUni); //fix this - check ****
     }
 
 
