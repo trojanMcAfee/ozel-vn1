@@ -58,6 +58,8 @@ contract DiamondInit {
         s.ethUsdChainlink = oracles_.ethUsdChainlink;
         s.rEthEthChainlink = oracles_.rEthEthChainlink;
         s.tellorOracle = oracles_.tellorOracle;
+        s.weETHETHredStone = oracles_.weETHETHredStone;
+        s.weETHUSDredStone = oracles_.weETHUSDredStone;
 
         //Internal infrastructure
         s.ozDiamond = infra_.ozDiamond;

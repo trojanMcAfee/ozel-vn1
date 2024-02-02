@@ -104,6 +104,8 @@ struct Oracles {
     address ethUsdChainlink;
     address rEthEthChainlink;
     address tellorOracle;
+    address weETHETHredStone;
+    address weETHUSDredStone;
 }
 
 struct Infra { 

@@ -100,6 +100,12 @@ contract ozOracle {
     }
 
 
+    function _getRedPrice() private view returns(uint) {
+        s.weETHUSDredStone
+        s.weETHETHredStone
+    }
+
+
     function _callFallbackOracle() private view returns(uint) {
     
         uint uniPrice = _getUniPrice();
