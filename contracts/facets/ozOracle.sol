@@ -26,8 +26,9 @@ contract ozOracle {
 
     AppStorage private s;
 
-    uint constant public TIMEOUT = 4 hours; //14400 secs - put this inside AppStorage
+    uint constant public TIMEOUT_LINK = 4 hours; //14400 secs - put this inside AppStorage
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
+    uint constant public TIMEOUT_CHRONICLE = 25 hours;
     
 
     event OzRewards(
@@ -66,7 +67,7 @@ contract ozOracle {
             answer > 0 && 
             updatedAt != 0 && 
             updatedAt <= block.timestamp &&
-            block.timestamp - updatedAt <= TIMEOUT
+            block.timestamp - updatedAt <= TIMEOUT_LINK
         ) {
             return (false, uint(answer) * 1e10);
         } else {
