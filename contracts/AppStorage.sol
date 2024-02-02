@@ -57,7 +57,8 @@ struct AppStorage {
 
     address uniFactory;
     address tellorOracle;
-    address chronicleFeedETHUSD;
+    address weETHETHredStone;
+    address weETHUSDredStone;
 }
 
 enum Action {
@@ -105,7 +106,8 @@ struct Oracles {
     address ethUsdChainlink; //fix this vars so the look like Chronicle
     address rEthEthChainlink;
     address tellorOracle;
-    address chronicleFeedETHUSD;
+    address weETHETHredStone;
+    address weETHUSDredStone;
 }
 
 struct Infra { 

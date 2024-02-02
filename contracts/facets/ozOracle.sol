@@ -42,7 +42,7 @@ contract ozOracle {
 
     uint constant public TIMEOUT_LINK = 4 hours; //14400 secs - put this inside AppStorage
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
-    uint constant public TIMEOUT_CHRONICLE = 25 hours;
+    uint constant public TIMEOUT_EXTENDED = 25 hours;
     
 
     event OzRewards(
@@ -69,16 +69,17 @@ contract ozOracle {
     }
 
 
+    function _getRedPrice() private view returns(uint) {
+        
+    }
+
+
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
         uint timeout = TIMEOUT_LINK;
         uint BASE = 1e10;
 
         if (!isLink_) {
-            timeout = TIMEOUT_CHRONICLE;
-            BASE = 1;
-
-            (, int answer2,,,) = IChronicle(priceFeed_).latestRoundData();
-            console.log('answer2: ', uint(answer2));
+            timeout = TIMEOUT_EXTENDED;
         }
 
         console.log(1);
@@ -125,6 +126,12 @@ contract ozOracle {
         if (!success || block.timestamp - timestamp > TIMEOUT_LINK) revert OZError23();
 
         return abi.decode(value, (uint));
+    }
+
+
+    function _getRedPrice() private view returns(uint) {
+        s.weETHUSDredStone
+        s.weETHETHredStone
     }
 
 

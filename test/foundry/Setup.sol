@@ -87,7 +87,8 @@ contract Setup is Test {
     address internal rEthWethPoolBalancer;
     address internal rEthEthChainlink;
     address internal tellorOracle;
-    address internal chronicleFeedETHUSD;
+    address internal weETHETHredStone;
+    address internal weETHUSDredStone;
     //-- L1----
     address internal rocketPoolStorage;
     address internal rocketDAOProtocolSettingsDeposit;
@@ -193,7 +194,8 @@ contract Setup is Test {
             rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
             uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
             tellorOracle = 0x8cFc184c877154a8F9ffE0fe75649dbe5e2DBEbf;
-            chronicleFeedETHUSD = 0x46ef0071b1E2fF6B42d36e5A177EA43Ae5917f4E;
+            weETHETHredStone = 0x8751F736E94F6CD167e8C5B97E245680FbD9CC36;
+            weETHUSDredStone = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
 
             network = "ethereum";
             mainBlockNumber = 18413614; //*18413614* - 18413618 - 18785221 (paused)
@@ -292,8 +294,7 @@ contract Setup is Test {
         Oracles memory oracles = Oracles({
             ethUsdChainlink: ethUsdChainlink,
             rEthEthChainlink: rEthEthChainlink,
-            tellorOracle: tellorOracle,
-            chronicleFeedETHUSD: chronicleFeedETHUSD
+            tellorOracle: tellorOracle
         });
 
         Infra memory infra = Infra({
@@ -494,6 +495,5 @@ contract Setup is Test {
         vm.label(address(ozlAdmin), "OZL_Owner");
         vm.label(address(rewardsContract), "OZL_Rewards");
         vm.label(tellorOracle, "tellorOracle");
-        vm.label(chronicleFeedETHUSD, "chronicleFeedETHUSD");
     }
 }
