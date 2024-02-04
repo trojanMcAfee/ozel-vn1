@@ -6,18 +6,7 @@ import {TestMethods} from "./TestMethods.sol";
 
 import "forge-std/console.sol";
 
-interface MyInter {
-    function latestRoundData()
-    external
-    view
-    returns (
-      uint80 roundId,
-      int256 answer,
-      uint256 startedAt,
-      uint256 updatedAt,
-      uint80 answeredInRound
-    );
-}
+
 
 
 contract ozOracleTest is TestMethods {
@@ -41,8 +30,6 @@ contract ozOracleTest is TestMethods {
 
     function test_x() public {
 
-        // vm.rollFork(redStoneBlock);
-        // vm.rollFork(mainFork, redStoneBlock);
         vm.selectFork(redStoneFork);
 
         _mock_false_chainlink_feed(ethUsdChainlink);
@@ -53,21 +40,6 @@ contract ozOracleTest is TestMethods {
     }
 
 
-    function test_y() public {
-        address priceFeed = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419; //chainlink
-        address priceFeed2 = 0x8751F736E94F6CD167e8C5B97E245680FbD9CC36; //redStone
-
-        // console.log('block roll pre: ', block.number);
-        vm.rollFork(19144714);
-        // console.log('block roll post: ', block.number);
-
-        MyInter feed = MyInter(priceFeed2);
-        (uint80 roundId, int answer,,,) = feed.latestRoundData();
-        
-        console.log('answer: ', uint(answer));
-        console.log('roundId: ', uint(roundId));
-
-    }
 
 
 

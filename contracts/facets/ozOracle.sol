@@ -69,14 +69,7 @@ contract ozOracle {
     }
 
 
-    function _getRedPrice() private view returns(uint) {
-        (,uint weETH_ETH) = _useLinkInterface(s.weETHETHredStone, false);
-        (,uint weETH_USD) = _useLinkInterface(s.weETHUSDredStone, false);
-
-        return (1 ether ** 2 / weETH_ETH).mulDivDown(weETH_USD, 1 ether);
-    }
-
-
+    //----------
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
         uint timeout = TIMEOUT_LINK;
 
@@ -97,10 +90,8 @@ contract ozOracle {
             updatedAt <= block.timestamp &&
             block.timestamp - updatedAt <= timeout
         ) {
-            console.log('not log');
             return (true, uint(answer) * 1e10); 
         } else {
-            console.log('log');
             return (false, 0); //check the heartbeat of this oracle - CL data feeds
         }
     }
@@ -119,29 +110,40 @@ contract ozOracle {
     }
 
 
-    function _getTellorPrice() private view returns(uint) {
+    function _getTellorPrice() private view returns(bool, uint) {
         bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd")));
 
         (bool success, bytes memory value, uint timestamp) = 
             IUsingTellor(s.tellorOracle).getDataBefore(queryId, block.timestamp - DISPUTE_BUFFER);
 
-        if (!success || block.timestamp - timestamp > TIMEOUT_LINK) revert OZError23();
+        if (!success || block.timestamp - timestamp > TIMEOUT_LINK) return (false, 0);
 
-        return abi.decode(value, (uint));
+        return (true, abi.decode(value, (uint)));
     }
 
+    function _getRedPrice() private view returns(bool, uint) {
+        (bool success, uint weETH_ETH) = _useLinkInterface(s.weETHETHredStone, false);
+        (bool success2, uint weETH_USD) = _useLinkInterface(s.weETHUSDredStone, false);
+
+        if (success && success2) {
+            uint price = (1 ether ** 2 / weETH_ETH).mulDivDown(weETH_USD, 1 ether);
+            return (true, price);
+        } else {
+            return (false, 0);
+        }
+    }
 
 
     function _callFallbackOracle() private view returns(uint) {
         uint uniPrice = _getUniPrice();
-        uint tellorPrice = _getTellorPrice();
-        uint redPrice = _getRedPrice();
+        (bool success, uint tellorPrice) = _getTellorPrice();
+        (bool success2, uint redPrice) = _getRedPrice();
 
-        console.log('uniPrice: ', uniPrice);
-        console.log('tellorPrice: ', tellorPrice);
-        console.log('redPrice: ', redPrice);
-
-        return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
+        if (success && success2) {
+            return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
+        } else {
+            return uniPrice;
+        }
     }
 
     //RedStone's weETH/ETH price feed's contract doesn't implement verification logic

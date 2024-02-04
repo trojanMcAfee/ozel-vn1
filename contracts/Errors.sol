@@ -56,4 +56,4 @@ error OZError21(string reason); //_swapBalancer - other balancer failure reason 
 error OZError22(string reason); // mint/redeem - useUnderlying/userOzTokens - catches internal exceptions like SafeERC20s. Most likely an STF error due to token allowace
 
 //Oracle errors
-error OZError23(); //_getTellorPrice - oracle error
+// error OZError23(); //_getTellorPrice - oracle error
