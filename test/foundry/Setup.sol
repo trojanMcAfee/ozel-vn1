@@ -134,6 +134,7 @@ contract Setup is Test {
 
     uint internal mainBlockNumber;
     uint internal secondaryBlockNumber;
+    uint internal redStoneBlock;
 
     uint campaignDuration = 126100000; //4 years
     uint communityAmount = 30_000_000 * 1e18;
@@ -200,6 +201,7 @@ contract Setup is Test {
             network = "ethereum";
             mainBlockNumber = 18413614; //*18413614* - 18413618 - 18785221 (paused)
             secondaryBlockNumber = 18785221;
+            redStoneBlock = 19154743;
         }
     }
 
