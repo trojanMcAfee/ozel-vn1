@@ -72,6 +72,7 @@ contract ozOracle {
     function _getRedPrice() private view returns(uint) {
         (,uint weETH_ETH) = _useLinkInterface(s.weETHETHredStone, false);
         (,uint weETH_USD) = _useLinkInterface(s.weETHUSDredStone, false);
+
     
 
         // 1 weETH -- weETH_ETH(1.02)
@@ -80,11 +81,10 @@ contract ozOracle {
         // 1 weETH ------- weETH_USD(2450)
         //     x weETH  --- y
 
+      
 
-        uint x = (1 ether / weETH_ETH).mulDivDown(weETH_USD, 1 ether);
-        console.log('red price: ', x);
 
-        return x;
+        return (1 ether ** 2 / weETH_ETH).mulDivDown(weETH_USD, 1 ether);
 
     }
 
@@ -105,19 +105,19 @@ contract ozOracle {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
-        console.log('roundId: ', uint(roundId));
-        console.log('answer: ', uint(answer));
-        console.log('updatedAt: ', updatedAt);
+        // console.log('roundId: ', uint(roundId));
+        // console.log('answer: ', uint(answer));
+        // console.log('updatedAt: ', updatedAt);
 
         if (
-            roundId != 0 && 
+            (roundId != 0 || _exemptRed(priceFeed_)) && 
             answer > 0 && 
             updatedAt != 0 && 
             updatedAt <= block.timestamp &&
             block.timestamp - updatedAt <= timeout
         ) {
             console.log('not log');
-            return (true, uint(answer) * BASE); //true instead of false
+            return (true, uint(answer) * BASE); 
         } else {
             console.log('log');
             return (false, 0); //check the heartbeat of this oracle - CL data feeds
@@ -161,7 +161,14 @@ contract ozOracle {
         // return Helpers.getMedium(uniPrice, tellorPrice, chroniclePrice);
     }
 
+    //RedStone's weETH/ETH price feed's contract doesn't implement verification logic
+    //for roundId so the value is always 0.
+    function _exemptRed(address feed_) private view returns(bool) {
+        return feed_ == s.weETHETHredStone;
+    }
 
+
+    //------
 
     function setValuePerOzToken(address ozToken_, uint amount_, bool addOrSub_) external { //put an onlyOzToken mod
         if (addOrSub_) {
