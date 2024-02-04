@@ -29,23 +29,26 @@ contract ozOracleTest is TestMethods {
 
     }
 
+    function _mock_false_chainlink_feed(address feed_) internal {
+        vm.mockCall(
+            feed_,
+            abi.encodeWithSignature('latestRoundData()'),
+            abi.encode(uint80(0), int(0), uint(0), uint(0), uint80(0))
+        );
+    }
 
-    function test_
-
-
+    
 
     function test_x() public {
-        address priceFeed = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419; //chainlink
-        address priceFeed2 = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136; //redStone
 
-        // console.log('block roll pre: ', block.number);
-        vm.rollFork(redStoneBlock);
-        // console.log('block roll post: ', block.number);
+        // vm.rollFork(redStoneBlock);
+        // vm.rollFork(mainFork, redStoneBlock);
+        vm.selectFork(redStoneFork);
 
-        MyInter feed = MyInter(priceFeed2);
-        (,int answer,,,) = feed.latestRoundData();
-        
-        console.log('answer: ', uint(answer));
+        _mock_false_chainlink_feed(ethUsdChainlink);
+    
+        uint ethPrice = OZ.ETH_USD();
+        console.log("ethPrice in test: ", ethPrice);
 
     }
 
@@ -53,3 +56,7 @@ contract ozOracleTest is TestMethods {
 
 
 }
+
+
+
+

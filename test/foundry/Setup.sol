@@ -135,6 +135,8 @@ contract Setup is Test {
     uint internal mainBlockNumber;
     uint internal secondaryBlockNumber;
     uint internal redStoneBlock;
+    uint internal mainFork;
+    uint internal redStoneFork;
 
     uint campaignDuration = 126100000; //4 years
     uint communityAmount = 30_000_000 * 1e18;
@@ -145,7 +147,10 @@ contract Setup is Test {
     /** FUNCTIONS **/ 
     function setUp() public {
         string memory network = _chooseNetwork(Network.ETHEREUM);
-        vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
+        redStoneFork = vm.createSelectFork(vm.rpcUrl(network), redStoneBlock);
+        _runSetup();
+
+        mainFork = vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
         _runSetup();
     }
 

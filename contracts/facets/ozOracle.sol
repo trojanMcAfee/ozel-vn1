@@ -70,8 +70,8 @@ contract ozOracle {
 
 
     function _getRedPrice() private view returns(uint) {
-        (,uint weETH_ETH) = _useLinkInterface2(s.weETHETHredStone, false);
-        (,uint weETH_USD) = _useLinkInterface2(s.weETHUSDredStone, false);
+        (,uint weETH_ETH) = _useLinkInterface(s.weETHETHredStone, false);
+        (,uint weETH_USD) = _useLinkInterface(s.weETHUSDredStone, false);
     
 
         // 1 weETH -- weETH_ETH(1.02)
@@ -89,37 +89,9 @@ contract ozOracle {
     }
 
 
-    function _useLinkInterface2(address priceFeed_, bool isLink_) private view returns(bool, uint) {
-        uint timeout = TIMEOUT_LINK;
-        uint BASE = 1e10;
-
-        if (!isLink_) {
-            timeout = TIMEOUT_EXTENDED;
-        }
-
-        console.log(1);
-        (
-            uint80 roundId,
-            int answer,,
-            uint updatedAt,
-        ) = AggregatorV3Interface(priceFeed_).latestRoundData();
-        console.log(2);
-
-        if (
-            roundId != 0 && 
-            answer > 0 && 
-            updatedAt != 0 && 
-            updatedAt <= block.timestamp &&
-            block.timestamp - updatedAt <= timeout
-        ) {
-            return (true, uint(answer) * BASE);
-        } else {
-            return (false, 0); 
-        }
-    }
-
-    //real
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
+        console.log('-----');
+        console.log('priceFeed_: ', priceFeed_);
         uint timeout = TIMEOUT_LINK;
         uint BASE = 1e10;
 
@@ -133,6 +105,10 @@ contract ozOracle {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
+        console.log('roundId: ', uint(roundId));
+        console.log('answer: ', uint(answer));
+        console.log('updatedAt: ', updatedAt);
+
         if (
             roundId != 0 && 
             answer > 0 && 
@@ -140,8 +116,10 @@ contract ozOracle {
             updatedAt <= block.timestamp &&
             block.timestamp - updatedAt <= timeout
         ) {
-            return (false, uint(answer) * BASE);
+            console.log('not log');
+            return (true, uint(answer) * BASE); //true instead of false
         } else {
+            console.log('log');
             return (false, 0); //check the heartbeat of this oracle - CL data feeds
         }
     }

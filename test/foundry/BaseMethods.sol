@@ -375,7 +375,7 @@ contract BaseMethods is Setup {
         uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
 
         vm.mockCall( 
-            address(rEthEthChainlink),
+            rEthEthChainlink,
             abi.encodeWithSignature('latestRoundData()'),
             abi.encode(uint80(0), int(rETHETHmock), uint(0), uint(0), uint80(0))
         ); 
