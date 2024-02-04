@@ -7,14 +7,18 @@ import {TestMethods} from "./TestMethods.sol";
 import "forge-std/console.sol";
 
 
+
+
 contract ozOracleTest is TestMethods {
 
-    function test_ETH_USD() public {
+    function test_ETH_USD() internal {
 
         uint ethPrice = OZ.ETH_USD();
         console.log("ethPrice in test: ", ethPrice);
 
     }
+
+    
 
 
 

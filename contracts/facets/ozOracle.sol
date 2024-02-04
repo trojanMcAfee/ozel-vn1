@@ -72,7 +72,7 @@ contract ozOracle {
     function _getRedPrice() private view returns(uint) {
         (,uint weETH_ETH) = _useLinkInterface2(s.weETHETHredStone, false);
         (,uint weETH_USD) = _useLinkInterface2(s.weETHUSDredStone, false);
-        //why are these ^^^ reverting???
+    
 
         // 1 weETH -- weETH_ETH(1.02)
         //     x(0.8) -----  1 eth
