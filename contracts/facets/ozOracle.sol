@@ -73,27 +73,12 @@ contract ozOracle {
         (,uint weETH_ETH) = _useLinkInterface(s.weETHETHredStone, false);
         (,uint weETH_USD) = _useLinkInterface(s.weETHUSDredStone, false);
 
-    
-
-        // 1 weETH -- weETH_ETH(1.02)
-        //     x(0.8) -----  1 eth
-
-        // 1 weETH ------- weETH_USD(2450)
-        //     x weETH  --- y
-
-      
-
-
         return (1 ether ** 2 / weETH_ETH).mulDivDown(weETH_USD, 1 ether);
-
     }
 
 
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
-        console.log('-----');
-        console.log('priceFeed_: ', priceFeed_);
         uint timeout = TIMEOUT_LINK;
-        uint BASE = 1e10;
 
         if (!isLink_) {
             timeout = TIMEOUT_EXTENDED;
@@ -105,10 +90,6 @@ contract ozOracle {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
-        // console.log('roundId: ', uint(roundId));
-        // console.log('answer: ', uint(answer));
-        // console.log('updatedAt: ', updatedAt);
-
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
             answer > 0 && 
@@ -117,7 +98,7 @@ contract ozOracle {
             block.timestamp - updatedAt <= timeout
         ) {
             console.log('not log');
-            return (true, uint(answer) * BASE); 
+            return (true, uint(answer) * 1e10); 
         } else {
             console.log('log');
             return (false, 0); //check the heartbeat of this oracle - CL data feeds
@@ -154,11 +135,13 @@ contract ozOracle {
     function _callFallbackOracle() private view returns(uint) {
         uint uniPrice = _getUniPrice();
         uint tellorPrice = _getTellorPrice();
-        
         uint redPrice = _getRedPrice();
-        return redPrice;
 
-        // return Helpers.getMedium(uniPrice, tellorPrice, chroniclePrice);
+        console.log('uniPrice: ', uniPrice);
+        console.log('tellorPrice: ', tellorPrice);
+        console.log('redPrice: ', redPrice);
+
+        return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
     }
 
     //RedStone's weETH/ETH price feed's contract doesn't implement verification logic
