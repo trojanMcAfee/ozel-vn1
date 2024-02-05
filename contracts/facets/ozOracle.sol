@@ -84,6 +84,8 @@ contract ozOracle {
         console.log('updatedAt: ', updatedAt);
         console.log('stamp: ', block.timestamp);
         console.log('block.timestamp - updatedAt <= timeout: ', block.timestamp - updatedAt <= timeout);
+        //^^^ this "false" is causing the bug
+        //try to create a new _mock_rETH_ETH()
 
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
