@@ -30,7 +30,7 @@ contract ozOracle {
 
     uint constant public TIMEOUT_LINK = 4 hours; //14400 secs - put this inside AppStorage
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
-    uint constant public TIMEOUT_EXTENDED = 25 hours;
+    uint constant public TIMEOUT_EXTENDED = 24 hours;
     
 
     event OzRewards(
@@ -42,14 +42,18 @@ contract ozOracle {
 
 
     function rETH_ETH() public view returns(uint) {
-        (,int price,,,) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
-        return uint(price);
+        // (,int price,,,) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
+        // return uint(price);
+
+        //------
+        (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
+        return success ? price : _callFallbackOracle(s.rETH); 
     }
 
 
     function ETH_USD() public view returns(uint) {
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        return success ? price : _callFallbackOracle();  
+        return success ? price : _callFallbackOracle(s.WETH);  
     }
 
     function rETH_USD() public view returns(uint) {
@@ -84,8 +88,9 @@ contract ozOracle {
         }
     }
 
-    function _getUniPrice() private view returns(uint) {
-        address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
+
+    function _getUniPrice(address token0_, address token1_) private view returns(uint) {
+        address pool = IUniswapV3Factory(s.uniFactory).getPool(token0_, token1_, s.uniFee);
         uint32 secondsAgo = uint32(10);
 
         uint32[] memory secondsAgos = new uint32[](2);
@@ -113,7 +118,7 @@ contract ozOracle {
         (bool success, bytes memory value, uint timestamp) = 
             IUsingTellor(s.tellorOracle).getDataBefore(queryId, block.timestamp - DISPUTE_BUFFER);
 
-        if (!success || block.timestamp - timestamp > TIMEOUT_LINK) return (false, 0);
+        if (!success || block.timestamp - timestamp > TIMEOUT_EXTENDED) return (false, 0);
 
         return (true, abi.decode(value, (uint)));
     }
@@ -131,10 +136,22 @@ contract ozOracle {
     }
 
 
-    function _callFallbackOracle() private view returns(uint) {
-        uint uniPrice = _getUniPrice();
-        (bool success, uint tellorPrice) = _getTellorPrice();
-        (bool success2, uint redPrice) = _getRedPrice();
+    function _callFallbackOracle(address baseToken_) private view returns(uint) {
+        uint uniPrice;
+        
+        if (baseToken_ == s.WETH) {
+            uniPrice = _getUniPrice(s.WETH, s.USDC);
+            (bool success, uint tellorPrice) = _getTellorPrice();
+            (bool success2, uint redPrice) = _getRedPrice();
+
+            if (success && success2) {
+                return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
+            }
+        } else if (baseToken_ == s.rETH) {
+            uniPrice = _getUniPrice(s.rETH, s.WETH);
+            uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
+            //^^^ check if there's a 3rd protocol for rETH/ETH
+        }
 
         if (success && success2) {
             return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
