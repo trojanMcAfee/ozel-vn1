@@ -80,7 +80,7 @@ contract ozOracle {
         ) {
             return (true, uint(answer) * 1e10); 
         } else {
-            return (false, 0); //check the heartbeat of this oracle - CL data feeds
+            return (false, 0); 
         }
     }
 
@@ -108,7 +108,7 @@ contract ozOracle {
     }
 
 
-    function _getTellorPrice() private view returns(bool, uint) { //change to getFirstBackup()
+    function _getTellorPrice() private view returns(bool, uint) { 
         bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd")));
 
         (bool success, bytes memory value, uint timestamp) = 
@@ -118,6 +118,7 @@ contract ozOracle {
 
         return (true, abi.decode(value, (uint)));
     }
+
 
     function _getRedPrice() private view returns(bool, uint) {
         (bool success, uint weETH_ETH) = _useLinkInterface(s.weETHETHredStone, false);

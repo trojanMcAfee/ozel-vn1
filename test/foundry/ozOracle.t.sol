@@ -51,37 +51,6 @@ contract ozOracleTest is TestMethods {
         assertTrue(rate == protocolRate);
     }
 
-
-    function test_h() public { //test_medium_callFallbackOracle_rETHETH
-        bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("reth", "usd")));
-
-        (bool success, bytes memory value, uint timestamp) = 
-            IUsingTellor(tellorOracle).getDataBefore(queryId, block.timestamp - 15 minutes);
-
-        uint x = abi.decode(value, (uint));
-        console.log('tellor - reth/usd: ', x);
-
-        //-------
-        address pool = IUniswapV3Factory(uniFactory).getPool(rEthAddr, wethAddr, uniPoolFee);
-
-        (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
-
-        uint256 amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, rEthAddr, wethAddr
-        );
-
-        console.log('uni reth/eth: ', amountOut);
-        //--------
-
-        (,int price,,,) = AggregatorV3Interface(ethUsdChainlink).latestRoundData();
-        console.log('link eth/usd', uint(price));
-        //---------
-
-        uint rate = IRocketTokenRETH(rEthAddr).getExchangeRate();
-        console.log('reth/eth: ', rate);
-        
-    }
-
     
     function test_medium_callFallbackOracle_ETHUSD() public {
         //Pre-condtions
