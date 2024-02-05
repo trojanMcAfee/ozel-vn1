@@ -526,6 +526,7 @@ contract OZLtokenTest is TestMethods {
 
         //Charges fee
         bool wasCharged = OZ.chargeOZLfee();
+        console.log('wasCharged: ', wasCharged);
         assertTrue(wasCharged);
 
         uint ozlRethBalance = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
@@ -542,6 +543,8 @@ contract OZLtokenTest is TestMethods {
         assertTrue(feesDiff <= 1 && feesDiff >= 0);
 
         uint ownerBalance = IERC20Permit(rEthAddr).balanceOf(owner);
+
+        console.log('ownerBalance: ', ownerBalance);
         assertTrue(ownerBalance > 0);
 
         vm.clearMockedCalls();

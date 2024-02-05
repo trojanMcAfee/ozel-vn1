@@ -42,8 +42,16 @@ contract ozOracle {
 
 
     function rETH_ETH() public view returns(uint) {
+        console.log('--- start rETH ---');
         (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
-        return success ? price : _callFallbackOracle(s.rETH); 
+        uint x = success ? price : _callFallbackOracle(s.rETH); 
+
+        // (,int price,,,) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
+        // uint x = uint(price);
+        
+        console.log('x: ', x);
+        console.log('--- end rETH ---');
+        return x;
     }
 
 
@@ -60,16 +68,22 @@ contract ozOracle {
     //----------
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
         uint timeout = TIMEOUT_LINK;
+        uint BASE = 1e10;
 
-        if (!isLink_) {
-            timeout = TIMEOUT_EXTENDED;
-        }
+        if (!isLink_) timeout = TIMEOUT_EXTENDED;
+        if (priceFeed_ == s.rEthEthChainlink) BASE = 1;
 
         (
             uint80 roundId,
             int answer,,
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
+
+        console.log('roundId: ', roundId);
+        console.log('answer: ', uint(answer));
+        console.log('updatedAt: ', updatedAt);
+        console.log('stamp: ', block.timestamp);
+        console.log('block.timestamp - updatedAt <= timeout: ', block.timestamp - updatedAt <= timeout);
 
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
@@ -78,8 +92,10 @@ contract ozOracle {
             updatedAt <= block.timestamp &&
             block.timestamp - updatedAt <= timeout
         ) {
-            return (true, uint(answer) * 1e10); 
+            console.log('should log');
+            return (true, uint(answer) * BASE); 
         } else {
+            console.log('should not log');
             return (false, 0); 
         }
     }
@@ -172,9 +188,9 @@ contract ozOracle {
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_]; 
    
-        // uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
+        uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
 
-        return ( ((rETH_ETH() * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
+        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 
 
