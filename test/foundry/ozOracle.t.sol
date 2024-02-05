@@ -51,7 +51,20 @@ contract ozOracleTest is TestMethods {
     }
 
 
-    function test_uniPrice_lastOption() public {}
+    function test_lastOption_uniPrice_callFallbackOracle() public {
+        //Pre-condtions
+        vm.selectFork(redStoneFork);
+
+        _mock_false_chainlink_feed(ethUsdChainlink);
+        _mock_false_chainlink_feed(weETHETHredStone);
+
+        //Action
+        uint ethPrice = OZ.ETH_USD();
+
+        //Post-condition
+        assertTrue(ethPrice == _getUniPrice());
+
+    }
 
 
 
