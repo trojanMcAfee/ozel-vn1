@@ -16,6 +16,7 @@ import "../Errors.sol";
 
 import {OracleLibrary} from "../libraries/oracle/OracleLibrary.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 
 import "forge-std/console.sol";
 
@@ -85,15 +86,24 @@ contract ozOracle {
 
     function _getUniPrice() private view returns(uint) {
         address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
+        uint32 secondsAgo = uint32(10);
 
-        (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
+        uint32[] memory secondsAgos = new uint32[](2);
+        secondsAgos[0] = secondsAgo;
+        secondsAgos[1] = 0;
 
-        uint256 amountOut = OracleLibrary.getQuoteAtTick(
+        (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
+
+        int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
+        int24 tick = int24(tickCumulativesDelta / int32(secondsAgo));
+        
+        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secondsAgo) != 0)) tick--;
+        
+        uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1 ether, s.WETH, s.USDC
         );
     
-        int priceUni = int(amountOut * 1e12);
-        return uint(priceUni); //fix this - check ****
+        return amountOut * 1e12;
     }
 
 

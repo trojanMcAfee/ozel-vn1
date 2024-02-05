@@ -45,6 +45,7 @@ contract ozOracleTest is TestMethods {
     
         //Action
         uint ethPrice = OZ.ETH_USD();
+        console.log('ethPrice: ', ethPrice);
 
         //Post-condition
         assertTrue(ethPrice == _getUniPrice());
