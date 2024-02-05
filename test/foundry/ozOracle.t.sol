@@ -63,8 +63,10 @@ contract ozOracleTest is TestMethods {
 
         //Post-condition
         assertTrue(ethPrice == _getUniPrice());
-
     }
+
+    //To test if Tellor and RedStone prices are properly fetched, I need to create mocks,
+    //and play with the functions so that the medium value returned is Tellor or RedStone.
 
 
 
