@@ -65,7 +65,7 @@ contract ozOracle {
     }
 
     function rETH_USD() public view returns(uint) {
-        return (rETH_ETH() * ETH_USD()) / 1 ether ^ 2;
+        return (rETH_ETH() * ETH_USD()) / 1 ether;
     }
 
 

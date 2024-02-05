@@ -42,6 +42,8 @@ contract OZLtokenTest is TestMethods {
 
     //Tests that a new recicling campaign is properly set up with the recicled supply.
     function test_new_recicling_campaing() public {
+        vm.selectFork(redStoneFork);
+
         bytes32 oldSlot0data = vm.load(
             IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
             bytes32(0)
@@ -105,8 +107,8 @@ contract OZLtokenTest is TestMethods {
 
         uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
 
-        //Difference between balances (old and new) is less than 0.01%
-        assertTrue(diff == 0);        
+        //Difference between balances (old and new) is less than 0.32% (slippage between orders)
+        assertTrue(diff < 32);        
 
         vm.warp(block.timestamp + secs);
 
