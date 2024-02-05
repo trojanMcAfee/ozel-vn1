@@ -42,10 +42,6 @@ contract ozOracle {
 
 
     function rETH_ETH() public view returns(uint) {
-        // (,int price,,,) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
-        // return uint(price);
-
-        //------
         (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
         return success ? price : _callFallbackOracle(s.rETH); 
     }
@@ -89,8 +85,8 @@ contract ozOracle {
     }
 
 
-    function _getUniPrice(address token0_, address token1_) private view returns(uint) {
-        address pool = IUniswapV3Factory(s.uniFactory).getPool(token0_, token1_, s.uniFee);
+    function _getUniPrice() private view returns(uint) {
+        address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
         uint32 secondsAgo = uint32(10);
 
         uint32[] memory secondsAgos = new uint32[](2);
@@ -112,7 +108,7 @@ contract ozOracle {
     }
 
 
-    function _getTellorPrice() private view returns(bool, uint) {
+    function _getTellorPrice() private view returns(bool, uint) { //change to getFirstBackup()
         bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd")));
 
         (bool success, bytes memory value, uint timestamp) = 
@@ -137,26 +133,18 @@ contract ozOracle {
 
 
     function _callFallbackOracle(address baseToken_) private view returns(uint) {
-        uint uniPrice;
-        
         if (baseToken_ == s.WETH) {
-            uniPrice = _getUniPrice(s.WETH, s.USDC);
+            uint uniPrice = _getUniPrice();
             (bool success, uint tellorPrice) = _getTellorPrice();
             (bool success2, uint redPrice) = _getRedPrice();
 
             if (success && success2) {
                 return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
+            } else {
+                return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
-            uniPrice = _getUniPrice(s.rETH, s.WETH);
-            uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
-            //^^^ check if there's a 3rd protocol for rETH/ETH
-        }
-
-        if (success && success2) {
-            return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
-        } else {
-            return uniPrice;
+            return IRocketTokenRETH(s.rETH).getExchangeRate();
         }
     }
 
@@ -183,9 +171,9 @@ contract ozOracle {
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_]; 
    
-        uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
+        // uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
 
-        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
+        return ( ((rETH_ETH() * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 
 

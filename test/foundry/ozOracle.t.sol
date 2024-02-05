@@ -39,6 +39,18 @@ contract ozOracleTest is TestMethods {
         return amountOut * 1e12;
     }
 
+    function test_medium_callFallbackOracle_rETHETH() public {
+        //Pre-condition
+        _mock_false_chainlink_feed(rEthEthChainlink);
+
+        //Actions
+        uint rate = OZ.rETH_ETH();
+        uint protocolRate = IRocketTokenRETH(rEthAddr).getExchangeRate();
+
+        //Post-condition
+        assertTrue(rate == protocolRate);
+    }
+
 
     function test_h() public { //test_medium_callFallbackOracle_rETHETH
         bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("reth", "usd")));
