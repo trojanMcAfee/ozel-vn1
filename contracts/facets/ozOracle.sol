@@ -20,19 +20,6 @@ import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV
 import "forge-std/console.sol";
 
 
-interface IChronicle {
-    function latestRoundData()
-        external
-        view
-        returns (
-            uint80 roundId,
-            int answer,
-            uint startedAt,
-            uint updatedAt,
-            uint80 answeredInRound
-        );
-}
-
 
 contract ozOracle {
 

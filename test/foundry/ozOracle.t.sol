@@ -3,6 +3,8 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "./TestMethods.sol";
+import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol";
 
 import "forge-std/console.sol";
 
@@ -11,13 +13,8 @@ import "forge-std/console.sol";
 
 contract ozOracleTest is TestMethods {
 
-    function test_ETH_USD() public {
 
-        uint ethPrice = OZ.ETH_USD();
-        console.log("ethPrice in test: ", ethPrice);
-
-    }
-
+    //Makes a designated Chainlink feed fail the checks in the contract.
     function _mock_false_chainlink_feed(address feed_) internal {
         vm.mockCall(
             feed_,
@@ -26,18 +23,35 @@ contract ozOracleTest is TestMethods {
         );
     }
 
+
+    function _getUniPrice() internal view returns(uint) {
+        address pool = IUniswapV3Factory(uniFactory).getPool(wethAddr, usdcAddr, uniPoolFee);
+
+        (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
+
+        uint256 amountOut = OracleLibrary.getQuoteAtTick(
+            tick, 1 ether, wethAddr, usdcAddr
+        );
     
+        return amountOut * 1e12;
+    }
 
-    function test_x() public {
-
+    
+    function test_medium_callFallbackOracle() public {
+        //Pre-condtions
         vm.selectFork(redStoneFork);
 
         _mock_false_chainlink_feed(ethUsdChainlink);
     
+        //Action
         uint ethPrice = OZ.ETH_USD();
-        console.log("ethPrice in test: ", ethPrice);
 
+        //Post-condition
+        assertTrue(ethPrice == _getUniPrice());
     }
+
+
+    function test_uniPrice_lastOption() public {}
 
 
 
