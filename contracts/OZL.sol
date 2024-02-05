@@ -72,14 +72,16 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
     function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
         uint ONE = 1 ether;
+        uint totalFeesLSD;
 
-        uint totalFeesRETH = IERC20Permit(
-            0xae78736Cd615f374D3085123A210448E74Fc6393 //rETH - put it in an array of LSDs
-        ).balanceOf(address(this));
+        uint length = _LSDs().length;
+        for (uint i=0; i<length; i++) {
+            totalFeesLSD += IERC20(_LSDs()[i]).balanceOf(address(this));
+        }
 
         uint totalFeesQuote = asset_ == QuoteAsset.rETH ?
-         totalFeesRETH : 
-         _convertToQuote(asset_, totalFeesRETH);
+         totalFeesLSD : 
+         _convertToQuote(asset_, totalFeesLSD);
 
         uint c_Supply = circulatingSupply();
 
