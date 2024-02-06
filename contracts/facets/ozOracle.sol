@@ -176,8 +176,8 @@ contract ozOracle {
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
         uint rate2 = rETH_ETH();
 
-        console.log('rate: ', rate);
-        console.log('rate2: ', rate2);
+        // console.log('rate: ', rate);
+        // console.log('rate2: ', rate2);
 
         return ( ((rate2 * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
