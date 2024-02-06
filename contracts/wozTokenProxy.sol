@@ -5,8 +5,8 @@ pragma solidity 0.8.21;
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 
 
-contract WrappedOzTokenProxy is BeaconProxy {
-    
+contract wozTokenProxy is BeaconProxy {
+
     constructor(
         address beacon_, 
         bytes memory data_
