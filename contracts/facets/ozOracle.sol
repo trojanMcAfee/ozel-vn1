@@ -88,6 +88,9 @@ contract ozOracle {
     function _getUniPrice(address token0_, address token1_, uint24 fee_) private view returns(uint) {
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0_, token1_, fee_);
         uint32 secondsAgo = uint32(10);
+        uint BASE = 1e12;
+
+        if (token1_ == s.WETH) BASE = 1;
 
         uint32[] memory secondsAgos = new uint32[](2);
         secondsAgos[0] = secondsAgo;
@@ -101,10 +104,10 @@ contract ozOracle {
         if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secondsAgo) != 0)) tick--;
         
         uint amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, s.WETH, s.USDC
+            tick, 1 ether, token0_, token1_
         );
     
-        return amountOut * 1e12;
+        return amountOut * BASE;
     }
 
 
@@ -145,6 +148,14 @@ contract ozOracle {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
+            uint uniPrice05 = _getUniPrice(s.rETH, s.WETH, s.uniFee);
+            uint uniPrice01 = _getUniPrice(s.rETH, s.WETH, s.uniFee01);
+            uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
+            
+            console.log('uniPrice05: ', uniPrice05);
+            console.log('uniPrice01: ', uniPrice01);
+            console.log('protocolPrice: ', protocolPrice);
+
             return IRocketTokenRETH(s.rETH).getExchangeRate();
         }
         revert OZError23(baseToken_);
@@ -175,7 +186,6 @@ contract ozOracle {
 
         return ( ((rETH_ETH() * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
-
 
 
     function getLastRewards() external view returns(LastRewards memory) {

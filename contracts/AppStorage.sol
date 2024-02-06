@@ -37,8 +37,8 @@ struct AppStorage {
     address rocketVault;
     bytes32 rocketDAOProtocolSettingsDepositID;
 
-    uint24 uniFee;
-    uint24 uniFee01;
+    uint24 uniFee; //put here uniFee05 to represent the 0.05% pools
+    uint24 uniFee01; //0.01% pool for rETH
 
     mapping(address ozToken => bool exist) ozTokenRegistryMap; //used - remove this and use only ozTokens map
 
