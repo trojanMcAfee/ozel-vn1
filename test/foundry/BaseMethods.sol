@@ -10,6 +10,7 @@ import {Type} from "./AppStorageTests.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
@@ -384,6 +385,18 @@ contract BaseMethods is Setup {
     function _accrueRewards(uint secs_) internal {
         vm.warp(block.timestamp + secs_);
         _mock_rETH_ETH();
+    }
+
+    function _getUniPrice() internal view returns(uint) {
+        address pool = IUniswapV3Factory(uniFactory).getPool(wethAddr, usdcAddr, uniPoolFee);
+
+        (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
+
+        uint256 amountOut = OracleLibrary.getQuoteAtTick(
+            tick, 1 ether, wethAddr, usdcAddr
+        );
+    
+        return amountOut * 1e12;
     }
 
 }

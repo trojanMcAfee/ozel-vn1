@@ -42,16 +42,8 @@ contract ozOracle {
 
 
     function rETH_ETH() public view returns(uint) {
-        console.log('--- start rETH ---');
         (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
-        uint x = success ? price : _callFallbackOracle(s.rETH); 
-
-        // (,int price,,,) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
-        // uint x = uint(price);
-        
-        console.log('x: ', x);
-        console.log('--- end rETH ---');
-        return x;
+        return success ? price : _callFallbackOracle(s.rETH); 
     }
 
 
@@ -79,14 +71,6 @@ contract ozOracle {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
-        console.log('roundId: ', roundId);
-        console.log('answer: ', uint(answer));
-        console.log('updatedAt: ', updatedAt);
-        console.log('stamp: ', block.timestamp);
-        console.log('block.timestamp - updatedAt <= timeout: ', block.timestamp - updatedAt <= timeout);
-        //^^^ this "false" is causing the bug
-        //try to create a new _mock_rETH_ETH()
-
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
             answer > 0 && 
@@ -94,10 +78,8 @@ contract ozOracle {
             updatedAt <= block.timestamp &&
             block.timestamp - updatedAt <= timeout
         ) {
-            console.log('should log');
             return (true, uint(answer) * BASE); 
         } else {
-            console.log('should not log');
             return (false, 0); 
         }
     }
@@ -165,6 +147,7 @@ contract ozOracle {
         } else if (baseToken_ == s.rETH) {
             return IRocketTokenRETH(s.rETH).getExchangeRate();
         }
+        revert OZError23(baseToken_);
     }
 
     //RedStone's weETH/ETH price feed's contract doesn't implement verification logic
@@ -191,6 +174,10 @@ contract ozOracle {
             s.valuePerOzToken[ozToken_]; 
    
         uint rate = IRocketTokenRETH(s.rETH).getExchangeRate(); 
+        uint rate2 = rETH_ETH();
+
+        console.log('rate: ', rate);
+        console.log('rate2: ', rate2);
 
         return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
@@ -291,11 +278,4 @@ contract ozOracle {
 
         return grossFees_ - adminFee;
     }
-
 }
-
-
-/**
-     * add a fallback oracle like uni's TWAP
-     **** handle the possibility with Chainlink of Sequencer being down (https://docs.chain.link/data-feeds/l2-sequencer-feeds)
-     */

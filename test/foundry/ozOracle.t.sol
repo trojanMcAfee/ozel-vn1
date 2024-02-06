@@ -27,18 +27,6 @@ contract ozOracleTest is TestMethods {
     }
 
 
-    function _getUniPrice() internal view returns(uint) {
-        address pool = IUniswapV3Factory(uniFactory).getPool(wethAddr, usdcAddr, uniPoolFee);
-
-        (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
-
-        uint256 amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, wethAddr, usdcAddr
-        );
-    
-        return amountOut * 1e12;
-    }
-
     function test_medium_callFallbackOracle_rETHETH() public {
         //Pre-condition
         _mock_false_chainlink_feed(rEthEthChainlink);
@@ -60,7 +48,6 @@ contract ozOracleTest is TestMethods {
     
         //Action
         uint ethPrice = OZ.ETH_USD();
-        console.log('ethPrice: ', ethPrice);
 
         //Post-condition
         assertTrue(ethPrice == _getUniPrice());
