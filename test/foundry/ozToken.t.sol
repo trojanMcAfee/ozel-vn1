@@ -115,6 +115,7 @@ contract ozTokenTest is TestMethods {
         vm.stopPrank();
 
         //Post-conditions
+        vm.clearMockedCalls();
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
         assertTrue(ozBalanceAlice > 99 * 1e18 && ozBalanceAlice < rawAmount * 1e18);
