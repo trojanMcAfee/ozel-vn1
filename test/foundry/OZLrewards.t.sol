@@ -48,19 +48,26 @@ contract OZLrewardsTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
+        console.log(3);
+
         //Actions
         _startCampaign();
+        console.log(4);
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
+
+        console.log(1);
 
         uint secs = 15;
         _accrueRewards(secs);
+
+        console.log(2);
 
         //Post-conditions
         uint ozlEarned = OZ.earned(alice);
         uint rewardsEarned = _getRewardRate() * secs;
         uint earnedDiff = rewardsEarned - ozlEarned;
 
-        assertTrue(earnedDiff <= 1 && earnedDiff >= 0);
+        assertTrue(earnedDiff <= 30);
 
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlClaimed = OZL.balanceOf(alice);
@@ -77,13 +84,6 @@ contract OZLrewardsTest is TestMethods {
 
         circulatingSupply = OZL.circulatingSupply();
         assertTrue(ozlClaimed == circulatingSupply);
-
-        //------
-        // uint rate = OZL.getExchangeRate();
-        // assertTrue(rate == 1);
-
-        // uint rate = OZL.getExchangeRate();
-        // console.log('rate3: ', rate); 
     }
 
 

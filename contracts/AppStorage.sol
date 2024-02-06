@@ -38,6 +38,7 @@ struct AppStorage {
     bytes32 rocketDAOProtocolSettingsDepositID;
 
     uint24 uniFee;
+    uint24 uniFee01;
 
     mapping(address ozToken => bool exist) ozTokenRegistryMap; //used - remove this and use only ozTokens map
 

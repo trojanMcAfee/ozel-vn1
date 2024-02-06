@@ -179,7 +179,7 @@ contract ozOracle {
         console.log('rate: ', rate);
         console.log('rate2: ', rate2);
 
-        return ( ((rate * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
+        return ( ((rate2 * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 
 

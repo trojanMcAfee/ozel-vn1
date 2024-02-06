@@ -26,6 +26,22 @@ contract ozOracleTest is TestMethods {
         );
     }
 
+    function test_x() public {
+        console.log('num1: ', block.timestamp);
+        (,int price,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
+        uint x = uint(price);
+
+        console.log('link: ', x);
+
+        console.log('num2: ', block.timestamp);
+        uint r = IRocketTokenRETH(rEthAddr).getExchangeRate();
+        console.log('rocket: ', r);
+        
+
+        console.log('------');
+        OZ.getUnderlyingValue(address(OZ));
+    }
+
 
     function test_medium_callFallbackOracle_rETHETH() public {
         //Pre-condition
