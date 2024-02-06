@@ -21,7 +21,7 @@ import {ozOracle} from "../../contracts/facets/ozOracle.sol";
 import {ozBeacon} from "../../contracts/facets/ozBeacon.sol";
 import {ozLoupe} from "../../contracts/facets/ozLoupe.sol";
 import {ozToken} from "../../contracts/ozToken.sol";
-import {ozToken} from "../../contracts/ozToken.sol";
+import {wozToken} from "../../contracts/wozToken.sol";
 import {
     Tokens,
     Dexes,
@@ -36,6 +36,7 @@ import {OZL} from "../../contracts/OZL.sol";
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {OZLadmin} from "../../contracts/facets/OZLadmin.sol";
 import {OZLrewards} from "../../contracts/OZLrewards.sol";
+import {wozBeacon} from "../../contracts/facets/wozBeacon.sol";
 
 // import "forge-std/console.sol";
 
@@ -107,6 +108,8 @@ contract Setup is Test {
     ozBeacon internal beacon;
     ozToken internal tokenOz;
     OZLrewards internal rewardsContract;
+    wozBeacon internal wrappedBeacon;
+    wozToken internal tokenOzWrapped;
 
     //Ozel custom facets
     ozTokenFactory internal factory; 
@@ -255,6 +258,7 @@ contract Setup is Test {
 
         //Deploys ozToken implementation contract for ozBeacon
         tokenOz = new ozToken();
+        tokenOzWrapped = new wozToken();
 
         //Deploys facets
         loupe = new ozLoupe();
@@ -267,12 +271,13 @@ contract Setup is Test {
         beacon = new ozBeacon(address(tokenOz));
         cutOz = new ozCut();
         rewardsContract = new OZLrewards();
+        wrappedBeacon = new wozBeacon(address(tokenOzWrapped));
 
         //Deploys OZL token contracts
         _initOZLtokenPt1();
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](11);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](12);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
         cuts[2] = _createCut(address(mirrorEx), 2);
@@ -284,6 +289,7 @@ contract Setup is Test {
         cuts[8] = _createCut(address(cutOz), 8);
         cuts[9] = _createCut(address(ozlAdmin), 9);
         cuts[10] = _createCut(address(rewardsContract), 10);
+        cuts[11] = _createCut(address(tokenOzWrapped), 11);
 
         //Create init vars
         Tokens memory tokens = Tokens({
@@ -352,7 +358,7 @@ contract Setup is Test {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 7) {
+        } else if (id_ == 7 || id_ == 11) {
             length = 5;
         } else if (id_ == 9) {
             length = 6; 
@@ -364,7 +370,7 @@ contract Setup is Test {
             length = 7;
         } else if (id_ == 0) {
             length = 14;
-        }
+        } 
 
         bytes4[] memory selectors = new bytes4[](length);
 
@@ -407,7 +413,7 @@ contract Setup is Test {
             selectors[4] = oracle.chargeOZLfee.selector;
             selectors[5] = oracle.getLastRewards.selector;
             selectors[6] = oracle.setValuePerOzToken.selector;
-        } else if (id_ == 7) {
+        } else if (id_ == 7 || id_ == 11) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;
             selectors[2] = beacon.owner.selector;
@@ -508,5 +514,6 @@ contract Setup is Test {
         vm.label(tellorOracle, "tellorOracle");
         vm.label(weETHETHredStone, "weETHETHredStone");
         vm.label(weETHUSDredStone, "weETHUSDredStone");
+        vm.label(address(wrappedBeacon), 'wozBeacon');
     }
 }
