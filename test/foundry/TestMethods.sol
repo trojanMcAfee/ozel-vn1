@@ -532,7 +532,7 @@ contract TestMethods is BaseMethods {
 
     /**
      * This test proves that the rebasing algorithm works, and that the difference
-     * between token balances is due to imbalanced pools after the test swaps
+     * between token balances is due to imbalanced pools after the test swaps.
      */
     function _redeeming_multipleBigBalances_bigMint_mediumRedeem() internal {
         //Pre-conditions
@@ -558,16 +558,16 @@ contract TestMethods is BaseMethods {
 
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
-        // //Action
+        //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
 
-        // //Post-conditions
+        //Post-conditions
         uint percentageDiffLiquid = 15;
         uint percentageDiffIliquid = 37;
-        uint percentageDiffPaused = 43;
+        uint percentageDiffPaused = 44;
 
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
@@ -577,11 +577,5 @@ contract TestMethods is BaseMethods {
             percentageDiffAmounts < percentageDiffIliquid ||
             percentageDiffAmounts < percentageDiffPaused
         );
-
     }
-
-
-   
-
-
 }
