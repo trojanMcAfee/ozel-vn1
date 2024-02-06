@@ -85,8 +85,8 @@ contract ozOracle {
     }
 
 
-    function _getUniPrice() private view returns(uint) {
-        address pool = IUniswapV3Factory(s.uniFactory).getPool(s.WETH, s.USDC, s.uniFee);
+    function _getUniPrice(address token0_, address token1_, uint24 fee_) private view returns(uint) {
+        address pool = IUniswapV3Factory(s.uniFactory).getPool(token0_, token1_, fee_);
         uint32 secondsAgo = uint32(10);
 
         uint32[] memory secondsAgos = new uint32[](2);
@@ -135,7 +135,7 @@ contract ozOracle {
 
     function _callFallbackOracle(address baseToken_) private view returns(uint) {
         if (baseToken_ == s.WETH) {
-            uint uniPrice = _getUniPrice();
+            uint uniPrice = _getUniPrice(s.WETH, s.USDC, s.uniFee);
             (bool success, uint tellorPrice) = _getTellorPrice();
             (bool success2, uint redPrice) = _getRedPrice();
 

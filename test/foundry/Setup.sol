@@ -125,7 +125,8 @@ contract Setup is Test {
     OZLadmin internal ozlAdmin;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
-    uint24 uniPoolFee = 500; //0.05 - 500
+    uint24 uniPoolFee = 500; //0.05 - 500 -- change this to uniFee05
+    uint24 uniFee01 = 100;
     uint24 protocolFee = 1_500; //15%
 
     uint internal constant _BASE = 18;
@@ -312,6 +313,7 @@ contract Setup is Test {
             rocketPoolStorage: rocketPoolStorage,
             defaultSlippage: defaultSlippage,
             uniFee: uniPoolFee, //0.05 - 500,
+            uniFee01: uniFee01,
             protocolFee: protocolFee,
             uniFactory: uniFactory
         });
