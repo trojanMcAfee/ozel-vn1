@@ -205,7 +205,7 @@ contract Setup is Test {
             weETHUSDredStone = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
 
             network = "ethereum";
-            mainBlockNumber = 18413614; //*18413614* - 18413618 - 18785221 (paused)
+            mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
             secondaryBlockNumber = 18785221;
             redStoneBlock = 19154743;
         }

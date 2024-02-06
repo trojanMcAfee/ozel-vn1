@@ -179,6 +179,10 @@ contract ozOracle {
         // console.log('rate: ', rate);
         // console.log('rate2: ', rate2);
 
+        console.log('amountReth: ', amountReth);
+        console.log('is: ', ozToken_ == address(this));
+        console.log('rate: ', rate2);
+
         return ( ((rate2 * amountReth) / 1 ether) * ETH_USD() ) / 1 ether;        
     }
 

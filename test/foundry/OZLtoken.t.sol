@@ -103,8 +103,9 @@ contract OZLtokenTest is TestMethods {
         OZ.startNewReciclingCampaign(oneYear); 
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
-        uint newOzTokenBalance = ozERC20.balanceOf(alice);
+        vm.clearMockedCalls();
 
+        uint newOzTokenBalance = ozERC20.balanceOf(alice);
         uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
 
         //Difference between balances (old and new) is less than 0.32% (slippage between orders)
