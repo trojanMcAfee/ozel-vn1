@@ -67,7 +67,8 @@ contract OZLrewardsTest is TestMethods {
         uint rewardsEarned = _getRewardRate() * secs;
         uint earnedDiff = rewardsEarned - ozlEarned;
 
-        assertTrue(earnedDiff <= 30);
+        //This represents a difference of less than 3e-17 OZL
+        assertTrue(earnedDiff < 30);
 
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlClaimed = OZL.balanceOf(alice);
