@@ -151,12 +151,8 @@ contract ozOracle {
             uint uniPrice05 = _getUniPrice(s.rETH, s.WETH, s.uniFee);
             uint uniPrice01 = _getUniPrice(s.rETH, s.WETH, s.uniFee01);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
-            
-            console.log('uniPrice05: ', uniPrice05);
-            console.log('uniPrice01: ', uniPrice01);
-            console.log('protocolPrice: ', protocolPrice);
 
-            return IRocketTokenRETH(s.rETH).getExchangeRate();
+            return Helpers.getMedium(uniPrice05, uniPrice01, protocolPrice);
         }
         revert OZError23(baseToken_);
     }

@@ -26,27 +26,10 @@ contract ozOracleTest is TestMethods {
         );
     }
 
-    function test_x() public {
-        console.log('num1: ', block.timestamp);
-        (,int price,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
-        uint x = uint(price);
-
-        console.log('link: ', x);
-
-        console.log('num2: ', block.timestamp);
-        uint r = IRocketTokenRETH(rEthAddr).getExchangeRate();
-        console.log('rocket: ', r);
-        
-
-        console.log('------');
-    
-    }
-
 
     function test_medium_callFallbackOracle_rETHETH() public {
         //Pre-condition
         _mock_false_chainlink_feed(rEthEthChainlink);
-        // vm.clearMockedCalls();
 
         //Actions
         uint rate = OZ.rETH_ETH();
