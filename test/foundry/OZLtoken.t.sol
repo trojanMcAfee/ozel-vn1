@@ -172,12 +172,7 @@ contract OZLtokenTest is TestMethods {
     //Checks circulatingSupply
     function test_claim_OZL() public returns(ozIToken) { 
         //Pre-conditions
-        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
-        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
-
-        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
-
-        ozIToken ozERC20 = ozIToken(newOzToken);
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -226,12 +221,7 @@ contract OZLtokenTest is TestMethods {
      */
     function test_overflow_rewardPerToken() public { //move this test to OZLrewards
         //Pre-conditions
-        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
-        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
-
-        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
-
-        ozIToken ozERC20 = ozIToken(newOzToken);
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount * 10 ** IERC20Permit(testToken).decimals()) / 10;
@@ -562,12 +552,7 @@ contract OZLtokenTest is TestMethods {
 
     //** this function represents the notes in chargeOZLfee() (will fail) */
     function test_exchangeRate_edge_case() internal {
-        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
-        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
-
-        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
-
-        ozIToken ozERC20 = ozIToken(newOzToken);
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();

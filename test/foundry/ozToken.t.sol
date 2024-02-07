@@ -24,12 +24,7 @@ contract ozTokenTest is TestMethods {
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
     function test_mint_catch_internal_errors() public {
         //Pre-conditions  
-        NewToken memory ozToken1 = NewToken("Ozel-ERC20-1", "ozERC20-1");
-        NewToken memory wozToken1 = NewToken("Wrapped Ozel-ERC20-1", "wozERC20-1");
-
-        (address newOzToken1,) = OZ.createOzToken(usdtAddr, ozToken1, wozToken1);
-
-        ozIToken ozERC20_1 = ozIToken(newOzToken1);
+        (ozIToken ozERC20_1,) = _createOzTokens(usdtAddr, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
