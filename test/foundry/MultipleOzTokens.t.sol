@@ -20,20 +20,7 @@ contract MultipleOzTokensTest is TestMethods {
         ozIToken, ozIToken, uint, uint, uint
     ) {
         //Pre-conditions  
-        // NewToken memory ozToken1 = NewToken("Ozel-ERC20-1", "ozERC20_1");
-        // NewToken memory wozToken1 = NewToken("Wrapped Ozel-ERC20-1", "wozERC20-1");
-
-        // (address newOzToken,) = OZ.createOzToken(testToken, ozToken1, wozToken1);
-
-        // ozIToken ozERC20_1 = ozIToken(newOzToken);
         (ozIToken ozERC20_1,) = _createOzTokens(testToken, "1");
-
-        // NewToken memory ozToken2 = NewToken("Ozel-ERC20-2", "ozERC20_2");
-        // NewToken memory wozToken2 = NewToken("Wrapped Ozel-ERC20-2", "wozERC20-2");
-
-        // (address newOzToken2,) = OZ.createOzToken(secondTestToken, ozToken2, wozToken2);
-
-        // ozIToken ozERC20_2 = ozIToken(newOzToken2);
         (ozIToken ozERC20_2,) = _createOzTokens(secondTestToken, "2");
         
 
@@ -150,12 +137,7 @@ contract MultipleOzTokensTest is TestMethods {
         (ozIToken ozERC20_1, ozIToken ozERC20_2,, uint amountInSecond, uint amountInThird) =
              test_createAndMint_two_ozTokens_oneUser();
 
-        NewToken memory ozToken3 = NewToken("Ozel-ERC20-3", "ozERC20_3");
-        NewToken memory wozToken3 = NewToken("Wrapped Ozel-ERC20-3", "wozERC20-3");
-
-        (address newOzToken3,) = OZ.createOzToken(thirdTestToken, ozToken3, wozToken3);
-
-        ozIToken ozERC20_3 = ozIToken(newOzToken3);
+        (ozIToken ozERC20_3,) = _createOzTokens(thirdTestToken, "3");
 
         _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond);
         _mintOzTokens(ozERC20_3, charlie, thirdTestToken, amountInThird);

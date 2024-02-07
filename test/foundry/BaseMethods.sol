@@ -36,12 +36,8 @@ contract BaseMethods is Setup {
         Type flowType_
     ) internal returns(ozIToken ozERC20, uint shares) {
         if (create_) {
-            NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
-            NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
-
-            (address newOzToken,) = OZ.createOzToken(testToken_, ozToken, wozToken);
-
-            ozERC20 = ozIToken(newOzToken);
+            (ozIToken ozToken,) = _createOzTokens(testToken_, "1");
+            ozERC20 = ozToken;
         } else {
             ozERC20 = ozIToken(testToken_);
         }
