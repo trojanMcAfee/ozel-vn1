@@ -54,6 +54,7 @@ error OZError19(uint amount); //redeem - redeem amount is less than minAmountOut
 error OZError20(); //_swapBalancer - not enough slippage (could be the same as OZError19 - check)
 error OZError21(string reason); //_swapBalancer - other balancer failure reason besides slippage
 error OZError22(string reason); // mint/redeem - useUnderlying/userOzTokens - catches internal exceptions like SafeERC20s. Most likely an STF error due to token allowace
+error OZError24(); // _setImplementation - implementation is not a contract
 
 //Oracle errors
 error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_

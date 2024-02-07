@@ -2,15 +2,15 @@
 pragma solidity 0.8.21;
 
 
-import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
+// import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
+import {ozBeaconProxy} from "./BeaconProxy.sol";
 
-
-contract ozTokenProxy is BeaconProxy {
+contract ozTokenProxy is ozBeaconProxy {
 
     constructor(
         address beacon_, 
         bytes memory data_
-    ) BeaconProxy(beacon_, data_) {}
+    ) ozBeaconProxy(beacon_, data_) {}
 
 
     function beacon() external view returns(address) {
@@ -18,7 +18,7 @@ contract ozTokenProxy is BeaconProxy {
     }
 
     function implementation() external view returns(address) {
-        return _implementation();
+        return _implementations()[0];
     }
 
     //this is deprecated. See the note in BeaconProxy.sol to use _upgradeBeaconToAndCall()

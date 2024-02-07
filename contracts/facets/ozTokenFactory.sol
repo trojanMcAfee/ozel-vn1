@@ -32,8 +32,6 @@ contract ozTokenFactory {
     //Wrapper function - returns address of ozToken
     function createOzToken(
         address underlying_,
-        // string memory name_,
-        // string memory symbol_
         NewToken memory ozToken_,
         NewToken memory wozToken_
     ) external returns(address, address) { //put an onlyOwner
@@ -55,7 +53,7 @@ contract ozTokenFactory {
             wozToken_.name, wozToken_.symbol, address(newToken)
         );
 
-        wozTokenProxy newWozToken = new wozTokenProxy(s.wozBeacon, wozData);
+        wozTokenProxy newWozToken = new wozTokenProxy(s.ozBeacon, wozData);
 
         //------
         _saveInRegistry(address(newToken), underlying_);

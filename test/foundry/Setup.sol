@@ -108,7 +108,7 @@ contract Setup is Test {
     ozBeacon internal beacon;
     ozToken internal tokenOz;
     OZLrewards internal rewardsContract;
-    wozBeacon internal wrappedBeacon;
+    // wozBeacon internal wrappedBeacon;
     wozToken internal tokenOzWrapped;
 
     //Ozel custom facets
@@ -268,10 +268,19 @@ contract Setup is Test {
         pools = new Pools();
         engine = new ozEngine();
         oracle = new ozOracle();
-        beacon = new ozBeacon(address(tokenOz));
+
+
+        address[] memory implementations = new address[](2);
+        implementations[0] = address(tokenOz);
+        implementations[1] = address(tokenOzWrapped);
+        // beacon = new ozBeacon(address(tokenOz));
+        beacon = new ozBeacon();
+        OZ.upgradeToBeacons(implementations);
+
+
         cutOz = new ozCut();
         rewardsContract = new OZLrewards();
-        wrappedBeacon = new wozBeacon(address(tokenOzWrapped));
+        // wrappedBeacon = new wozBeacon(address(tokenOzWrapped));
 
         //Deploys OZL token contracts
         _initOZLtokenPt1();
@@ -289,7 +298,7 @@ contract Setup is Test {
         cuts[8] = _createCut(address(cutOz), 8);
         cuts[9] = _createCut(address(ozlAdmin), 9);
         cuts[10] = _createCut(address(rewardsContract), 10);
-        cuts[11] = _createCut(address(tokenOzWrapped), 11);
+        // cuts[11] = _createCut(address(tokenOzWrapped), 11);
 
         //Create init vars
         Tokens memory tokens = Tokens({
@@ -321,8 +330,8 @@ contract Setup is Test {
             uniFee: uniPoolFee, //0.05 - 500,
             uniFee01: uniFee01,
             protocolFee: protocolFee,
-            uniFactory: uniFactory,
-            wozBeacon: address(wrappedBeacon)
+            uniFactory: uniFactory
+            // wozBeacon: address(wrappedBeacon)
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -353,14 +362,12 @@ contract Setup is Test {
         uint id_
     ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
-        if (id_ == 1) {
+        if (id_ == 1 || id_ == 7) {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 7) {
-            length = 5;
         } else if (id_ == 9) {
             length = 6; 
         } else if (id_ == 8 || id_ == 5) {
@@ -417,11 +424,11 @@ contract Setup is Test {
             selectors[5] = oracle.getLastRewards.selector;
             selectors[6] = oracle.setValuePerOzToken.selector;
         } else if (id_ == 7) {
-            selectors[0] = beacon.implementation.selector;
-            selectors[1] = beacon.upgradeTo.selector;
-            selectors[2] = beacon.owner.selector;
-            selectors[3] = beacon.renounceOwnership.selector;
-            selectors[4] = beacon.transferOwnership.selector;
+            selectors[0] = beacon.getOzImplementations.selector;
+            selectors[1] = beacon.upgradeToBeacons.selector;
+            // selectors[2] = beacon.owner.selector;
+            // selectors[3] = beacon.renounceOwnership.selector;
+            // selectors[4] = beacon.transferOwnership.selector;
         } else if (id_ == 8) {
             selectors[0] = cutOz.changeDefaultSlippage.selector;
             selectors[1] = cutOz.changeUniFee.selector;
@@ -446,7 +453,7 @@ contract Setup is Test {
             selectors[8] = rewardsContract.setRewardsDataExternally.selector;
             selectors[9] = rewardsContract.getRewardsData.selector;
         } else if (id_ == 11) {
-            selectors[0] = wozToken(address(wrappedBeacon)).getHello.selector;
+            // selectors[0] = wozToken(address(wrappedBeacon)).getHello.selector;
         }
 
         cut = IDiamondCut.FacetCut({
@@ -519,6 +526,6 @@ contract Setup is Test {
         vm.label(tellorOracle, "tellorOracle");
         vm.label(weETHETHredStone, "weETHETHredStone");
         vm.label(weETHUSDredStone, "weETHUSDredStone");
-        vm.label(address(wrappedBeacon), 'wozBeacon');
+        // vm.label(address(wrappedBeacon), 'wozBeacon');
     }
 }

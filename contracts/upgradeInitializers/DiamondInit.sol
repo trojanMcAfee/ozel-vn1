@@ -64,7 +64,7 @@ contract DiamondInit {
         //Internal infrastructure
         s.ozDiamond = infra_.ozDiamond;
         s.ozBeacon = infra_.beacon;
-        s.wozBeacon = infra_.wozBeacon; //remove after merging beacons
+        // s.wozBeacon = infra_.wozBeacon; //remove after merging beacons
         s.defaultSlippage = infra_.defaultSlippage;
         s.uniFee = infra_.uniFee;
         s.uniFee01 = infra_.uniFee01;
