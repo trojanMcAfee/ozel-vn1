@@ -16,6 +16,7 @@ import {QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 import {HelpersLib} from "./HelpersLib.sol";
 import {IVault, IAsset, IPool, IQueries} from "../../contracts/interfaces/IBalancer.sol";
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol";
+import {NewToken} from "../../contracts/AppStorage.sol";
 
 
 import "forge-std/console.sol";
@@ -51,9 +52,12 @@ contract OZLtokenTest is TestMethods {
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
         
         //Pre-conditions
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
+
+        ozIToken ozERC20 = ozIToken(newOzToken);
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
@@ -173,9 +177,12 @@ contract OZLtokenTest is TestMethods {
     //Checks circulatingSupply
     function test_claim_OZL() public returns(ozIToken) { 
         //Pre-conditions
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
+
+        ozIToken ozERC20 = ozIToken(newOzToken);
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -224,9 +231,12 @@ contract OZLtokenTest is TestMethods {
      */
     function test_overflow_rewardPerToken() public { //move this test to OZLrewards
         //Pre-conditions
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
+
+        ozIToken ozERC20 = ozIToken(newOzToken);
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount * 10 ** IERC20Permit(testToken).decimals()) / 10;
@@ -557,9 +567,12 @@ contract OZLtokenTest is TestMethods {
 
     //** this function represents the notes in chargeOZLfee() (will fail) */
     function test_exchangeRate_edge_case() internal {
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
+
+        ozIToken ozERC20 = ozIToken(newOzToken);
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();

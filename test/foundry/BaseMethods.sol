@@ -11,7 +11,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol";
-import {AmountsIn} from "../../contracts/AppStorage.sol";
+import {AmountsIn, NewToken} from "../../contracts/AppStorage.sol";
 import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -35,9 +35,12 @@ contract BaseMethods is Setup {
         Type flowType_
     ) internal returns(ozIToken ozERC20, uint shares) {
         if (create_) {
-            ozERC20 = ozIToken(OZ.createOzToken(
-                testToken_, "Ozel-ERC20", "ozERC20"
-            ));
+            NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+            NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+            (address newOzToken,) = OZ.createOzToken(testToken_, ozToken, wozToken);
+
+            ozERC20 = ozIToken(newOzToken);
         } else {
             ozERC20 = ozIToken(testToken_);
         }
@@ -397,6 +400,29 @@ contract BaseMethods is Setup {
         );
     
         return amountOut * 1e12;
+    }
+
+
+    function _createOzTokens(
+        address testToken_,
+        string memory num_
+    ) internal returns(ozIToken, wozIToken) {
+        NewToken memory ozToken1 = NewToken(
+            string.concat("Ozel-ERC20-", num_), 
+            string.concant("ozERC20_", num_)
+        );
+        NewToken memory wozToken1 = NewToken(
+            string.concat("Wrapped Ozel-ERC20-", num_), 
+            string.concat("wozERC20_", num_)
+        );
+
+        //i'm refactoring this one ----->
+
+        (address newOzToken, address newWozToken) = OZ.createOzToken(testToken, ozToken1, wozToken1);
+
+        ozIToken ozERC20_1 = ozIToken(newOzToken);
+        wozIToken wozERC20_1 = 
+
     }
 
 }

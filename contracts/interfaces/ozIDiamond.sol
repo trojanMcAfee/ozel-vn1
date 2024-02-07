@@ -8,7 +8,8 @@ import {
     AmountsOut, 
     Asset, 
     LastRewards,
-    OZLrewards
+    OZLrewards,
+    NewToken
 } from "../AppStorage.sol";
 
 
@@ -17,11 +18,17 @@ interface ozIDiamond {
     function diamondCut(IDiamondCut.FacetCut[] memory _diamondCut, address _init, bytes memory _calldata) external;
     function owner() external view returns(address);
 
+    // function createOzToken(
+    //     address erc20_,
+    //     string memory name_,
+    //     string memory symbol_
+    // ) external returns(address);
+
     function createOzToken(
         address erc20_,
-        string memory name_,
-        string memory symbol_
-    ) external returns(address);
+        NewToken memory ozToken_,
+        NewToken memory wozToken_
+    ) external returns(address, address);
 
     function useUnderlying( 
         address underlying_, 

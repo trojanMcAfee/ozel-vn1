@@ -31,6 +31,7 @@ struct AppStorage {
     uint rewardMultiplier; //remove if not used
 
     address ozBeacon;
+    address wozBeacon;
 
     address rocketPoolStorage;
     bytes32 rocketDepositPoolID;
@@ -120,6 +121,7 @@ struct Infra {
     uint24 uniFee01;
     uint24 protocolFee;
     address uniFactory;
+    address wozBeacon;
 }
 
 //-----
@@ -143,6 +145,11 @@ struct OZLrewards {
     mapping(address user => uint rewardsEarned) rewards;
 }
 
+
+struct NewToken {
+    string name;
+    string symbol;
+}
 
 // 1st round - 
 // rETH        - 110

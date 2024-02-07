@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {Asset} from "../../contracts/AppStorage.sol";
+import {Asset, NewToken} from "../../contracts/AppStorage.sol";
 import {TestMethods} from "./TestMethods.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {Type} from "./AppStorageTests.sol";
@@ -41,9 +41,12 @@ contract OtherTests is TestMethods {
         address victim = charlie;
         uint amountIn = 1;
 
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
+
+        ozIToken ozERC20 = ozIToken(newOzToken);
         
         (bytes memory data) = _createDataOffchain(
             ozERC20, amountIn, ALICE_PK, attacker, testToken, Type.IN

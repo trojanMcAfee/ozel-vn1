@@ -3,9 +3,10 @@ pragma solidity 0.8.21;
 
 
 // import {ozToken} from "../ozToken.sol";
-import {AppStorage} from "../AppStorage.sol";
+import {AppStorage, NewToken} from "../AppStorage.sol";
 import {Helpers} from "../libraries/Helpers.sol";
 import {ozTokenProxy} from "../ozTokenProxy.sol";
+import {wozTokenProxy} from "../wozTokenProxy.sol";
 import {ozIToken} from "../interfaces/ozIToken.sol";
 import "../Errors.sol";
 // import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
@@ -19,6 +20,7 @@ import "forge-std/console.sol";
 //What's left is to create the wozToken contract and call the getHello function
 //on the implementation to see if it works (use as guide ozToken.sol)
 
+
 contract ozTokenFactory {
 
     using Helpers for address[];
@@ -30,25 +32,35 @@ contract ozTokenFactory {
     //Wrapper function - returns address of ozToken
     function createOzToken(
         address underlying_,
-        string memory name_,
-        string memory symbol_
-    ) external returns(address) { //put an onlyOwner
+        // string memory name_,
+        // string memory symbol_
+        NewToken memory ozToken_,
+        NewToken memory wozToken_
+    ) external returns(address, address) { //put an onlyOwner
 
         if (isInRegistry(underlying_)) revert OZError12(underlying_);
         if (underlying_ == address(0)) revert OZError11(underlying_);
 
-        //------
-        bytes memory data = abi.encodeWithSignature( 
+        //ozToken
+        bytes memory ozData = abi.encodeWithSignature( 
             "initialize(address,address,string,string)", 
-            underlying_, s.ozDiamond, name_, symbol_
+            underlying_, s.ozDiamond, ozToken_.name, ozToken_.symbol
         );
 
-        ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, data);
-        //------
+        ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, ozData);
+        
+        //wozToken
+        bytes memory wozData = abi.encodeWithSignature(
+            "initialize(string,string,address)", 
+            wozToken_.name, wozToken_.symbol, address(newToken)
+        );
 
+        wozTokenProxy newWozToken = new wozTokenProxy(s.wozBeacon, wozData);
+
+        //------
         _saveInRegistry(address(newToken), underlying_);
 
-        return address(newToken);
+        return (address(newToken), address(newWozToken));
     }
 
     //*** check the note in AppStorage for ozTokenRegistryMap*/

@@ -321,7 +321,8 @@ contract Setup is Test {
             uniFee: uniPoolFee, //0.05 - 500,
             uniFee01: uniFee01,
             protocolFee: protocolFee,
-            uniFactory: uniFactory
+            uniFactory: uniFactory,
+            wozBeacon: address(wrappedBeacon)
         });
 
         bytes memory initData = abi.encodeWithSelector(

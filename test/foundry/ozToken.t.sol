@@ -11,8 +11,8 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../../contracts/Errors.sol";
-
 import {Dummy1} from "./Dummy1.sol";
+import {NewToken} from "../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -24,9 +24,12 @@ contract ozTokenTest is TestMethods {
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
     function test_mint_catch_internal_errors() public {
         //Pre-conditions  
-        ozIToken ozERC20_1 = ozIToken(OZ.createOzToken(
-            usdtAddr, "Ozel-ERC20-1", "ozERC20_1"
-        ));
+        NewToken memory ozToken1 = NewToken("Ozel-ERC20-1", "ozERC20-1");
+        NewToken memory wozToken1 = NewToken("Wrapped Ozel-ERC20-1", "wozERC20-1");
+
+        (address newOzToken1,) = OZ.createOzToken(usdtAddr, ozToken1, wozToken1);
+
+        ozIToken ozERC20_1 = ozIToken(newOzToken1);
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -90,9 +93,12 @@ contract ozTokenTest is TestMethods {
 
     function test_minting_different_owner_msgSender() public returns(Dummy1, ozIToken) {
         //Pre-conditions  
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
+
+        ozIToken ozERC20 = ozIToken(newOzToken);
 
         _startCampaign();
 
@@ -127,9 +133,12 @@ contract ozTokenTest is TestMethods {
 
     function test_redeeming_different_owner_msgSender() public {
         //Pre-conditions
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
+
+        ozIToken ozERC20 = ozIToken(newOzToken);
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();

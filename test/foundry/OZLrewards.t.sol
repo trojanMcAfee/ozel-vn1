@@ -8,7 +8,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IOZL} from "../../contracts/interfaces/IOZL.sol";
 // import {Type} from "./AppStorageTests.sol";
 // import {HelpersLib} from "./HelpersLib.sol";
-// import {AmountsIn} from "../../contracts/AppStorage.sol";
+import {NewToken} from "../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -18,7 +18,10 @@ contract OZLrewardsTest is TestMethods {
     //tests that the reward rate was properly calculated + OZL assignation to ozDiamond
     function test_rewardRate() public {
         //Pre-conditions
-        OZ.createOzToken(testToken, "Ozel-ERC20", "ozERC20");
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        OZ.createOzToken(testToken, ozToken, wozToken);
         IOZL OZL = IOZL(address(ozlProxy));
 
         //Action
@@ -41,26 +44,22 @@ contract OZLrewardsTest is TestMethods {
     //tests the exchange rate also
     function test_distribute_OZL() public {
         //Pre-conditions
-        ozIToken ozERC20 = ozIToken(OZ.createOzToken(
-            testToken, "Ozel-ERC20", "ozERC20"
-        ));
+        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
+        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
+
+        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
+
+        ozIToken ozERC20 = ozIToken(newOzToken);
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
-        console.log(3);
-
         //Actions
         _startCampaign();
-        console.log(4);
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
-
-        console.log(1);
 
         uint secs = 15;
         _accrueRewards(secs);
-
-        console.log(2);
 
         //Post-conditions
         uint ozlEarned = OZ.earned(alice);
