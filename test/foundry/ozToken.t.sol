@@ -88,12 +88,7 @@ contract ozTokenTest is TestMethods {
 
     function test_minting_different_owner_msgSender() public returns(Dummy1, ozIToken) {
         //Pre-conditions  
-        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
-        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
-
-        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
-
-        ozIToken ozERC20 = ozIToken(newOzToken);
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         _startCampaign();
 
@@ -128,12 +123,7 @@ contract ozTokenTest is TestMethods {
 
     function test_redeeming_different_owner_msgSender() public {
         //Pre-conditions
-        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
-        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
-
-        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
-
-        ozIToken ozERC20 = ozIToken(newOzToken);
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
