@@ -359,7 +359,7 @@ contract Setup is Test {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 7 || id_ == 11) {
+        } else if (id_ == 7) {
             length = 5;
         } else if (id_ == 9) {
             length = 6; 
@@ -371,7 +371,9 @@ contract Setup is Test {
             length = 7;
         } else if (id_ == 0) {
             length = 14;
-        } 
+        } else if (id_ == 11) {
+            length = 1;
+        }
 
         bytes4[] memory selectors = new bytes4[](length);
 
@@ -414,7 +416,7 @@ contract Setup is Test {
             selectors[4] = oracle.chargeOZLfee.selector;
             selectors[5] = oracle.getLastRewards.selector;
             selectors[6] = oracle.setValuePerOzToken.selector;
-        } else if (id_ == 7 || id_ == 11) {
+        } else if (id_ == 7) {
             selectors[0] = beacon.implementation.selector;
             selectors[1] = beacon.upgradeTo.selector;
             selectors[2] = beacon.owner.selector;
@@ -443,6 +445,8 @@ contract Setup is Test {
             selectors[7] = rewardsContract.startNewReciclingCampaign.selector;
             selectors[8] = rewardsContract.setRewardsDataExternally.selector;
             selectors[9] = rewardsContract.getRewardsData.selector;
+        } else if (id_ == 11) {
+            selectors[0] = wozToken(address(wrappedBeacon)).getHello.selector;
         }
 
         cut = IDiamondCut.FacetCut({
