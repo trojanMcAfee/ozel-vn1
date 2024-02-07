@@ -13,8 +13,8 @@
   },
   "files": {
     "contracts/AppStorage.sol": {
-      "lastModificationDate": 1707237231960,
-      "contentHash": "2e3f7f9ad692121f1850755fba19440a",
+      "lastModificationDate": 1707301056770,
+      "contentHash": "dd873fde168e88149df10ae974fc7cea",
       "sourceName": "contracts/AppStorage.sol",
       "solcConfig": {
         "settings": {
@@ -194,7 +194,7 @@
       }
     },
     "contracts/OZL.sol": {
-      "lastModificationDate": 1707139199700,
+      "lastModificationDate": 1707254237439,
       "contentHash": "ed9b9302cc8823043cce7c17c4da98a8",
       "sourceName": "contracts/OZL.sol",
       "solcConfig": {
@@ -649,8 +649,8 @@
       }
     },
     "contracts/facets/ozBeacon.sol": {
-      "lastModificationDate": 1706710741760,
-      "contentHash": "0cedc2ce99a580989eda0cfb53dc6305",
+      "lastModificationDate": 1707259219905,
+      "contentHash": "afaf758e8030cecd25bd4af608d19b2c",
       "sourceName": "contracts/facets/ozBeacon.sol",
       "solcConfig": {
         "settings": {
@@ -881,7 +881,7 @@
       }
     },
     "contracts/facets/ozOracle.sol": {
-      "lastModificationDate": 1707238539223,
+      "lastModificationDate": 1707254237441,
       "contentHash": "8feb3b4b2725fcf21bf48d9ee69953c5",
       "sourceName": "contracts/facets/ozOracle.sol",
       "solcConfig": {
@@ -950,8 +950,8 @@
       }
     },
     "contracts/facets/ozTokenFactory.sol": {
-      "lastModificationDate": 1706710741762,
-      "contentHash": "b5a102ac9b47eb1b19855012baed3aed",
+      "lastModificationDate": 1707312811604,
+      "contentHash": "8f0b4575a37f3303824d472fd1b32fff",
       "sourceName": "contracts/facets/ozTokenFactory.sol",
       "solcConfig": {
         "settings": {
@@ -993,6 +993,7 @@
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/ozTokenProxy.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/src/console.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
@@ -1010,6 +1011,53 @@
       "artifacts": {
         "ozTokenFactory": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "ozTokenFactory.sol/ozTokenFactory.json"
+        }
+      }
+    },
+    "contracts/facets/wozBeacon.sol": {
+      "lastModificationDate": 1707260040565,
+      "contentHash": "317a925ea217c3524267e24274f0d85e",
+      "sourceName": "contracts/facets/wozBeacon.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "wozBeacon": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "wozBeacon.sol/wozBeacon.json"
         }
       }
     },
@@ -1532,8 +1580,8 @@
       }
     },
     "contracts/interfaces/ozIDiamond.sol": {
-      "lastModificationDate": 1706710741770,
-      "contentHash": "a3b6965fe7b5200650c99cf18da99ffe",
+      "lastModificationDate": 1707305159547,
+      "contentHash": "37d1c59f3cfa504df74960be1daf06a4",
       "sourceName": "contracts/interfaces/ozIDiamond.sol",
       "solcConfig": {
         "settings": {
@@ -1621,6 +1669,47 @@
       "artifacts": {
         "ozIToken": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "ozIToken.sol/ozIToken.json"
+        }
+      }
+    },
+    "contracts/interfaces/wozIToken.sol": {
+      "lastModificationDate": 1707312445845,
+      "contentHash": "ac2467ec83c5ce3922057462e1c88444",
+      "sourceName": "contracts/interfaces/wozIToken.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "wozIToken": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "wozIToken.sol/wozIToken.json"
         }
       }
     },
@@ -1966,8 +2055,8 @@
       }
     },
     "contracts/ozTokenProxy.sol": {
-      "lastModificationDate": 1706710741775,
-      "contentHash": "358f13d7634ea69cfaf733f32666408c",
+      "lastModificationDate": 1707258705228,
+      "contentHash": "4bb76524bf52a8a3ec46cfddfa4c4e22",
       "sourceName": "contracts/ozTokenProxy.sol",
       "solcConfig": {
         "settings": {
@@ -2098,8 +2187,8 @@
       }
     },
     "contracts/upgradeInitializers/DiamondInit.sol": {
-      "lastModificationDate": 1707233741882,
-      "contentHash": "caae555e19899e0895a3fc51e5f222ee",
+      "lastModificationDate": 1707300425691,
+      "contentHash": "d03b953db3fbc4024ed9d9a434de4ad7",
       "sourceName": "contracts/upgradeInitializers/DiamondInit.sol",
       "solcConfig": {
         "settings": {
@@ -2147,6 +2236,113 @@
       "artifacts": {
         "DiamondInit": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "DiamondInit.sol/DiamondInit.json"
+        }
+      }
+    },
+    "contracts/wozToken.sol": {
+      "lastModificationDate": 1707313512038,
+      "contentHash": "7a1fb0ced6d7dcacef7d92cafbce4d4e",
+      "sourceName": "contracts/wozToken.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/forge-std/src/console.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "wozToken": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "wozToken.sol/wozToken.json"
+        }
+      }
+    },
+    "contracts/wozTokenProxy.sol": {
+      "lastModificationDate": 1707259219924,
+      "contentHash": "db6f166794dd65b63e682f0777ede300",
+      "sourceName": "contracts/wozTokenProxy.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "wozTokenProxy": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "wozTokenProxy.sol/wozTokenProxy.json"
         }
       }
     },
@@ -3858,8 +4054,8 @@
       }
     },
     "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol": {
-      "lastModificationDate": 1699097672762,
-      "contentHash": "76ee431e8ca5822c77e46a3bcac06e6e",
+      "lastModificationDate": 1707257798219,
+      "contentHash": "66b28ed2a7b1ec30f64a767e5d20bc22",
       "sourceName": "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
       "solcConfig": {
         "settings": {
@@ -3891,7 +4087,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/console.sol",
         "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
         "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
         "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
@@ -4846,8 +5041,8 @@
       }
     },
     "test/foundry/BaseMethods.sol": {
-      "lastModificationDate": 1707236942440,
-      "contentHash": "0a04587cd0adc85b1fa10824ec845bcd",
+      "lastModificationDate": 1707342350614,
+      "contentHash": "c63b5841f9c70f8c71093abdbb0d089e",
       "sourceName": "test/foundry/BaseMethods.sol",
       "solcConfig": {
         "settings": {
@@ -4898,6 +5093,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -4911,6 +5107,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -4920,6 +5117,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -5045,6 +5244,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -5058,6 +5258,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -5067,6 +5268,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -5194,6 +5397,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -5207,6 +5411,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -5216,6 +5421,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -5343,6 +5550,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -5356,6 +5564,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -5365,6 +5574,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -5548,8 +5759,8 @@
       }
     },
     "test/foundry/MultipleOzTokens.t.sol": {
-      "lastModificationDate": 1706710742688,
-      "contentHash": "1d64d653caf63ecbcb33a311c73dfbb3",
+      "lastModificationDate": 1707342086005,
+      "contentHash": "86d5341c37a543f5156acdf46032d67b",
       "sourceName": "test/foundry/MultipleOzTokens.t.sol",
       "solcConfig": {
         "settings": {
@@ -5600,6 +5811,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -5613,6 +5825,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -5622,6 +5835,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -5697,8 +5912,8 @@
       }
     },
     "test/foundry/OZLrewards.t.sol": {
-      "lastModificationDate": 1707234926983,
-      "contentHash": "8fbca58d0f9f355b072ffe17efa8ba21",
+      "lastModificationDate": 1707312913463,
+      "contentHash": "18a2a5581dc8d71d633e2078f4109dd7",
       "sourceName": "test/foundry/OZLrewards.t.sol",
       "solcConfig": {
         "settings": {
@@ -5749,6 +5964,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -5762,6 +5978,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -5771,6 +5988,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -5846,8 +6065,8 @@
       }
     },
     "test/foundry/OZLtoken.t.sol": {
-      "lastModificationDate": 1707236772139,
-      "contentHash": "92d96be2c77e544bc165c7064e78fe33",
+      "lastModificationDate": 1707312933749,
+      "contentHash": "e4a4edd0ed915df73c3b85afc960a2a9",
       "sourceName": "test/foundry/OZLtoken.t.sol",
       "solcConfig": {
         "settings": {
@@ -5898,6 +6117,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -5911,6 +6131,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -5920,6 +6141,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -5995,8 +6218,8 @@
       }
     },
     "test/foundry/OtherTests.t.sol": {
-      "lastModificationDate": 1706710742692,
-      "contentHash": "66e0d666ce15801da67cf794f249bc4c",
+      "lastModificationDate": 1707312953910,
+      "contentHash": "ee7ec8a0731c52ddb9f93f778724f0a8",
       "sourceName": "test/foundry/OtherTests.t.sol",
       "solcConfig": {
         "settings": {
@@ -6047,6 +6270,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -6060,6 +6284,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -6069,6 +6294,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -6144,8 +6371,8 @@
       }
     },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1707235702321,
-      "contentHash": "d841a281565a7257ecee0ac92e694a2b",
+      "lastModificationDate": 1707313558742,
+      "contentHash": "3f5b1ea0ef9fc6f16189a3e7f962a0b0",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -6196,6 +6423,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -6218,6 +6446,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -6489,6 +6719,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -6511,6 +6742,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -6583,7 +6816,7 @@
       }
     },
     "test/foundry/ozOracle.t.sol": {
-      "lastModificationDate": 1707238583922,
+      "lastModificationDate": 1707254238085,
       "contentHash": "91df36569e6f4d1d076fad577f2c2f59",
       "sourceName": "test/foundry/ozOracle.t.sol",
       "solcConfig": {
@@ -6635,6 +6868,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -6648,6 +6882,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -6657,6 +6892,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -6732,8 +6969,8 @@
       }
     },
     "test/foundry/ozToken.t.sol": {
-      "lastModificationDate": 1707236875015,
-      "contentHash": "c2933c8f641650e216c639498bca3af9",
+      "lastModificationDate": 1707313156785,
+      "contentHash": "5075231cffb40553be026a28eadb0222",
       "sourceName": "test/foundry/ozToken.t.sol",
       "solcConfig": {
         "settings": {
@@ -6784,6 +7021,7 @@
         "contracts/facets/ozLoupe.sol",
         "contracts/facets/ozOracle.sol",
         "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IDiamondLoupe.sol",
@@ -6797,6 +7035,7 @@
         "contracts/interfaces/IWETH.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "contracts/libraries/LibDiamond.sol",
@@ -6806,6 +7045,8 @@
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
         "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Base.sol",
         "lib/forge-std/src/StdAssertions.sol",
@@ -6878,6 +7119,159 @@
       "artifacts": {
         "ozTokenTest": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "ozToken.t.sol/ozTokenTest.json"
+        }
+      }
+    },
+    "test/foundry/wozToken.t.sol": {
+      "lastModificationDate": 1707312978631,
+      "contentHash": "c33edc08458f23a3aef78803bd995ed0",
+      "sourceName": "test/foundry/wozToken.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Diamond.sol",
+        "contracts/Errors.sol",
+        "contracts/Modifiers.sol",
+        "contracts/OZL.sol",
+        "contracts/OZLrewards.sol",
+        "contracts/ProxyAdmin.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
+        "contracts/facets/ozBeacon.sol",
+        "contracts/facets/ozCut.sol",
+        "contracts/facets/ozEngine.sol",
+        "contracts/facets/ozLoupe.sol",
+        "contracts/facets/ozOracle.sol",
+        "contracts/facets/ozTokenFactory.sol",
+        "contracts/facets/wozBeacon.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IOZL.sol",
+        "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IRocketPool.sol",
+        "contracts/interfaces/IUsingTellor.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/oracle/FullMath.sol",
+        "contracts/libraries/oracle/OracleLibrary.sol",
+        "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozToken.sol",
+        "contracts/ozTokenProxy.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/access/Ownable.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
+        "test/foundry/AppStorageTests.sol",
+        "test/foundry/BaseMethods.sol",
+        "test/foundry/HelpersLib.sol",
+        "test/foundry/Setup.sol",
+        "test/foundry/TestMethods.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "wozTokenTest": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "wozToken.t.sol/wozTokenTest.json"
         }
       }
     }

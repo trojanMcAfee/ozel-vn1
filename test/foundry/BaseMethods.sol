@@ -8,6 +8,7 @@ import {IPool} from "../../contracts/interfaces/IBalancer.sol";
 import {Setup} from "./Setup.sol";
 import {Type} from "./AppStorageTests.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
+import {wozIToken} from "../../contracts/interfaces/wozIToken.sol";
 import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol";
@@ -407,22 +408,21 @@ contract BaseMethods is Setup {
         address testToken_,
         string memory num_
     ) internal returns(ozIToken, wozIToken) {
-        NewToken memory ozToken1 = NewToken(
-            string.concat("Ozel-ERC20_1", num_), 
-            string.concant("ozERC20_", num_)
+        NewToken memory ozToken = NewToken(
+            string.concat("Ozel-ERC20-", num_), 
+            string(abi.encodePacked(bytes("ozERC20_"), num_))
         );
-        NewToken memory wozToken1 = NewToken(
+        NewToken memory wozToken = NewToken(
             string.concat("Wrapped Ozel-ERC20-", num_), 
             string.concat("wozERC201", num_)
         );
 
-        //i'm refactoring this one ----->
+        (address newOzToken, address newWozToken) = OZ.createOzToken(testToken_, ozToken, wozToken);
 
-        (address newOzToken, address newWozToken) = OZ.createOzToken(testToken, ozToken1, wozToken1);
+        ozIToken ozERC20 = ozIToken(newOzToken);
+        wozIToken wozERC20 = wozIToken(newWozToken);
 
-        ozIToken ozERC20_1 = ozIToken(newOzToken);
-        wozIToken wozERC20_1 = 
-
+        return (ozERC20, wozERC20);
     }
 
 }
