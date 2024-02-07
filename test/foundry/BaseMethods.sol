@@ -408,12 +408,12 @@ contract BaseMethods is Setup {
         string memory num_
     ) internal returns(ozIToken, wozIToken) {
         NewToken memory ozToken1 = NewToken(
-            string.concat("Ozel-ERC20-", num_), 
+            string.concat("Ozel-ERC20_1", num_), 
             string.concant("ozERC20_", num_)
         );
         NewToken memory wozToken1 = NewToken(
             string.concat("Wrapped Ozel-ERC20-", num_), 
-            string.concat("wozERC20_", num_)
+            string.concat("wozERC201", num_)
         );
 
         //i'm refactoring this one ----->
