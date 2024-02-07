@@ -52,12 +52,7 @@ contract OZLtokenTest is TestMethods {
         (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
         
         //Pre-conditions
-        NewToken memory ozToken = NewToken("Ozel-ERC20", "ozERC20");
-        NewToken memory wozToken = NewToken("Wrapped Ozel-ERC20", "wozERC20");
-
-        (address newOzToken,) = OZ.createOzToken(testToken, ozToken, wozToken);
-
-        ozIToken ozERC20 = ozIToken(newOzToken);
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
