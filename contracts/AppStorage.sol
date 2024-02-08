@@ -123,6 +123,7 @@ struct Infra {
     uint24 uniFee01;
     uint24 protocolFee;
     address uniFactory;
+    address[] ozImplementations;
 }
 
 //-----

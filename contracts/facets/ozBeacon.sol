@@ -39,6 +39,7 @@ contract ozBeacon {
      */
     function getOzImplementations() public view returns (address[] memory) {
         console.log(22);
+        console.log('length: ', s.ozImplementations.length);
         return s.ozImplementations;
     }
 

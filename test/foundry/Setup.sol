@@ -269,9 +269,9 @@ contract Setup is Test {
         engine = new ozEngine();
         oracle = new ozOracle();
 
-        address[] memory implementations = new address[](2);
-        implementations[0] = address(tokenOz);
-        implementations[1] = address(tokenOzWrapped);
+        address[] memory ozImplementations = new address[](2);
+        ozImplementations[0] = address(tokenOz);
+        ozImplementations[1] = address(tokenOzWrapped);
 
         // beacon = new ozBeacon(address(tokenOz));
         beacon = new ozBeacon();
@@ -331,7 +331,8 @@ contract Setup is Test {
             uniFee: uniPoolFee, //0.05 - 500,
             uniFee01: uniFee01,
             protocolFee: protocolFee,
-            uniFactory: uniFactory
+            uniFactory: uniFactory,
+            ozImplementations: ozImplementations
             // wozBeacon: address(wrappedBeacon)
         });
 
@@ -348,7 +349,7 @@ contract Setup is Test {
         //Initialize diamond
         vm.startPrank(owner);
         OZ.diamondCut(cuts, address(initDiamond), initData);
-        OZ.upgradeToBeacons(implementations); //check if i can join this call with above ^
+        OZ.upgradeToBeacons(ozImplementations); //check if i can join this call with above ^
 
         _initOZLtokenPt2();
 

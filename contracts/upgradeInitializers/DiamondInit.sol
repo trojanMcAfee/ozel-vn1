@@ -90,6 +90,13 @@ contract DiamondInit {
         );
         s.rocketDAOProtocolSettingsDepositID = keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"));
         
+        // s.ozImplementations = infra_.ozImplementations;
+        
+        uint length = infra_.ozImplementations.length;
+        for (uint i=0; i<length; i++) {
+            s.ozImplementations.push(infra_.ozImplementations[i]);
+        }
+        
     }
 
 
