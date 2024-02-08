@@ -43,7 +43,6 @@ contract ozBeaconProxy is Proxy, ozERC1967Upgrade {
     }
 
     function _implementation() internal view virtual override returns (address) {}
-    //after test, check if this ^^ can be deleted
 
     /**
      * @dev Returns the current implementation address of the associated beacon.

@@ -23,8 +23,6 @@ import "forge-std/console.sol";
 
 contract ozTokenFactory {
 
-    using Helpers for address[];
-
     AppStorage internal s;
 
     event TokenCreated(address indexed ozToken, address indexed wozToken);
@@ -59,15 +57,14 @@ contract ozTokenFactory {
         //------
         OzTokens memory ozTokens = OzTokens(address(newToken), address(newWozToken));
 
-        _saveInRegistry(ozTokens, underlying_); //add woxToken here
+        _saveInRegistry(ozTokens, underlying_); 
 
         return (address(newToken), address(newWozToken));
     }
 
-    //*** check the note in AppStorage for ozTokenRegistryMap*/
+    //check if i can emit event with structs: https://ethereum.stackexchange.com/questions/159698/structs-in-events
     function _saveInRegistry(OzTokens memory newOzTokens_, address underlying_) private {
         s.ozTokenRegistry.push(newOzTokens_);
-        // s.ozTokenRegistryMap[newOzToken_] = true; //<--- remove
         s.ozTokens[underlying_] = newOzTokens_.ozToken;
         emit TokenCreated(newOzTokens_.ozToken, newOzTokens_.wozToken);
     }
