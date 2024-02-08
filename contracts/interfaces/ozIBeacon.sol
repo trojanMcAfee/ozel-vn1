@@ -11,5 +11,5 @@ interface ozIBeacon {
      *
      * {BeaconProxy} will check that this address is a contract.
      */
-    function implementations() external view returns (address);
+    function getOzImplementations() external view returns (address[] memory);
 }

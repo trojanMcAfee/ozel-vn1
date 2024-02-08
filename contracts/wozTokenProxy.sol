@@ -3,15 +3,16 @@ pragma solidity 0.8.21;
 
 
 // import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
-import {ozBeaconProxy} from "./BeaconProxy.sol";
+import {ozBeaconProxy} from "./ozBeaconProxy.sol";
 
 
 contract wozTokenProxy is ozBeaconProxy {
 
     constructor(
         address beacon_, 
-        bytes memory data_
-    ) ozBeaconProxy(beacon_, data_) {}
+        bytes memory data_,
+        uint implIndex_
+    ) ozBeaconProxy(beacon_, data_, implIndex_) {}
 
 
     function beacon() external view returns(address) {
@@ -19,7 +20,11 @@ contract wozTokenProxy is ozBeaconProxy {
     }
 
     function implementation() external view returns(address) {
-        return _implementation()[1];
+        return _implementation();
+    }
+
+    function _implementation() internal view override returns(address) {
+        return _implementations()[1];
     }
 }
 

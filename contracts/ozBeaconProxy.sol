@@ -3,20 +3,13 @@
 
 pragma solidity ^0.8.0;
 
-// import "./IBeacon.sol";
-import "../Proxy.sol";
-import "../ERC1967/ERC1967Upgrade.sol";
+
+import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
+// import {ERC1967Upgrade} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol";
 import {ozIBeacon} from "./interfaces/ozIBeacon.sol";
+import {ozERC1967Upgrade} from "./ozERC1967Upgrade.sol";
 
 
-interface IBeacon {
-    /**
-     * @dev Must return an address that can be used as a delegate call target.
-     *
-     * {BeaconProxy} will check that this address is a contract.
-     */
-    function implementations() external view returns (address);
-} //<--- move this to Interfaces dir
 
 /**
  * @dev This contract implements a proxy that gets the implementation address for each call from an {UpgradeableBeacon}.
@@ -26,7 +19,7 @@ interface IBeacon {
  *
  * _Available since v3.4._
  */
-contract ozBeaconProxy is Proxy, ERC1967Upgrade {
+contract ozBeaconProxy is Proxy, ozERC1967Upgrade {
     /**
      * @dev Initializes the proxy with `beacon`.
      *
@@ -38,21 +31,24 @@ contract ozBeaconProxy is Proxy, ERC1967Upgrade {
      *
      * - `beacon` must be a contract with the interface {IBeacon}.
      */
-    constructor(address beacon, bytes memory data) payable {
-        _upgradeBeaconToAndCall(beacon, data, false);
+    constructor(address beacon, bytes memory data, uint implIndex) {
+        _upgradeBeaconToAndCall(beacon, data, false, implIndex);
     }
 
     /**
      * @dev Returns the current beacon address.
      */
-    function _beacon() internal view virtual returns (address) {
+    function _beacon() internal view returns (address) {
         return _getBeacon();
     }
+
+    function _implementation() internal view virtual override returns (address) {}
+    //after test, check if this ^^ can be deleted
 
     /**
      * @dev Returns the current implementation address of the associated beacon.
      */
     function _implementations() internal view returns (address[] memory) {
-        return IBeacon(_getBeacon()).getOzImplementations();
+        return ozIBeacon(_getBeacon()).getOzImplementations();
     }
 }

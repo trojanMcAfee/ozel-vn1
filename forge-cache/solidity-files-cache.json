@@ -13,8 +13,8 @@
   },
   "files": {
     "contracts/AppStorage.sol": {
-      "lastModificationDate": 1707301056770,
-      "contentHash": "dd873fde168e88149df10ae974fc7cea",
+      "lastModificationDate": 1707346997709,
+      "contentHash": "d977fb9df20e57a3c8b08a8102ce2474",
       "sourceName": "contracts/AppStorage.sol",
       "solcConfig": {
         "settings": {
@@ -102,8 +102,8 @@
       }
     },
     "contracts/Errors.sol": {
-      "lastModificationDate": 1707212960746,
-      "contentHash": "ab0bdbb715ff46d64e8353267010b1b9",
+      "lastModificationDate": 1707396001773,
+      "contentHash": "e3007f6f0ead4e21fa599f966f30af5e",
       "sourceName": "contracts/Errors.sol",
       "solcConfig": {
         "settings": {
@@ -649,9 +649,60 @@
       }
     },
     "contracts/facets/ozBeacon.sol": {
-      "lastModificationDate": 1707259219905,
-      "contentHash": "afaf758e8030cecd25bd4af608d19b2c",
+      "lastModificationDate": 1707393740431,
+      "contentHash": "bd7e5e3f3e11619a059e36fe9436d1ce",
       "sourceName": "contracts/facets/ozBeacon.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Errors.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "lib/forge-std/src/console.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozBeacon": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozBeacon.sol/ozBeacon.json"
+        }
+      }
+    },
+    "contracts/facets/ozBeacon2.sol": {
+      "lastModificationDate": 1707345743557,
+      "contentHash": "cedd4186d5793398884321a56152ebf0",
+      "sourceName": "contracts/facets/ozBeacon2.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -690,8 +741,8 @@
       ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
-        "ozBeacon": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozBeacon.sol/ozBeacon.json"
+        "ozBeacon2": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozBeacon2.sol/ozBeacon2.json"
         }
       }
     },
@@ -950,8 +1001,8 @@
       }
     },
     "contracts/facets/ozTokenFactory.sol": {
-      "lastModificationDate": 1707312811604,
-      "contentHash": "8f0b4575a37f3303824d472fd1b32fff",
+      "lastModificationDate": 1707393740432,
+      "contentHash": "7960093571954cf2ac6862f9234b0941",
       "sourceName": "contracts/facets/ozTokenFactory.sol",
       "solcConfig": {
         "settings": {
@@ -988,20 +1039,20 @@
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/wozTokenProxy.sol",
         "lib/forge-std/src/console.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
         "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
         "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
         "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
         "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
@@ -1579,9 +1630,50 @@
         }
       }
     },
+    "contracts/interfaces/ozIBeacon.sol": {
+      "lastModificationDate": 1707390537341,
+      "contentHash": "043696da11f91adbb1af4e09d473c426",
+      "sourceName": "contracts/interfaces/ozIBeacon.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozIBeacon": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozIBeacon.sol/ozIBeacon.json"
+        }
+      }
+    },
     "contracts/interfaces/ozIDiamond.sol": {
-      "lastModificationDate": 1707305159547,
-      "contentHash": "37d1c59f3cfa504df74960be1daf06a4",
+      "lastModificationDate": 1707390583894,
+      "contentHash": "63c0cdb96f055230a20367d75cfb6de5",
       "sourceName": "contracts/interfaces/ozIDiamond.sol",
       "solcConfig": {
         "settings": {
@@ -1807,7 +1899,7 @@
       }
     },
     "contracts/libraries/LibDiamond.sol": {
-      "lastModificationDate": 1706710741774,
+      "lastModificationDate": 1707392822887,
       "contentHash": "ad99c555b443b1011aba93333e65bb3a",
       "sourceName": "contracts/libraries/LibDiamond.sol",
       "solcConfig": {
@@ -1982,6 +2074,106 @@
         }
       }
     },
+    "contracts/ozBeaconProxy.sol": {
+      "lastModificationDate": 1707393919165,
+      "contentHash": "c6d158a5f56eaa2dd74d079af662293d",
+      "sourceName": "contracts/ozBeaconProxy.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/Errors.sol",
+        "contracts/interfaces/ozIBeacon.sol",
+        "contracts/ozERC1967Upgrade.sol",
+        "lib/forge-std/src/console.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol"
+      ],
+      "versionRequirement": "^0.8.0",
+      "artifacts": {
+        "ozBeaconProxy": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozBeaconProxy.sol/ozBeaconProxy.json"
+        }
+      }
+    },
+    "contracts/ozERC1967Upgrade.sol": {
+      "lastModificationDate": 1707396330797,
+      "contentHash": "6d7e41c73eecd52e67f5d3f3f31a9d25",
+      "sourceName": "contracts/ozERC1967Upgrade.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/Errors.sol",
+        "contracts/interfaces/ozIBeacon.sol",
+        "lib/forge-std/src/console.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "ozERC1967Upgrade": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "ozERC1967Upgrade.sol/ozERC1967Upgrade.json"
+        }
+      }
+    },
     "contracts/ozToken.sol": {
       "lastModificationDate": 1707236079617,
       "contentHash": "1f28697b646d4203cf2784a4e9278106",
@@ -2055,8 +2247,8 @@
       }
     },
     "contracts/ozTokenProxy.sol": {
-      "lastModificationDate": 1707258705228,
-      "contentHash": "4bb76524bf52a8a3ec46cfddfa4c4e22",
+      "lastModificationDate": 1707393740429,
+      "contentHash": "ac4f14f4cc022b7eda11f373249d4f74",
       "sourceName": "contracts/ozTokenProxy.sol",
       "solcConfig": {
         "settings": {
@@ -2088,12 +2280,14 @@
         }
       },
       "imports": [
+        "contracts/Errors.sol",
+        "contracts/interfaces/ozIBeacon.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
+        "lib/forge-std/src/console.sol",
         "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
         "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
         "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol"
       ],
@@ -2187,8 +2381,8 @@
       }
     },
     "contracts/upgradeInitializers/DiamondInit.sol": {
-      "lastModificationDate": 1707300425691,
-      "contentHash": "d03b953db3fbc4024ed9d9a434de4ad7",
+      "lastModificationDate": 1707347263432,
+      "contentHash": "bde1f238e5bff558f2535ff267bcb8a2",
       "sourceName": "contracts/upgradeInitializers/DiamondInit.sol",
       "solcConfig": {
         "settings": {
@@ -2240,8 +2434,8 @@
       }
     },
     "contracts/wozToken.sol": {
-      "lastModificationDate": 1707313512038,
-      "contentHash": "7a1fb0ced6d7dcacef7d92cafbce4d4e",
+      "lastModificationDate": 1707391187177,
+      "contentHash": "16bc340e8394b8749fafb60b269ba46d",
       "sourceName": "contracts/wozToken.sol",
       "solcConfig": {
         "settings": {
@@ -2297,8 +2491,8 @@
       }
     },
     "contracts/wozTokenProxy.sol": {
-      "lastModificationDate": 1707259219924,
-      "contentHash": "db6f166794dd65b63e682f0777ede300",
+      "lastModificationDate": 1707395215626,
+      "contentHash": "67e15f98b04fba8bfe269205445a67f6",
       "sourceName": "contracts/wozTokenProxy.sol",
       "solcConfig": {
         "settings": {
@@ -2330,12 +2524,14 @@
         }
       },
       "imports": [
+        "contracts/Errors.sol",
+        "contracts/interfaces/ozIBeacon.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
+        "lib/forge-std/src/console.sol",
         "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
         "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
         "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol"
       ],
@@ -3436,55 +3632,6 @@
       "artifacts": {
         "Proxy": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "Proxy.sol/Proxy.json"
-        }
-      }
-    },
-    "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol": {
-      "lastModificationDate": 1696361505139,
-      "contentHash": "dc9dcb6e542154d9cfbfaece646c1092",
-      "sourceName": "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
-        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
-        "node_modules/@openzeppelin/contracts/utils/Address.sol",
-        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol"
-      ],
-      "versionRequirement": "^0.8.0",
-      "artifacts": {
-        "BeaconProxy": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "BeaconProxy.sol/BeaconProxy.json"
         }
       }
     },
@@ -5105,6 +5252,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -5114,6 +5262,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5144,7 +5294,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -5256,6 +5405,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -5265,6 +5415,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5295,7 +5447,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -5409,6 +5560,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -5418,6 +5570,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5448,7 +5602,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -5562,6 +5715,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -5571,6 +5725,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5601,7 +5757,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -5823,6 +5978,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -5832,6 +5988,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -5862,7 +6020,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -5976,6 +6133,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -5985,6 +6143,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -6015,7 +6175,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -6129,6 +6288,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -6138,6 +6298,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -6168,7 +6330,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -6282,6 +6443,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -6291,6 +6453,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -6321,7 +6485,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -6371,8 +6534,8 @@
       }
     },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1707342930637,
-      "contentHash": "2d5645bef9232a3fe1edd31c3975737c",
+      "lastModificationDate": 1707391782097,
+      "contentHash": "0b048b8257b10615d172bc9de5bf4076",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -6435,6 +6598,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
@@ -6443,6 +6607,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -6473,7 +6639,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -6583,6 +6748,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -6592,6 +6758,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -6622,7 +6790,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -6735,6 +6902,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/libraries/FixedPointMathLib.sol",
@@ -6743,6 +6911,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -6773,7 +6943,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -6884,6 +7053,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -6893,6 +7063,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -6923,7 +7095,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -7037,6 +7208,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -7046,6 +7218,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -7076,7 +7250,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
@@ -7127,8 +7300,8 @@
       }
     },
     "test/foundry/wozToken.t.sol": {
-      "lastModificationDate": 1707344833800,
-      "contentHash": "c340d304f6bee233a586b7c87bbf6148",
+      "lastModificationDate": 1707344950744,
+      "contentHash": "9262f83d63facae3f94ea4f90e2c6a53",
       "sourceName": "test/foundry/wozToken.t.sol",
       "solcConfig": {
         "settings": {
@@ -7191,6 +7364,7 @@
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/interfaces/ozIToken.sol",
         "contracts/interfaces/wozIToken.sol",
@@ -7200,6 +7374,8 @@
         "contracts/libraries/oracle/FullMath.sol",
         "contracts/libraries/oracle/OracleLibrary.sol",
         "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
         "contracts/ozToken.sol",
         "contracts/ozTokenProxy.sol",
         "contracts/upgradeInitializers/DiamondInit.sol",
@@ -7230,7 +7406,6 @@
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
         "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol",
         "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",

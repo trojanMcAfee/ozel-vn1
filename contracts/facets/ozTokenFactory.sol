@@ -34,18 +34,24 @@ contract ozTokenFactory {
         address underlying_,
         NewToken memory ozToken_,
         NewToken memory wozToken_
-    ) external returns(address, address) { //put an onlyOwner
+    ) external returns(address, address) { //put an onlyOwner or onlyRole
 
         if (isInRegistry(underlying_)) revert OZError12(underlying_);
         if (underlying_ == address(0)) revert OZError11(underlying_);
 
         //ozToken
+        console.log(1);
+
         bytes memory ozData = abi.encodeWithSignature( 
             "initialize(address,address,string,string)", 
             underlying_, s.ozDiamond, ozToken_.name, ozToken_.symbol
         );
 
-        ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, ozData);
+        console.log(2);
+
+        ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, ozData, 0);
+
+        console.log(3);
         
         //wozToken
         bytes memory wozData = abi.encodeWithSignature(
@@ -53,10 +59,16 @@ contract ozTokenFactory {
             wozToken_.name, wozToken_.symbol, address(newToken)
         );
 
-        wozTokenProxy newWozToken = new wozTokenProxy(s.ozBeacon, wozData);
+        console.log(4);
+
+        wozTokenProxy newWozToken = new wozTokenProxy(s.ozBeacon, wozData, 1);
+
+        console.log(5);
 
         //------
-        _saveInRegistry(address(newToken), underlying_);
+        _saveInRegistry(address(newToken), underlying_); //add woxToken here
+
+        console.log(6);
 
         return (address(newToken), address(newWozToken));
     }

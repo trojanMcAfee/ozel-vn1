@@ -269,13 +269,14 @@ contract Setup is Test {
         engine = new ozEngine();
         oracle = new ozOracle();
 
-
         address[] memory implementations = new address[](2);
         implementations[0] = address(tokenOz);
         implementations[1] = address(tokenOzWrapped);
+
         // beacon = new ozBeacon(address(tokenOz));
         beacon = new ozBeacon();
-        OZ.upgradeToBeacons(implementations);
+
+        // OZ.upgradeToBeacons(implementations);
 
 
         cutOz = new ozCut();
@@ -286,7 +287,7 @@ contract Setup is Test {
         _initOZLtokenPt1();
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](12);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](11);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
         cuts[2] = _createCut(address(mirrorEx), 2);
@@ -347,6 +348,7 @@ contract Setup is Test {
         //Initialize diamond
         vm.startPrank(owner);
         OZ.diamondCut(cuts, address(initDiamond), initData);
+        OZ.upgradeToBeacons(implementations); //check if i can join this call with above ^
 
         _initOZLtokenPt2();
 
@@ -378,7 +380,7 @@ contract Setup is Test {
             length = 7;
         } else if (id_ == 0) {
             length = 14;
-        } else if (id_ == 11) {
+        } else if (id_ == 11) { //remove if not used
             length = 1;
         }
 

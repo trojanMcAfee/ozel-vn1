@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (proxy/beacon/UpgradeableBeacon.sol)
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.21;
 
 import {LibDiamond} from "../libraries/LibDiamond.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 import {AppStorage} from "../AppStorage.sol";
 import "../Errors.sol";
+
+import "forge-std/console.sol";
 
 
 /**
@@ -36,6 +38,7 @@ contract ozBeacon {
      * @dev Returns the current implementation address.
      */
     function getOzImplementations() public view returns (address[] memory) {
+        console.log(22);
         return s.ozImplementations;
     }
 
@@ -51,7 +54,7 @@ contract ozBeacon {
      */
     function upgradeToBeacons(address[] memory newImplementations_) public {
         LibDiamond.enforceIsContractOwner();
-        _setImplementation(newImplementations_);
+        _setImplementations(newImplementations_);
         emit Upgraded(newImplementations_);
     }
 
@@ -62,13 +65,14 @@ contract ozBeacon {
      *
      * - `newImplementation` must be a contract.
      */
-    function _setImplementation(address[] memory newImplementations_) private {
-        // require(Address.isContract(newImplementation), "UpgradeableBeacon: implementation is not a contract");
-        // _implementation = newImplementation;
+    function _setImplementations(address[] memory newImplementations_) private {
+        uint length = newImplementations_.length;
 
-        for (uint i=0; i < newImplementations_.length; i++) {
+        //put here a check to see when it's upgrading one implementation only instead
+        // of both in an array
+        for (uint i=0; i < length; i++) {
             if (!Address.isContract(newImplementations_[i])) revert OZError24();
-            s.ozImplementations[i] = newImplementations_[i];
+            s.ozImplementations.push(newImplementations_[i]);
         }
     }
 }

@@ -133,4 +133,6 @@ interface ozIDiamond {
         uint16 slippage_,
         address receiver_
     ) external view returns(bytes memory);
+
+    function upgradeToBeacons(address[] memory newImplementations_) external;
 }
