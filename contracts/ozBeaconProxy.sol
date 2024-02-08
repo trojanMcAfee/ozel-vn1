@@ -31,8 +31,8 @@ contract ozBeaconProxy is Proxy, ozERC1967Upgrade {
      *
      * - `beacon` must be a contract with the interface {IBeacon}.
      */
-    constructor(address beacon, bytes memory data, uint implIndex) {
-        _upgradeBeaconToAndCall(beacon, data, false, implIndex);
+    constructor(address ozDiamond, bytes memory data, uint implIndex) {
+        _upgradeBeaconToAndCall(ozDiamond, data, false, implIndex);
     }
 
     /**

@@ -144,8 +144,8 @@ abstract contract ozERC1967Upgrade is IERC1967 {
         if (!Address.isContract(newBeacon)) revert OZError26(newBeacon);
         
         address[] memory implementations = ozIBeacon(newBeacon).getOzImplementations();
+        
         uint length = implementations.length;
-
         for (uint i=0; i<length; i++) {
             if (!Address.isContract(implementations[i])) revert OZError25(implementations[i]);
         }

@@ -8,10 +8,10 @@ import {ozBeaconProxy} from "./ozBeaconProxy.sol";
 contract ozTokenProxy is ozBeaconProxy {
 
     constructor(
-        address beacon_, 
+        address ozDiamond_, 
         bytes memory data_,
         uint implIndex_
-    ) ozBeaconProxy(beacon_, data_, implIndex_) {}
+    ) ozBeaconProxy(ozDiamond_, data_, implIndex_) {}
 
 
     function beacon() external view returns(address) {

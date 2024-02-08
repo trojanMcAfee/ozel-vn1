@@ -49,7 +49,7 @@ contract ozTokenFactory {
 
         console.log(2);
 
-        ozTokenProxy newToken = new ozTokenProxy(s.ozBeacon, ozData, 0);
+        ozTokenProxy newToken = new ozTokenProxy(address(this), ozData, 0);
 
         console.log(3);
         
@@ -61,7 +61,7 @@ contract ozTokenFactory {
 
         console.log(4);
 
-        wozTokenProxy newWozToken = new wozTokenProxy(s.ozBeacon, wozData, 1);
+        wozTokenProxy newWozToken = new wozTokenProxy(address(this), wozData, 1);
 
         console.log(5);
 
