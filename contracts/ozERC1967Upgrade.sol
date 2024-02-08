@@ -159,23 +159,20 @@ abstract contract ozERC1967Upgrade is IERC1967 {
      *
      * Emits a {BeaconUpgraded} event.
      */
+     //the only two funcs here that were modified ^^
+     //newBeacon is ozDiamond for storage, but ozBeacon for execution logic (impl)
     function _upgradeBeaconToAndCall(
         address newBeacon, 
         bytes memory data, 
         bool forceCall,
         uint implIndex
     ) internal {
-        console.log(11);
         _setBeacon(newBeacon);
-        console.log(12);
+
         emit BeaconUpgraded(newBeacon);
         if (data.length > 0 || forceCall) {
-            console.log(13);
             address[] memory implementations = ozIBeacon(newBeacon).getOzImplementations();
-            console.log('not 0: ', implementations[implIndex]);
-            
             Address.functionDelegateCall(implementations[implIndex], data);
-            console.log(14);
         }
     }
 }

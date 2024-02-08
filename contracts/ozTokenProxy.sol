@@ -13,7 +13,7 @@ contract ozTokenProxy is ozBeaconProxy {
         uint implIndex_
     ) ozBeaconProxy(ozDiamond_, data_, implIndex_) {}
 
-
+    //this will return ozDiamond
     function beacon() external view returns(address) {
         return _beacon();
     }

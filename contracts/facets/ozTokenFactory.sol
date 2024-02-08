@@ -40,18 +40,12 @@ contract ozTokenFactory {
         if (underlying_ == address(0)) revert OZError11(underlying_);
 
         //ozToken
-        console.log(1);
-
         bytes memory ozData = abi.encodeWithSignature( 
             "initialize(address,address,string,string)", 
             underlying_, s.ozDiamond, ozToken_.name, ozToken_.symbol
         );
 
-        console.log(2);
-
         ozTokenProxy newToken = new ozTokenProxy(address(this), ozData, 0);
-
-        console.log(3);
         
         //wozToken
         bytes memory wozData = abi.encodeWithSignature(
@@ -59,16 +53,10 @@ contract ozTokenFactory {
             wozToken_.name, wozToken_.symbol, address(newToken)
         );
 
-        console.log(4);
-
         wozTokenProxy newWozToken = new wozTokenProxy(address(this), wozData, 1);
-
-        console.log(5);
 
         //------
         _saveInRegistry(address(newToken), underlying_); //add woxToken here
-
-        console.log(6);
 
         return (address(newToken), address(newWozToken));
     }

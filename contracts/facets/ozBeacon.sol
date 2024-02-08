@@ -17,8 +17,9 @@ import "forge-std/console.sol";
  *
  * An owner is able to change the implementation the beacon points to, thus upgrading the proxies that use this beacon.
  */
+ //Modified all of this contract
 contract ozBeacon {
-    // address[] private _implementations;
+
     AppStorage private s;
 
     /**
@@ -27,19 +28,9 @@ contract ozBeacon {
     event Upgraded(address[] indexed implementations);
 
     /**
-     * @dev Sets the address of the initial implementation, and the deployer account as the owner who can upgrade the
-     * beacon.
-     */
-    // constructor(address[] memory implementations_) {
-    //     _setImplementation(implementations_);
-    // }
-
-    /**
      * @dev Returns the current implementation address.
      */
     function getOzImplementations() public view returns (address[] memory) {
-        console.log(22);
-        console.log('length: ', s.ozImplementations.length);
         return s.ozImplementations;
     }
 
