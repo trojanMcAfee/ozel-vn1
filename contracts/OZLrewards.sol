@@ -120,7 +120,7 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
         uint length = s.ozTokenRegistry.length;
         
         for (uint8 i=0; i < length; i++) {
-            total += IERC20Permit(s.ozTokenRegistry[i]).balanceOf(user_);
+            total += IERC20Permit(s.ozTokenRegistry[i].ozToken).balanceOf(user_);
         }
     }
 
@@ -128,7 +128,7 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
         uint length = s.ozTokenRegistry.length;
 
         for (uint8 i=0 ; i < length; i++) {
-            total += IERC20Permit(s.ozTokenRegistry[i]).totalSupply();
+            total += IERC20Permit(s.ozTokenRegistry[i].ozToken).totalSupply();
         }
     }
 }

@@ -194,7 +194,7 @@ contract ozOracle {
 
         uint totalAssets;
         for (uint i=0; i < s.ozTokenRegistry.length; i++) {
-            totalAssets += ozIToken(s.ozTokenRegistry[i]).totalAssets();
+            totalAssets += ozIToken(s.ozTokenRegistry[i].ozToken).totalAssets();
         }
 
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);

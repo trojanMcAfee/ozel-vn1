@@ -37,6 +37,7 @@ contract ozLoupe is DiamondLoupeFacet {
         return uint(s.protocolFee);
     }
 
+    //Checks if there exists an ozToken for a certain underlying_
     function ozTokens(address underlying_) external view returns(address) {
         return s.ozTokens[underlying_];
     }

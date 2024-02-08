@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 // import {ozToken} from "../ozToken.sol";
-import {AppStorage, NewToken} from "../AppStorage.sol";
+import {AppStorage, NewToken, OzTokens} from "../AppStorage.sol";
 import {Helpers} from "../libraries/Helpers.sol";
 import {ozTokenProxy} from "../ozTokenProxy.sol";
 import {wozTokenProxy} from "../wozTokenProxy.sol";
@@ -27,7 +27,8 @@ contract ozTokenFactory {
 
     AppStorage internal s;
 
-    event TokenCreated(address indexed ozToken);
+    event TokenCreated(address indexed ozToken, address indexed wozToken);
+
     
     //Wrapper function - returns address of ozToken
     function createOzToken(
@@ -56,20 +57,22 @@ contract ozTokenFactory {
         wozTokenProxy newWozToken = new wozTokenProxy(address(this), wozData, 1);
 
         //------
-        _saveInRegistry(address(newToken), underlying_); //add woxToken here
+        OzTokens memory ozTokens = OzTokens(address(newToken), address(newWozToken));
+
+        _saveInRegistry(ozTokens, underlying_); //add woxToken here
 
         return (address(newToken), address(newWozToken));
     }
 
     //*** check the note in AppStorage for ozTokenRegistryMap*/
-    function _saveInRegistry(address newOzToken_, address underlying_) private {
-        s.ozTokenRegistry.push(newOzToken_);
-        s.ozTokenRegistryMap[newOzToken_] = true; //<--- remove
-        s.ozTokens[underlying_] = newOzToken_;
-        emit TokenCreated(newOzToken_);
+    function _saveInRegistry(OzTokens memory newOzTokens_, address underlying_) private {
+        s.ozTokenRegistry.push(newOzTokens_);
+        // s.ozTokenRegistryMap[newOzToken_] = true; //<--- remove
+        s.ozTokens[underlying_] = newOzTokens_.ozToken;
+        emit TokenCreated(newOzTokens_.ozToken, newOzTokens_.wozToken);
     }
 
-    function getOzTokenRegistry() external view returns(address[] memory) {
+    function getOzTokenRegistry() external view returns(OzTokens[] memory) {
         return s.ozTokenRegistry;
     }
 
@@ -78,7 +81,7 @@ contract ozTokenFactory {
         if (length == 0) return false;
 
         for (uint i=0; i < length; i++) {
-            if (ozIToken(s.ozTokenRegistry[i]).asset() == underlying_) return true; 
+            if (ozIToken(s.ozTokenRegistry[i].ozToken).asset() == underlying_) return true; 
         }
 
         return false;

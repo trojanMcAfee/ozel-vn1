@@ -4,12 +4,15 @@ pragma solidity 0.8.21;
 
 import {IOZLrewards} from "./interfaces/IOZLrewards.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
-import {AppStorage} from "./AppStorage.sol";
+import {AppStorage, OzTokens} from "./AppStorage.sol";
+import {Helpers} from "./libraries/Helpers.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
 
 contract Modifiers is IOZLrewards {
+
+    using Helpers for address[];
 
     AppStorage internal s;
     
@@ -36,8 +39,25 @@ contract Modifiers is IOZLrewards {
     }
 
     modifier onlyOzToken { 
-        if (!s.ozTokenRegistryMap[msg.sender]) revert OZError13(msg.sender);
-        _;
+        
+        uint length = s.ozTokenRegistry.length;
+        bool flag;
+
+        //i think this code could be refactored
+        for (uint i=0; i<length; i++) {
+            if (s.ozTokenRegistry[i].ozToken == msg.sender) {
+                flag = true;
+            }
+        }
+
+        if (flag) {
+            _;
+        } else {
+            revert OZError13(msg.sender);
+        }
+
+        // if (!s.ozTokenRegistryMap[msg.sender]) revert OZError13(msg.sender);
+        // _;
     }
 
 }

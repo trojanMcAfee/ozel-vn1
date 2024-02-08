@@ -11,7 +11,7 @@ import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 struct AppStorage { 
 
     address rEthWethPoolBalancer; //don't change this from 1st pos
-    address[] ozTokenRegistry;
+    OzTokens[] ozTokenRegistry;
     address ozDiamond;
     address WETH; 
     address USDC;
@@ -41,7 +41,7 @@ struct AppStorage {
     uint24 uniFee; //put here uniFee05 to represent the 0.05% pools
     uint24 uniFee01; //0.01% pool for rETH
 
-    mapping(address ozToken => bool exist) ozTokenRegistryMap; //used - remove this and use only ozTokens map
+    // mapping(address ozToken => bool exist) ozTokenRegistryMap; //used - remove this and use only ozTokens map
 
     uint24 protocolFee;
 
@@ -147,10 +147,14 @@ struct OZLrewards {
     mapping(address user => uint rewardsEarned) rewards;
 }
 
-
 struct NewToken {
     string name;
     string symbol;
+}
+
+struct OzTokens {
+    address ozToken;
+    address wozToken;
 }
 
 // 1st round - 
