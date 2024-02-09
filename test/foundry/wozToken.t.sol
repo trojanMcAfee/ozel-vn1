@@ -148,6 +148,23 @@ contract wozTokenTest is TestMethods {
         assertTrue(wozERC20.balanceOf(bob) == 0);
     }
 
+    function test_x() public {
+        //create ozToken
+        (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
+
+        //mint ozToken
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
+
+        uint ozBalancePre = ozERC20.balanceOf(alice);
+        console.log('ozBalancePre: ', ozBalancePre);
+
+        ozERC20.approve(address(wozERC20), ozBalancePre);
+        wozERC20.deposit(ozBalancePre, alice);
+
+        //avance the block numbers and prove that ozERC20 appreciates in value, 
+        //while wozERC20 stays stable
+    }
+
     
 
 
