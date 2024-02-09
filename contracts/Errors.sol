@@ -37,7 +37,7 @@ error OZError03(); //decreaseAllowance - decreased allowance below zero
 error OZError04(address from, address to); //_approve / _transfer - can't be zero address
 error OZError05(uint amount); //_spendAllowance - insufficient allowance
 error OZError06(address sender, uint accountShares, uint shares); //redeem - insufficient redeem balance
-error OZError07(address from, uint fromShares, uint shares); //_transfer - insufficient sender balance
+error OZError07(address from, uint fromShares, uint shares); //ozToken.sol / _transfer - insufficient sender balance
 error OZError08(uint deadline, uint blockTimestamp); //permit - ERC2612ExpiredDeadline
 error OZError09(address owner, address spender); //permit - ERC2612InvalidSignature
 
