@@ -117,6 +117,37 @@ contract wozTokenTest is TestMethods {
         return (ozERC20, wozERC20);
     }
 
+
+    function test_redeem_twoUsers() public {
+        //Pre-conditions
+        (ozIToken ozERC20, wozIToken wozERC20) = test_mint_twoUsers();
+
+        uint wozBalanceAlice = wozERC20.balanceOf(alice);
+        uint wozBalanceBob = wozERC20.balanceOf(bob);
+
+        assertTrue(wozBalanceAlice > 0);
+        assertTrue(wozBalanceBob > 0);
+
+        //Actions
+        vm.prank(alice);
+        wozERC20.redeem( //<--- check why this fails 
+            wozERC20.convertToShares(wozBalanceAlice),
+            alice,
+            alice
+        );
+        
+        vm.prank(bob);
+        wozERC20.redeem(
+            wozERC20.convertToShares(wozBalanceBob),
+            bob,
+            bob
+        );
+
+        //Post-conditions
+        assertTrue(wozERC20.balanceOf(alice) == 0);
+        assertTrue(wozERC20.balanceOf(bob) == 0);
+    }
+
     
 
 
