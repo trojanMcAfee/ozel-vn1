@@ -49,7 +49,7 @@ contract wozTokenTest is TestMethods {
         address underlying = wozERC20.asset();
         assertTrue(underlying == address(ozERC20));
 
-        //Action 1
+        //Actions
         vm.startPrank(alice);
 
         ozERC20.approve(address(wozERC20), ozBalancePre);
@@ -62,11 +62,11 @@ contract wozTokenTest is TestMethods {
         uint ozBalancePost = ozERC20.balanceOf(alice);
         assertTrue(ozBalancePost == 0);
 
-        //Action 2
         wozERC20.withdraw(wozBalancePost, alice, alice);
         uint wozBalancePostWithdrawal = wozERC20.balanceOf(alice);
         assertTrue(wozBalancePostWithdrawal == 0);
 
+        //Post-condition
         uint ozBalancePostWithdrawal = ozERC20.balanceOf(alice);
         assertTrue(ozBalancePostWithdrawal > 0);
 
