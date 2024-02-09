@@ -28,7 +28,7 @@ contract wozTokenTest is TestMethods {
     }
 
 
-    function test_deposit_oneUser_wozERC20() public { 
+    function test_deposit_withdraw_oneUser() public { 
         //Pre-conditions
         (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = _getResetVarsAndChangeSlip();
 
@@ -74,58 +74,48 @@ contract wozTokenTest is TestMethods {
     }
 
 
-    // function test_x() public {
-    //     console.log('** start new test **');
+    function test_mint_twoUsers() public returns(ozIToken, wozIToken) {
+        //Pre-condtions
+        (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
 
-    //     bytes32 oldSlot0data = vm.load(
-    //         IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
-    //         bytes32(0)
-    //     );
-    //     (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
-    //     //--------------
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
-    //     (ozIToken ozERC20, wozIToken wozERC20, uint rawAmount) = 
-    //         test_deposit_oneUser_wozERC20();
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
+        _mintOzTokens(ozERC20, bob, testToken, amountIn); 
 
-    //     uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
+        uint ozBalanceBob = ozERC20.balanceOf(bob);
+        assertTrue(ozBalanceBob > 0);
 
-    //     _mintOzTokens(ozERC20, bob, testToken, amountIn); 
-    //     _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        assertTrue(ozBalanceAlice > 0);
 
-    //     uint ozBalanceBob = ozERC20.balanceOf(bob);
-    //     console.log('ozBalanceBob: ', ozBalanceBob);
+        //Actions
+        uint wozSharesBob = wozERC20.convertToShares(ozBalanceBob);
 
-    //     vm.startPrank(bob);
+        vm.startPrank(bob);
+        ozERC20.approve(address(wozERC20), ozBalanceBob);
+        wozERC20.mint(wozSharesBob, bob);
+        vm.stopPrank();
 
-    //     ozERC20.approve(address(wozERC20), ozBalanceBob);
-    //     wozERC20.deposit(ozBalanceBob, bob);
+        uint wozSharesAlice = wozERC20.convertToShares(ozBalanceAlice);
 
-    //     vm.stopPrank();
+        vm.startPrank(alice);
+        ozERC20.approve(address(wozERC20), ozBalanceAlice);
+        wozERC20.mint(wozSharesAlice, alice);
+        vm.stopPrank();
+        
+        //Post-conditions
+        uint wozBalanceBob = wozERC20.balanceOf(bob);
+        assertTrue(wozBalanceBob > 0);
 
-    //     uint wozBalanceBob = wozERC20.balanceOf(bob);
-    //     console.log('wozBalanceBob: ', wozBalanceBob);
+        uint wozBalanceAice = wozERC20.balanceOf(alice);
+        assertTrue(wozBalanceAice > 0);
 
-    //     uint wozBalanceAice = wozERC20.balanceOf(alice);
-    //     console.log('wozBalanceAice: ', wozBalanceAice);
+        assertTrue(wozBalanceAice == wozBalanceBob);
 
-    //     //---------
-    //     // console.log('*** charlie part ***');
-
-    //     // _mintOzTokens(ozERC20, charlie, testToken, amountIn); 
-
-    //     // uint ozBalanceCharlie = ozERC20.balanceOf(charlie);
-    //     // console.log('ozBalanceCharlie: ', ozBalanceCharlie);
-
-    //     // vm.startPrank(charlie);
-
-    //     // ozERC20.approve(address(wozERC20), ozBalanceCharlie);
-    //     // wozERC20.deposit(ozBalanceCharlie, charlie);
-
-    //     // vm.stopPrank();
-
-    //     // uint wozBalanceCharlie = wozERC20.balanceOf(charlie);
-    //     // console.log('wozBalanceCharlie: ', wozBalanceCharlie);
-    // }
+        return (ozERC20, wozERC20);
+    }
 
     
 
