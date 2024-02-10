@@ -421,4 +421,17 @@ contract BaseMethods is Setup {
         return (ozERC20, wozERC20);
     }
 
+
+    function _getResetVarsAndChangeSlip() internal returns(bytes32, bytes32, bytes32) {
+        bytes32 oldSlot0data = vm.load(
+            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
+            bytes32(0)
+        );
+        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+        
+        _changeSlippage(uint16(9900));
+
+        return (oldSlot0data, oldSharedCash, cashSlot);
+    }
+
 }

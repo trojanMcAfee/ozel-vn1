@@ -15,19 +15,7 @@ import "forge-std/console.sol";
 
 contract wozTokenTest is TestMethods {
 
-    function _getResetVarsAndChangeSlip() internal returns(bytes32, bytes32, bytes32) {
-        bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
-            bytes32(0)
-        );
-        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
-        
-        _changeSlippage(uint16(9900));
-
-        return (oldSlot0data, oldSharedCash, cashSlot);
-    }
-
-
+    //One user deposits ozERC20 to mint wozERC20, and then withdraws them back for ozERC20
     function test_deposit_withdraw_oneUser() public { 
         //Pre-conditions
         (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = _getResetVarsAndChangeSlip();
@@ -73,7 +61,7 @@ contract wozTokenTest is TestMethods {
         vm.stopPrank();
     }
 
-
+    //Two users mint wozERC20 from the same token
     function test_mint_twoUsers() public returns(ozIToken, wozIToken) {
         //Pre-condtions
         (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
@@ -117,10 +105,11 @@ contract wozTokenTest is TestMethods {
         return (ozERC20, wozERC20);
     }
 
-
+    //Continuation of the previos tests:
+    //Two users redeem ozERC20 for wozERC20
     function test_redeem_twoUsers() public {
         //Pre-conditions
-        (ozIToken ozERC20, wozIToken wozERC20) = test_mint_twoUsers();
+        (, wozIToken wozERC20) = test_mint_twoUsers();
 
         uint wozBalanceAlice = wozERC20.balanceOf(alice);
         uint wozBalanceBob = wozERC20.balanceOf(bob);
@@ -129,40 +118,67 @@ contract wozTokenTest is TestMethods {
         assertTrue(wozBalanceBob > 0);
 
         //Actions
-        vm.prank(alice);
-        wozERC20.redeem( //<--- check why this fails 
+        vm.startPrank(alice);
+        wozERC20.approve(address(wozERC20), type(uint).max);
+        wozERC20.redeem(
             wozERC20.convertToShares(wozBalanceAlice),
             alice,
             alice
         );
+        vm.stopPrank();
         
-        vm.prank(bob);
+        vm.startPrank(bob);
+        wozERC20.approve(address(wozERC20), type(uint).max);
         wozERC20.redeem(
             wozERC20.convertToShares(wozBalanceBob),
             bob,
             bob
         );
+        vm.stopPrank();
 
         //Post-conditions
         assertTrue(wozERC20.balanceOf(alice) == 0);
         assertTrue(wozERC20.balanceOf(bob) == 0);
     }
 
+
     function test_x() public {
         //create ozToken
         (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
 
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
+
         //mint ozToken
-        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+        _mintOzTokens(ozERC20, bob, testToken, amountIn); 
 
-        uint ozBalancePre = ozERC20.balanceOf(alice);
-        console.log('ozBalancePre: ', ozBalancePre);
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlice: ', ozBalanceAlice);
 
-        ozERC20.approve(address(wozERC20), ozBalancePre);
-        wozERC20.deposit(ozBalancePre, alice);
+        uint ozBalanceBob = ozERC20.balanceOf(bob);
+        console.log('ozBalanceBob: ', ozBalanceBob);
+        
+        //------
+        vm.startPrank(alice);
+        ozERC20.approve(address(wozERC20), ozBalanceAlice);
+        wozERC20.deposit(ozBalanceAlice, alice);
+        vm.stopPrank();
 
-        //avance the block numbers and prove that ozERC20 appreciates in value, 
-        //while wozERC20 stays stable
+        uint wozBalanceAlice = wozERC20.balanceOf(alice);
+        console.log('wozBalanceAlice: ', wozBalanceAlice);
+
+        _accrueRewards(100);
+
+        ozBalanceBob = ozERC20.balanceOf(bob);
+        console.log('ozBalanceBob - post: ', ozBalanceBob);
+
+        wozBalanceAlice = wozERC20.balanceOf(alice);
+        console.log('wozBalanceAlice - post: ', wozBalanceAlice);
+
+
+
+       
     }
 
     

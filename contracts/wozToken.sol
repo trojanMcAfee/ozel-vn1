@@ -48,4 +48,6 @@ contract wozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradea
         bytes32 s
     ) external {}
 
+    //put a function that receives stable and mints wozToken in one go
+
 }
