@@ -48,8 +48,8 @@ contract ozTokenFactory {
         
         //wozToken
         bytes memory wozData = abi.encodeWithSignature(
-            "initialize(string,string,address)", 
-            wozToken_.name, wozToken_.symbol, address(newToken)
+            "initialize(string,string,address,address)", 
+            wozToken_.name, wozToken_.symbol, address(newToken), s.ozDiamond
         );
 
         wozTokenProxy newWozToken = new wozTokenProxy(address(this), wozData, 1);

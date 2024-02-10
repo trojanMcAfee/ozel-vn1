@@ -8,6 +8,9 @@ interface wozIToken is IERC4626Upgradeable {
     function getHello() external view;
     //------
 
+
+    function deposit2(uint amountIn_) external returns(uint);
+
 }
 
 
