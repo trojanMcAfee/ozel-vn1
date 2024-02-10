@@ -188,12 +188,12 @@ contract wozTokenTest is TestMethods {
         ozBalanceAlice = ozERC20.balanceOf(alice); 
         console.log('ozBalanceAlice - post accrual - should 0: ', ozBalanceAlice);        
 
-        vm.prank(alice);
-        wozERC20.withdraw(wozBalanceAlice, alice, alice); 
-
         console.log(' ');
         console.log('*** redeem wozERC20 ***');
         console.log(' ');
+
+        vm.prank(alice);
+        wozERC20.withdraw(wozBalanceAlice, alice, alice); 
 
         wozBalanceAlice = wozERC20.balanceOf(alice);
         console.log('wozBalanceAlice - post withdraw - should 0: ', wozBalanceAlice);
