@@ -159,26 +159,50 @@ contract wozTokenTest is TestMethods {
         uint ozBalanceBob = ozERC20.balanceOf(bob);
         console.log('ozBalanceBob: ', ozBalanceBob);
         
-        //------
+        console.log(' ');
+        console.log('*** mint wozERC20 ***');
+        console.log(' ');
+
         vm.startPrank(alice);
         ozERC20.approve(address(wozERC20), ozBalanceAlice);
         wozERC20.deposit(ozBalanceAlice, alice);
         vm.stopPrank();
 
         uint wozBalanceAlice = wozERC20.balanceOf(alice);
-        console.log('wozBalanceAlice: ', wozBalanceAlice);
+        console.log('wozBalanceAlice - pre accrual: ', wozBalanceAlice);
 
+        ozBalanceAlice = ozERC20.balanceOf(alice); 
+        console.log('ozBalanceAlice - post woz mint - should 0: ', ozBalanceAlice);
+
+        console.log(' ');
+        console.log('*** accrual ***');
         _accrueRewards(100);
+        console.log(' ');
 
         ozBalanceBob = ozERC20.balanceOf(bob);
-        console.log('ozBalanceBob - post: ', ozBalanceBob);
+        console.log('ozBalanceBob - post accrual - should increase: ', ozBalanceBob);
 
         wozBalanceAlice = wozERC20.balanceOf(alice);
-        console.log('wozBalanceAlice - post: ', wozBalanceAlice);
+        console.log('wozBalanceAlice - post accrual - should remain: ', wozBalanceAlice);
 
+        ozBalanceAlice = ozERC20.balanceOf(alice); 
+        console.log('ozBalanceAlice - post accrual - should 0: ', ozBalanceAlice);        
 
+        vm.prank(alice);
+        wozERC20.withdraw(wozBalanceAlice, alice, alice); 
 
-       
+        console.log(' ');
+        console.log('*** redeem wozERC20 ***');
+        console.log(' ');
+
+        wozBalanceAlice = wozERC20.balanceOf(alice);
+        console.log('wozBalanceAlice - post withdraw - should 0: ', wozBalanceAlice);
+        
+        ozBalanceAlice = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlice - post withdraw - should bob: ', ozBalanceAlice);
+
+        ozBalanceBob = ozERC20.balanceOf(bob);
+        console.log('ozBalanceBob - post withdraw - should remain: ', ozBalanceBob);
     }
 
     
