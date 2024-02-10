@@ -15,13 +15,16 @@ import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {ozIToken} from "./interfaces/ozIToken.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 
+import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol";
 
 import "forge-std/console.sol";
 
 
-contract wozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
+contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
 
     using FixedPointMathLib for uint;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     address private _ozDiamond;
     address private _ozToken;
@@ -43,7 +46,7 @@ contract wozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradea
         address ozDiamond_
     ) external initializer {
         __ERC20_init(name_, symbol_);
-        __ERC4626_init(IERC20MetadataUpgradeable(asset_));
+        // __ERC4626_init(IERC20MetadataUpgradeable(asset_));
         __EIP712_init(name_, "1");
         _ozDiamond = ozDiamond_;
         _ozToken = asset_;
@@ -71,9 +74,16 @@ contract wozToken is ERC4626Upgradeable, IERC20PermitUpgradeable, EIP712Upgradea
         return totalPooledStable;
     }
 
-    function deposit2(uint amountIn_) external returns(uint) {
-        return getWozAmount(amountIn_);
+    function deposit2(uint amountIn_, address receiver_) external returns(uint) {
+        // return getWozAmount(amountIn_);
 
+        uint shares = getWozAmount(amountIn_);
+        console.log('getWozAmount ^^^^: ', shares);
+
+        IERC20Upgradeable(_ozToken).safeTransferFrom(msg.sender, address(this), amountIn_);
+
+
+        _mint(receiver_, shares);
 
     }
 
