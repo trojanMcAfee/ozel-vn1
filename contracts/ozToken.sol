@@ -227,8 +227,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
     //-------------
 
-    function _setValuePerOzToken(uint amountOut, bool addOrSub_) private {
-        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountOut, addOrSub_);
+    function _setValuePerOzToken(uint amountOut_, bool addOrSub_) private {
+        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountOut_, addOrSub_);
     }
 
     function _convertToSharesFromUnderlying(uint assets_) private view returns(uint) {
@@ -320,6 +320,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_) private view returns (uint256 assets) { 
+        // console.log('');
+        // console.log('-- in convertToAsset --');
+        // console.log('shares_: ', shares_);
+        // console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)));
+        // console.log('totalShares: ', totalShares());
+        // console.log('is: ', shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)) / (totalShares() == 0 ? 1: totalShares())), 1));
+        // console.log('-- in convertToAsset --');
+        // console.log('');
+
         return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)) / (totalShares() == 0 ? 1: totalShares())), 1);
     }
 

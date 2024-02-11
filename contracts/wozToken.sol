@@ -70,12 +70,12 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         console.log('ozAmount_: ', ozAmount_);
         console.log('ozERC20.totalAssets(): ', ozERC20.totalAssets());
         console.log('ozERC20.totalShares(): ', ozERC20.totalShares());
+        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
+        console.log('is other: ', ozAmount_.mulDivDown(ozERC20.totalShares() * 1e12, ozERC20.totalSupply()));
         console.log('-- in getWozAmount --');
         console.log('');
 
-        uint totalPooledStable = ozAmount_.mulDivDown(ozERC20.totalShares(), ozERC20.totalAssets());
-        
-        return totalPooledStable;
+        return ozAmount_.mulDivDown(ozERC20.totalShares() * 1e12, ozERC20.totalSupply());
     }
 
     function getOzAmount(uint wozAmount_) public view returns(uint) {
@@ -89,7 +89,7 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         console.log('-- in getOzAmount --');
         console.log('');
 
-        return (wozAmount_.mulDivDown(ozERC20.totalSupply(), ozERC20.totalShares())) / 1e12;
+        return wozAmount_.mulDivDown(ozERC20.totalSupply(), ozERC20.totalShares() * 1e12);
     }
 
     //getOzAmount() and getWozAmount() are the same so the final getOzAmount() is not 
