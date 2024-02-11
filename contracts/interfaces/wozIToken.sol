@@ -10,7 +10,7 @@ interface wozIToken is IERC4626Upgradeable {
 
 
     function deposit2(uint amountIn_, address receiver_) external returns(uint);
-
+    function unwrap(uint wozAmountIn_, address receiver_, address owner_) external;
 }
 
 

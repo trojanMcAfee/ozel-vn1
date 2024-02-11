@@ -191,12 +191,16 @@ contract wozTokenTest is TestMethods {
         ozBalanceAlice = ozERC20.balanceOf(alice); 
         console.log('ozBalanceAlice - post accrual - should 0: ', ozBalanceAlice);        
 
+        uint ozBalanceWoz = ozERC20.balanceOf(address(wozERC20));
+        console.log('ozBalanceWoz: ', ozBalanceWoz);
+
         console.log(' ');
         console.log('*** redeem wozERC20 ***');
         console.log(' ');
 
         vm.prank(alice);
-        wozERC20.withdraw(wozBalanceAlice, alice, alice); 
+        // wozERC20.withdraw(wozBalanceAlice, alice, alice); 
+        wozERC20.unwrap(wozBalanceAlice, alice, alice); 
 
         wozBalanceAlice = wozERC20.balanceOf(alice);
         console.log('wozBalanceAlice - post withdraw - should 0: ', wozBalanceAlice);
@@ -206,6 +210,9 @@ contract wozTokenTest is TestMethods {
 
         ozBalanceBob = ozERC20.balanceOf(bob);
         console.log('ozBalanceBob - post withdraw - should remain: ', ozBalanceBob);
+
+        ozBalanceWoz = ozERC20.balanceOf(address(wozERC20));
+        console.log('ozBalanceWoz - post withdrawl - should 0: ', ozBalanceWoz);
     }
 
     

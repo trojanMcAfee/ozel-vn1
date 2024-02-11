@@ -74,6 +74,20 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         return totalPooledStable;
     }
 
+    function getOzAmount(uint wozAmount_) public view returns(uint) {
+        ozIToken ozERC20 = ozIToken(_ozToken);
+        return wozAmount_.mulDivDown(ozERC20.totalAssets(), ozERC20.totalShares());
+    }
+
+    function unwrap(uint wozAmountIn_, address receiver_, address owner_) external {
+        uint ozTokensOut = getOzAmount(wozAmountIn_);
+        console.log('getOzAmount(wozAmountIn_) ^^^^^: ', ozTokensOut);
+
+        _burn(owner_, wozAmountIn_);
+
+        IERC20Upgradeable(_ozToken).transfer(receiver_, ozTokensOut);
+    }
+
     function deposit2(uint amountIn_, address receiver_) external returns(uint) {
         // return getWozAmount(amountIn_);
 
@@ -84,8 +98,9 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
 
 
         _mint(receiver_, shares);
-
     }
+
+    
 
 
 
