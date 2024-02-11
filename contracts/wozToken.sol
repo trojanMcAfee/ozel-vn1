@@ -46,7 +46,6 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         address ozDiamond_
     ) external initializer {
         __ERC20_init(name_, symbol_);
-        // __ERC4626_init(IERC20MetadataUpgradeable(asset_));
         __EIP712_init(name_, "1");
         _ozDiamond = ozDiamond_;
         _ozToken = asset_;
@@ -57,23 +56,8 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
     }
 
 
-    // function getSharesByPooledEth(uint256 _ethAmount) public view returns (uint256) {
-    //     return _ethAmount
-    //         .mul(_getTotalShares())
-    //         .div(_getTotalPooledEther());
-    // }
-
     function getWozAmount(uint ozAmount_) public view returns(uint) {
         ozIToken ozERC20 = ozIToken(_ozToken);
-
-        console.log('-- in getWozAmount --');
-        console.log('ozAmount_: ', ozAmount_);
-        console.log('ozERC20.totalAssets(): ', ozERC20.totalAssets());
-        console.log('ozERC20.totalShares(): ', ozERC20.totalShares());
-        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
-        console.log('is other: ', ozAmount_.mulDivDown(ozERC20.totalShares() * 1e12, ozERC20.totalSupply()));
-        console.log('-- in getWozAmount --');
-        console.log('');
 
         return ozAmount_.mulDivDown(ozERC20.totalShares() * 1e12, ozERC20.totalSupply());
     }
@@ -81,37 +65,22 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
     function getOzAmount(uint wozAmount_) public view returns(uint) {
         ozIToken ozERC20 = ozIToken(_ozToken);
 
-        console.log('-- in getOzAmount --');
-        console.log('wozAmount_: ', wozAmount_);
-        console.log('ozERC20.totalAssets(): ', ozERC20.totalAssets());
-        console.log('ozERC20.totalShares(): ', ozERC20.totalShares());
-        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
-        console.log('-- in getOzAmount --');
-        console.log('');
-
         return wozAmount_.mulDivDown(ozERC20.totalSupply(), ozERC20.totalShares() * 1e12);
     }
 
-    //getOzAmount() and getWozAmount() are the same so the final getOzAmount() is not 
-    //captuing the tokens that got rebased^^^
 
     function unwrap(uint wozAmountIn_, address receiver_, address owner_) external {
         uint ozTokensOut = getOzAmount(wozAmountIn_);
-        console.log('getOzAmount(wozAmountIn_) ^^^^^: ', ozTokensOut);
 
         _burn(owner_, wozAmountIn_);
 
         IERC20Upgradeable(_ozToken).transfer(receiver_, ozTokensOut);
     }
 
-    function deposit2(uint amountIn_, address receiver_) external returns(uint) {
-        // return getWozAmount(amountIn_);
-
+    function wrap(uint amountIn_, address receiver_) external returns(uint) {
         uint shares = getWozAmount(amountIn_);
-        console.log('getWozAmount ^^^^: ', shares);
 
         IERC20Upgradeable(_ozToken).safeTransferFrom(msg.sender, address(this), amountIn_);
-
 
         _mint(receiver_, shares);
     }

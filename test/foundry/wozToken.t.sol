@@ -167,7 +167,7 @@ contract wozTokenTest is TestMethods {
         ozERC20.approve(address(wozERC20), ozBalanceAlice);
         // wozERC20.deposit(ozBalanceAlice, alice);
 
-        uint x = wozERC20.deposit2(ozBalanceAlice, alice); //********* */
+        uint x = wozERC20.wrap(ozBalanceAlice, alice); //********* */
         // console.log('other woz bal ^^^^^^^: ', x);
         vm.stopPrank();
 
