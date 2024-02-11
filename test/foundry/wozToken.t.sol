@@ -160,72 +160,50 @@ contract wozTokenTest is TestMethods {
         _mintOzTokens(ozERC20, bob, testToken, amountIn); 
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlice: ', ozBalanceAlice);
-
         uint ozBalanceBob = ozERC20.balanceOf(bob);
-        console.log('ozBalanceBob: ', ozBalanceBob);
-
         assertTrue(ozBalanceAlice == ozBalanceBob);
         
-        console.log(' ');
-        console.log('*** mint wozERC20 ***');
-        console.log(' ');
-
+        //Mint wozERC20 from ozERC20
         vm.startPrank(alice);
         ozERC20.approve(address(wozERC20), ozBalanceAlice);
         wozERC20.wrap(ozBalanceAlice, alice); 
         vm.stopPrank();
 
         uint wozBalanceAlice = wozERC20.balanceOf(alice);
-        console.log('wozBalanceAlice - pre accrual: ', wozBalanceAlice);
 
         ozBalanceAlice = ozERC20.balanceOf(alice); 
         assertTrue(ozBalanceAlice == 0);
-        console.log('ozBalanceAlice - post woz mint - should 0: ', ozBalanceAlice);
 
-        console.log(' ');
-        console.log('*** accrual ***');
+        //Accrue rewards
         _accrueRewards(100);
-        console.log(' ');
 
         uint ozBalanceBobPostAccrual = ozERC20.balanceOf(bob);
         assertTrue(ozBalanceBobPostAccrual > ozBalanceBob);
-        console.log('ozBalanceBob - post accrual - should increase: ', ozBalanceBobPostAccrual);
 
         uint wozBalanceAlicePostAccrual = wozERC20.balanceOf(alice);
         assertTrue(wozBalanceAlicePostAccrual == wozBalanceAlice);
-        console.log('wozBalanceAlice - post accrual - should remain: ', wozBalanceAlicePostAccrual);
 
         uint ozBalanceAlicePostAccrual = ozERC20.balanceOf(alice); 
         assertTrue(ozBalanceAlicePostAccrual == 0);
-        console.log('ozBalanceAlice - post accrual - should 0: ', ozBalanceAlicePostAccrual);
 
         uint ozBalanceWozPostAccrual = ozERC20.balanceOf(address(wozERC20));
         assertTrue(ozBalanceWozPostAccrual == ozBalanceBobPostAccrual);
-        console.log('ozBalanceWoz: ', ozBalanceWozPostAccrual);
 
-        console.log(' ');
-        console.log('*** redeem wozERC20 ***');
-        console.log(' ');
-
+        //Redeem wozERC20 for ozERC20
         vm.prank(alice);
         wozERC20.unwrap(wozBalanceAlice, alice, alice); 
 
         uint wozBalanceAlicePostUnwrap = wozERC20.balanceOf(alice);
         assertTrue(wozBalanceAlicePostUnwrap == 0);
-        console.log('wozBalanceAlice - post withdraw - should 0: ', wozBalanceAlicePostUnwrap);
         
         uint ozBalanceAlicePostUnwrap = ozERC20.balanceOf(alice);
         assertTrue(ozBalanceAlicePostUnwrap == ozBalanceBobPostAccrual);
-        console.log('ozBalanceAlice - post withdraw - should bob: ', ozBalanceAlicePostUnwrap);
 
         uint ozBalanceBobPostUnwrap = ozERC20.balanceOf(bob);
         assertTrue(ozBalanceBobPostUnwrap == ozBalanceBobPostAccrual);
-        console.log('ozBalanceBob - post withdraw - should remain: ', ozBalanceBobPostUnwrap);
 
         uint ozBalanceWozPostUnwrap = ozERC20.balanceOf(address(wozERC20));
         assertTrue(ozBalanceWozPostUnwrap == 0);
-        console.log('ozBalanceWoz - post withdrawl - should 0: ', ozBalanceWozPostUnwrap);
     }
 
     
