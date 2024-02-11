@@ -55,34 +55,36 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         return ozIDiamond(_ozDiamond);
     }
 
+    function asset() external view returns(address) {
+        return _ozToken;
+    }
+
 
     function getWozAmount(uint ozAmount_) public view returns(uint) {
         ozIToken ozERC20 = ozIToken(_ozToken);
-
         return ozAmount_.mulDivDown(ozERC20.totalShares() * 1e12, ozERC20.totalSupply());
     }
 
     function getOzAmount(uint wozAmount_) public view returns(uint) {
         ozIToken ozERC20 = ozIToken(_ozToken);
-
         return wozAmount_.mulDivDown(ozERC20.totalSupply(), ozERC20.totalShares() * 1e12);
     }
 
 
-    function unwrap(uint wozAmountIn_, address receiver_, address owner_) external {
-        uint ozTokensOut = getOzAmount(wozAmountIn_);
-
+    function unwrap(
+        uint wozAmountIn_, 
+        address receiver_, 
+        address owner_
+    ) external returns(uint ozTokensOut) {
+        ozTokensOut = getOzAmount(wozAmountIn_);
         _burn(owner_, wozAmountIn_);
-
-        IERC20Upgradeable(_ozToken).transfer(receiver_, ozTokensOut);
+        IERC20Upgradeable(_ozToken).safeTransfer(receiver_, ozTokensOut);
     }
 
-    function wrap(uint amountIn_, address receiver_) external returns(uint) {
-        uint shares = getWozAmount(amountIn_);
-
-        IERC20Upgradeable(_ozToken).safeTransferFrom(msg.sender, address(this), amountIn_);
-
-        _mint(receiver_, shares);
+    function wrap(uint ozAmountIn_, address receiver_) external returns(uint wozAmountOut) {
+        wozAmountOut = getWozAmount(ozAmountIn_);
+        IERC20Upgradeable(_ozToken).safeTransferFrom(msg.sender, address(this), ozAmountIn_);
+        _mint(receiver_, wozAmountOut);
     }
 
     

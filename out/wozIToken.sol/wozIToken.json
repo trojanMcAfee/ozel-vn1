@@ -119,6 +119,19 @@
       "type": "event"
     },
     {
+      "inputs": [],
+      "name": "OZ",
+      "outputs": [
+        {
+          "internalType": "contract ozIDiamond",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -172,7 +185,7 @@
       "outputs": [
         {
           "internalType": "address",
-          "name": "assetTokenAddress",
+          "name": "",
           "type": "address"
         }
       ],
@@ -277,6 +290,44 @@
       "inputs": [],
       "name": "getHello",
       "outputs": [],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "wozAmount_",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOzAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "ozAmount_",
+          "type": "uint256"
+        }
+      ],
+      "name": "getWozAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
@@ -609,7 +660,13 @@
         }
       ],
       "name": "unwrap",
-      "outputs": [],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "nonpayable",
       "type": "function"
     },
@@ -678,6 +735,7 @@
     "linkReferences": {}
   },
   "methodIdentifiers": {
+    "OZ()": "41c8bcc3",
     "allowance(address,address)": "dd62ed3e",
     "approve(address,uint256)": "095ea7b3",
     "asset()": "38d52e0f",
@@ -687,6 +745,8 @@
     "decimals()": "313ce567",
     "deposit(uint256,address)": "6e553f65",
     "getHello()": "8da9b772",
+    "getOzAmount(uint256)": "a40f2812",
+    "getWozAmount(uint256)": "4cbcdd8b",
     "maxDeposit(address)": "402d267d",
     "maxMint(address)": "c63d75b6",
     "maxRedeem(address)": "d905777e",
@@ -707,7 +767,7 @@
     "withdraw(uint256,address,address)": "b460af94",
     "wrap(uint256,address)": "13bac820"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.21+commit.d9974bed\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"caller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"caller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"asset\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"assetTokenAddress\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"convertToAssets\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"convertToShares\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getHello\",\"outputs\":[],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"maxDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"maxAssets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"maxMint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"maxShares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"maxRedeem\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"maxShares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"maxWithdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"maxAssets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"mint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"previewDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"previewMint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"previewRedeem\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"previewWithdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"redeem\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalAssets\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"totalManagedAssets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"wozAmountIn_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"owner_\",\"type\":\"address\"}],\"name\":\"unwrap\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amountIn_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver_\",\"type\":\"address\"}],\"name\":\"wrap\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"Approval(address,address,uint256)\":{\"details\":\"Emitted when the allowance of a `spender` for an `owner` is set by a call to {approve}. `value` is the new allowance.\"},\"Transfer(address,address,uint256)\":{\"details\":\"Emitted when `value` tokens are moved from one account (`from`) to another (`to`). Note that `value` may be zero.\"}},\"kind\":\"dev\",\"methods\":{\"allowance(address,address)\":{\"details\":\"Returns the remaining number of tokens that `spender` will be allowed to spend on behalf of `owner` through {transferFrom}. This is zero by default. This value changes when {approve} or {transferFrom} are called.\"},\"approve(address,uint256)\":{\"details\":\"Sets `amount` as the allowance of `spender` over the caller's tokens. Returns a boolean value indicating whether the operation succeeded. IMPORTANT: Beware that changing an allowance with this method brings the risk that someone may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729 Emits an {Approval} event.\"},\"asset()\":{\"details\":\"Returns the address of the underlying token used for the Vault for accounting, depositing, and withdrawing. - MUST be an ERC-20 token contract. - MUST NOT revert.\"},\"balanceOf(address)\":{\"details\":\"Returns the amount of tokens owned by `account`.\"},\"convertToAssets(uint256)\":{\"details\":\"Returns the amount of assets that the Vault would exchange for the amount of shares provided, in an ideal scenario where all the conditions are met. - MUST NOT be inclusive of any fees that are charged against assets in the Vault. - MUST NOT show any variations depending on the caller. - MUST NOT reflect slippage or other on-chain conditions, when performing the actual exchange. - MUST NOT revert. NOTE: This calculation MAY NOT reflect the \\u201cper-user\\u201d price-per-share, and instead should reflect the \\u201caverage-user\\u2019s\\u201d price-per-share, meaning what the average user should expect to see when exchanging to and from.\"},\"convertToShares(uint256)\":{\"details\":\"Returns the amount of shares that the Vault would exchange for the amount of assets provided, in an ideal scenario where all the conditions are met. - MUST NOT be inclusive of any fees that are charged against assets in the Vault. - MUST NOT show any variations depending on the caller. - MUST NOT reflect slippage or other on-chain conditions, when performing the actual exchange. - MUST NOT revert. NOTE: This calculation MAY NOT reflect the \\u201cper-user\\u201d price-per-share, and instead should reflect the \\u201caverage-user\\u2019s\\u201d price-per-share, meaning what the average user should expect to see when exchanging to and from.\"},\"decimals()\":{\"details\":\"Returns the decimals places of the token.\"},\"deposit(uint256,address)\":{\"details\":\"Mints shares Vault shares to receiver by depositing exactly amount of underlying tokens. - MUST emit the Deposit event. - MAY support an additional flow in which the underlying tokens are owned by the Vault contract before the   deposit execution, and are accounted for during deposit. - MUST revert if all of assets cannot be deposited (due to deposit limit being reached, slippage, the user not   approving enough underlying tokens to the Vault contract, etc). NOTE: most implementations will require pre-approval of the Vault with the Vault\\u2019s underlying asset token.\"},\"maxDeposit(address)\":{\"details\":\"Returns the maximum amount of the underlying asset that can be deposited into the Vault for the receiver, through a deposit call. - MUST return a limited value if receiver is subject to some deposit limit. - MUST return 2 ** 256 - 1 if there is no limit on the maximum amount of assets that may be deposited. - MUST NOT revert.\"},\"maxMint(address)\":{\"details\":\"Returns the maximum amount of the Vault shares that can be minted for the receiver, through a mint call. - MUST return a limited value if receiver is subject to some mint limit. - MUST return 2 ** 256 - 1 if there is no limit on the maximum amount of shares that may be minted. - MUST NOT revert.\"},\"maxRedeem(address)\":{\"details\":\"Returns the maximum amount of Vault shares that can be redeemed from the owner balance in the Vault, through a redeem call. - MUST return a limited value if owner is subject to some withdrawal limit or timelock. - MUST return balanceOf(owner) if owner is not subject to any withdrawal limit or timelock. - MUST NOT revert.\"},\"maxWithdraw(address)\":{\"details\":\"Returns the maximum amount of the underlying asset that can be withdrawn from the owner balance in the Vault, through a withdraw call. - MUST return a limited value if owner is subject to some withdrawal limit or timelock. - MUST NOT revert.\"},\"mint(uint256,address)\":{\"details\":\"Mints exactly shares Vault shares to receiver by depositing amount of underlying tokens. - MUST emit the Deposit event. - MAY support an additional flow in which the underlying tokens are owned by the Vault contract before the mint   execution, and are accounted for during mint. - MUST revert if all of shares cannot be minted (due to deposit limit being reached, slippage, the user not   approving enough underlying tokens to the Vault contract, etc). NOTE: most implementations will require pre-approval of the Vault with the Vault\\u2019s underlying asset token.\"},\"name()\":{\"details\":\"Returns the name of the token.\"},\"previewDeposit(uint256)\":{\"details\":\"Allows an on-chain or off-chain user to simulate the effects of their deposit at the current block, given current on-chain conditions. - MUST return as close to and no more than the exact amount of Vault shares that would be minted in a deposit   call in the same transaction. I.e. deposit should return the same or more shares as previewDeposit if called   in the same transaction. - MUST NOT account for deposit limits like those returned from maxDeposit and should always act as though the   deposit would be accepted, regardless if the user has enough tokens approved, etc. - MUST be inclusive of deposit fees. Integrators should be aware of the existence of deposit fees. - MUST NOT revert. NOTE: any unfavorable discrepancy between convertToShares and previewDeposit SHOULD be considered slippage in share price or some other type of condition, meaning the depositor will lose assets by depositing.\"},\"previewMint(uint256)\":{\"details\":\"Allows an on-chain or off-chain user to simulate the effects of their mint at the current block, given current on-chain conditions. - MUST return as close to and no fewer than the exact amount of assets that would be deposited in a mint call   in the same transaction. I.e. mint should return the same or fewer assets as previewMint if called in the   same transaction. - MUST NOT account for mint limits like those returned from maxMint and should always act as though the mint   would be accepted, regardless if the user has enough tokens approved, etc. - MUST be inclusive of deposit fees. Integrators should be aware of the existence of deposit fees. - MUST NOT revert. NOTE: any unfavorable discrepancy between convertToAssets and previewMint SHOULD be considered slippage in share price or some other type of condition, meaning the depositor will lose assets by minting.\"},\"previewRedeem(uint256)\":{\"details\":\"Allows an on-chain or off-chain user to simulate the effects of their redeemption at the current block, given current on-chain conditions. - MUST return as close to and no more than the exact amount of assets that would be withdrawn in a redeem call   in the same transaction. I.e. redeem should return the same or more assets as previewRedeem if called in the   same transaction. - MUST NOT account for redemption limits like those returned from maxRedeem and should always act as though the   redemption would be accepted, regardless if the user has enough shares, etc. - MUST be inclusive of withdrawal fees. Integrators should be aware of the existence of withdrawal fees. - MUST NOT revert. NOTE: any unfavorable discrepancy between convertToAssets and previewRedeem SHOULD be considered slippage in share price or some other type of condition, meaning the depositor will lose assets by redeeming.\"},\"previewWithdraw(uint256)\":{\"details\":\"Allows an on-chain or off-chain user to simulate the effects of their withdrawal at the current block, given current on-chain conditions. - MUST return as close to and no fewer than the exact amount of Vault shares that would be burned in a withdraw   call in the same transaction. I.e. withdraw should return the same or fewer shares as previewWithdraw if   called   in the same transaction. - MUST NOT account for withdrawal limits like those returned from maxWithdraw and should always act as though   the withdrawal would be accepted, regardless if the user has enough shares, etc. - MUST be inclusive of withdrawal fees. Integrators should be aware of the existence of withdrawal fees. - MUST NOT revert. NOTE: any unfavorable discrepancy between convertToShares and previewWithdraw SHOULD be considered slippage in share price or some other type of condition, meaning the depositor will lose assets by depositing.\"},\"redeem(uint256,address,address)\":{\"details\":\"Burns exactly shares from owner and sends assets of underlying tokens to receiver. - MUST emit the Withdraw event. - MAY support an additional flow in which the underlying tokens are owned by the Vault contract before the   redeem execution, and are accounted for during redeem. - MUST revert if all of shares cannot be redeemed (due to withdrawal limit being reached, slippage, the owner   not having enough shares, etc). NOTE: some implementations will require pre-requesting to the Vault before a withdrawal may be performed. Those methods should be performed separately.\"},\"symbol()\":{\"details\":\"Returns the symbol of the token.\"},\"totalAssets()\":{\"details\":\"Returns the total amount of the underlying asset that is \\u201cmanaged\\u201d by Vault. - SHOULD include any compounding that occurs from yield. - MUST be inclusive of any fees that are charged against assets in the Vault. - MUST NOT revert.\"},\"totalSupply()\":{\"details\":\"Returns the amount of tokens in existence.\"},\"transfer(address,uint256)\":{\"details\":\"Moves `amount` tokens from the caller's account to `to`. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.\"},\"withdraw(uint256,address,address)\":{\"details\":\"Burns shares from owner and sends exactly assets of underlying tokens to receiver. - MUST emit the Withdraw event. - MAY support an additional flow in which the underlying tokens are owned by the Vault contract before the   withdraw execution, and are accounted for during withdraw. - MUST revert if all of assets cannot be withdrawn (due to withdrawal limit being reached, slippage, the owner   not having enough shares, etc). Note that some implementations will require pre-requesting to the Vault before a withdrawal may be performed. Those methods should be performed separately.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/interfaces/wozIToken.sol\":\"wozIToken\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@chainlink/=node_modules/@chainlink/\",\":@ensdomains/=node_modules/@ensdomains/\",\":@eth-optimism/=node_modules/@eth-optimism/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":@prb/test/=lib/unchecked-counter/lib/prb-test/src/\",\":@uniswap/=node_modules/@uniswap/\",\":base64-sol/=node_modules/base64-sol/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\",\":prb-test/=lib/unchecked-counter/lib/prb-test/src/\",\":solady/=node_modules/solady/\",\":src/=lib/unchecked-counter/src/\",\":unchecked-counter/=lib/unchecked-counter/src/\"]},\"sources\":{\"contracts/interfaces/wozIToken.sol\":{\"keccak256\":\"0xc24a1fc2e7a6376a40758f964426c63905056ff9251abdae40bf20a682882b40\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://8d1587a9b5502fe8ea303a46420f692ab06c003e290305a5354d00af1e768c7c\",\"dweb:/ipfs/QmXr3iyCd9rN2SjxK9uoA4nbEm9yGwz7dS6bkuKDGAJ8aZ\"]},\"node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol\":{\"keccak256\":\"0x2e991b91bca58c198c3ecd905d281c5e9ae230f4f34f14835294d5fa2d478991\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2cbb3c9fba2ef72dd7a9226296cddcb764bef17d4d5b522c94818a8ee9a390a6\",\"dweb:/ipfs/QmdFhEFbcmzFba6hMN1xFakCzUCsPuRwtEvU2GTKQTxkae\"]},\"node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol\":{\"keccak256\":\"0x4e733d3164f73f461eaf9d8087a7ad1ea180bdc8ba0d3d61b0e1ae16d8e63dff\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://75b47c3aeca7b66ea6752f8be020ec5c1c502de6ec9065272dae23d3a52196e2\",\"dweb:/ipfs/QmUebPMHv16tYKFh5BmBQkMfRFb5b8UZ2RgVwdjxCeufVF\"]},\"node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol\":{\"keccak256\":\"0x605434219ebbe4653f703640f06969faa5a1d78f0bfef878e5ddbb1ca369ceeb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4c9c634f99dd02d73ce7498b03a6305e251c05eeebb71457306561c1fab0fa7d\",\"dweb:/ipfs/QmbYRBbZHy8YoaQKXdPryiL3CSS7uUaRfRYi1TUj9cTqJQ\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.21+commit.d9974bed\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"caller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"caller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"OZ\",\"outputs\":[{\"internalType\":\"contract ozIDiamond\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"asset\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"convertToAssets\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"convertToShares\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getHello\",\"outputs\":[],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"wozAmount_\",\"type\":\"uint256\"}],\"name\":\"getOzAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"ozAmount_\",\"type\":\"uint256\"}],\"name\":\"getWozAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"maxDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"maxAssets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"maxMint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"maxShares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"maxRedeem\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"maxShares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"maxWithdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"maxAssets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"mint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"previewDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"previewMint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"previewRedeem\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"previewWithdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"redeem\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalAssets\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"totalManagedAssets\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"wozAmountIn_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"owner_\",\"type\":\"address\"}],\"name\":\"unwrap\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"withdraw\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amountIn_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"receiver_\",\"type\":\"address\"}],\"name\":\"wrap\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"Approval(address,address,uint256)\":{\"details\":\"Emitted when the allowance of a `spender` for an `owner` is set by a call to {approve}. `value` is the new allowance.\"},\"Transfer(address,address,uint256)\":{\"details\":\"Emitted when `value` tokens are moved from one account (`from`) to another (`to`). Note that `value` may be zero.\"}},\"kind\":\"dev\",\"methods\":{\"allowance(address,address)\":{\"details\":\"Returns the remaining number of tokens that `spender` will be allowed to spend on behalf of `owner` through {transferFrom}. This is zero by default. This value changes when {approve} or {transferFrom} are called.\"},\"approve(address,uint256)\":{\"details\":\"Sets `amount` as the allowance of `spender` over the caller's tokens. Returns a boolean value indicating whether the operation succeeded. IMPORTANT: Beware that changing an allowance with this method brings the risk that someone may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729 Emits an {Approval} event.\"},\"asset()\":{\"details\":\"Returns the address of the underlying token used for the Vault for accounting, depositing, and withdrawing. - MUST be an ERC-20 token contract. - MUST NOT revert.\"},\"balanceOf(address)\":{\"details\":\"Returns the amount of tokens owned by `account`.\"},\"convertToAssets(uint256)\":{\"details\":\"Returns the amount of assets that the Vault would exchange for the amount of shares provided, in an ideal scenario where all the conditions are met. - MUST NOT be inclusive of any fees that are charged against assets in the Vault. - MUST NOT show any variations depending on the caller. - MUST NOT reflect slippage or other on-chain conditions, when performing the actual exchange. - MUST NOT revert. NOTE: This calculation MAY NOT reflect the \\u201cper-user\\u201d price-per-share, and instead should reflect the \\u201caverage-user\\u2019s\\u201d price-per-share, meaning what the average user should expect to see when exchanging to and from.\"},\"convertToShares(uint256)\":{\"details\":\"Returns the amount of shares that the Vault would exchange for the amount of assets provided, in an ideal scenario where all the conditions are met. - MUST NOT be inclusive of any fees that are charged against assets in the Vault. - MUST NOT show any variations depending on the caller. - MUST NOT reflect slippage or other on-chain conditions, when performing the actual exchange. - MUST NOT revert. NOTE: This calculation MAY NOT reflect the \\u201cper-user\\u201d price-per-share, and instead should reflect the \\u201caverage-user\\u2019s\\u201d price-per-share, meaning what the average user should expect to see when exchanging to and from.\"},\"decimals()\":{\"details\":\"Returns the decimals places of the token.\"},\"deposit(uint256,address)\":{\"details\":\"Mints shares Vault shares to receiver by depositing exactly amount of underlying tokens. - MUST emit the Deposit event. - MAY support an additional flow in which the underlying tokens are owned by the Vault contract before the   deposit execution, and are accounted for during deposit. - MUST revert if all of assets cannot be deposited (due to deposit limit being reached, slippage, the user not   approving enough underlying tokens to the Vault contract, etc). NOTE: most implementations will require pre-approval of the Vault with the Vault\\u2019s underlying asset token.\"},\"maxDeposit(address)\":{\"details\":\"Returns the maximum amount of the underlying asset that can be deposited into the Vault for the receiver, through a deposit call. - MUST return a limited value if receiver is subject to some deposit limit. - MUST return 2 ** 256 - 1 if there is no limit on the maximum amount of assets that may be deposited. - MUST NOT revert.\"},\"maxMint(address)\":{\"details\":\"Returns the maximum amount of the Vault shares that can be minted for the receiver, through a mint call. - MUST return a limited value if receiver is subject to some mint limit. - MUST return 2 ** 256 - 1 if there is no limit on the maximum amount of shares that may be minted. - MUST NOT revert.\"},\"maxRedeem(address)\":{\"details\":\"Returns the maximum amount of Vault shares that can be redeemed from the owner balance in the Vault, through a redeem call. - MUST return a limited value if owner is subject to some withdrawal limit or timelock. - MUST return balanceOf(owner) if owner is not subject to any withdrawal limit or timelock. - MUST NOT revert.\"},\"maxWithdraw(address)\":{\"details\":\"Returns the maximum amount of the underlying asset that can be withdrawn from the owner balance in the Vault, through a withdraw call. - MUST return a limited value if owner is subject to some withdrawal limit or timelock. - MUST NOT revert.\"},\"mint(uint256,address)\":{\"details\":\"Mints exactly shares Vault shares to receiver by depositing amount of underlying tokens. - MUST emit the Deposit event. - MAY support an additional flow in which the underlying tokens are owned by the Vault contract before the mint   execution, and are accounted for during mint. - MUST revert if all of shares cannot be minted (due to deposit limit being reached, slippage, the user not   approving enough underlying tokens to the Vault contract, etc). NOTE: most implementations will require pre-approval of the Vault with the Vault\\u2019s underlying asset token.\"},\"name()\":{\"details\":\"Returns the name of the token.\"},\"previewDeposit(uint256)\":{\"details\":\"Allows an on-chain or off-chain user to simulate the effects of their deposit at the current block, given current on-chain conditions. - MUST return as close to and no more than the exact amount of Vault shares that would be minted in a deposit   call in the same transaction. I.e. deposit should return the same or more shares as previewDeposit if called   in the same transaction. - MUST NOT account for deposit limits like those returned from maxDeposit and should always act as though the   deposit would be accepted, regardless if the user has enough tokens approved, etc. - MUST be inclusive of deposit fees. Integrators should be aware of the existence of deposit fees. - MUST NOT revert. NOTE: any unfavorable discrepancy between convertToShares and previewDeposit SHOULD be considered slippage in share price or some other type of condition, meaning the depositor will lose assets by depositing.\"},\"previewMint(uint256)\":{\"details\":\"Allows an on-chain or off-chain user to simulate the effects of their mint at the current block, given current on-chain conditions. - MUST return as close to and no fewer than the exact amount of assets that would be deposited in a mint call   in the same transaction. I.e. mint should return the same or fewer assets as previewMint if called in the   same transaction. - MUST NOT account for mint limits like those returned from maxMint and should always act as though the mint   would be accepted, regardless if the user has enough tokens approved, etc. - MUST be inclusive of deposit fees. Integrators should be aware of the existence of deposit fees. - MUST NOT revert. NOTE: any unfavorable discrepancy between convertToAssets and previewMint SHOULD be considered slippage in share price or some other type of condition, meaning the depositor will lose assets by minting.\"},\"previewRedeem(uint256)\":{\"details\":\"Allows an on-chain or off-chain user to simulate the effects of their redeemption at the current block, given current on-chain conditions. - MUST return as close to and no more than the exact amount of assets that would be withdrawn in a redeem call   in the same transaction. I.e. redeem should return the same or more assets as previewRedeem if called in the   same transaction. - MUST NOT account for redemption limits like those returned from maxRedeem and should always act as though the   redemption would be accepted, regardless if the user has enough shares, etc. - MUST be inclusive of withdrawal fees. Integrators should be aware of the existence of withdrawal fees. - MUST NOT revert. NOTE: any unfavorable discrepancy between convertToAssets and previewRedeem SHOULD be considered slippage in share price or some other type of condition, meaning the depositor will lose assets by redeeming.\"},\"previewWithdraw(uint256)\":{\"details\":\"Allows an on-chain or off-chain user to simulate the effects of their withdrawal at the current block, given current on-chain conditions. - MUST return as close to and no fewer than the exact amount of Vault shares that would be burned in a withdraw   call in the same transaction. I.e. withdraw should return the same or fewer shares as previewWithdraw if   called   in the same transaction. - MUST NOT account for withdrawal limits like those returned from maxWithdraw and should always act as though   the withdrawal would be accepted, regardless if the user has enough shares, etc. - MUST be inclusive of withdrawal fees. Integrators should be aware of the existence of withdrawal fees. - MUST NOT revert. NOTE: any unfavorable discrepancy between convertToShares and previewWithdraw SHOULD be considered slippage in share price or some other type of condition, meaning the depositor will lose assets by depositing.\"},\"redeem(uint256,address,address)\":{\"details\":\"Burns exactly shares from owner and sends assets of underlying tokens to receiver. - MUST emit the Withdraw event. - MAY support an additional flow in which the underlying tokens are owned by the Vault contract before the   redeem execution, and are accounted for during redeem. - MUST revert if all of shares cannot be redeemed (due to withdrawal limit being reached, slippage, the owner   not having enough shares, etc). NOTE: some implementations will require pre-requesting to the Vault before a withdrawal may be performed. Those methods should be performed separately.\"},\"symbol()\":{\"details\":\"Returns the symbol of the token.\"},\"totalAssets()\":{\"details\":\"Returns the total amount of the underlying asset that is \\u201cmanaged\\u201d by Vault. - SHOULD include any compounding that occurs from yield. - MUST be inclusive of any fees that are charged against assets in the Vault. - MUST NOT revert.\"},\"totalSupply()\":{\"details\":\"Returns the amount of tokens in existence.\"},\"transfer(address,uint256)\":{\"details\":\"Moves `amount` tokens from the caller's account to `to`. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.\"},\"withdraw(uint256,address,address)\":{\"details\":\"Burns shares from owner and sends exactly assets of underlying tokens to receiver. - MUST emit the Withdraw event. - MAY support an additional flow in which the underlying tokens are owned by the Vault contract before the   withdraw execution, and are accounted for during withdraw. - MUST revert if all of assets cannot be withdrawn (due to withdrawal limit being reached, slippage, the owner   not having enough shares, etc). Note that some implementations will require pre-requesting to the Vault before a withdrawal may be performed. Those methods should be performed separately.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/interfaces/wozIToken.sol\":\"wozIToken\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@chainlink/=node_modules/@chainlink/\",\":@ensdomains/=node_modules/@ensdomains/\",\":@eth-optimism/=node_modules/@eth-optimism/\",\":@openzeppelin/=node_modules/@openzeppelin/\",\":@prb/test/=lib/unchecked-counter/lib/prb-test/src/\",\":@uniswap/=node_modules/@uniswap/\",\":base64-sol/=node_modules/base64-sol/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\",\":prb-test/=lib/unchecked-counter/lib/prb-test/src/\",\":solady/=node_modules/solady/\",\":src/=lib/unchecked-counter/src/\",\":unchecked-counter/=lib/unchecked-counter/src/\"]},\"sources\":{\"contracts/AppStorage.sol\":{\"keccak256\":\"0xcacdef507248fb8ec20d3d7587015379457ac5c0760eabd520215d2df3079cb6\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://bd0aaac40e811a89077af226aaa9fc79e37d6b1d95cffc6565ace3eb7b7fbb18\",\"dweb:/ipfs/Qmdz9acMPvnwxAejTkYLaoJdHyBJ2APgs5f2SnoRZjMryM\"]},\"contracts/interfaces/IDiamondCut.sol\":{\"keccak256\":\"0x3f642e091b5d77c3494a4f0803bb59a420961979f50c8642b3d4db58e0339800\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://88d0f7e8208ac5054b71bf8271b3430ba73a535230e09c826e651f69ae7d3c05\",\"dweb:/ipfs/Qma6bPy74iD3qjupArZEwZE1FNnxo9z37WvC1SmHLi8rEC\"]},\"contracts/interfaces/ozIDiamond.sol\":{\"keccak256\":\"0x2782c6aeaecf8ff415a14a285edaacd805b6d2c7c6f251628eb23861ee175858\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://55b056e345365adb73a679db46e672cb1ebd127dbb5bcc43ddb81ef50440aed6\",\"dweb:/ipfs/QmeNgidKWnbom7Aew6eZvPY2stJDCJGtKjJwE2ZqydBYZ2\"]},\"contracts/interfaces/wozIToken.sol\":{\"keccak256\":\"0x90a93e83a3bb181884aaab4c4c3644cad43d854c24dfb409cba5851ba089f80a\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://2f4444543b5222f892f56b5c9cd49f8d1abce592336fe6f7f872cf61e0b19f13\",\"dweb:/ipfs/QmX1rLLoMeVDwumfhhRMUSoCHFhcVahgLTCeaN21BabxtP\"]},\"node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol\":{\"keccak256\":\"0xfe4e8bb4861bb3860ba890ab91a3b818ec66e5a8f544fb608cfcb73f433472cd\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://644cff84052e1e82b5bb502b2a46e8f142a62b0db4cd9b38200798ba8373c6f7\",\"dweb:/ipfs/QmTa99QHrJBn3SXDizquPBUiTxVCNKQrHgaWJhuds5Sce2\"]},\"node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol\":{\"keccak256\":\"0x2e991b91bca58c198c3ecd905d281c5e9ae230f4f34f14835294d5fa2d478991\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2cbb3c9fba2ef72dd7a9226296cddcb764bef17d4d5b522c94818a8ee9a390a6\",\"dweb:/ipfs/QmdFhEFbcmzFba6hMN1xFakCzUCsPuRwtEvU2GTKQTxkae\"]},\"node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol\":{\"keccak256\":\"0x4e733d3164f73f461eaf9d8087a7ad1ea180bdc8ba0d3d61b0e1ae16d8e63dff\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://75b47c3aeca7b66ea6752f8be020ec5c1c502de6ec9065272dae23d3a52196e2\",\"dweb:/ipfs/QmUebPMHv16tYKFh5BmBQkMfRFb5b8UZ2RgVwdjxCeufVF\"]},\"node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol\":{\"keccak256\":\"0x605434219ebbe4653f703640f06969faa5a1d78f0bfef878e5ddbb1ca369ceeb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4c9c634f99dd02d73ce7498b03a6305e251c05eeebb71457306561c1fab0fa7d\",\"dweb:/ipfs/QmbYRBbZHy8YoaQKXdPryiL3CSS7uUaRfRYi1TUj9cTqJQ\"]},\"node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol\":{\"keccak256\":\"0x3f485fb1a44e8fbeadefb5da07d66edab3cfe809f0ac4074b1e54e3eb3c4cf69\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://095ce0626b41318c772b3ebf19d548282607f6a8f3d6c41c13edfbd5370c8652\",\"dweb:/ipfs/QmVDZfJJ89UUCE1hMyzqpkZAtQ8jUsBgZNE5AMRG7RzRFS\"]},\"node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol\":{\"keccak256\":\"0x9bfaf1feb32814623e627ab70f2409760b15d95f1f9b058e2b3399a8bb732975\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://a8a2c3e55965b61bcd91993d8e1d5d34b8b8a63e0fdfce87a85f6af92526fd53\",\"dweb:/ipfs/QmQj2CSCSwqDSU4KMNWxGsN2336Cy64WgpV1X1EHXNZWxM\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.21+commit.d9974bed"
@@ -834,6 +894,19 @@
           "anonymous": false
         },
         {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "OZ",
+          "outputs": [
+            {
+              "internalType": "contract ozIDiamond",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
           "inputs": [
             {
               "internalType": "address",
@@ -889,7 +962,7 @@
           "outputs": [
             {
               "internalType": "address",
-              "name": "assetTokenAddress",
+              "name": "",
               "type": "address"
             }
           ]
@@ -993,6 +1066,44 @@
           "stateMutability": "view",
           "type": "function",
           "name": "getHello"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "wozAmount_",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getOzAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "ozAmount_",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getWozAmount",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
         },
         {
           "inputs": [
@@ -1324,7 +1435,14 @@
           ],
           "stateMutability": "nonpayable",
           "type": "function",
-          "name": "unwrap"
+          "name": "unwrap",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
         },
         {
           "inputs": [
@@ -1497,13 +1615,45 @@
       "libraries": {}
     },
     "sources": {
-      "contracts/interfaces/wozIToken.sol": {
-        "keccak256": "0xc24a1fc2e7a6376a40758f964426c63905056ff9251abdae40bf20a682882b40",
+      "contracts/AppStorage.sol": {
+        "keccak256": "0xcacdef507248fb8ec20d3d7587015379457ac5c0760eabd520215d2df3079cb6",
         "urls": [
-          "bzz-raw://8d1587a9b5502fe8ea303a46420f692ab06c003e290305a5354d00af1e768c7c",
-          "dweb:/ipfs/QmXr3iyCd9rN2SjxK9uoA4nbEm9yGwz7dS6bkuKDGAJ8aZ"
+          "bzz-raw://bd0aaac40e811a89077af226aaa9fc79e37d6b1d95cffc6565ace3eb7b7fbb18",
+          "dweb:/ipfs/Qmdz9acMPvnwxAejTkYLaoJdHyBJ2APgs5f2SnoRZjMryM"
         ],
         "license": "GPL-2.0-or-later"
+      },
+      "contracts/interfaces/IDiamondCut.sol": {
+        "keccak256": "0x3f642e091b5d77c3494a4f0803bb59a420961979f50c8642b3d4db58e0339800",
+        "urls": [
+          "bzz-raw://88d0f7e8208ac5054b71bf8271b3430ba73a535230e09c826e651f69ae7d3c05",
+          "dweb:/ipfs/Qma6bPy74iD3qjupArZEwZE1FNnxo9z37WvC1SmHLi8rEC"
+        ],
+        "license": "MIT"
+      },
+      "contracts/interfaces/ozIDiamond.sol": {
+        "keccak256": "0x2782c6aeaecf8ff415a14a285edaacd805b6d2c7c6f251628eb23861ee175858",
+        "urls": [
+          "bzz-raw://55b056e345365adb73a679db46e672cb1ebd127dbb5bcc43ddb81ef50440aed6",
+          "dweb:/ipfs/QmeNgidKWnbom7Aew6eZvPY2stJDCJGtKjJwE2ZqydBYZ2"
+        ],
+        "license": "GPL-2.0-or-later"
+      },
+      "contracts/interfaces/wozIToken.sol": {
+        "keccak256": "0x90a93e83a3bb181884aaab4c4c3644cad43d854c24dfb409cba5851ba089f80a",
+        "urls": [
+          "bzz-raw://2f4444543b5222f892f56b5c9cd49f8d1abce592336fe6f7f872cf61e0b19f13",
+          "dweb:/ipfs/QmX1rLLoMeVDwumfhhRMUSoCHFhcVahgLTCeaN21BabxtP"
+        ],
+        "license": "GPL-2.0-or-later"
+      },
+      "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol": {
+        "keccak256": "0xfe4e8bb4861bb3860ba890ab91a3b818ec66e5a8f544fb608cfcb73f433472cd",
+        "urls": [
+          "bzz-raw://644cff84052e1e82b5bb502b2a46e8f142a62b0db4cd9b38200798ba8373c6f7",
+          "dweb:/ipfs/QmTa99QHrJBn3SXDizquPBUiTxVCNKQrHgaWJhuds5Sce2"
+        ],
+        "license": "MIT"
       },
       "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol": {
         "keccak256": "0x2e991b91bca58c198c3ecd905d281c5e9ae230f4f34f14835294d5fa2d478991",
@@ -1528,23 +1678,42 @@
           "dweb:/ipfs/QmbYRBbZHy8YoaQKXdPryiL3CSS7uUaRfRYi1TUj9cTqJQ"
         ],
         "license": "MIT"
+      },
+      "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol": {
+        "keccak256": "0x3f485fb1a44e8fbeadefb5da07d66edab3cfe809f0ac4074b1e54e3eb3c4cf69",
+        "urls": [
+          "bzz-raw://095ce0626b41318c772b3ebf19d548282607f6a8f3d6c41c13edfbd5370c8652",
+          "dweb:/ipfs/QmVDZfJJ89UUCE1hMyzqpkZAtQ8jUsBgZNE5AMRG7RzRFS"
+        ],
+        "license": "GPL-2.0-or-later"
+      },
+      "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol": {
+        "keccak256": "0x9bfaf1feb32814623e627ab70f2409760b15d95f1f9b058e2b3399a8bb732975",
+        "urls": [
+          "bzz-raw://a8a2c3e55965b61bcd91993d8e1d5d34b8b8a63e0fdfce87a85f6af92526fd53",
+          "dweb:/ipfs/QmQj2CSCSwqDSU4KMNWxGsN2336Cy64WgpV1X1EHXNZWxM"
+        ],
+        "license": "GPL-2.0-or-later"
       }
     },
     "version": 1
   },
   "ast": {
     "absolutePath": "contracts/interfaces/wozIToken.sol",
-    "id": 6283,
+    "id": 6312,
     "exportedSymbols": {
       "IERC4626Upgradeable": [
-        40116
+        40155
+      ],
+      "ozIDiamond": [
+        6053
       ],
       "wozIToken": [
-        6282
+        6311
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "45:405:34",
+    "src": "45:712:34",
     "nodes": [
       {
         "id": 6256,
@@ -1565,8 +1734,8 @@
         "absolutePath": "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
         "file": "@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 6283,
-        "sourceUnit": 40117,
+        "scope": 6312,
+        "sourceUnit": 40156,
         "symbolAliases": [
           {
             "foreign": {
@@ -1574,7 +1743,7 @@
               "name": "IERC4626Upgradeable",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 40116,
+              "referencedDeclaration": 40155,
               "src": "78:19:34",
               "typeDescriptions": {}
             },
@@ -1584,34 +1753,60 @@
         "unitAlias": ""
       },
       {
-        "id": 6282,
+        "id": 6260,
+        "nodeType": "ImportDirective",
+        "src": "184:44:34",
+        "nodes": [],
+        "absolutePath": "contracts/interfaces/ozIDiamond.sol",
+        "file": "./ozIDiamond.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 6312,
+        "sourceUnit": 6054,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 6259,
+              "name": "ozIDiamond",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 6053,
+              "src": "192:10:34",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 6311,
         "nodeType": "ContractDefinition",
-        "src": "186:261:34",
+        "src": "230:524:34",
         "nodes": [
           {
-            "id": 6263,
+            "id": 6265,
             "nodeType": "FunctionDefinition",
-            "src": "235:34:34",
+            "src": "279:34:34",
             "nodes": [],
             "functionSelector": "8da9b772",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getHello",
-            "nameLocation": "244:8:34",
+            "nameLocation": "288:8:34",
             "parameters": {
-              "id": 6261,
+              "id": 6263,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "252:2:34"
+              "src": "296:2:34"
             },
             "returnParameters": {
-              "id": 6262,
+              "id": 6264,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "268:0:34"
+              "src": "312:0:34"
             },
-            "scope": 6282,
+            "scope": 6311,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -1619,27 +1814,27 @@
           {
             "id": 6272,
             "nodeType": "FunctionDefinition",
-            "src": "289:72:34",
+            "src": "332:66:34",
             "nodes": [],
-            "functionSelector": "13bac820",
+            "functionSelector": "4cbcdd8b",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "wrap",
-            "nameLocation": "298:4:34",
+            "name": "getWozAmount",
+            "nameLocation": "341:12:34",
             "parameters": {
               "id": 6268,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6265,
+                  "id": 6267,
                   "mutability": "mutable",
-                  "name": "amountIn_",
-                  "nameLocation": "308:9:34",
+                  "name": "ozAmount_",
+                  "nameLocation": "359:9:34",
                   "nodeType": "VariableDeclaration",
                   "scope": 6272,
-                  "src": "303:14:34",
+                  "src": "354:14:34",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1647,47 +1842,19 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6264,
+                    "id": 6266,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "303:4:34",
+                    "src": "354:4:34",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 6267,
-                  "mutability": "mutable",
-                  "name": "receiver_",
-                  "nameLocation": "327:9:34",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 6272,
-                  "src": "319:17:34",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 6266,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "319:7:34",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
                 }
               ],
-              "src": "302:35:34"
+              "src": "353:16:34"
             },
             "returnParameters": {
               "id": 6271,
@@ -1701,7 +1868,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 6272,
-                  "src": "355:4:34",
+                  "src": "392:4:34",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1712,7 +1879,7 @@
                     "id": 6269,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "355:4:34",
+                    "src": "392:4:34",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1721,37 +1888,37 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "354:6:34"
+              "src": "391:6:34"
             },
-            "scope": 6282,
-            "stateMutability": "nonpayable",
+            "scope": 6311,
+            "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 6281,
+            "id": 6279,
             "nodeType": "FunctionDefinition",
-            "src": "366:79:34",
+            "src": "403:66:34",
             "nodes": [],
-            "functionSelector": "fb183a02",
+            "functionSelector": "a40f2812",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "unwrap",
-            "nameLocation": "375:6:34",
+            "name": "getOzAmount",
+            "nameLocation": "412:11:34",
             "parameters": {
-              "id": 6279,
+              "id": 6275,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
                   "id": 6274,
                   "mutability": "mutable",
-                  "name": "wozAmountIn_",
-                  "nameLocation": "387:12:34",
+                  "name": "wozAmount_",
+                  "nameLocation": "429:10:34",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6281,
-                  "src": "382:17:34",
+                  "scope": 6279,
+                  "src": "424:15:34",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1762,7 +1929,157 @@
                     "id": 6273,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "382:4:34",
+                    "src": "424:4:34",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "423:17:34"
+            },
+            "returnParameters": {
+              "id": 6278,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6277,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6279,
+                  "src": "463:4:34",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6276,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "463:4:34",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "462:6:34"
+            },
+            "scope": 6311,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6285,
+            "nodeType": "FunctionDefinition",
+            "src": "474:48:34",
+            "nodes": [],
+            "functionSelector": "41c8bcc3",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "OZ",
+            "nameLocation": "483:2:34",
+            "parameters": {
+              "id": 6280,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "485:2:34"
+            },
+            "returnParameters": {
+              "id": 6284,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6283,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6285,
+                  "src": "510:10:34",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_ozIDiamond_$6053",
+                    "typeString": "contract ozIDiamond"
+                  },
+                  "typeName": {
+                    "id": 6282,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6281,
+                      "name": "ozIDiamond",
+                      "nameLocations": [
+                        "510:10:34"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6053,
+                      "src": "510:10:34"
+                    },
+                    "referencedDeclaration": 6053,
+                    "src": "510:10:34",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_ozIDiamond_$6053",
+                      "typeString": "contract ozIDiamond"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "509:12:34"
+            },
+            "scope": 6311,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6294,
+            "nodeType": "FunctionDefinition",
+            "src": "528:72:34",
+            "nodes": [],
+            "functionSelector": "13bac820",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "wrap",
+            "nameLocation": "537:4:34",
+            "parameters": {
+              "id": 6290,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6287,
+                  "mutability": "mutable",
+                  "name": "amountIn_",
+                  "nameLocation": "547:9:34",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6294,
+                  "src": "542:14:34",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6286,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "542:4:34",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1772,13 +2089,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6276,
+                  "id": 6289,
                   "mutability": "mutable",
                   "name": "receiver_",
-                  "nameLocation": "409:9:34",
+                  "nameLocation": "566:9:34",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6281,
-                  "src": "401:17:34",
+                  "scope": 6294,
+                  "src": "558:17:34",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1786,10 +2103,122 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6275,
+                    "id": 6288,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "401:7:34",
+                    "src": "558:7:34",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "541:35:34"
+            },
+            "returnParameters": {
+              "id": 6293,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6292,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6294,
+                  "src": "594:4:34",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6291,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "594:4:34",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "593:6:34"
+            },
+            "scope": 6311,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6305,
+            "nodeType": "FunctionDefinition",
+            "src": "605:93:34",
+            "nodes": [],
+            "functionSelector": "fb183a02",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "unwrap",
+            "nameLocation": "614:6:34",
+            "parameters": {
+              "id": 6301,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6296,
+                  "mutability": "mutable",
+                  "name": "wozAmountIn_",
+                  "nameLocation": "626:12:34",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6305,
+                  "src": "621:17:34",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6295,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "621:4:34",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6298,
+                  "mutability": "mutable",
+                  "name": "receiver_",
+                  "nameLocation": "648:9:34",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6305,
+                  "src": "640:17:34",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6297,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "640:7:34",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1800,13 +2229,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6278,
+                  "id": 6300,
                   "mutability": "mutable",
                   "name": "owner_",
-                  "nameLocation": "428:6:34",
+                  "nameLocation": "667:6:34",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6281,
-                  "src": "420:14:34",
+                  "scope": 6305,
+                  "src": "659:14:34",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1814,10 +2243,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6277,
+                    "id": 6299,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "420:7:34",
+                    "src": "659:7:34",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1827,16 +2256,104 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "381:54:34"
+              "src": "620:54:34"
             },
             "returnParameters": {
-              "id": 6280,
+              "id": 6304,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6303,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6305,
+                  "src": "692:4:34",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6302,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "692:4:34",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "691:6:34"
+            },
+            "scope": 6311,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 6310,
+            "nodeType": "FunctionDefinition",
+            "src": "704:48:34",
+            "nodes": [],
+            "baseFunctions": [
+              40024
+            ],
+            "functionSelector": "38d52e0f",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "asset",
+            "nameLocation": "713:5:34",
+            "parameters": {
+              "id": 6306,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "444:0:34"
+              "src": "718:2:34"
             },
-            "scope": 6282,
-            "stateMutability": "nonpayable",
+            "returnParameters": {
+              "id": 6309,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6308,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6310,
+                  "src": "743:7:34",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6307,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "743:7:34",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "742:9:34"
+            },
+            "scope": 6311,
+            "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
@@ -1845,18 +2362,18 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 6259,
+              "id": 6261,
               "name": "IERC4626Upgradeable",
               "nameLocations": [
-                "209:19:34"
+                "253:19:34"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 40116,
-              "src": "209:19:34"
+              "referencedDeclaration": 40155,
+              "src": "253:19:34"
             },
-            "id": 6260,
+            "id": 6262,
             "nodeType": "InheritanceSpecifier",
-            "src": "209:19:34"
+            "src": "253:19:34"
           }
         ],
         "canonicalName": "wozIToken",
@@ -1864,20 +2381,20 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          6282,
-          40116,
-          41578,
-          40956
+          6311,
+          40155,
+          41617,
+          40995
         ],
         "name": "wozIToken",
-        "nameLocation": "196:9:34",
-        "scope": 6283,
+        "nameLocation": "240:9:34",
+        "scope": 6312,
         "usedErrors": [],
         "usedEvents": [
-          39967,
-          39979,
-          40890,
-          40899
+          40006,
+          40018,
+          40929,
+          40938
         ]
       }
     ],

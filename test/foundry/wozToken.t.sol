@@ -41,22 +41,23 @@ contract wozTokenTest is TestMethods {
         vm.startPrank(alice);
 
         ozERC20.approve(address(wozERC20), ozBalancePre);
-        uint shares = wozERC20.deposit(ozBalancePre, alice);
-        assertTrue(shares > 0);
+        uint wozAmountOut = wozERC20.wrap(ozBalancePre, alice);
 
         uint wozBalancePost = wozERC20.balanceOf(alice);
         assertTrue(wozBalancePost > 0);
+        assertTrue(wozAmountOut == wozBalancePost);
 
         uint ozBalancePost = ozERC20.balanceOf(alice);
         assertTrue(ozBalancePost == 0);
 
-        wozERC20.withdraw(wozBalancePost, alice, alice);
+        uint ozAmountOut = wozERC20.unwrap(wozBalancePost, alice, alice);
         uint wozBalancePostWithdrawal = wozERC20.balanceOf(alice);
         assertTrue(wozBalancePostWithdrawal == 0);
 
         //Post-condition
         uint ozBalancePostWithdrawal = ozERC20.balanceOf(alice);
         assertTrue(ozBalancePostWithdrawal > 0);
+        assertTrue(ozAmountOut == ozBalancePostWithdrawal);
 
         vm.stopPrank();
     }
