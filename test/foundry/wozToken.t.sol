@@ -143,6 +143,8 @@ contract wozTokenTest is TestMethods {
 
 
     function test_x() public {
+        (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = _getResetVarsAndChangeSlip();
+
         //create ozToken
         (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
 
@@ -151,6 +153,7 @@ contract wozTokenTest is TestMethods {
 
         //mint ozToken
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
         _mintOzTokens(ozERC20, bob, testToken, amountIn); 
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
@@ -165,10 +168,7 @@ contract wozTokenTest is TestMethods {
 
         vm.startPrank(alice);
         ozERC20.approve(address(wozERC20), ozBalanceAlice);
-        // wozERC20.deposit(ozBalanceAlice, alice);
-
-        uint x = wozERC20.wrap(ozBalanceAlice, alice); //********* */
-        // console.log('other woz bal ^^^^^^^: ', x);
+        uint x = wozERC20.wrap(ozBalanceAlice, alice); 
         vm.stopPrank();
 
         uint wozBalanceAlice = wozERC20.balanceOf(alice);
