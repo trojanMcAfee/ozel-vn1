@@ -75,7 +75,7 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         uint wozAmountIn_, 
         address receiver_, 
         address owner_
-    ) external returns(uint ozTokensOut) {
+    ) external returns(uint ozTokensOut) { //put checks that amountIn_ can't be zero
         ozTokensOut = getOzAmount(wozAmountIn_);
         _burn(owner_, wozAmountIn_);
         IERC20Upgradeable(_ozToken).safeTransfer(receiver_, ozTokensOut);
