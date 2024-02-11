@@ -85,11 +85,15 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         console.log('wozAmount_: ', wozAmount_);
         console.log('ozERC20.totalAssets(): ', ozERC20.totalAssets());
         console.log('ozERC20.totalShares(): ', ozERC20.totalShares());
+        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
         console.log('-- in getOzAmount --');
         console.log('');
 
-        return wozAmount_.mulDivDown(ozERC20.totalAssets(), ozERC20.totalShares());
+        return (wozAmount_.mulDivDown(ozERC20.totalSupply(), ozERC20.totalShares())) / 1e12;
     }
+
+    //getOzAmount() and getWozAmount() are the same so the final getOzAmount() is not 
+    //captuing the tokens that got rebased^^^
 
     function unwrap(uint wozAmountIn_, address receiver_, address owner_) external {
         uint ozTokensOut = getOzAmount(wozAmountIn_);
