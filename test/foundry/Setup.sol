@@ -373,7 +373,7 @@ contract Setup is Test {
             length = 3;
         } else if (id_ == 9) {
             length = 6; 
-        } else if (id_ == 8 || id_ == 5) {
+        } else if (id_ == 5) {
             length = 4;
         } else if (id_ == 10) {
             length = 10;
@@ -383,6 +383,8 @@ contract Setup is Test {
             length = 14;
         } else if (id_ == 11) { //remove if not used
             length = 1;
+        } else if (id_ == 8) {
+            length = 5;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -429,14 +431,12 @@ contract Setup is Test {
         } else if (id_ == 7) {
             selectors[0] = beacon.getOzImplementations.selector;
             selectors[1] = beacon.upgradeToBeacons.selector;
-            // selectors[2] = beacon.owner.selector;
-            // selectors[3] = beacon.renounceOwnership.selector;
-            // selectors[4] = beacon.transferOwnership.selector;
         } else if (id_ == 8) {
             selectors[0] = cutOz.changeDefaultSlippage.selector;
             selectors[1] = cutOz.changeUniFee.selector;
             selectors[2] = cutOz.storeOZL.selector;
             selectors[3] = cutOz.changeAdminFeeRecipient.selector;
+            selectors[4] = cutOz.changeProtocolfee.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;

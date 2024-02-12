@@ -135,4 +135,5 @@ interface ozIDiamond {
     ) external view returns(bytes memory);
 
     function upgradeToBeacons(address[] memory newImplementations_) external;
+    function changeProtocolfee(uint24 newFee_) external;
 }
