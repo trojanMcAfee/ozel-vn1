@@ -44,7 +44,6 @@ contract wozToken is ERC20PermitUpgradeable {
         address ozDiamond_
     ) external initializer {
         __ERC20_init(name_, symbol_);
-        // __EIP712_init(name_, "1");
         __ERC20Permit_init(name_);
         _ozDiamond = ozDiamond_;
         _ozERC20 = ozIToken(asset_);

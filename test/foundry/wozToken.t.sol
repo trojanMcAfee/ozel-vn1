@@ -10,6 +10,7 @@ import {IERC4626Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/int
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {HelpersLib} from "./HelpersLib.sol";
 
 import "forge-std/console.sol";
 
@@ -151,6 +152,67 @@ contract wozTokenTest is TestMethods {
         vm.stopPrank();
 
         assertTrue(ozERC20.balanceOf(alice) == 0);
+    }
+
+
+    function test_transfer_permit() public {
+        //Pre-conditions
+        (, wozIToken wozERC20) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        vm.startPrank(alice);
+        IERC20(testToken).approve(address(OZ), amountIn);
+
+        bytes memory data = OZ.getMintData(
+            amountIn, 
+            testToken, 
+            OZ.getDefaultSlippage(), 
+            alice
+        );
+
+        wozERC20.mintAndWrap(data, alice);
+        vm.stopPrank();
+
+        //-------
+
+        uint wozAmountInAlice = wozERC20.balanceOf(alice);
+        assertTrue(wozAmountInAlice > 0);
+
+        bytes32 permitHash = HelpersLib.getPermitHash(
+            address(wozERC20),
+            alice,
+            bob,
+            wozAmountInAlice,
+            wozERC20.nonces(alice),
+            block.timestamp
+        );
+
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
+
+        vm.prank(alice);
+        wozERC20.permit(
+            alice,
+            bob,
+            wozAmountInAlice,
+            block.timestamp,
+            v, r, s
+        );
+
+        uint wozBalanceCharliePreTransfer = wozERC20.balanceOf(charlie);
+        assertTrue(wozBalanceCharliePreTransfer == 0);
+
+        vm.prank(bob);
+        wozERC20.transferFrom(alice, charlie, wozAmountInAlice);
+
+        uint wozBalanceAlicePostTransfer = wozERC20.balanceOf(alice);
+        assertTrue(wozBalanceAlicePostTransfer == 0);
+
+        uint wozBalanceCharliePostTransfer = wozERC20.balanceOf(charlie);
+        assertTrue(wozBalanceCharliePostTransfer == wozAmountInAlice);
+
+
     }
 
 
