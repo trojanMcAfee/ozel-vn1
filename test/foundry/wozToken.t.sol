@@ -175,8 +175,6 @@ contract wozTokenTest is TestMethods {
         wozERC20.mintAndWrap(data, alice);
         vm.stopPrank();
 
-        //-------
-
         uint wozAmountInAlice = wozERC20.balanceOf(alice);
         assertTrue(wozAmountInAlice > 0);
 
@@ -191,6 +189,7 @@ contract wozTokenTest is TestMethods {
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, permitHash);
 
+        //Actions
         vm.prank(alice);
         wozERC20.permit(
             alice,
@@ -206,13 +205,12 @@ contract wozTokenTest is TestMethods {
         vm.prank(bob);
         wozERC20.transferFrom(alice, charlie, wozAmountInAlice);
 
+        //Post-conditions
         uint wozBalanceAlicePostTransfer = wozERC20.balanceOf(alice);
         assertTrue(wozBalanceAlicePostTransfer == 0);
 
         uint wozBalanceCharliePostTransfer = wozERC20.balanceOf(charlie);
         assertTrue(wozBalanceCharliePostTransfer == wozAmountInAlice);
-
-
     }
 
 
