@@ -128,7 +128,7 @@ contract wozTokenTest is TestMethods {
     }
 
     //tests the mintAndWrap() function    
-    function test_mint_and_wrap() public returns(wozIToken) {
+    function test_mint_and_wrap() public {
         //Pre-conditions
         (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
 
@@ -151,8 +151,6 @@ contract wozTokenTest is TestMethods {
         vm.stopPrank();
 
         assertTrue(ozERC20.balanceOf(alice) == 0);
-
-        return wozERC20;
     }
 
 

@@ -19,10 +19,12 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/to
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol";
 import {AmountsIn, AmountsOut} from "./AppStorage.sol";
 
+import {ERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
+
 import "forge-std/console.sol";
 
 
-contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
+contract wozToken is ERC20PermitUpgradeable {
 
     using FixedPointMathLib for uint;
     using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -42,7 +44,8 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         address ozDiamond_
     ) external initializer {
         __ERC20_init(name_, symbol_);
-        __EIP712_init(name_, "1");
+        // __EIP712_init(name_, "1");
+        __ERC20Permit_init(name_);
         _ozDiamond = ozDiamond_;
         _ozERC20 = ozIToken(asset_);
     }
@@ -105,18 +108,16 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
 
     //--------------
 
-    function DOMAIN_SEPARATOR() external view returns (bytes32) {}
-    function nonces(address owner) external view returns (uint256) {}
-    function permit(
-        address owner,
-        address spender,
-        uint256 value,
-        uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external {}
-
-    //put a function that receives stable and mints wozToken in one go
+    // function DOMAIN_SEPARATOR() external view returns (bytes32) {}
+    // function nonces(address owner) external view returns (uint256) {}
+    // function permit(
+    //     address owner,
+    //     address spender,
+    //     uint256 value,
+    //     uint256 deadline,
+    //     uint8 v,
+    //     bytes32 r,
+    //     bytes32 s
+    // ) external {}
 
 }
