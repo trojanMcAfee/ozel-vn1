@@ -33,11 +33,6 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         _disableInitializers();
     }
 
-    function getHello() public view {
-        console.log(23);
-        // console.log('ozDiamond: ', OZ());
-    }
-
 
     function initialize(
         string memory name_, 
