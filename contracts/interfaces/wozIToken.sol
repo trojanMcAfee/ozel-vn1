@@ -11,10 +11,12 @@ interface wozIToken is IERC20Upgradeable {
     function getOzAmount(uint wozAmount_) external view returns(uint);
     function OZ() external view returns(ozIDiamond);
 
-    function wrap(uint amountIn_, address receiver_) external returns(uint);
+    function wrap(uint amountIn_, address owner_, address receiver_) external returns(uint);
     function unwrap(uint wozAmountIn_, address receiver_, address owner_) external returns(uint);
 
     function asset() external view returns(address);
+
+    function mintAndWrap(bytes memory data_, address owner_) external returns(uint);
 }
 
 

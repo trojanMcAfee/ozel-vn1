@@ -156,6 +156,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address spender,
         uint256 amount
     ) private {
+
+        console.log('owner: ', owner);
+        console.log('spender: ', spender);
+
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != type(uint256).max) {
             if (currentAllowance < amount) revert OZError05(amount);
@@ -195,7 +199,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return convertToAssets(sharesOf(account_));
     }
 
-
+    //test if owner_ being passed to updateReward() affects the owner_ getting the rewards
+    //(since the tokens would be going to receiver_ instead of owner_)
+    //test using OZLrewards.sol. Perhaps receiver_ needs to be eliminated. If that happens, 
+    //remove receiver_ from wozToken.sol - mintAndWrap()
+    //receiver_ is also used in ozLoupe
     function mint(
         bytes memory data_, 
         address owner_

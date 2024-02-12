@@ -17,6 +17,7 @@ import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol";
+import {AmountsIn} from "./AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -74,26 +75,38 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         IERC20Upgradeable(address(_ozERC20)).safeTransfer(receiver_, ozTokensOut);
     }
 
-    function wrap(uint ozAmountIn_, address receiver_) public returns(uint wozAmountOut) {
+    function wrap(
+        uint ozAmountIn_, 
+        address owner_, 
+        address receiver_
+    ) public returns(uint wozAmountOut) {
         wozAmountOut = getWozAmount(ozAmountIn_);
-        IERC20Upgradeable(address(_ozERC20)).safeTransferFrom(msg.sender, address(this), ozAmountIn_);
+        if (owner_ != address(this)) {
+            IERC20Upgradeable(address(_ozERC20)).safeTransferFrom(owner_, address(this), ozAmountIn_);
+        }
         _mint(receiver_, wozAmountOut);
     }
 
     
-    function mintAndWrap(bytes memory data_, address owner_) external returns(uint) {
-        bytes memory data = _changeReceiver(data_);
+    function mintAndWrap(bytes memory data_, address owner_) external returns(uint wozAmountOut) {
+        (bytes memory data, address originalReceiver) = _changeReceiver(data_);
         uint shares = _ozERC20.mint(data, owner_);
         uint ozAmountIn = _ozERC20.convertToAssets(shares);
-        return wrap(ozAmountIn, owner_);
+        wozAmountOut = wrap(ozAmountIn, address(this), originalReceiver);
     }
 
-    function _changeReceiver(bytes memory data_) private pure returns(bytes memory) {
+
+    function _changeReceiver(bytes memory data_) private view returns(bytes memory, address) {
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
 
-        return abi.encode(amts, address(this));
+        return (abi.encode(amts, address(this)), receiver);
     }
+
+    // function approve(address spender_, uint amount_) public override returns(bool) {
+    //     address spender = spender_ == address(this) ? address(OZ()) : spender_;
+    //     return super.approve(spender, amount_);
+    // }
 
 
     //--------------

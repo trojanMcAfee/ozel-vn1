@@ -9,6 +9,7 @@ import {NewToken} from "../../contracts/AppStorage.sol";
 import {IERC4626Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -41,7 +42,7 @@ contract wozTokenTest is TestMethods {
         vm.startPrank(alice);
 
         ozERC20.approve(address(wozERC20), ozBalancePre);
-        uint wozAmountOut = wozERC20.wrap(ozBalancePre, alice);
+        uint wozAmountOut = wozERC20.wrap(ozBalancePre, alice, alice);
 
         uint wozBalancePost = wozERC20.balanceOf(alice);
         assertTrue(wozBalancePost > 0);
@@ -71,7 +72,7 @@ contract wozTokenTest is TestMethods {
         //create ozToken
         (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
 
         //mint ozTokens
@@ -86,7 +87,7 @@ contract wozTokenTest is TestMethods {
         //Mint wozERC20 from ozERC20
         vm.startPrank(alice);
         ozERC20.approve(address(wozERC20), ozBalanceAlice);
-        wozERC20.wrap(ozBalanceAlice, alice); 
+        wozERC20.wrap(ozBalanceAlice, alice, alice); 
         vm.stopPrank();
 
         uint wozBalanceAlice = wozERC20.balanceOf(alice);
@@ -127,6 +128,27 @@ contract wozTokenTest is TestMethods {
     }
 
     
+    function test_mint_and_wrap() public {
+        //Pre-conditions
+        (, wozIToken wozERC20) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        vm.startPrank(alice);
+        IERC20(testToken).approve(address(OZ), amountIn);
+
+        bytes memory data = OZ.getMintData(
+            amountIn, 
+            testToken, 
+            OZ.getDefaultSlippage(), 
+            alice
+        );
+
+        uint wozAmountOut = wozERC20.mintAndWrap(data, alice);
+        console.log('wozAmountOut: ', wozAmountOut);
+        vm.stopPrank();
+    }
 
 
 }

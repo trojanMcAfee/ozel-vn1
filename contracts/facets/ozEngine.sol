@@ -31,9 +31,10 @@ import "../Errors.sol";
 import {Modifiers} from "../Modifiers.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import "forge-std/console.sol";
 
-error MyErr2(string reason);
 
 contract ozEngine is Modifiers { //change name to ozEngine
 
@@ -75,7 +76,11 @@ contract ozEngine is Modifiers { //change name to ozEngine
          */
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
 
+        console.log('sender: ', msg.sender);
+        console.log('allo in engine: ', IERC20(underlying_).allowance(owner_, msg.sender));
+        console.log('bal erc in test: ', IERC20(underlying_).balanceOf(owner_));
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
+        console.log(2);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
