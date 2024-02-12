@@ -38,7 +38,7 @@ contract OZLrewardsTest is TestMethods {
 
     //tests that the distribution of rewards is properly working with the rewardRate assigned,
     //and that it's been added to the circulating supply.
-    //tests the exchange rate also
+    //tests the exchange rate also (possible bug here)
     function test_distribute_OZL() public {
         //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");

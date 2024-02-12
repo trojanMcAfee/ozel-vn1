@@ -127,10 +127,10 @@ contract wozTokenTest is TestMethods {
         assertTrue(ozBalanceWozPostUnwrap == 0);
     }
 
-    
-    function test_mint_and_wrap() public {
+    //tests the mintAndWrap() function    
+    function test_mint_and_wrap() public returns(wozIToken) {
         //Pre-conditions
-        (, wozIToken wozERC20) = _createOzTokens(testToken, "1");
+        (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -145,9 +145,14 @@ contract wozTokenTest is TestMethods {
             alice
         );
 
+        //Action
         uint wozAmountOut = wozERC20.mintAndWrap(data, alice);
-        console.log('wozAmountOut: ', wozAmountOut);
+        assertTrue(wozAmountOut == wozERC20.balanceOf(alice));
         vm.stopPrank();
+
+        assertTrue(ozERC20.balanceOf(alice) == 0);
+
+        return wozERC20;
     }
 
 

@@ -75,12 +75,8 @@ contract ozEngine is Modifiers { //change name to ozEngine
          * minAmountsOut[1] - minRethOut
          */
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
-
-        console.log('sender: ', msg.sender);
-        console.log('allo in engine: ', IERC20(underlying_).allowance(owner_, msg.sender));
-        console.log('bal erc in test: ', IERC20(underlying_).balanceOf(owner_));
+        
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
-        console.log(2);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(

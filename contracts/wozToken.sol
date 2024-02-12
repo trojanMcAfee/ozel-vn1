@@ -87,13 +87,15 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         _mint(receiver_, wozAmountOut);
     }
 
-    
+    //Have to approve for ozDiamond instead of wozERC20
     function mintAndWrap(bytes memory data_, address owner_) external returns(uint wozAmountOut) {
         (bytes memory data, address originalReceiver) = _changeReceiver(data_);
         uint shares = _ozERC20.mint(data, owner_);
         uint ozAmountIn = _ozERC20.convertToAssets(shares);
         wozAmountOut = wrap(ozAmountIn, address(this), originalReceiver);
     }
+
+    // function unwrapAndRedeem()
 
 
     function _changeReceiver(bytes memory data_) private view returns(bytes memory, address) {
@@ -102,11 +104,6 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
 
         return (abi.encode(amts, address(this)), receiver);
     }
-
-    // function approve(address spender_, uint amount_) public override returns(bool) {
-    //     address spender = spender_ == address(this) ? address(OZ()) : spender_;
-    //     return super.approve(spender, amount_);
-    // }
 
 
     //--------------
