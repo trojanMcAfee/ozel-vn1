@@ -17,7 +17,7 @@ import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol";
-import {AmountsIn} from "./AppStorage.sol";
+import {AmountsIn, AmountsOut} from "./AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -95,12 +95,9 @@ contract wozToken is ERC20Upgradeable, EIP712Upgradeable {
         wozAmountOut = wrap(ozAmountIn, address(this), originalReceiver);
     }
 
-    // function unwrapAndRedeem()
-
 
     function _changeReceiver(bytes memory data_) private view returns(bytes memory, address) {
-        (AmountsIn memory amts, address receiver) = 
-            abi.decode(data_, (AmountsIn, address));
+        (AmountsIn memory amts, address receiver) = abi.decode(data_, (AmountsIn, address));
 
         return (abi.encode(amts, address(this)), receiver);
     }

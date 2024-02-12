@@ -156,10 +156,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address spender,
         uint256 amount
     ) private {
-
-        console.log('owner: ', owner);
-        console.log('spender: ', spender);
-
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != type(uint256).max) {
             if (currentAllowance < amount) revert OZError05(amount);
