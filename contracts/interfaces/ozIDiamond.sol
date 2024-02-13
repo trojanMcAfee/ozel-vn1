@@ -130,4 +130,6 @@ interface ozIDiamond {
     function changeProtocolFee(uint24 newFee_) external;
     function getAdminFee() external view returns(uint);
     function changeAdminFee(uint16 newFee_) external;
+
+    function pause(uint index_, bool newState_) external returns(bool);
 }

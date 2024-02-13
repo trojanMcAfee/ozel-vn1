@@ -6,6 +6,7 @@ import {IOZLrewards} from "./interfaces/IOZLrewards.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {AppStorage, OzTokens} from "./AppStorage.sol";
 import {Helpers} from "./libraries/Helpers.sol";
+import {BitMaps} from "@openzeppelin/contracts/utils/structs/BitMaps.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
@@ -13,6 +14,7 @@ import "forge-std/console.sol";
 contract Modifiers is IOZLrewards {
 
     using Helpers for address[];
+    using BitMaps for BitMaps.BitMap;
 
     AppStorage internal s;
     
@@ -56,6 +58,18 @@ contract Modifiers is IOZLrewards {
         }
     }
 
+    modifier isPaused() {
+        if (s.pauseMap.get(0)) {
+            for (uint i=0; i < s.pauseIndexes - 1; i++) {
+                if (s.pauseMap.get(i + 1)) {
+                    revert OZError27(i + 1);
+                }
+            }
+        }
+        _;
+    }
+
 }
+
 
 

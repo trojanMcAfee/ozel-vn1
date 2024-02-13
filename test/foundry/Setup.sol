@@ -107,7 +107,6 @@ contract Setup is Test {
     ozBeacon internal beacon;
     ozToken internal tokenOz;
     OZLrewards internal rewardsContract;
-    // wozBeacon internal wrappedBeacon;
     wozToken internal tokenOzWrapped;
 
     //Ozel custom facets
@@ -131,6 +130,15 @@ contract Setup is Test {
     uint24 uniPoolFee = 500; //0.05 - 500 -- change this to uniFee05
     uint24 uniFee01 = 100;
     uint24 protocolFee = 1_500; //15%
+
+    /**
+     * How many facets can be paused + the flag index
+     * 0 - flag
+     * 1 - entire system
+     * 2 - all ozTokens (wozTokens also ?)
+     * 3 - create new tokens (factory)
+     */
+    uint16 pauseIndexes = 4;
 
     uint internal constant _BASE = 18;
 
@@ -333,7 +341,8 @@ contract Setup is Test {
             protocolFee: protocolFee,
             uniFactory: uniFactory,
             ozImplementations: ozImplementations,
-            adminFee: adminFee
+            adminFee: adminFee,
+            pauseIndexes: pauseIndexes
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -371,13 +380,13 @@ contract Setup is Test {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 9 || id_ == 8) {
+        } else if (id_ == 9) {
             length = 6; 
         } else if (id_ == 5) {
             length = 4;
         } else if (id_ == 10) {
             length = 10;
-        } else if (id_ == 6) {
+        } else if (id_ == 6 || id_ == 8) {
             length = 7;
         } else if (id_ == 0) {
             length = 15;
@@ -437,6 +446,7 @@ contract Setup is Test {
             selectors[3] = cutOz.changeAdminFeeRecipient.selector;
             selectors[4] = cutOz.changeProtocolFee.selector;
             selectors[5] = cutOz.changeAdminFee.selector;
+            selectors[6] = cutOz.pause.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;

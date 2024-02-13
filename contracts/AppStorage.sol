@@ -3,12 +3,14 @@ pragma solidity 0.8.21;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {BitMaps} from "@openzeppelin/contracts/utils/structs/BitMaps.sol";
 
 
 /**
  * @notice Main storage structs
  */
 struct AppStorage { 
+
 
     address rEthWethPoolBalancer; //don't change this from 1st pos
     OzTokens[] ozTokenRegistry;
@@ -60,6 +62,10 @@ struct AppStorage {
     address weETHUSDredStone;
 
     address[] ozImplementations;
+
+    BitMaps.BitMap pauseMap; 
+    uint16 pauseIndexes;
+
 }
 
 enum Action {
@@ -122,6 +128,7 @@ struct Infra {
     address uniFactory;
     address[] ozImplementations;
     uint16 adminFee;
+    uint16 pauseIndexes;
 }
 
 //-----
@@ -153,6 +160,10 @@ struct NewToken {
 struct OzTokens {
     address ozToken;
     address wozToken;
+}
+
+struct BitMap {
+    mapping(uint256 => uint256) _data;
 }
 
 // 1st round - 

@@ -70,6 +70,7 @@ contract DiamondInit {
         s.protocolFee = infra_.protocolFee;
         s.uniFactory = infra_.uniFactory;
         s.adminFee = infra_.adminFee;
+        s.pauseIndexes = infra_.pauseIndexes;
         s.adminFeeRecipient = ds.contractOwner;
 
         //ERC20s

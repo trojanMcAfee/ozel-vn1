@@ -60,3 +60,8 @@ error OZError26(address newBeacon); //_setBeacon / ozERC1967Upgrade.sol - new be
 
 //Oracle errors
 error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_
+
+//Pause errors
+error OZError27(uint index); //isPaused / Modifiers.sol - the index of the facet that's paused
+error OZError28(bool state); //pause / ozCut.sol - contract is already in state
+error OZError29(); //pause / ozCut.sol - can't set the pause flag directly
