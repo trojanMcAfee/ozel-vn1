@@ -132,4 +132,5 @@ interface ozIDiamond {
     function changeAdminFee(uint16 newFee_) external;
 
     function pause(uint index_, bool newState_) external returns(bool);
+    function facetAddress(bytes4 _functionSelector) external view returns (address facetAddress_);
 }

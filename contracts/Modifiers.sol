@@ -69,6 +69,10 @@ contract Modifiers is IOZLrewards {
         _;
     }
 
+    // function _isPaused() internal {
+
+    // }
+
 }
 
 
