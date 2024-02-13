@@ -70,15 +70,12 @@ contract Modifiers is IOZLrewards {
     // }
 
     function _isPaused(address facet_) internal {
-        if (s.pauseMap.get(0)) {
-            uint index = s.facetToIndex[facet_];
-
-            if (s.pauseMap.get(index)) 
-
-            for (uint i=0; i < s.pauseIndexes - 1; i++) {
-                if (s.pauseMap.get(i + 1)) {
-                    revert OZError27(i + 1);
-                }
+        if (s.pauseMap.get(1)) {
+            if (s.pauseMap.get(2)) {
+                revert OZError27(2);
+            } else {
+                uint index = s.facetToIndex[facet_];
+                if (s.pauseMap.get(index)) revert OZError27(index);
             }
         }
     }

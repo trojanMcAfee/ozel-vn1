@@ -50,13 +50,14 @@ contract ozCut is Modifiers, DiamondCutFacet {
     function pause(uint index_, bool newState_) external returns(bool) {
         LibDiamond.enforceIsContractOwner();
         if (s.pauseMap.get(index_) == newState_) revert OZError28(newState_);
-        if (index_ == 0) revert OZError29();
+        if (index_ == 1) revert OZError29();
         
         s.pauseMap.setTo(index_, newState_);
 
+        //Refactor this (if possible)
         for (uint i=1; i < s.pauseIndexes; i++) {
             if (s.pauseMap.get(i)) {
-                s.pauseMap.setTo(0, true);
+                s.pauseMap.setTo(1, true);
                 return true;
             }
         }

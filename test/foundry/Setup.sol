@@ -134,10 +134,11 @@ contract Setup is Test {
 
     /**
      * How many facets can be paused + the flag index
-     * 0 - flag
-     * 1 - entire system
-     * 2 - all ozTokens (wozTokens also ?)
-     * 3 - create new tokens (factory)
+     * 0 - default value for non-pause facets
+     * 1 - flag
+     * 2 - entire system
+     * 3 - all ozTokens (wozTokens also ?)
+     * 4 - create new tokens (factory)
      */
     uint16 pauseIndexes = 5;
 
@@ -341,7 +342,7 @@ contract Setup is Test {
 
         PauseFacets memory pause = PauseFacets({
             ozDiamond: address(ozDiamond),
-            ozBeacon: address(ozBeacon),
+            ozBeacon: address(beacon),
             factory: address(factory)
         });
 

@@ -19,7 +19,8 @@ import {
     Tokens,
     Dexes,
     Oracles,
-    Infra
+    Infra,
+    PauseFacets
 } from "../AppStorage.sol";
 
 import {IRocketStorage} from "../interfaces/IRocketPool.sol";
@@ -99,9 +100,9 @@ contract DiamondInit {
 
         //Pause system variables
         s.pauseIndexes = infra_.pauseIndexes;
-        s.facetToIndex[pause_.ozDiamond] = 1;
-        s.facetToIndex[pause_.ozBeacon] = 2;
-        s.facetToIndex[pause_.factory] = 3;
+        s.facetToIndex[pause_.ozDiamond] = 2;
+        s.facetToIndex[pause_.ozBeacon] = 3;
+        s.facetToIndex[pause_.factory] = 4;
         
     }
 
