@@ -14,7 +14,7 @@ struct AppStorage {
 
     address rEthWethPoolBalancer; //don't change this from 1st pos
     OzTokens[] ozTokenRegistry;
-    address ozDiamond;
+    address ozDiamond; //check if this is used
     address WETH; 
     address USDC;
     address USDT;
@@ -65,7 +65,22 @@ struct AppStorage {
 
     BitMaps.BitMap pauseMap; 
     uint16 pauseIndexes;
+    mapping(address facet => uint index) facetToIndex;
 
+    // PauseInfra pausePackage;
+
+}
+
+// struct PauseInfra {
+//     BitMaps.BitMap pauseMap;
+//     uint16 pauseIndexes;
+//     mapping(address facet => uint index) facetToIndex;
+// }
+
+struct PauseFacets {
+    address ozDiamond;
+    address ozBeacon;
+    address factory;
 }
 
 enum Action {

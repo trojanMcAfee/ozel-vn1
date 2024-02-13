@@ -40,7 +40,8 @@ contract DiamondInit {
         Tokens memory tokens_,
         Dexes memory dexes_,
         Oracles memory oracles_,
-        Infra memory infra_
+        Infra memory infra_,
+        PauseFacets memory pause_
     ) external {
         // adding ERC165 data **** COMPLETE this with rest of funcs/interfaces
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
@@ -70,7 +71,6 @@ contract DiamondInit {
         s.protocolFee = infra_.protocolFee;
         s.uniFactory = infra_.uniFactory;
         s.adminFee = infra_.adminFee;
-        s.pauseIndexes = infra_.pauseIndexes;
         s.adminFeeRecipient = ds.contractOwner;
 
         //ERC20s
@@ -91,12 +91,17 @@ contract DiamondInit {
         );
         s.rocketDAOProtocolSettingsDepositID = keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"));
         
-        // s.ozImplementations = infra_.ozImplementations;
-        
+        //Sets up ozBeacon implementations
         uint length = infra_.ozImplementations.length;
         for (uint i=0; i<length; i++) {
             s.ozImplementations.push(infra_.ozImplementations[i]);
         }
+
+        //Pause system variables
+        s.pauseIndexes = infra_.pauseIndexes;
+        s.facetToIndex[pause_.ozDiamond] = 1;
+        s.facetToIndex[pause_.ozBeacon] = 2;
+        s.facetToIndex[pause_.factory] = 3;
         
     }
 

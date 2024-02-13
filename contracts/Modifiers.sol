@@ -58,20 +58,30 @@ contract Modifiers is IOZLrewards {
         }
     }
 
-    modifier isPaused() {
+    // modifier isPaused() {
+    //     if (s.pauseMap.get(0)) {
+    //         for (uint i=0; i < s.pauseIndexes - 1; i++) {
+    //             if (s.pauseMap.get(i + 1)) {
+    //                 revert OZError27(i + 1);
+    //             }
+    //         }
+    //     }
+    //     _;
+    // }
+
+    function _isPaused(address facet_) internal {
         if (s.pauseMap.get(0)) {
+            uint index = s.facetToIndex[facet_];
+
+            if (s.pauseMap.get(index)) 
+
             for (uint i=0; i < s.pauseIndexes - 1; i++) {
                 if (s.pauseMap.get(i + 1)) {
                     revert OZError27(i + 1);
                 }
             }
         }
-        _;
     }
-
-    // function _isPaused() internal {
-
-    // }
 
 }
 

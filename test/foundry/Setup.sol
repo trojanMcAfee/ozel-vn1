@@ -26,7 +26,8 @@ import {
     Tokens,
     Dexes,
     Oracles,
-    Infra
+    Infra,
+    PauseFacets
 } from "../../contracts/AppStorage.sol";
 import {ReqOut, ReqIn} from "./AppStorageTests.sol";
 import {ozCut} from "../../contracts/facets/ozCut.sol";
@@ -138,7 +139,7 @@ contract Setup is Test {
      * 2 - all ozTokens (wozTokens also ?)
      * 3 - create new tokens (factory)
      */
-    uint16 pauseIndexes = 4;
+    uint16 pauseIndexes = 5;
 
     uint internal constant _BASE = 18;
 
@@ -281,15 +282,9 @@ contract Setup is Test {
         ozImplementations[0] = address(tokenOz);
         ozImplementations[1] = address(tokenOzWrapped);
 
-        // beacon = new ozBeacon(address(tokenOz));
         beacon = new ozBeacon();
-
-        // OZ.upgradeToBeacons(implementations);
-
-
         cutOz = new ozCut();
         rewardsContract = new OZLrewards();
-        // wrappedBeacon = new wozBeacon(address(tokenOzWrapped));
 
         //Deploys OZL token contracts
         _initOZLtokenPt1();
@@ -307,7 +302,6 @@ contract Setup is Test {
         cuts[8] = _createCut(address(cutOz), 8);
         cuts[9] = _createCut(address(ozlAdmin), 9);
         cuts[10] = _createCut(address(rewardsContract), 10);
-        // cuts[11] = _createCut(address(tokenOzWrapped), 11);
 
         //Create init vars
         Tokens memory tokens = Tokens({
@@ -345,12 +339,19 @@ contract Setup is Test {
             pauseIndexes: pauseIndexes
         });
 
+        PauseFacets memory pause = PauseFacets({
+            ozDiamond: address(ozDiamond),
+            ozBeacon: address(ozBeacon),
+            factory: address(factory)
+        });
+
         bytes memory initData = abi.encodeWithSelector(
             initDiamond.init.selector, 
             tokens,
             dexes,
             oracles,
-            infra
+            infra,
+            pause
         );
       
         OZ = ozIDiamond(address(ozDiamond));
