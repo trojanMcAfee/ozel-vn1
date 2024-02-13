@@ -36,7 +36,6 @@ import {OZL} from "../../contracts/OZL.sol";
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {OZLadmin} from "../../contracts/facets/OZLadmin.sol";
 import {OZLrewards} from "../../contracts/OZLrewards.sol";
-import {wozBeacon} from "../../contracts/facets/wozBeacon.sol";
 
 // import "forge-std/console.sol";
 

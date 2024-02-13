@@ -31,7 +31,6 @@ struct AppStorage {
     uint rewardMultiplier; //remove if not used
 
     address ozBeacon;
-    address wozBeacon;
 
     address rocketPoolStorage;
     bytes32 rocketDepositPoolID;
