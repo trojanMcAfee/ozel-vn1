@@ -15,11 +15,6 @@ import "../Errors.sol";
 import "forge-std/console.sol";
 
 
-//Put here, inside createOzToken, the creation of the wozToken also. 
-//I added already all to Setup.sol
-//What's left is to create the wozToken contract and call the getHello function
-//on the implementation to see if it works (use as guide ozToken.sol)
-
 
 contract ozTokenFactory {
 

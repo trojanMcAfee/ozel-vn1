@@ -39,7 +39,6 @@ contract Modifiers is IOZLrewards {
     }
 
     modifier onlyOzToken { 
-        
         uint length = s.ozTokenRegistry.length;
         bool flag;
 
@@ -55,9 +54,6 @@ contract Modifiers is IOZLrewards {
         } else {
             revert OZError13(msg.sender);
         }
-
-        // if (!s.ozTokenRegistryMap[msg.sender]) revert OZError13(msg.sender);
-        // _;
     }
 
 }

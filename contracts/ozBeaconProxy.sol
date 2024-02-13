@@ -5,7 +5,6 @@ pragma solidity ^0.8.0;
 
 
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
-// import {ERC1967Upgrade} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol";
 import {ozIBeacon} from "./interfaces/ozIBeacon.sol";
 import {ozERC1967Upgrade} from "./ozERC1967Upgrade.sol";
 
