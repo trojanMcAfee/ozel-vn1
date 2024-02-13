@@ -128,6 +128,7 @@ contract Setup is Test {
     OZLadmin internal ozlAdmin;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
+    uint16 adminFee = 50;
     uint24 uniPoolFee = 500; //0.05 - 500 -- change this to uniFee05
     uint24 uniFee01 = 100;
     uint24 protocolFee = 1_500; //15%
@@ -332,8 +333,8 @@ contract Setup is Test {
             uniFee01: uniFee01,
             protocolFee: protocolFee,
             uniFactory: uniFactory,
-            ozImplementations: ozImplementations
-            // wozBeacon: address(wrappedBeacon)
+            ozImplementations: ozImplementations,
+            adminFee: adminFee
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -371,7 +372,7 @@ contract Setup is Test {
             length = 1;
         } else if (id_ == 3) {
             length = 3;
-        } else if (id_ == 9) {
+        } else if (id_ == 9 || id_ == 8) {
             length = 6; 
         } else if (id_ == 5) {
             length = 4;
@@ -380,12 +381,10 @@ contract Setup is Test {
         } else if (id_ == 6) {
             length = 7;
         } else if (id_ == 0) {
-            length = 14;
+            length = 15;
         } else if (id_ == 11) { //remove if not used
             length = 1;
-        } else if (id_ == 8) {
-            length = 5;
-        }
+        } 
 
         bytes4[] memory selectors = new bytes4[](length);
 
@@ -404,6 +403,7 @@ contract Setup is Test {
             selectors[11] = loupe.getMintData.selector;
             selectors[12] = loupe.quoteAmountsOut.selector;
             selectors[13] = loupe.getRedeemData.selector;
+            selectors[14] = loupe.getAdminFee.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -437,6 +437,7 @@ contract Setup is Test {
             selectors[2] = cutOz.storeOZL.selector;
             selectors[3] = cutOz.changeAdminFeeRecipient.selector;
             selectors[4] = cutOz.changeProtocolFee.selector;
+            selectors[5] = cutOz.changeAdminFee.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;
@@ -455,9 +456,7 @@ contract Setup is Test {
             selectors[7] = rewardsContract.startNewReciclingCampaign.selector;
             selectors[8] = rewardsContract.setRewardsDataExternally.selector;
             selectors[9] = rewardsContract.getRewardsData.selector;
-        } else if (id_ == 11) {
-            // selectors[0] = wozToken(address(wrappedBeacon)).getHello.selector;
-        }
+        } 
 
         cut = IDiamondCut.FacetCut({
             facetAddress: contractAddr_,

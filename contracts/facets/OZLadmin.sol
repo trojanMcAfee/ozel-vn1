@@ -10,7 +10,7 @@ import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transp
 
 import "forge-std/console.sol";
 
-
+//contract that acts as admin of the OZL token
 contract OZLadmin is ProxyAdmin {
 
     AppStorage private s;

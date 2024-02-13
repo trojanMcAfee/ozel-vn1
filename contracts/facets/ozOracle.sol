@@ -174,7 +174,7 @@ contract ozOracle {
         }
     }
 
-
+    
     function getUnderlyingValue(address ozToken_) external view returns(uint) {
         uint amountReth = ozToken_ == address(this) ?
             IERC20Permit(s.rETH).balanceOf(address(this)) :
@@ -273,7 +273,7 @@ contract ozOracle {
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {
-        uint adminFee = uint(50).mulDivDown(grossFees_, 10_000); //put here adminFeeBps - 50
+        uint adminFee = uint(s.adminFee).mulDivDown(grossFees_, 10_000); 
         IERC20Permit(s.rETH).transfer(s.adminFeeRecipient, adminFee);
 
         return grossFees_ - adminFee;

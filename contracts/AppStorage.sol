@@ -49,7 +49,7 @@ struct AppStorage {
     OZLrewards r; //change this to RewardsPackage or not. Check if I'm returning the struct with the mapping (can't be done)
 
     address adminFeeRecipient; 
-    // uint16 adminFeeBps; <--- change the hardcoded admin fee for this var and the way for changing it
+    uint16 adminFee; 
 
     address[] LSDs;
 
@@ -122,6 +122,7 @@ struct Infra {
     uint24 protocolFee;
     address uniFactory;
     address[] ozImplementations;
+    uint16 adminFee;
 }
 
 //-----

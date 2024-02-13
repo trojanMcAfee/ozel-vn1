@@ -22,5 +22,19 @@ contract ozCutTest is TestMethods {
         assertTrue(newFee == OZ.getProtocolFee());
     }
 
+    function test_change_admin_fee() public {
+        //Pre-conditions
+        uint oldFee = OZ.getAdminFee();
+        uint16 newFee = 10;
+
+        //Action
+        vm.prank(owner);
+        OZ.changeAdminFee(newFee);
+
+        //Post-conditions
+        assertTrue(oldFee != newFee);
+        assertTrue(newFee == OZ.getAdminFee());
+    }
+
 
 }

@@ -27,6 +27,7 @@ contract ozLoupe is DiamondLoupeFacet {
     }
 
 
+    //Put this function together with getUnderlyingValue() from ozOracle.sol
     function totalUnderlying(Asset type_) public view returns(uint total) {
         total = IERC20Permit(s.rETH).balanceOf(address(this));
         if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
@@ -91,7 +92,6 @@ contract ozLoupe is DiamondLoupeFacet {
         return AmountsOut(ozAmountIn_, amountInReth, minAmountsOut);
     }
 
-
     function getRedeemData(
         uint ozAmountIn_,
         address ozToken_,
@@ -104,7 +104,6 @@ contract ozLoupe is DiamondLoupeFacet {
         );
     } 
    
-
     function getMintData(
         uint amountIn_,
         address underlying_,
@@ -115,6 +114,10 @@ contract ozLoupe is DiamondLoupeFacet {
             quoteAmountsIn(amountIn_, underlying_, slippage_), 
             receiver_
         );
+    }
+
+    function getAdminFee() external view returns(uint) {
+        return uint(s.adminFee);
     }
    
 
