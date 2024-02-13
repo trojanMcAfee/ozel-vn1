@@ -436,7 +436,7 @@ contract Setup is Test {
             selectors[1] = cutOz.changeUniFee.selector;
             selectors[2] = cutOz.storeOZL.selector;
             selectors[3] = cutOz.changeAdminFeeRecipient.selector;
-            selectors[4] = cutOz.changeProtocolfee.selector;
+            selectors[4] = cutOz.changeProtocolFee.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;

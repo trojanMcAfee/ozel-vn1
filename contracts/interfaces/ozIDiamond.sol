@@ -18,12 +18,6 @@ interface ozIDiamond {
     function diamondCut(IDiamondCut.FacetCut[] memory _diamondCut, address _init, bytes memory _calldata) external;
     function owner() external view returns(address);
 
-    // function createOzToken(
-    //     address erc20_,
-    //     string memory name_,
-    //     string memory symbol_
-    // ) external returns(address);
-
     function createOzToken(
         address erc20_,
         NewToken memory ozToken_,
@@ -66,11 +60,9 @@ interface ozIDiamond {
     function rewardPerToken() external view returns(uint);
     function earned(address user_) external view returns(uint);
     function claimReward() external returns(uint);
-    // function getRewardRate() external view returns(uint);
 
     function storeOZL(address ozlProxy_) external;
     function changeAdminFeeRecipient(address newRecipient_) external;
-    // function getCirculatingSupply() external view returns(uint);
 
     function ozTokens(address underlying_) external view returns(address);
 
@@ -135,5 +127,5 @@ interface ozIDiamond {
     ) external view returns(bytes memory);
 
     function upgradeToBeacons(address[] memory newImplementations_) external;
-    function changeProtocolfee(uint24 newFee_) external;
+    function changeProtocolFee(uint24 newFee_) external;
 }

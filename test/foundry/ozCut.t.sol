@@ -7,11 +7,19 @@ import {TestMethods} from "./TestMethods.sol";
 
 contract ozCutTest is TestMethods {
 
-    function test_change_protocol() public {
-        OZ.
+    //Tests that the protocol fee can be modified successfully
+    function test_change_protocol_fee() public {
+        //Pre-conditions
+        uint oldFee = OZ.getProtocolFee();
+        uint24 newFee = 2;
 
-        //testhing this one
-        //check if getProtocolFee() in ozLoupe is needed
+        //Action
+        vm.prank(owner);
+        OZ.changeProtocolFee(newFee);
+
+        //Post-conditions
+        assertTrue(oldFee != newFee);
+        assertTrue(newFee == OZ.getProtocolFee());
     }
 
 
