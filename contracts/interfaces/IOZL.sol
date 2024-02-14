@@ -69,13 +69,13 @@ interface IOZL {
     function getExchangeRate() external view returns(uint);
     function circulatingSupply() external view returns(uint);
 
-    function redeem(
-        address owner_,
-        address receiver_,
-        address tokenOut_,
-        uint ozlAmountIn_,
-        uint minAmountOut_
-    ) external returns(uint amountOut); //delete this one later
+    // function redeem(
+    //     address owner_,
+    //     address receiver_,
+    //     address tokenOut_,
+    //     uint ozlAmountIn_,
+    //     uint minAmountOut_
+    // ) external returns(uint amountOut); //delete this one later
 
     function redeem(
         address owner_,

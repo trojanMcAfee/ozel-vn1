@@ -76,6 +76,7 @@ contract ozCut is Modifiers, DiamondCutFacet {
     }
 
     //Adds a facet to the group of facets that can be paused
+    //change this to addPauseContract()
     function addPauseFacet(address facet_) external {
         LibDiamond.enforceIsContractOwner();
         if (facet_ == address(0)) revert OZError32();

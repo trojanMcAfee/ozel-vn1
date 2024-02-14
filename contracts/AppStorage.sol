@@ -83,6 +83,7 @@ struct PauseFacets {
     address ozDiamond;
     address ozBeacon;
     address factory;
+    address ozlProxy;
 }
 
 enum Action {

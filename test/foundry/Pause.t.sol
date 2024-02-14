@@ -6,6 +6,7 @@ import {TestMethods} from "./TestMethods.sol";
 import "../../contracts/Errors.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {wozIToken} from "../../contracts/interfaces/wozIToken.sol";
+import {IOZL} from "../../contracts/interfaces/IOZL.sol";
 
 
 import "forge-std/console.sol";
@@ -148,6 +149,25 @@ contract PauseTest is TestMethods {
     }
 
 
+    function test_pause_OZL() public {
+        uint sectionToPause = 5;
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        bytes32 rate = OZL.DOMAIN_SEPARATOR();
+        assertTrue(rate != bytes32(0));
+
+        vm.prank(owner);
+        OZ.pause(sectionToPause, true);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError27.selector, sectionToPause)
+        );
+        OZL.DOMAIN_SEPARATOR();
+
+        assertTrue(OZ.ETH_USD() > 0);
+    }
+
+
     function test_add_other_facet_and_pause_it() public {
         //Pre-conditions
         uint fee = OZ.getAdminFee();
@@ -157,7 +177,7 @@ contract PauseTest is TestMethods {
         vm.startPrank(owner);
         OZ.addPauseFacet(address(loupe));
 
-        uint sectionToPause = 5;
+        uint sectionToPause = 6;
         OZ.pause(sectionToPause, true);
         vm.stopPrank();
 
@@ -170,6 +190,6 @@ contract PauseTest is TestMethods {
         assertTrue(OZ.ETH_USD() > 0);
     }
 
-    
+
 
 }

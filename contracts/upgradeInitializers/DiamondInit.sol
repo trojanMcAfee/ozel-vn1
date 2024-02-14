@@ -102,7 +102,8 @@ contract DiamondInit {
         s.pauseIndexes = infra_.pauseIndexes;
         s.facetToIndex[pause_.ozDiamond] = 2;
         s.facetToIndex[pause_.ozBeacon] = 3;
-        s.facetToIndex[pause_.factory] = 4;
+        s.facetToIndex[pause_.factory] = 4; //change this to contractToIndex and everywhereß
+        s.facetToIndex[pause_.ozlProxy] = 5;
 
         //Enables checks for paused system and/or sections
         s.isSwitchEnabled = true;

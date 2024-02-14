@@ -35,6 +35,7 @@ import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRo
 
 import {OZL} from "../../contracts/OZL.sol";
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import {OZLproxy} from "../../contracts/OZLproxy.sol";
 import {OZLadmin} from "../../contracts/facets/OZLadmin.sol";
 import {OZLrewards} from "../../contracts/facets/OZLrewards.sol";
 
@@ -123,7 +124,8 @@ contract Setup is Test {
 
     //OZL token
     OZL internal ozlLogic;
-    TransparentUpgradeableProxy internal ozlProxy;
+    // TransparentUpgradeableProxy internal ozlProxy;
+    OZLproxy internal ozlProxy;
     OZLadmin internal ozlAdmin;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
@@ -133,14 +135,15 @@ contract Setup is Test {
     uint24 protocolFee = 1_500; //15%
 
     /**
-     * How many facets can be paused + value for non-paused facets + the flag index
+     * How many contracts can be paused + value for non-paused contracts + the flag index
      * 0 - default value for non-paused facets
      * 1 - paused flag
      * 2 - entire system
      * 3 - all ozTokens and wozTokens
      * 4 - create new tokens (factory)
+     * 5 - OZL
      */
-    uint16 pauseIndexes = 5;
+    uint16 pauseIndexes = 6;
 
     uint internal constant _BASE = 18;
 
@@ -340,10 +343,11 @@ contract Setup is Test {
             pauseIndexes: pauseIndexes
         });
 
-        PauseFacets memory pause = PauseFacets({
+        PauseFacets memory pause = PauseFacets({ //change this to PauseContracts, and everywhere
             ozDiamond: address(ozDiamond),
             ozBeacon: address(beacon),
-            factory: address(factory)
+            factory: address(factory),
+            ozlProxy: address(ozlProxy)
         });
 
         bytes memory initData = abi.encodeWithSelector(
@@ -493,8 +497,8 @@ contract Setup is Test {
             "Ozel", "OZL", address(OZ), totalSupplyOZL, communityAmount
         );
 
-        ozlProxy = new TransparentUpgradeableProxy(
-            address(ozlLogic), address(ozlAdmin), initData
+        ozlProxy = new OZLproxy(
+            address(ozlLogic), address(ozlAdmin), initData, address(OZ)
         );
 
         OZ.storeOZL(address(ozlProxy));
