@@ -125,6 +125,21 @@ contract PauseTest is TestMethods {
         wozERC20.asset();
     }
 
-    // function add_other_facet_to_pause() {}
+    function test_attempt_add_nonExistent_pause_facet() public {
+        address facetToAdd = address(1);
+        
+        vm.startPrank(owner);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError31.selector, facetToAdd)
+        );
+        OZ.addPauseFacet(facetToAdd);
+
+        vm.stopPrank();
+    }
+
+    function test_add_other_facet_to_pause() public {
+
+    }
 
 }

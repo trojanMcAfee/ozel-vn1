@@ -66,3 +66,4 @@ error OZError27(uint index); //isPaused / Modifiers.sol - the index of the secti
 error OZError28(bool state); //pause / ozCut.sol - contract is already in state
 error OZError29(); //pause / ozCut.sol - can't set the pause flag directly
 error OZError30(); //pause - ozCut.sol - switch is disabled. System can't be paused. 
+error OZError31(address facet); //addPauseFacet - ozCut.sol

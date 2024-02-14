@@ -133,7 +133,7 @@ contract Setup is Test {
     uint24 protocolFee = 1_500; //15%
 
     /**
-     * How many facets can be paused + the flag index
+     * How many facets can be paused + value for non-paused facets + the flag index
      * 0 - default value for non-paused facets
      * 1 - paused flag
      * 2 - entire system
@@ -395,7 +395,7 @@ contract Setup is Test {
         } else if (id_ == 11) { //remove if not used
             length = 1;
         } else if (id_ == 8) {
-            length = 8;
+            length = 9;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -453,6 +453,7 @@ contract Setup is Test {
             selectors[5] = cutOz.changeAdminFee.selector;
             selectors[6] = cutOz.pause.selector;
             selectors[7] = cutOz.enableSwitch.selector;
+            selectors[8] = cutOz.addPauseFacet.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;

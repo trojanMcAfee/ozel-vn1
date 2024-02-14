@@ -4,6 +4,7 @@ pragma solidity 0.8.21;
 
 import {DiamondCutFacet} from "./DiamondCutFacet.sol";
 import {LibDiamond} from "../libraries/LibDiamond.sol";
+import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {Modifiers} from "../Modifiers.sol";
 import {BitMaps} from "@openzeppelin/contracts/utils/structs/BitMaps.sol";
 import "../Errors.sol";
@@ -67,10 +68,17 @@ contract ozCut is Modifiers, DiamondCutFacet {
         //put a get method in ozLoupe (which facets are paused)
     }
 
-    //Toggles state of pause check on Diamond proxy
+    //Toggles state of pause check (aka switch) on Diamond proxy
     function enableSwitch(bool newState_) external returns(bool) {
-        LibDiamond.enforceIsContractOwner();
+        LibDiamond.enforceIsContractOwner(); //wrap this call in an onlyOwner with custom OZerror (do it everywhere)
         s.isSwitchEnabled = newState_;
         return s.isSwitchEnabled;
+    }
+
+    function addPauseFacet(address facet_) external {
+        LibDiamond.enforceIsContractOwner();
+
+        if (ozIDiamond(address(this)).facetFunctionSelectors(facet_).length == 0) revert OZError31(facet_);
+        
     }
 }
