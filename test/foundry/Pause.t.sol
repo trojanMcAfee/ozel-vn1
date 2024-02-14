@@ -125,18 +125,28 @@ contract PauseTest is TestMethods {
         wozERC20.asset();
     }
 
-    function test_attempt_add_nonExistent_pause_facet() public {
+    //Tests that you can't add as a pause facet, a contract that doesn't exist in ozDiamond
+    function test_cant_add_nonExistent_pause_facet() public {
+        //Pre-condition
         address facetToAdd = address(1);
         
-        vm.startPrank(owner);
-
+        //Action + Post-condtion
+        vm.prank(owner);
         vm.expectRevert(
             abi.encodeWithSelector(OZError31.selector, facetToAdd)
         );
         OZ.addPauseFacet(facetToAdd);
-
-        vm.stopPrank();
     }
+
+    //Tests that you can't add address(0) as a pause facet
+    function test_cant_add_0_address() public {
+        vm.prank(owner);
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError32.selector)
+        );
+        OZ.addPauseFacet(address(0));
+    }
+
 
     function test_add_other_facet_to_pause() public {
 

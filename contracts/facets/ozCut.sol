@@ -77,7 +77,7 @@ contract ozCut is Modifiers, DiamondCutFacet {
 
     function addPauseFacet(address facet_) external {
         LibDiamond.enforceIsContractOwner();
-
+        if (facet_ == address(0)) revert OZError32();
         if (ozIDiamond(address(this)).facetFunctionSelectors(facet_).length == 0) revert OZError31(facet_);
         
     }
