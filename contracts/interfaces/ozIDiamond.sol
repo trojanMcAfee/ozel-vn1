@@ -133,4 +133,6 @@ interface ozIDiamond {
 
     function pause(uint index_, bool newState_) external returns(bool);
     function facetAddress(bytes4 _functionSelector) external view returns (address facetAddress_);
+    function enableSwitch(bool newState_) external returns(bool);
+    function getEnabledSwitch() external view returns(bool);
 }

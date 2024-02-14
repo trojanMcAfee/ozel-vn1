@@ -51,6 +51,7 @@ contract ozCut is Modifiers, DiamondCutFacet {
         LibDiamond.enforceIsContractOwner();
         if (s.pauseMap.get(index_) == newState_) revert OZError28(newState_);
         if (index_ == 1) revert OZError29();
+        if (!s.isSwitchEnabled) revert OZError30();
         
         s.pauseMap.setTo(index_, newState_);
 
@@ -63,5 +64,14 @@ contract ozCut is Modifiers, DiamondCutFacet {
         }
 
         return false;
+        //put a get method in ozLoupe
+    }
+
+    //Toggles state of pause check on Diamond proxy
+    function enableSwitch(bool newState_) external returns(bool) {
+        LibDiamond.enforceIsContractOwner();
+        s.isSwitchEnabled = newState_;
+        return s.isSwitchEnabled;
+        //put a get method in ozLoupe
     }
 }

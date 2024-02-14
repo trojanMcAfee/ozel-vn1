@@ -103,6 +103,9 @@ contract DiamondInit {
         s.facetToIndex[pause_.ozDiamond] = 2;
         s.facetToIndex[pause_.ozBeacon] = 3;
         s.facetToIndex[pause_.factory] = 4;
+
+        //Enables checks for paused system and/or sections
+        s.isSwitchEnabled = true;
         
     }
 

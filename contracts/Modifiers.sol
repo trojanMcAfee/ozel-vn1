@@ -58,17 +58,8 @@ contract Modifiers is IOZLrewards {
         }
     }
 
-    // modifier isPaused() {
-    //     if (s.pauseMap.get(0)) {
-    //         for (uint i=0; i < s.pauseIndexes - 1; i++) {
-    //             if (s.pauseMap.get(i + 1)) {
-    //                 revert OZError27(i + 1);
-    //             }
-    //         }
-    //     }
-    //     _;
-    // }
-
+    
+    
     function _isPaused(address facet_) internal view {
         if (s.pauseMap.get(1)) {
             if (s.pauseMap.get(2)) {

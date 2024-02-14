@@ -41,7 +41,7 @@ contract Diamond is Modifiers {
         // get facet from function selector
         address facet = ds.selectorToFacetAndPosition[msg.sig].facetAddress;
         
-        _isPaused(facet); //add a check to go around this 
+        if (s.isSwitchEnabled) _isPaused(facet);
         
         require(facet != address(0), "Diamond: Function does not exist");
         // Execute external function from facet using delegatecall and return any value.

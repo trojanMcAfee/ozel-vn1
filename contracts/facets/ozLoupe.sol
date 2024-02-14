@@ -119,6 +119,10 @@ contract ozLoupe is DiamondLoupeFacet {
     function getAdminFee() external view returns(uint) {
         return uint(s.adminFee);
     }
+
+    function getEnabledSwitch() external view returns(bool) {
+        return s.isSwitchEnabled;
+    }
    
 
 }

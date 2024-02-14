@@ -69,6 +69,8 @@ struct AppStorage {
 
     // PauseInfra pausePackage;
 
+    bool isSwitchEnabled;
+
 }
 
 // struct PauseInfra {

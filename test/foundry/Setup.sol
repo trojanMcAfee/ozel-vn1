@@ -388,13 +388,15 @@ contract Setup is Test {
             length = 4;
         } else if (id_ == 10) {
             length = 10;
-        } else if (id_ == 6 || id_ == 8) {
+        } else if (id_ == 6) {
             length = 7;
         } else if (id_ == 0) {
-            length = 15;
+            length = 16;
         } else if (id_ == 11) { //remove if not used
             length = 1;
-        } 
+        } else if (id_ == 8) {
+            length = 8;
+        }
 
         bytes4[] memory selectors = new bytes4[](length);
 
@@ -414,6 +416,7 @@ contract Setup is Test {
             selectors[12] = loupe.quoteAmountsOut.selector;
             selectors[13] = loupe.getRedeemData.selector;
             selectors[14] = loupe.getAdminFee.selector;
+            selectors[15] = loupe.getEnabledSwitch.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -449,6 +452,7 @@ contract Setup is Test {
             selectors[4] = cutOz.changeProtocolFee.selector;
             selectors[5] = cutOz.changeAdminFee.selector;
             selectors[6] = cutOz.pause.selector;
+            selectors[7] = cutOz.enableSwitch.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;

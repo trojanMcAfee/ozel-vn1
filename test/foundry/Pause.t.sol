@@ -32,7 +32,7 @@ contract PauseTest is TestMethods {
     }
 
     //tests that the owner can pause any interactions with any ozToken
-    function test_pause_ozTokens() public {
+    function test_pause_ozTokens_and_checks_enable_switch() public {
         //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (ozIToken ozERC20_2,) = _createOzTokens(secondTestToken, "2");
@@ -59,8 +59,38 @@ contract PauseTest is TestMethods {
         ozERC20_2.decimals();
 
         uint price = OZ.ETH_USD();
-        console.log('price: ', price);
         assertTrue(price > 0);
+        assertTrue(OZ.getEnabledSwitch());
     }
+
+    //Tests that you can't pause the system once the enabled switch is false
+    function test_pause_attempt_switch_disabled() public {
+        //Pre-conditions
+        uint price = OZ.ETH_USD();
+        assertTrue(price > 0);
+
+        //Action
+        vm.startPrank(owner);
+        bool newSwitchState = OZ.enableSwitch(false);
+        assertTrue(!newSwitchState);
+
+        //Post-conditions
+        uint sectionToPause = 2;
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError30.selector)
+        );
+        OZ.pause(sectionToPause, true);
+
+        assertTrue(!OZ.getEnabledSwitch());
+    }
+
+    // function test_pause_factory() public {
+    //     //Pre-conditions
+    //     (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+    //     OZ.pause(4, true);
+
+
+    // }
 
 }

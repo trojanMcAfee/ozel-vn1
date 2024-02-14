@@ -65,3 +65,4 @@ error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_
 error OZError27(uint index); //isPaused / Modifiers.sol - the index of the section that's paused
 error OZError28(bool state); //pause / ozCut.sol - contract is already in state
 error OZError29(); //pause / ozCut.sol - can't set the pause flag directly
+error OZError30(); //pause - ozCut.sol - switch is disabled. System can't be paused. 
