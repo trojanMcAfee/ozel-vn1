@@ -134,8 +134,8 @@ contract Setup is Test {
 
     /**
      * How many facets can be paused + the flag index
-     * 0 - default value for non-pause facets
-     * 1 - flag
+     * 0 - default value for non-paused facets
+     * 1 - paused flag
      * 2 - entire system
      * 3 - all ozTokens (wozTokens also ?)
      * 4 - create new tokens (factory)

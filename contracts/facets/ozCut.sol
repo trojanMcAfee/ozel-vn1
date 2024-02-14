@@ -64,7 +64,7 @@ contract ozCut is Modifiers, DiamondCutFacet {
         }
 
         return false;
-        //put a get method in ozLoupe
+        //put a get method in ozLoupe (which facets are paused)
     }
 
     //Toggles state of pause check on Diamond proxy
@@ -72,6 +72,5 @@ contract ozCut is Modifiers, DiamondCutFacet {
         LibDiamond.enforceIsContractOwner();
         s.isSwitchEnabled = newState_;
         return s.isSwitchEnabled;
-        //put a get method in ozLoupe
     }
 }

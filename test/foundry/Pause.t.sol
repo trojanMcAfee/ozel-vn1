@@ -5,6 +5,7 @@ pragma solidity 0.8.21;
 import {TestMethods} from "./TestMethods.sol";
 import "../../contracts/Errors.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
+import {wozIToken} from "../../contracts/interfaces/wozIToken.sol";
 
 
 import "forge-std/console.sol";
@@ -104,6 +105,24 @@ contract PauseTest is TestMethods {
 
         uint price = OZ.ETH_USD();
         assertTrue(price > 0);
+    }
+
+    //Tests that wozTokens can be paused
+    function test_pause_wozTokens() public {
+        //Pre-condition
+        (,wozIToken wozERC20) = _createOzTokens(testToken, "1");
+        assertTrue(wozERC20.asset() != address(0));
+
+        //Action
+        uint sectionToPause = 3;
+        vm.prank(owner);
+        OZ.pause(sectionToPause, true);
+
+        //Post-condtion
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError27.selector, sectionToPause)
+        );
+        wozERC20.asset();
     }
 
 }
