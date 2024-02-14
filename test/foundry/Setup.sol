@@ -137,7 +137,7 @@ contract Setup is Test {
      * 0 - default value for non-paused facets
      * 1 - paused flag
      * 2 - entire system
-     * 3 - all ozTokens (wozTokens also ?)
+     * 3 - all ozTokens and wozTokens
      * 4 - create new tokens (factory)
      */
     uint16 pauseIndexes = 5;

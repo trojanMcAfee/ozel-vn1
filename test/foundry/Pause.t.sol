@@ -125,4 +125,6 @@ contract PauseTest is TestMethods {
         wozERC20.asset();
     }
 
+    // function add
+
 }
