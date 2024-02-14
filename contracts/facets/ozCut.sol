@@ -46,7 +46,7 @@ contract ozCut is Modifiers, DiamondCutFacet {
 
     //Pauses a part or the whole system.
     //Returns true if at least one part of the system is paused.
-    //Returns paused if nothing is paused.
+    //Returns false if nothing is paused.
     function pause(uint index_, bool newState_) external returns(bool) {
         LibDiamond.enforceIsContractOwner();
         if (s.pauseMap.get(index_) == newState_) revert OZError28(newState_);

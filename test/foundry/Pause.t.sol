@@ -84,13 +84,26 @@ contract PauseTest is TestMethods {
         assertTrue(!OZ.getEnabledSwitch());
     }
 
-    // function test_pause_factory() public {
-    //     //Pre-conditions
-    //     (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+    //Tests that the ozTokens factory can be paused, but not the rest of contracts
+    function test_pause_factory() public {
+        //Pre-conditions
+        _createOzTokens(testToken, "1");
 
-    //     OZ.pause(4, true);
+        uint sectionToPause = 4;
+        vm.prank(owner);
 
+        //Action
+        bool isPaused = OZ.pause(sectionToPause, true);
+        assertTrue(isPaused);
 
-    // }
+        //Post-conditions
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError27.selector, sectionToPause)
+        );
+        _createOzTokens(secondTestToken, "2");
+
+        uint price = OZ.ETH_USD();
+        assertTrue(price > 0);
+    }
 
 }
