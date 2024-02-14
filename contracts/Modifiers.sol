@@ -69,7 +69,7 @@ contract Modifiers is IOZLrewards {
     //     _;
     // }
 
-    function _isPaused(address facet_) internal {
+    function _isPaused(address facet_) internal view {
         if (s.pauseMap.get(1)) {
             if (s.pauseMap.get(2)) {
                 revert OZError27(2);

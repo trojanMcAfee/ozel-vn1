@@ -43,7 +43,7 @@ contract PauseTest is TestMethods {
         assertTrue(decimals_2 > 0);
 
         //Action
-        uint sectionToPause = 2;
+        uint sectionToPause = 3;
         vm.prank(owner);
         OZ.pause(sectionToPause, true);
 
