@@ -38,15 +38,18 @@ contract Diamond  {
     }
 
 
-    function _isPaused(address facet_) private view {
+    function isPaused(address contract_) public view returns(bool, int) {
         if (s.pauseMap.get(1)) {
             if (s.pauseMap.get(2)) {
-                revert OZError27(2);
+                // revert OZError27(2);
+                return (true, 2);
             } else {
-                uint index = s.facetToIndex[facet_];
-                if (s.pauseMap.get(index)) revert OZError27(index);
+                uint index = s.facetToIndex[contract_];
+                // if (s.pauseMap.get(index)) revert OZError27(index);
+                if (s.pauseMap.get(index)) return (true, index);
             }
         }
+        return (false, -1);
     }
 
     // Find facet for function that is called and execute the
@@ -61,7 +64,10 @@ contract Diamond  {
         // get facet from function selector
         address facet = ds.selectorToFacetAndPosition[msg.sig].facetAddress;
         
-        if (s.isSwitchEnabled) _isPaused(facet);
+        if (s.isSwitchEnabled) { 
+            (bool pause, int index) = isPaused(facet);
+            if (pause) revert OZError27(uint(index));
+        }
         
         require(facet != address(0), "Diamond: Function does not exist");
         // Execute external function from facet using delegatecall and return any value.
