@@ -277,66 +277,6 @@
         }
       }
     },
-    "contracts/OZLrewards.sol": {
-      "lastModificationDate": 1707779420031,
-      "contentHash": "216708faa7623954b65a17c15409f946",
-      "sourceName": "contracts/OZLrewards.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "contracts/AppStorage.sol",
-        "contracts/Errors.sol",
-        "contracts/Modifiers.sol",
-        "contracts/interfaces/IBalancer.sol",
-        "contracts/interfaces/IDiamondCut.sol",
-        "contracts/interfaces/IERC20Permit.sol",
-        "contracts/interfaces/IOZL.sol",
-        "contracts/interfaces/IOZLrewards.sol",
-        "contracts/interfaces/ozIDiamond.sol",
-        "contracts/libraries/FixedPointMathLib.sol",
-        "contracts/libraries/Helpers.sol",
-        "contracts/libraries/LibDiamond.sol",
-        "lib/forge-std/src/console.sol",
-        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
-        "node_modules/@openzeppelin/contracts/utils/Address.sol",
-        "node_modules/@openzeppelin/contracts/utils/structs/BitMaps.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
-      ],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "OZLrewards": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "OZLrewards.sol/OZLrewards.json"
-        }
-      }
-    },
     "contracts/ProxyAdmin.sol": {
       "lastModificationDate": 1706710741757,
       "contentHash": "4d1bbff0611334b325ad798e43fcd83f",
@@ -579,6 +519,66 @@
         }
       }
     },
+    "contracts/facets/OZLrewards.sol": {
+      "lastModificationDate": 1707945558856,
+      "contentHash": "6e66803a0a7235c144ce3c43b87aa020",
+      "sourceName": "contracts/facets/OZLrewards.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Errors.sol",
+        "contracts/Modifiers.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IOZL.sol",
+        "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "lib/forge-std/src/console.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/structs/BitMaps.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "OZLrewards": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "OZLrewards.sol/OZLrewards.json"
+        }
+      }
+    },
     "contracts/facets/OwnershipFacet.sol": {
       "lastModificationDate": 1706710741759,
       "contentHash": "b30ba9202a57961d9cf1596881af7c62",
@@ -717,8 +717,8 @@
       }
     },
     "contracts/facets/ozCut.sol": {
-      "lastModificationDate": 1707944870017,
-      "contentHash": "d2d636109dd73e251bb2aa86c122e8d2",
+      "lastModificationDate": 1707945346817,
+      "contentHash": "d5f7f79618f2cfe80aa9840502895136",
       "sourceName": "contracts/facets/ozCut.sol",
       "solcConfig": {
         "settings": {
@@ -5196,12 +5196,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -5348,12 +5348,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -5502,12 +5502,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -5656,12 +5656,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -5920,12 +5920,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -6074,12 +6074,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -6228,12 +6228,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -6382,12 +6382,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -6498,8 +6498,8 @@
       }
     },
     "test/foundry/Pause.t.sol": {
-      "lastModificationDate": 1707944870421,
-      "contentHash": "41ed7c021d4df9e97d802ccb5ad8e620",
+      "lastModificationDate": 1707944895578,
+      "contentHash": "4afffdf606badbee23d659ae19c30432",
       "sourceName": "test/foundry/Pause.t.sol",
       "solcConfig": {
         "settings": {
@@ -6536,12 +6536,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -6652,8 +6652,8 @@
       }
     },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1707922651311,
-      "contentHash": "6d71676d48695b4652aaf388acfbeeed",
+      "lastModificationDate": 1707945596642,
+      "contentHash": "ec0ee7424721c8d87b12813a98f968fc",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -6690,12 +6690,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -6991,12 +6991,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -7145,12 +7145,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -7294,12 +7294,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -7448,12 +7448,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",
@@ -7603,12 +7603,12 @@
         "contracts/Errors.sol",
         "contracts/Modifiers.sol",
         "contracts/OZL.sol",
-        "contracts/OZLrewards.sol",
         "contracts/ProxyAdmin.sol",
         "contracts/facets/DiamondCutFacet.sol",
         "contracts/facets/DiamondLoupeFacet.sol",
         "contracts/facets/MirrorExchange.sol",
         "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
         "contracts/facets/OwnershipFacet.sol",
         "contracts/facets/Pools.sol",
         "contracts/facets/ozBeacon.sol",

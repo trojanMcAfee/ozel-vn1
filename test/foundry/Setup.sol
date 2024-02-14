@@ -36,7 +36,7 @@ import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRo
 import {OZL} from "../../contracts/OZL.sol";
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {OZLadmin} from "../../contracts/facets/OZLadmin.sol";
-import {OZLrewards} from "../../contracts/OZLrewards.sol";
+import {OZLrewards} from "../../contracts/facets/OZLrewards.sol";
 
 // import "forge-std/console.sol";
 

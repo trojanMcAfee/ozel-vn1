@@ -2,12 +2,12 @@
 pragma solidity 0.8.21;
 
 
-import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
-import {LibDiamond} from "./libraries/LibDiamond.sol";
-import {Helpers} from "./libraries/Helpers.sol";
-import {Modifiers} from "./Modifiers.sol";
-import {IOZL} from "./interfaces/IOZL.sol";
-import "./Errors.sol";
+import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
+import {LibDiamond} from "../libraries/LibDiamond.sol";
+import {Helpers} from "../libraries/Helpers.sol";
+import {Modifiers} from "../Modifiers.sol";
+import {IOZL} from "../interfaces/IOZL.sol";
+import "../Errors.sol";
 
 import "forge-std/console.sol";
 
