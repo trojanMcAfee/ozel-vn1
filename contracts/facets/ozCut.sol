@@ -79,6 +79,8 @@ contract ozCut is Modifiers, DiamondCutFacet {
         LibDiamond.enforceIsContractOwner();
         if (facet_ == address(0)) revert OZError32();
         if (ozIDiamond(address(this)).facetFunctionSelectors(facet_).length == 0) revert OZError31(facet_);
-        
+
+        s.facetToIndex[facet_] = s.pauseIndexes;
+        s.pauseIndexes += 1;   
     }
 }

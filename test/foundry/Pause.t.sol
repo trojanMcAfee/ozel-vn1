@@ -148,8 +148,26 @@ contract PauseTest is TestMethods {
     }
 
 
-    function test_add_other_facet_to_pause() public {
+    function test_add_other_facet_and_pause_it() public {
+        //Pre-conditions
+        uint fee = OZ.getAdminFee();
+        assertTrue(fee > 0);
 
+        //Actions
+        vm.startPrank(owner);
+        OZ.addPauseFacet(address(loupe));
+
+        uint sectionToPause = 5;
+        OZ.pause(sectionToPause, true);
+        vm.stopPrank();
+
+        //Post-conditions
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError27.selector, sectionToPause)
+        );
+        OZ.getAdminFee();
+
+        assertTrue(OZ.ETH_USD() > 0);
     }
 
 }
