@@ -14,7 +14,7 @@ import "forge-std/console.sol";
 contract Modifiers is IOZLrewards {
 
     using Helpers for address[];
-    using BitMaps for BitMaps.BitMap;
+    // using BitMaps for BitMaps.BitMap;
 
     AppStorage internal s;
     
@@ -60,16 +60,16 @@ contract Modifiers is IOZLrewards {
 
     
     
-    function _isPaused(address facet_) internal view {
-        if (s.pauseMap.get(1)) {
-            if (s.pauseMap.get(2)) {
-                revert OZError27(2);
-            } else {
-                uint index = s.facetToIndex[facet_];
-                if (s.pauseMap.get(index)) revert OZError27(index);
-            }
-        }
-    }
+    // function _isPaused(address facet_) internal view {
+    //     if (s.pauseMap.get(1)) {
+    //         if (s.pauseMap.get(2)) {
+    //             revert OZError27(2);
+    //         } else {
+    //             uint index = s.facetToIndex[facet_];
+    //             if (s.pauseMap.get(index)) revert OZError27(index);
+    //         }
+    //     }
+    // }
 
 }
 

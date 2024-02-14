@@ -125,6 +125,6 @@ contract PauseTest is TestMethods {
         wozERC20.asset();
     }
 
-    // function add
+    // function add_other_facet_to_pause() {}
 
 }

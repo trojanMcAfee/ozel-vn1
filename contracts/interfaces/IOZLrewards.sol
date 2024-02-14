@@ -10,9 +10,6 @@ abstract contract IOZLrewards {
     function rewardPerToken() public view virtual returns(uint) {}
     function earned(address user_) public view virtual returns(uint) {}
     function claimReward() external virtual returns(uint) {}
-    // function getRewardRate() external view virtual returns(uint) {}
-    // function getCirculatingSupply() external view virtual returns(uint) {}
-    // function getRecicledSupply() external view virtual returns(uint) {}
     function getRewardsData() external view virtual returns(
         uint rewardRate,
         uint circulatingSupply,

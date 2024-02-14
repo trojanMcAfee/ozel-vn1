@@ -8,11 +8,18 @@ pragma solidity ^0.8.0;
 * Implementation of a diamond.
 /******************************************************************************/
 
-import { LibDiamond } from "./libraries/LibDiamond.sol";
-import { IDiamondCut } from "./interfaces/IDiamondCut.sol";
-import { Modifiers } from "./Modifiers.sol";
+import {LibDiamond} from "./libraries/LibDiamond.sol";
+import {IDiamondCut} from "./interfaces/IDiamondCut.sol";
+// import { Modifiers } from "./Modifiers.sol";
+import {OZError27} from "./Errors.sol";
+import {AppStorage} from "./AppStorage.sol";
+import {BitMaps} from "@openzeppelin/contracts/utils/structs/BitMaps.sol";
 
-contract Diamond is Modifiers {    
+contract Diamond  {   
+
+    using BitMaps for BitMaps.BitMap;
+
+    AppStorage private s; 
 
     constructor(address _contractOwner, address _diamondCutFacet) payable {        
         LibDiamond.setContractOwner(_contractOwner);
@@ -27,6 +34,18 @@ contract Diamond is Modifiers {
             functionSelectors: functionSelectors
         });
         LibDiamond.diamondCut(cut, address(0), "");        
+    }
+
+
+    function _isPaused(address facet_) private view {
+        if (s.pauseMap.get(1)) {
+            if (s.pauseMap.get(2)) {
+                revert OZError27(2);
+            } else {
+                uint index = s.facetToIndex[facet_];
+                if (s.pauseMap.get(index)) revert OZError27(index);
+            }
+        }
     }
 
     // Find facet for function that is called and execute the
