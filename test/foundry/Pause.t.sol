@@ -195,8 +195,25 @@ contract PauseTest is TestMethods {
 
 
     function test_getPausedContracts() public {
+        //Pre-conditions
+        assertTrue(OZ.getPausedContracts().length == 0);
+        uint firstPausedSection = 3;
+        uint secondPausedSection = 5;
+
+        //Actions
+        vm.startPrank(owner);
+        OZ.pause(firstPausedSection, true);
+        OZ.pause(secondPausedSection, true);
+        vm.stopPrank();
+
+        //Post-conditions
         uint[] memory contracIndexes = OZ.getPausedContracts();
-        console.log('contracIndexes: ', contracIndexes.length);
+        console.log('l: ', contracIndexes.length);
+        console.log('first: ', contracIndexes.length);
+
+        assertTrue(contracIndexes.length == 2);
+        assertTrue(contracIndexes[0] == firstPausedSection);
+        assertTrue(contracIndexes[1] == secondPausedSection);
     }
 
 

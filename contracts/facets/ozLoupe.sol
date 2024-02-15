@@ -131,7 +131,9 @@ contract ozLoupe is DiamondLoupeFacet {
         uint totalLength;
         uint j = 0;
 
-        for (uint i=2; i < s.pauseIndexes - 2; i++) {
+        for (uint i=2; i < s.pauseIndexes; i++) {
+            console.log('s.pauseMap.get(i) ', i, " ", s.pauseMap.get(i));
+
             if (s.pauseMap.get(i)) {
                 subTotal[j] = i;
                 j++;
@@ -151,7 +153,7 @@ contract ozLoupe is DiamondLoupeFacet {
             }
         }
 
-        return total;
+        return total; 
     }
    
 
