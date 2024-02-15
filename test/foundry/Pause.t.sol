@@ -194,5 +194,13 @@ contract PauseTest is TestMethods {
     }
 
 
+    function test_getPausedContracts() public {
+        uint[] memory contracIndexes = OZ.getPausedContracts();
+        console.log('contracIndexes: ', contracIndexes.length);
+    }
+
+
+
+
 
 }

@@ -139,5 +139,5 @@ interface ozIDiamond {
     function getEnabledSwitch() external view returns(bool);
     function addPauseContract(address facet_) external;
     function isPaused(address contract_) external view;
-    function getPausedContracts() external view returns(address[] memory);
+    function getPausedContracts() external view returns(uint[] memory);
 }

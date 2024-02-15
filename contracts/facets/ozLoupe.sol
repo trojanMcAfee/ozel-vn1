@@ -11,6 +11,7 @@ import {Helpers} from "../libraries/Helpers.sol";
 import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
 // import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20} from "../../lib/forge-std/src/interfaces/IERC20.sol";
+import {BitMaps} from "@openzeppelin/contracts/utils/structs/BitMaps.sol";
 
 import "forge-std/console.sol";
 
@@ -19,6 +20,7 @@ contract ozLoupe is DiamondLoupeFacet {
 
     using FixedPointMathLib for uint;
     using Helpers for uint;
+    using BitMaps for BitMaps.BitMap;
 
     AppStorage private s;
 
@@ -124,8 +126,32 @@ contract ozLoupe is DiamondLoupeFacet {
         return s.isSwitchEnabled;
     }
 
-    function getPausedContracts() external view returns(address[] memory) {
+    function getPausedContracts() external view returns(uint[] memory) {
+        uint[] memory subTotal = new uint[](s.pauseIndexes);
+        uint totalLength;
+        uint j = 0;
 
+        for (uint i=2; i < s.pauseIndexes - 2; i++) {
+            if (s.pauseMap.get(i)) {
+                subTotal[j] = i;
+                j++;
+                totalLength++;
+                continue;
+            }
+            j++;
+        }
+
+        uint[] memory total = new uint[](totalLength);
+        uint z;
+
+        for (uint i=0; i < subTotal.length; i++) {
+            if (subTotal[i] != 0) {
+                total[z] = subTotal[i];
+                z++;
+            }
+        }
+
+        return total;
     }
    
 
