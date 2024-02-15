@@ -44,7 +44,7 @@ contract Diamond  {
                 if (s.pauseMap.get(2)) {
                     revert OZError27(2);
                 } else {
-                    uint index = s.facetToIndex[contract_];
+                    uint index = s.contractToIndex[contract_];
                     if (s.pauseMap.get(index)) revert OZError27(index);
                 }
             }

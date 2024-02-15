@@ -123,6 +123,10 @@ contract ozLoupe is DiamondLoupeFacet {
     function getEnabledSwitch() external view returns(bool) {
         return s.isSwitchEnabled;
     }
+
+    function getPausedContracts() external view returns(address[] memory) {
+
+    }
    
 
 }

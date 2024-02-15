@@ -136,7 +136,7 @@ contract PauseTest is TestMethods {
         vm.expectRevert(
             abi.encodeWithSelector(OZError31.selector, facetToAdd)
         );
-        OZ.addPauseFacet(facetToAdd);
+        OZ.addPauseContract(facetToAdd);
     }
 
     //Tests that you can't add address(0) as a pause facet
@@ -145,20 +145,23 @@ contract PauseTest is TestMethods {
         vm.expectRevert(
             abi.encodeWithSelector(OZError32.selector)
         );
-        OZ.addPauseFacet(address(0));
+        OZ.addPauseContract(address(0));
     }
 
-
+    //Tests that you can pause OZL through OZLproxy
     function test_pause_OZL() public {
+        //Pre-conditions
         uint sectionToPause = 5;
         IOZL OZL = IOZL(address(ozlProxy));
 
         bytes32 rate = OZL.DOMAIN_SEPARATOR();
         assertTrue(rate != bytes32(0));
 
+        //Action
         vm.prank(owner);
         OZ.pause(sectionToPause, true);
 
+        //Post-conditions
         vm.expectRevert(
             abi.encodeWithSelector(OZError27.selector, sectionToPause)
         );
@@ -175,7 +178,7 @@ contract PauseTest is TestMethods {
 
         //Actions
         vm.startPrank(owner);
-        OZ.addPauseFacet(address(loupe));
+        OZ.addPauseContract(address(loupe));
 
         uint sectionToPause = 6;
         OZ.pause(sectionToPause, true);

@@ -65,21 +65,14 @@ struct AppStorage {
 
     BitMaps.BitMap pauseMap; 
     uint16 pauseIndexes;
-    mapping(address facet => uint index) facetToIndex;
-
-    // PauseInfra pausePackage;
-
+    mapping(address facet => uint index) contractToIndex;
     bool isSwitchEnabled;
 
 }
 
-// struct PauseInfra {
-//     BitMaps.BitMap pauseMap;
-//     uint16 pauseIndexes;
-//     mapping(address facet => uint index) facetToIndex;
-// }
 
-struct PauseFacets {
+
+struct PauseContracts {
     address ozDiamond;
     address ozBeacon;
     address factory;

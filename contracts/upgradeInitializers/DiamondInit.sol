@@ -20,7 +20,7 @@ import {
     Dexes,
     Oracles,
     Infra,
-    PauseFacets
+    PauseContracts
 } from "../AppStorage.sol";
 
 import {IRocketStorage} from "../interfaces/IRocketPool.sol";
@@ -42,7 +42,7 @@ contract DiamondInit {
         Dexes memory dexes_,
         Oracles memory oracles_,
         Infra memory infra_,
-        PauseFacets memory pause_
+        PauseContracts memory pause_
     ) external {
         // adding ERC165 data **** COMPLETE this with rest of funcs/interfaces
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
@@ -100,10 +100,10 @@ contract DiamondInit {
 
         //Pause system variables
         s.pauseIndexes = infra_.pauseIndexes;
-        s.facetToIndex[pause_.ozDiamond] = 2;
-        s.facetToIndex[pause_.ozBeacon] = 3;
-        s.facetToIndex[pause_.factory] = 4; //change this to contractToIndex and everywhereß
-        s.facetToIndex[pause_.ozlProxy] = 5;
+        s.contractToIndex[pause_.ozDiamond] = 2;
+        s.contractToIndex[pause_.ozBeacon] = 3;
+        s.contractToIndex[pause_.factory] = 4; //change this to contractToIndex and everywhereß
+        s.contractToIndex[pause_.ozlProxy] = 5;
 
         //Enables checks for paused system and/or sections
         s.isSwitchEnabled = true;

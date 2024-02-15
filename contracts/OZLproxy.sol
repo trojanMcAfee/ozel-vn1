@@ -24,6 +24,4 @@ contract OZLproxy is TransparentUpgradeableProxy {
         OZ.isPaused(address(this));
         super._fallback();
     }
-
-
 }

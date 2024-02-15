@@ -27,7 +27,7 @@ import {
     Dexes,
     Oracles,
     Infra,
-    PauseFacets
+    PauseContracts
 } from "../../contracts/AppStorage.sol";
 import {ReqOut, ReqIn} from "./AppStorageTests.sol";
 import {ozCut} from "../../contracts/facets/ozCut.sol";
@@ -343,7 +343,7 @@ contract Setup is Test {
             pauseIndexes: pauseIndexes
         });
 
-        PauseFacets memory pause = PauseFacets({ //change this to PauseContracts, and everywhere
+        PauseContracts memory pause = PauseContracts({ //change this to PauseContracts, and everywhere
             ozDiamond: address(ozDiamond),
             ozBeacon: address(beacon),
             factory: address(factory),
@@ -395,7 +395,7 @@ contract Setup is Test {
         } else if (id_ == 6) {
             length = 7;
         } else if (id_ == 0) {
-            length = 16;
+            length = 17;
         } else if (id_ == 11) { //remove if not used
             length = 1;
         } else if (id_ == 8) {
@@ -421,6 +421,7 @@ contract Setup is Test {
             selectors[13] = loupe.getRedeemData.selector;
             selectors[14] = loupe.getAdminFee.selector;
             selectors[15] = loupe.getEnabledSwitch.selector;
+            selectors[16] = loupe.getPausedContracts.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
@@ -457,7 +458,7 @@ contract Setup is Test {
             selectors[5] = cutOz.changeAdminFee.selector;
             selectors[6] = cutOz.pause.selector;
             selectors[7] = cutOz.enableSwitch.selector;
-            selectors[8] = cutOz.addPauseFacet.selector;
+            selectors[8] = cutOz.addPauseContract.selector;
         } else if (id_ == 9) {
             selectors[0] = ozlAdmin.getOZLlogic.selector;
             selectors[1] = ozlAdmin.getOZLadmin.selector;

@@ -66,6 +66,8 @@ contract ozCut is Modifiers, DiamondCutFacet {
 
         return false;
         //put a get method in ozLoupe (which facets are paused)
+
+        //do this ^^ and i think that's it for Pause task
     }
 
     //Toggles state of pause check (aka switch) on Diamond proxy
@@ -76,13 +78,12 @@ contract ozCut is Modifiers, DiamondCutFacet {
     }
 
     //Adds a facet to the group of facets that can be paused
-    //change this to addPauseContract()
-    function addPauseFacet(address facet_) external {
+    function addPauseContract(address facet_) external {
         LibDiamond.enforceIsContractOwner();
         if (facet_ == address(0)) revert OZError32();
         if (ozIDiamond(address(this)).facetFunctionSelectors(facet_).length == 0) revert OZError31(facet_);
 
-        s.facetToIndex[facet_] = s.pauseIndexes;
+        s.contractToIndex[facet_] = s.pauseIndexes;
         s.pauseIndexes += 1;   
     }
 }
