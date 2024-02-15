@@ -170,8 +170,8 @@ contract PauseTest is TestMethods {
         assertTrue(OZ.ETH_USD() > 0);
     }
 
-
-    function test_add_other_facet_and_pause_it() public {
+    //Adds another contract as another pauseContract, and pauses it.
+    function test_add_another_contract_and_pause_it() public {
         //Pre-conditions
         uint fee = OZ.getAdminFee();
         assertTrue(fee > 0);

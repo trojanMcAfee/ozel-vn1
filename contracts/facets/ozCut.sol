@@ -65,9 +65,6 @@ contract ozCut is Modifiers, DiamondCutFacet {
         }
 
         return false;
-        //put a get method in ozLoupe (which facets are paused)
-
-        //do this ^^ and i think that's it for Pause task
     }
 
     //Toggles state of pause check (aka switch) on Diamond proxy
