@@ -40,8 +40,8 @@ contract ozCut is Modifiers, DiamondCutFacet {
         s.protocolFee = newFee_;
     }
 
-    function changeAdminFee(uint16 newFee_) external {
-        LibDiamond.enforceIsContractOwner();
+    function changeAdminFee(uint16 newFee_) external onlyOwner {
+        // LibDiamond.enforceIsContractOwner();
         s.adminFee = newFee_;
     }
 

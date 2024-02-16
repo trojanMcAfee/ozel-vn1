@@ -4,6 +4,8 @@ pragma solidity 0.8.21;
 
 import {TestMethods} from "./TestMethods.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
+import "../../contracts/Errors.sol";
+
 
 contract ozCutTest is TestMethods {
 
@@ -22,6 +24,7 @@ contract ozCutTest is TestMethods {
         assertTrue(newFee == OZ.getProtocolFee());
     }
 
+    //Tests taht only the owner can change the admin fee
     function test_change_admin_fee() public {
         //Pre-conditions
         uint oldFee = OZ.getAdminFee();
@@ -36,21 +39,21 @@ contract ozCutTest is TestMethods {
         assertTrue(newFee == OZ.getAdminFee());
     }
 
-    function test_diamondCut() public {
-        // struct FacetCut {
-        //     address facetAddress;
-        //     FacetCutAction action;
-        //     bytes4[] functionSelectors;
-        // }
+    //Tests that it'll revert when a non-owner tries to change the admin fee
+    function test_change_admin_fee_onlyOwner() public {
+         //Pre-conditions
+        uint oldFee = OZ.getAdminFee();
+        uint16 newFee = 10;
 
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](1);
-
-        vm.prank(owner);
-        OZ.diamondCut(cuts, address(0), new bytes(0));
-
-
-
+        //Action + post-condition
+        vm.prank(alice);
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError33.selector, alice)
+        );
+        OZ.changeAdminFee(newFee);
     }
+
+    
 
 
 }

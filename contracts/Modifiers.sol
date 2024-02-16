@@ -6,7 +6,8 @@ import {IOZLrewards} from "./interfaces/IOZLrewards.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 import {AppStorage, OzTokens} from "./AppStorage.sol";
 import {Helpers} from "./libraries/Helpers.sol";
-import {OZError13} from "./Errors.sol";
+import {LibDiamond} from "./libraries/LibDiamond.sol";
+import "./Errors.sol";
 
 import "forge-std/console.sol";
 
@@ -30,6 +31,11 @@ contract Modifiers is IOZLrewards {
             }
         }
 
+        _;
+    }
+
+    modifier onlyOwner() {
+        if (LibDiamond.contractOwner() != msg.sender) revert OZError33(msg.sender);
         _;
     }
 

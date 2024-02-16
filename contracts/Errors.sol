@@ -57,6 +57,7 @@ error OZError22(string reason); // mint/redeem - useUnderlying/userOzTokens - ca
 error OZError24(); // _setImplementation - implementation is not a contract
 error OZError25(address implementation); //_setBeacon / ozERC1967Upgrade.sol - beacon implementation is not a contract
 error OZError26(address newBeacon); //_setBeacon / ozERC1967Upgrade.sol - new beacon is not a contract
+error OZError33(address caller); // multiple ozCut.sol funcs / Modifiers.sol / not owner
 
 //Oracle errors
 error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_
