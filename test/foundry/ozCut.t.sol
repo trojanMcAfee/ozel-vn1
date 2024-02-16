@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "./TestMethods.sol";
-
+import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
 contract ozCutTest is TestMethods {
 
@@ -34,6 +34,22 @@ contract ozCutTest is TestMethods {
         //Post-conditions
         assertTrue(oldFee != newFee);
         assertTrue(newFee == OZ.getAdminFee());
+    }
+
+    function test_diamondCut() public {
+        // struct FacetCut {
+        //     address facetAddress;
+        //     FacetCutAction action;
+        //     bytes4[] functionSelectors;
+        // }
+
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](1);
+
+        vm.prank(owner);
+        OZ.diamondCut(cuts, address(0), new bytes(0));
+
+
+
     }
 
 
