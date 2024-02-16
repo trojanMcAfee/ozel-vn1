@@ -16,18 +16,15 @@ contract ozCut is Modifiers, DiamondCutFacet {
 
     using BitMaps for BitMaps.BitMap;
 
-    function changeDefaultSlippage(uint16 newBps_) external {
-        LibDiamond.enforceIsContractOwner();
+    function changeDefaultSlippage(uint16 newBps_) external onlyOwner {
         s.defaultSlippage = newBps_;
     }
 
-    function changeUniFee(uint24 newBps_) external {
-        LibDiamond.enforceIsContractOwner();
+    function changeUniFee(uint24 newBps_) external onlyOwner {
         s.uniFee = newBps_;
     }
 
-    function storeOZL(address ozlProxy_) external { //make this func a one time thing
-        LibDiamond.enforceIsContractOwner();
+    function storeOZL(address ozlProxy_) external onlyOwner { //make this func a one time thing
         s.ozlProxy = ozlProxy_;
     }
 
@@ -35,21 +32,18 @@ contract ozCut is Modifiers, DiamondCutFacet {
         s.adminFeeRecipient = newRecipient_;
     }
 
-    function changeProtocolFee(uint24 newFee_) external {
-        LibDiamond.enforceIsContractOwner();
+    function changeProtocolFee(uint24 newFee_) external onlyOwner {
         s.protocolFee = newFee_;
     }
 
     function changeAdminFee(uint16 newFee_) external onlyOwner {
-        // LibDiamond.enforceIsContractOwner();
         s.adminFee = newFee_;
     }
 
     //Pauses a part or the whole system.
     //Returns true if at least one part of the system is paused.
     //Returns false if nothing is paused.
-    function pause(uint index_, bool newState_) external returns(bool) {
-        LibDiamond.enforceIsContractOwner();
+    function pause(uint index_, bool newState_) external onlyOwner returns(bool) {
         if (s.pauseMap.get(index_) == newState_) revert OZError28(newState_);
         if (index_ == 1) revert OZError29();
         if (!s.isSwitchEnabled) revert OZError30();

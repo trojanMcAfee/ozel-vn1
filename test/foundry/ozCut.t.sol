@@ -42,10 +42,9 @@ contract ozCutTest is TestMethods {
     //Tests that it'll revert when a non-owner tries to change the admin fee
     function test_change_admin_fee_onlyOwner() public {
          //Pre-conditions
-        uint oldFee = OZ.getAdminFee();
+        
         uint16 newFee = 10;
-
-        //Action + post-condition
+        
         vm.prank(alice);
         vm.expectRevert(
             abi.encodeWithSelector(OZError33.selector, alice)
