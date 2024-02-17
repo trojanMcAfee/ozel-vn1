@@ -32,8 +32,8 @@ contract OZLvesting is VestingWallet {
         release(_OZL);
     }
 
-    function vestedAmount(uint64 timestamp_) public view override returns(uint) {
-        return vestedAmount(_OZL, timestamp_);
+    function vestedAmount() public view returns(uint) {
+        return vestedAmount(_OZL, uint64(block.timestamp));
     }
 
 
