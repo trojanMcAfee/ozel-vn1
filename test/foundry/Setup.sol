@@ -163,7 +163,7 @@ contract Setup is Test {
     uint teamAmount = 15_000_000 * 1e18;
     uint totalSupplyOZL = 100_000_000 * 1e18;
     address teamBeneficiary;
-    uint startTimeTeamVesting = block.timestamp + (365 days * 3);
+    uint startTimeTeamVesting = 365 days * 3;
     uint durationTeamVesting = 365 days;
 
    
@@ -513,9 +513,11 @@ contract Setup is Test {
         console.log('x: ', x);
         console.log('y: ', startTimeTeamVesting);
 
+        // startTimeTeamVesting = (365 days * 3) + block.timestamp;
+
         teamVesting = new VestingWallet(
             teamBeneficiary,
-            x,
+            uint64(startTimeTeamVesting + block.timestamp),
             uint64(durationTeamVesting)
         );
         
