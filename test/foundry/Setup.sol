@@ -40,6 +40,7 @@ import {OZLadmin} from "../../contracts/facets/OZLadmin.sol";
 import {OZLrewards} from "../../contracts/facets/OZLrewards.sol";
 
 import {VestingWallet} from "@openzeppelin/contracts/finance/VestingWallet.sol";
+import {OZLvesting} from "../../contracts/OZLvesting.sol";
 
 // import "forge-std/console.sol";
 
@@ -128,7 +129,7 @@ contract Setup is Test {
     OZL internal ozlLogic;
     OZLproxy internal ozlProxy;
     OZLadmin internal ozlAdmin;
-    VestingWallet internal teamVesting;
+    OZLvesting internal teamVesting;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
     uint16 adminFee = 50;
@@ -502,10 +503,11 @@ contract Setup is Test {
     function _initOZLtokenPt2() private {
         teamBeneficiary = owner;
 
-        teamVesting = new VestingWallet(
+        teamVesting = new OZLvesting(
             teamBeneficiary,
             uint64(startTimeTeamVesting + block.timestamp),
-            uint64(durationTeamVesting)
+            uint64(durationTeamVesting),
+            address(ozlProxy)
         );
         
         bytes memory initData = abi.encodeWithSignature(
