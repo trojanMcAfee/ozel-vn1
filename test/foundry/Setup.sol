@@ -501,19 +501,6 @@ contract Setup is Test {
 
     function _initOZLtokenPt2() private {
         teamBeneficiary = owner;
-        // console.log('startTimeTeamVesting: ', startTimeTeamVesting);
-        // console.log('x: ', block.timestamp + (365 days * 3));
-        // console.log('w: ', uint64(block.timestamp + (365 days * 3)));
-        // console.log('stamp: ', block.timestamp);
-
-        uint64 x = uint64(startTimeTeamVesting);
-        console.log('block.timestamp: ', block.timestamp);
-        console.log('3 years: ', 365 days * 3);
-        console.log('sum: ', (365 days * 3) + block.timestamp);
-        console.log('x: ', x);
-        console.log('y: ', startTimeTeamVesting);
-
-        // startTimeTeamVesting = (365 days * 3) + block.timestamp;
 
         teamVesting = new VestingWallet(
             teamBeneficiary,
