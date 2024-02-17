@@ -39,6 +39,8 @@ import {OZLproxy} from "../../contracts/OZLproxy.sol";
 import {OZLadmin} from "../../contracts/facets/OZLadmin.sol";
 import {OZLrewards} from "../../contracts/facets/OZLrewards.sol";
 
+import {VestingWallet} from "@openzeppelin/contracts/finance/VestingWallet.sol";
+
 // import "forge-std/console.sol";
 
 
@@ -124,9 +126,9 @@ contract Setup is Test {
 
     //OZL token
     OZL internal ozlLogic;
-    // TransparentUpgradeableProxy internal ozlProxy;
     OZLproxy internal ozlProxy;
     OZLadmin internal ozlAdmin;
+    VestingWallet internal teamVesting;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
     uint16 adminFee = 50;
@@ -155,9 +157,14 @@ contract Setup is Test {
     uint internal mainFork;
     uint internal redStoneFork;
 
-    uint campaignDuration = 126100000; //4 years
+    //OZL + team vesting
+    uint campaignDuration = 365 days * 4; //126100000 secs
     uint communityAmount = 30_000_000 * 1e18;
+    uint teamAmount = 15_000_000 * 1e18;
     uint totalSupplyOZL = 100_000_000 * 1e18;
+    address teamBeneficiary;
+    uint startTimeTeamVesting = block.timestamp + (365 days * 3);
+    uint durationTeamVesting = 365 days;
 
    
 
@@ -493,9 +500,29 @@ contract Setup is Test {
     }
 
     function _initOZLtokenPt2() private {
+        teamBeneficiary = owner;
+        // console.log('startTimeTeamVesting: ', startTimeTeamVesting);
+        // console.log('x: ', block.timestamp + (365 days * 3));
+        // console.log('w: ', uint64(block.timestamp + (365 days * 3)));
+        // console.log('stamp: ', block.timestamp);
+
+        uint64 x = uint64(startTimeTeamVesting);
+        console.log('block.timestamp: ', block.timestamp);
+        console.log('3 years: ', 365 days * 3);
+        console.log('sum: ', (365 days * 3) + block.timestamp);
+        console.log('x: ', x);
+        console.log('y: ', startTimeTeamVesting);
+
+        teamVesting = new VestingWallet(
+            teamBeneficiary,
+            x,
+            uint64(durationTeamVesting)
+        );
+        
         bytes memory initData = abi.encodeWithSignature(
-            'initialize(string,string,address,uint256,uint256)',
-            "Ozel", "OZL", address(OZ), totalSupplyOZL, communityAmount
+            'initialize(string,string,address,address,uint256,uint256,uint256)',
+            "Ozel", "OZL", address(OZ), address(teamVesting), 
+            totalSupplyOZL, communityAmount, teamAmount
         );
 
         ozlProxy = new OZLproxy(

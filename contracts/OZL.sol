@@ -46,21 +46,18 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         string memory name_, 
         string memory symbol_,
         address ozDiamond_,
+        address teamVestingWallet_,
         uint totalSupply_,
-        uint communityAmount_
+        uint communityAmount_,
+        uint teamAmount_
     ) external initializer {
         __ERC20_init(name_, symbol_);
         __EIP712_init(name_, "1");
         StorageSlot.getAddressSlot(_OZ_DIAMOND_SLOT).value = ozDiamond_;
 
-        /**
-         * Add here later the vesting strategy using
-         * OP's VestingWallet.sol / https://medium.com/cardstack/building-a-token-vesting-contract-b368a954f99
-         * Use linear distribution, not all unlocked at once.
-         * When they vest, add it to circulating supply.
-         */
         _mint(address(this), totalSupply_); 
         _transfer(address(this), ozDiamond_, communityAmount_);
+        _transfer(address(this), teamVestingWallet_, teamAmount_);
     }
 
 
