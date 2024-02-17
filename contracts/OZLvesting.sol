@@ -29,7 +29,7 @@ contract OZLvesting is VestingWallet {
     }
 
     function release() public override {
-        release(_OZL);
+        release(_OZL); //add the release tokens to circulating supply ***
     }
 
     function vestedAmount() public view returns(uint) {
