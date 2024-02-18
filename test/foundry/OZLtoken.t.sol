@@ -470,7 +470,7 @@ contract OZLtokenTest is TestMethods {
     }
 
     //Tests that the nominal difference between OZL's exchange rates (in USD, ETH and rETH)
-    //is less than 0.02%. 
+    //is less than 0.01%. 
     function test_exchangeRate_with_circulatingSupply() public {
         //Pre-condition
         test_claim_OZL();
@@ -486,9 +486,7 @@ contract OZLtokenTest is TestMethods {
         uint diffUSDETH = _getRateDifference(rateUsd, rateEth, OZ.ETH_USD());
         uint diffETHRETH = _getRateDifference(rateEth, rateReth, OZ.rETH_ETH());
 
-        console.log('diffUSDETH: ', diffUSDETH);
         assertTrue(diffUSDETH == 1);
-        console.log('diffETHRETH: ', diffETHRETH);
         assertTrue(diffETHRETH == 0);
     }
 
