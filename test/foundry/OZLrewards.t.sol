@@ -29,7 +29,9 @@ contract OZLrewardsTest is TestMethods {
         assertTrue(ozlBalanceDiamond == communityAmount);
 
         uint ozlBalanceOZLproxy = OZL.balanceOf(address(ozlProxy));
-        assertTrue(ozlBalanceOZLproxy == totalSupplyOZL - ozlBalanceDiamond - teamAmount);
+        assertTrue(
+            ozlBalanceOZLproxy == totalSupplyOZL - ozlBalanceDiamond - teamAmount - guildAmount
+        );
 
         uint rewardRate =  _getRewardRate();
         assertTrue(rewardRate == communityAmount / campaignDuration);
