@@ -154,7 +154,19 @@ contract ozTokenTest is TestMethods {
         assertTrue(ozBalanceAlicePost == 0);
         assertTrue(testTokenBalanceAlicePre == 0);
         assertTrue(testTokenBalanceAlicePost > 99 * 1e18 && testTokenBalanceAlicePost < rawAmount * 1e18);
+    }
 
+
+    function test_x() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+
+        uint preShareRate = ozERC20.totalSupply() * 1e27 / ozERC20.totalShares();
 
     }
+
 }

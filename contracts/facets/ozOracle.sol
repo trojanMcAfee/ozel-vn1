@@ -183,7 +183,7 @@ contract ozOracle {
         return (rETH_USD() * amountReth) / 1 ether;
     }
 
-
+    //check this
     function getLastRewards() external view returns(LastRewards memory) {
         return s.rewards;
     }
