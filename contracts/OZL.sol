@@ -164,7 +164,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
     }
 
 
-    //make this two totalSupplies()
+    //make this two totalSecondarySupplies() (since it excludes totalSupply())
     function circulatingSupply() public view returns(uint) {
         (,uint c_supply,,,) = getOZ().getRewardsData();
         return c_supply;

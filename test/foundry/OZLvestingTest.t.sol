@@ -106,6 +106,7 @@ contract OZLvestingTest is TestMethods {
         vm.warp(startTimeVesting + block.timestamp + 182 days);
         aliceVesting.release();
 
+        //Post-conditions
         uint beneficiaryBalance = OZL.balanceOf(alice);
         uint vested = aliceVesting.vestedAmount();
         assertTrue(beneficiaryBalance == vested);
