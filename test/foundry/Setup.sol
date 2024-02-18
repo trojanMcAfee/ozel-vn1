@@ -131,6 +131,7 @@ contract Setup is Test {
     OZLproxy internal ozlProxy;
     OZLadmin internal ozlAdmin;
     OZLvesting internal teamVesting;
+    OZLvesting internal guildVesting;
 
     uint16 defaultSlippage = 50; //5 -> 0.05%; / 100 -> 1% / 50 -> 0.5%
     uint16 adminFee = 50;
@@ -165,7 +166,7 @@ contract Setup is Test {
     uint teamAmount = 14_000_000 * 1e18;
     uint guildAmount = 1_000_000 * 1e18;
     uint totalSupplyOZL = 100_000_000 * 1e18;
-    uint startTimeTeamVesting = 365 days * 3;
+    uint startTimeVesting = 365 days * 3;
     uint durationTeamVesting = 365 days;
     address teamBeneficiary;
 
@@ -504,21 +505,41 @@ contract Setup is Test {
         ozlAdmin = new OZLadmin();
     }
 
-    function _initOZLtokenPt2() private {
-        teamBeneficiary = owner;
-
-        teamVesting = new OZLvesting(
-            teamBeneficiary,
-            uint64(startTimeTeamVesting + block.timestamp),
+    function _createVestingWallet(address beneficiary_) private returns(OZLvesting) {
+        return new OZLvesting(
+            beneficiary_,
+            uint64(startTimeVesting + block.timestamp),
             uint64(durationTeamVesting),
             address(ozlProxy),
             address(OZ)
         );
+    }
+
+    function _initOZLtokenPt2() private {
+        teamBeneficiary = owner;
+
+        // teamVesting = new OZLvesting(
+        //     teamBeneficiary,
+        //     uint64(startTimeVesting + block.timestamp),
+        //     uint64(durationTeamVesting),
+        //     address(ozlProxy),
+        //     address(OZ)
+        // );
+        teamVesting = _createVestingWallet(teamBeneficiary);
+        guildVesting = _createVestingWallet(protocolGuildSplit);
+
+        // guildVesting = new OZLvesting(
+        //     protocolGuildSplit,
+        //     uint64(startTimeVesting + block.timestamp),
+        //     uint64(durationTeamVesting),
+        //     address(ozlProxy),
+        //     address(OZ)
+        // );
         
         bytes memory initData = abi.encodeWithSignature(
-            'initialize(string,string,address,address,uint256,uint256,uint256)',
-            "Ozel", "OZL", address(OZ), address(teamVesting), 
-            totalSupplyOZL, communityAmount, teamAmount
+            'initialize(string,string,address,address,address,uint256,uint256,uint256,uint256)',
+            "Ozel", "OZL", address(OZ), address(teamVesting), address(guildVesting),
+            totalSupplyOZL, communityAmount, teamAmount, guildAmount
         );
 
         ozlProxy = new OZLproxy(
@@ -572,6 +593,8 @@ contract Setup is Test {
         vm.label(tellorOracle, "tellorOracle");
         vm.label(weETHETHredStone, "weETHETHredStone");
         vm.label(weETHUSDredStone, "weETHUSDredStone");
-        // vm.label(address(wrappedBeacon), 'wozBeacon');
+        vm.label(protocolGuildSplit, 'ProtocolGuild');
+        vm.label(address(teamVesting), 'TeamVestingWallet');
+        vm.label(address(guildVesting), 'GuildVestingWallet');
     }
 }

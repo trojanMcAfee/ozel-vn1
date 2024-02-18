@@ -47,9 +47,11 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         string memory symbol_,
         address ozDiamond_,
         address teamVestingWallet_,
+        address guildVestingWallet_,
         uint totalSupply_,
         uint communityAmount_,
-        uint teamAmount_
+        uint teamAmount_,
+        uint guildAmount_
     ) external initializer {
         __ERC20_init(name_, symbol_);
         __EIP712_init(name_, "1");
@@ -58,6 +60,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         _mint(address(this), totalSupply_); 
         _transfer(address(this), ozDiamond_, communityAmount_);
         _transfer(address(this), teamVestingWallet_, teamAmount_);
+        _transfer(address(this), guildVestingWallet_, guildAmount_);
     }
 
 

@@ -33,6 +33,7 @@ contract OZLvesting is VestingWallet {
         return releasable(_OZL);
     }
 
+    //test this with an active campaing
     function release() public override {
         uint amount = releasable(_OZL);
         release(_OZL); 

@@ -19,7 +19,7 @@ contract TeamVestingTest is TestMethods {
         assertTrue(teamVesting.vestedAmount(uint64(block.timestamp)) == 0);
         IOZL OZL = IOZL(address(ozlProxy));
         
-        vm.warp(startTimeTeamVesting + block.timestamp + 182 days); //Action 1
+        vm.warp(startTimeVesting + block.timestamp + 182 days); //Action 1
 
         uint relesable = teamVesting.releasable();
         uint vested = teamVesting.vestedAmount();
@@ -46,6 +46,43 @@ contract TeamVestingTest is TestMethods {
         vested = teamVesting.vestedAmount();
         assertTrue(vested == teamAmount);
     }
+
+
+    function test_vesting_releasing_guildAlloc() public {
+        //Pre-conditions
+        assertTrue(address(guildVesting) != address(0));
+        assertTrue(guildVesting.releasable() == 0);
+        assertTrue(guildVesting.vestedAmount(uint64(block.timestamp)) == 0);
+        IOZL OZL = IOZL(address(ozlProxy));
+        
+        vm.warp(startTimeVesting + block.timestamp + 182 days); //Action 1
+
+        uint relesable = guildVesting.releasable();
+        uint vested = guildVesting.vestedAmount();
+        assertTrue(relesable == vested);
+
+        (,uint ciculatingSupplyPre,,,) = OZ.getRewardsData();
+        assertTrue(ciculatingSupplyPre == 0);
+
+        guildVesting.release(); //Action 2
+        uint beneficiaryBalance = OZL.balanceOf(protocolGuildSplit);
+        assertTrue(beneficiaryBalance == vested);
+
+        (,uint ciculatingSupplyPost,,,) = OZ.getRewardsData();
+        assertTrue(ciculatingSupplyPost == beneficiaryBalance);
+
+        relesable = guildVesting.releasable();
+        vested = guildVesting.vestedAmount();
+    
+        vm.warp(block.timestamp + 183 days); //Action 3
+
+        relesable = guildVesting.releasable();
+        assertTrue(relesable + beneficiaryBalance == guildAmount);
+
+        vested = guildVesting.vestedAmount();
+        assertTrue(vested == guildAmount);
+    }
+
 
 
 
