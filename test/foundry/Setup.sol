@@ -98,6 +98,7 @@ contract Setup is Test {
     address internal rocketPoolStorage;
     address internal rocketDAOProtocolSettingsDeposit;
     address internal uniFactory;
+    address internal protocolGuildSplit;
 
     address internal testToken;
     address internal secondTestToken;
@@ -161,11 +162,12 @@ contract Setup is Test {
     //OZL + team vesting
     uint campaignDuration = 365 days * 4; //126100000 secs
     uint communityAmount = 30_000_000 * 1e18;
-    uint teamAmount = 15_000_000 * 1e18;
+    uint teamAmount = 14_000_000 * 1e18;
+    uint guildAmount = 1_000_000 * 1e18;
     uint totalSupplyOZL = 100_000_000 * 1e18;
-    address teamBeneficiary;
     uint startTimeTeamVesting = 365 days * 3;
     uint durationTeamVesting = 365 days;
+    address teamBeneficiary;
 
    
 
@@ -227,6 +229,7 @@ contract Setup is Test {
             tellorOracle = 0x8cFc184c877154a8F9ffE0fe75649dbe5e2DBEbf;
             weETHETHredStone = 0x8751F736E94F6CD167e8C5B97E245680FbD9CC36;
             weETHUSDredStone = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
+            protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
 
             network = "ethereum";
             mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)

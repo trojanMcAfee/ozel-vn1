@@ -12,7 +12,7 @@ contract TeamVestingTest is TestMethods {
 
     //Tests the vesting and releasing of vested tokens depending on its time campaign, 
     //and adds the tokens to the circulating supply
-    function test_vesting_releasing() public {
+    function test_vesting_releasing_teamAlloc() public {
         //Pre-conditions
         assertTrue(address(teamVesting) != address(0));
         assertTrue(teamVesting.releasable() == 0);
