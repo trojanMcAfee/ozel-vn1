@@ -10,6 +10,8 @@ import "forge-std/console.sol";
 
 contract TeamVestingTest is TestMethods {
 
+    //Tests the vesting and releasing of vested tokens depending on its time campaign, 
+    //and adds the tokens to the circulating supply
     function test_vesting_releasing() public {
         //Pre-conditions
         assertTrue(address(teamVesting) != address(0));
@@ -23,9 +25,15 @@ contract TeamVestingTest is TestMethods {
         uint vested = teamVesting.vestedAmount();
         assertTrue(relesable == vested);
 
+        (,uint ciculatingSupplyPre,,,) = OZ.getRewardsData();
+        assertTrue(ciculatingSupplyPre == 0);
+
         teamVesting.release(); //Action 2
         uint beneficiaryBalance = OZL.balanceOf(teamBeneficiary);
         assertTrue(beneficiaryBalance == vested);
+
+        (,uint ciculatingSupplyPost,,,) = OZ.getRewardsData();
+        assertTrue(ciculatingSupplyPost == beneficiaryBalance);
 
         relesable = teamVesting.releasable();
         vested = teamVesting.vestedAmount();

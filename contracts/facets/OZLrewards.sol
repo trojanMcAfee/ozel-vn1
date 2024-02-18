@@ -131,6 +131,10 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
             total += IERC20Permit(s.ozTokenRegistry[i].ozToken).totalSupply();
         }
     }
+
+    function addToCirculatingSupply(uint amount_) external { //put an onlyVesting mod here
+        s.r.circulatingSupply += amount_;
+    }
 }
 
 

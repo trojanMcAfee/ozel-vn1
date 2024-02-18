@@ -3,20 +3,25 @@ pragma solidity 0.8.21;
 
 
 import {VestingWallet} from "@openzeppelin/contracts/finance/VestingWallet.sol";
+import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
+
 
 
 contract OZLvesting is VestingWallet {
 
     address private immutable _OZL;
+    address private immutable _ozDiamond; 
 
 
     constructor(
         address beneficiaryAddress_,
         uint64 startTimestamp_,
         uint64 durationSeconds_,
-        address ozl_
+        address ozl_,
+        address diamond_
     ) VestingWallet(beneficiaryAddress_, startTimestamp_, durationSeconds_) {
         _OZL = ozl_;
+        _ozDiamond = diamond_;
     }
 
 
@@ -29,7 +34,9 @@ contract OZLvesting is VestingWallet {
     }
 
     function release() public override {
-        release(_OZL); //add the release tokens to circulating supply ***
+        uint amount = releasable(_OZL);
+        release(_OZL); 
+        ozIDiamond(_ozDiamond).addToCirculatingSupply(amount);
     }
 
     function vestedAmount() public view returns(uint) {

@@ -63,7 +63,7 @@ struct AppStorage {
 
     address[] ozImplementations;
 
-    BitMaps.BitMap pauseMap; 
+    BitMaps.BitMap pauseMap; //Do a Pause package for these ones
     uint16 pauseIndexes;
     mapping(address facet => uint index) contractToIndex;
     bool isSwitchEnabled;

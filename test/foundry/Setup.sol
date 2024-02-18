@@ -399,7 +399,7 @@ contract Setup is Test {
         } else if (id_ == 5) {
             length = 4;
         } else if (id_ == 10) {
-            length = 10;
+            length = 11;
         } else if (id_ == 6) {
             length = 7;
         } else if (id_ == 0) {
@@ -485,6 +485,7 @@ contract Setup is Test {
             selectors[7] = rewardsContract.startNewReciclingCampaign.selector;
             selectors[8] = rewardsContract.setRewardsDataExternally.selector;
             selectors[9] = rewardsContract.getRewardsData.selector;
+            selectors[10] = rewardsContract.addToCirculatingSupply.selector;
         } 
 
         cut = IDiamondCut.FacetCut({
@@ -507,7 +508,8 @@ contract Setup is Test {
             teamBeneficiary,
             uint64(startTimeTeamVesting + block.timestamp),
             uint64(durationTeamVesting),
-            address(ozlProxy)
+            address(ozlProxy),
+            address(OZ)
         );
         
         bytes memory initData = abi.encodeWithSignature(

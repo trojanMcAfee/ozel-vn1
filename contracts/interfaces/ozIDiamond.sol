@@ -140,4 +140,6 @@ interface ozIDiamond {
     function addPauseContract(address facet_) external;
     function isPaused(address contract_) external view;
     function getPausedContracts() external view returns(uint[] memory);
+
+    function addToCirculatingSupply(uint amount_) external;
 }
