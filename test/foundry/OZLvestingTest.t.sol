@@ -4,11 +4,13 @@ pragma solidity 0.8.21;
 
 import {TestMethods} from "./TestMethods.sol";
 import {IOZL} from "../../contracts/interfaces/IOZL.sol";
+import {IOZLvesting} from "../../contracts/interfaces/IOZLvesting.sol";
+import {OZLvesting} from "../../contracts/OZLvesting.sol";
 
 import "forge-std/console.sol";
 
 
-contract TeamVestingTest is TestMethods {
+contract OZLvestingTest is TestMethods {
 
     //Tests the vesting and releasing of vested tokens depending on its time campaign, 
     //and adds the tokens to the circulating supply
@@ -81,6 +83,35 @@ contract TeamVestingTest is TestMethods {
 
         vested = guildVesting.vestedAmount();
         assertTrue(vested == guildAmount);
+    }
+
+
+    function test_pendingAlloc_and_allocate() public {
+        //Pre-conditions
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        uint remainder = OZL.totalSupply() - teamAmount - guildAmount;
+        assertTrue(OZL.pendingAlloc() == remainder);
+
+        OZLvesting aliceVesting = _createVestingWallet(alice);
+        uint toAllocate = 10_000_000 * 1e18;
+
+        //Action 1
+        vm.prank(owner);
+        IOZLvesting aliceVestingTypeSafe = IOZLvesting(address(payable(aliceVesting)));
+        OZL.allocate(aliceVestingTypeSafe, toAllocate);
+        assertTrue(OZL.pendingAlloc() == remainder - toAllocate);
+
+        //Action 2
+        vm.warp(startTimeVesting + block.timestamp + 182 days);
+        aliceVesting.release();
+
+        uint beneficiaryBalance = OZL.balanceOf(alice);
+        uint vested = aliceVesting.vestedAmount();
+        assertTrue(beneficiaryBalance == vested);
+
+        (,uint ciculatingSupply,,,) = OZ.getRewardsData();
+        assertTrue(ciculatingSupply == beneficiaryBalance);
     }
 
 

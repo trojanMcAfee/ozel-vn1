@@ -109,8 +109,8 @@
       }
     },
     "contracts/Errors.sol": {
-      "lastModificationDate": 1708112257469,
-      "contentHash": "5e2fe6094329ea24290cf8143d4ebe2d",
+      "lastModificationDate": 1708276461395,
+      "contentHash": "95aa2aeb4145a492673a59338b4a9f5a",
       "sourceName": "contracts/Errors.sol",
       "solcConfig": {
         "settings": {
@@ -208,8 +208,8 @@
       }
     },
     "contracts/OZL.sol": {
-      "lastModificationDate": 1708275214039,
-      "contentHash": "4c197ce70eb5f7f3f0a69226f0bed023",
+      "lastModificationDate": 1708277958897,
+      "contentHash": "0b2863f07b935116c03e076bcbd06901",
       "sourceName": "contracts/OZL.sol",
       "solcConfig": {
         "settings": {
@@ -243,19 +243,23 @@
       "imports": [
         "contracts/AppStorage.sol",
         "contracts/Errors.sol",
+        "contracts/OZLvesting.sol",
         "contracts/interfaces/IBalancer.sol",
         "contracts/interfaces/IDiamondCut.sol",
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
         "lib/forge-std/src/console.sol",
         "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/finance/VestingWallet.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
         "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
         "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
         "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
         "node_modules/@openzeppelin/contracts/utils/structs/BitMaps.sol",
         "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
@@ -675,6 +679,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/ozIDiamond.sol",
         "contracts/libraries/FixedPointMathLib.sol",
         "contracts/libraries/Helpers.sol",
@@ -1416,8 +1421,8 @@
       }
     },
     "contracts/interfaces/IOZL.sol": {
-      "lastModificationDate": 1707948822267,
-      "contentHash": "9256bd80d0ba17dc069cff8663ce72f7",
+      "lastModificationDate": 1708277794329,
+      "contentHash": "299ab3682f385e8e9123afde46e75b54",
       "sourceName": "contracts/interfaces/IOZL.sol",
       "solcConfig": {
         "settings": {
@@ -1448,7 +1453,9 @@
           "libraries": {}
         }
       },
-      "imports": [],
+      "imports": [
+        "contracts/interfaces/IOZLvesting.sol"
+      ],
       "versionRequirement": "=0.8.21",
       "artifacts": {
         "IOZL": {
@@ -1494,6 +1501,47 @@
       "artifacts": {
         "IOZLrewards": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "IOZLrewards.sol/IOZLrewards.json"
+        }
+      }
+    },
+    "contracts/interfaces/IOZLvesting.sol": {
+      "lastModificationDate": 1708278593795,
+      "contentHash": "4de9f40ce039d913812b7bf1424c9ff4",
+      "sourceName": "contracts/interfaces/IOZLvesting.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "IOZLvesting": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "IOZLvesting.sol/IOZLvesting.json"
         }
       }
     },
@@ -5424,6 +5472,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -5580,6 +5629,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -5738,6 +5788,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -5896,6 +5947,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -6164,6 +6216,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -6322,6 +6375,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -6480,6 +6534,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -6575,6 +6630,165 @@
         }
       }
     },
+    "test/foundry/OZLvestingTest.t.sol": {
+      "lastModificationDate": 1708278849584,
+      "contentHash": "12d8754a731b7b0dfd7703f4f7d96d93",
+      "sourceName": "test/foundry/OZLvestingTest.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "paris",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "contracts/AppStorage.sol",
+        "contracts/Diamond.sol",
+        "contracts/Errors.sol",
+        "contracts/Modifiers.sol",
+        "contracts/OZL.sol",
+        "contracts/OZLproxy.sol",
+        "contracts/OZLvesting.sol",
+        "contracts/ProxyAdmin.sol",
+        "contracts/facets/DiamondCutFacet.sol",
+        "contracts/facets/DiamondLoupeFacet.sol",
+        "contracts/facets/MirrorExchange.sol",
+        "contracts/facets/OZLadmin.sol",
+        "contracts/facets/OZLrewards.sol",
+        "contracts/facets/OwnershipFacet.sol",
+        "contracts/facets/Pools.sol",
+        "contracts/facets/ozBeacon.sol",
+        "contracts/facets/ozCut.sol",
+        "contracts/facets/ozEngine.sol",
+        "contracts/facets/ozLoupe.sol",
+        "contracts/facets/ozOracle.sol",
+        "contracts/facets/ozTokenFactory.sol",
+        "contracts/interfaces/IBalancer.sol",
+        "contracts/interfaces/IDiamondCut.sol",
+        "contracts/interfaces/IDiamondLoupe.sol",
+        "contracts/interfaces/IERC165.sol",
+        "contracts/interfaces/IERC173.sol",
+        "contracts/interfaces/IERC20Permit.sol",
+        "contracts/interfaces/IOZL.sol",
+        "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
+        "contracts/interfaces/IRocketPool.sol",
+        "contracts/interfaces/IUsingTellor.sol",
+        "contracts/interfaces/IWETH.sol",
+        "contracts/interfaces/ozIBeacon.sol",
+        "contracts/interfaces/ozIDiamond.sol",
+        "contracts/interfaces/ozIToken.sol",
+        "contracts/interfaces/wozIToken.sol",
+        "contracts/libraries/FixedPointMathLib.sol",
+        "contracts/libraries/Helpers.sol",
+        "contracts/libraries/LibDiamond.sol",
+        "contracts/libraries/oracle/FullMath.sol",
+        "contracts/libraries/oracle/OracleLibrary.sol",
+        "contracts/libraries/oracle/TickMath.sol",
+        "contracts/ozBeaconProxy.sol",
+        "contracts/ozERC1967Upgrade.sol",
+        "contracts/ozToken.sol",
+        "contracts/ozTokenProxy.sol",
+        "contracts/upgradeInitializers/DiamondInit.sol",
+        "contracts/wozToken.sol",
+        "contracts/wozTokenProxy.sol",
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdInvariant.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdStyle.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IERC20.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "node_modules/@openzeppelin/contracts/finance/VestingWallet.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
+        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
+        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
+        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
+        "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "node_modules/@openzeppelin/contracts/utils/Address.sol",
+        "node_modules/@openzeppelin/contracts/utils/Context.sol",
+        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
+        "node_modules/@openzeppelin/contracts/utils/structs/BitMaps.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
+        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
+        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
+        "test/foundry/AppStorageTests.sol",
+        "test/foundry/BaseMethods.sol",
+        "test/foundry/HelpersLib.sol",
+        "test/foundry/Setup.sol",
+        "test/foundry/TestMethods.sol"
+      ],
+      "versionRequirement": "=0.8.21",
+      "artifacts": {
+        "OZLvestingTest": {
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "OZLvestingTest.t.sol/OZLvestingTest.json"
+        }
+      }
+    },
     "test/foundry/OtherTests.t.sol": {
       "lastModificationDate": 1707779420438,
       "contentHash": "9ca8aeb6b4a986cd8743e88bee3974cf",
@@ -6638,6 +6852,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -6796,6 +7011,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -6892,8 +7108,8 @@
       }
     },
     "test/foundry/Setup.sol": {
-      "lastModificationDate": 1708275192115,
-      "contentHash": "ce538fd8266d6f353632efc4fda658ff",
+      "lastModificationDate": 1708278352919,
+      "contentHash": "1e5583053b84aa5bdbf2e6bdc2b68994",
       "sourceName": "test/foundry/Setup.sol",
       "solcConfig": {
         "settings": {
@@ -6954,6 +7170,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -7040,164 +7257,6 @@
       "artifacts": {
         "Setup": {
           "0.8.21+commit.d9974bed.Darwin.appleclang": "Setup.sol/Setup.json"
-        }
-      }
-    },
-    "test/foundry/TeamVesting.t.sol": {
-      "lastModificationDate": 1708275441126,
-      "contentHash": "a6dffabda281e06fdbcefbfcc9b0886b",
-      "sourceName": "test/foundry/TeamVesting.t.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "contracts/AppStorage.sol",
-        "contracts/Diamond.sol",
-        "contracts/Errors.sol",
-        "contracts/Modifiers.sol",
-        "contracts/OZL.sol",
-        "contracts/OZLproxy.sol",
-        "contracts/OZLvesting.sol",
-        "contracts/ProxyAdmin.sol",
-        "contracts/facets/DiamondCutFacet.sol",
-        "contracts/facets/DiamondLoupeFacet.sol",
-        "contracts/facets/MirrorExchange.sol",
-        "contracts/facets/OZLadmin.sol",
-        "contracts/facets/OZLrewards.sol",
-        "contracts/facets/OwnershipFacet.sol",
-        "contracts/facets/Pools.sol",
-        "contracts/facets/ozBeacon.sol",
-        "contracts/facets/ozCut.sol",
-        "contracts/facets/ozEngine.sol",
-        "contracts/facets/ozLoupe.sol",
-        "contracts/facets/ozOracle.sol",
-        "contracts/facets/ozTokenFactory.sol",
-        "contracts/interfaces/IBalancer.sol",
-        "contracts/interfaces/IDiamondCut.sol",
-        "contracts/interfaces/IDiamondLoupe.sol",
-        "contracts/interfaces/IERC165.sol",
-        "contracts/interfaces/IERC173.sol",
-        "contracts/interfaces/IERC20Permit.sol",
-        "contracts/interfaces/IOZL.sol",
-        "contracts/interfaces/IOZLrewards.sol",
-        "contracts/interfaces/IRocketPool.sol",
-        "contracts/interfaces/IUsingTellor.sol",
-        "contracts/interfaces/IWETH.sol",
-        "contracts/interfaces/ozIBeacon.sol",
-        "contracts/interfaces/ozIDiamond.sol",
-        "contracts/interfaces/ozIToken.sol",
-        "contracts/interfaces/wozIToken.sol",
-        "contracts/libraries/FixedPointMathLib.sol",
-        "contracts/libraries/Helpers.sol",
-        "contracts/libraries/LibDiamond.sol",
-        "contracts/libraries/oracle/FullMath.sol",
-        "contracts/libraries/oracle/OracleLibrary.sol",
-        "contracts/libraries/oracle/TickMath.sol",
-        "contracts/ozBeaconProxy.sol",
-        "contracts/ozERC1967Upgrade.sol",
-        "contracts/ozToken.sol",
-        "contracts/ozTokenProxy.sol",
-        "contracts/upgradeInitializers/DiamondInit.sol",
-        "contracts/wozToken.sol",
-        "contracts/wozTokenProxy.sol",
-        "lib/forge-std/lib/ds-test/src/test.sol",
-        "lib/forge-std/src/Base.sol",
-        "lib/forge-std/src/StdAssertions.sol",
-        "lib/forge-std/src/StdChains.sol",
-        "lib/forge-std/src/StdCheats.sol",
-        "lib/forge-std/src/StdError.sol",
-        "lib/forge-std/src/StdInvariant.sol",
-        "lib/forge-std/src/StdJson.sol",
-        "lib/forge-std/src/StdMath.sol",
-        "lib/forge-std/src/StdStorage.sol",
-        "lib/forge-std/src/StdStyle.sol",
-        "lib/forge-std/src/StdUtils.sol",
-        "lib/forge-std/src/Test.sol",
-        "lib/forge-std/src/Vm.sol",
-        "lib/forge-std/src/console.sol",
-        "lib/forge-std/src/console2.sol",
-        "lib/forge-std/src/interfaces/IERC20.sol",
-        "lib/forge-std/src/interfaces/IMulticall3.sol",
-        "node_modules/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
-        "node_modules/@openzeppelin/contracts/finance/VestingWallet.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/IERC1967.sol",
-        "node_modules/@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol",
-        "node_modules/@openzeppelin/contracts/proxy/Proxy.sol",
-        "node_modules/@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
-        "node_modules/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
-        "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "node_modules/@openzeppelin/contracts/utils/Address.sol",
-        "node_modules/@openzeppelin/contracts/utils/Context.sol",
-        "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
-        "node_modules/@openzeppelin/contracts/utils/structs/BitMaps.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/interfaces/IERC4626Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/proxy/utils/Initializable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/ERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/IERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/draft-IERC20PermitUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/utils/SafeERC20Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/AddressUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/ContextUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/StringsUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/draft-EIP712Upgradeable.sol",
-        "node_modules/@openzeppelin/contracts-upgradeable-4.7.3/utils/math/MathUpgradeable.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol",
-        "node_modules/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
-        "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol",
-        "test/foundry/AppStorageTests.sol",
-        "test/foundry/BaseMethods.sol",
-        "test/foundry/HelpersLib.sol",
-        "test/foundry/Setup.sol",
-        "test/foundry/TestMethods.sol"
-      ],
-      "versionRequirement": "=0.8.21",
-      "artifacts": {
-        "TeamVestingTest": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "TeamVesting.t.sol/TeamVestingTest.json"
         }
       }
     },
@@ -7421,6 +7480,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -7579,6 +7639,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -7732,6 +7793,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -7890,6 +7952,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",
@@ -8049,6 +8112,7 @@
         "contracts/interfaces/IERC20Permit.sol",
         "contracts/interfaces/IOZL.sol",
         "contracts/interfaces/IOZLrewards.sol",
+        "contracts/interfaces/IOZLvesting.sol",
         "contracts/interfaces/IRocketPool.sol",
         "contracts/interfaces/IUsingTellor.sol",
         "contracts/interfaces/IWETH.sol",

@@ -505,36 +505,12 @@ contract Setup is Test {
         ozlAdmin = new OZLadmin();
     }
 
-    function _createVestingWallet(address beneficiary_) private returns(OZLvesting) {
-        return new OZLvesting(
-            beneficiary_,
-            uint64(startTimeVesting + block.timestamp),
-            uint64(durationTeamVesting),
-            address(ozlProxy),
-            address(OZ)
-        );
-    }
 
     function _initOZLtokenPt2() private {
         teamBeneficiary = owner;
 
-        // teamVesting = new OZLvesting(
-        //     teamBeneficiary,
-        //     uint64(startTimeVesting + block.timestamp),
-        //     uint64(durationTeamVesting),
-        //     address(ozlProxy),
-        //     address(OZ)
-        // );
         teamVesting = _createVestingWallet(teamBeneficiary);
         guildVesting = _createVestingWallet(protocolGuildSplit);
-
-        // guildVesting = new OZLvesting(
-        //     protocolGuildSplit,
-        //     uint64(startTimeVesting + block.timestamp),
-        //     uint64(durationTeamVesting),
-        //     address(ozlProxy),
-        //     address(OZ)
-        // );
         
         bytes memory initData = abi.encodeWithSignature(
             'initialize(string,string,address,address,address,uint256,uint256,uint256,uint256)',
@@ -547,6 +523,17 @@ contract Setup is Test {
         );
 
         OZ.storeOZL(address(ozlProxy));
+    }
+
+
+    function _createVestingWallet(address beneficiary_) internal returns(OZLvesting) {
+        return new OZLvesting(
+            beneficiary_,
+            uint64(startTimeVesting + block.timestamp),
+            uint64(durationTeamVesting),
+            address(ozlProxy),
+            address(OZ)
+        );
     }
 
     function _setLabels() private {

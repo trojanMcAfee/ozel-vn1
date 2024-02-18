@@ -16,6 +16,8 @@ import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 import {Helpers} from "./libraries/Helpers.sol";
+import {OZLvesting} from "./OZLvesting.sol";
+import {IOZLvesting} from "./interfaces/IOZLvesting.sol";
 import "./Errors.sol";
 
 import "forge-std/console.sol";
@@ -35,6 +37,10 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
     mapping(address => CountersUpgradeable.Counter) private _nonces;
+
+    uint public pendingAlloc; 
+
+    event Allocated(address indexed receiver, uint indexed amount);
 
 
     constructor() {
@@ -61,8 +67,17 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         _transfer(address(this), ozDiamond_, communityAmount_);
         _transfer(address(this), teamVestingWallet_, teamAmount_);
         _transfer(address(this), guildVestingWallet_, guildAmount_);
+        
+        pendingAlloc = totalSupply_ - teamAmount_ - guildAmount_;
     }
 
+
+    function allocate(IOZLvesting receiver_, uint amount_) external { //put here an onlyOwner
+        if (amount_ > pendingAlloc) revert OZError34(amount_);
+        _transfer(address(this), address(receiver_), amount_);
+        pendingAlloc -= amount_;
+        emit Allocated(address(receiver_), amount_);
+    }
 
 
     function getExchangeRate() external view returns(uint) {
