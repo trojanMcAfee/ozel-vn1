@@ -164,6 +164,8 @@ contract ozTokenTest is TestMethods {
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
+        console.log('totalShares *****: ', ozERC20.totalShares());
+        console.log('sharesOf: ', ozERC20.sharesOf(alice));
 
         uint balPre = ozERC20.balanceOf(alice);
         console.log('ozBal alice - pre: ', balPre);

@@ -402,7 +402,7 @@ contract BaseMethods is Setup {
 
     function _mock_ETH_trend(Dir direction_, uint bps_) internal {
         _mock_ETH_USD(direction_, bps_);
-        _mock_rETH_ETH(direction_, bps_);
+        // _mock_rETH_ETH(direction_, bps_);
     }
 
 
