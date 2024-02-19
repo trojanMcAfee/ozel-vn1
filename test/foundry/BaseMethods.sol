@@ -6,7 +6,7 @@ import {HelpersLib} from "./HelpersLib.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {IPool} from "../../contracts/interfaces/IBalancer.sol";
 import {Setup} from "./Setup.sol";
-import {Type} from "./AppStorageTests.sol";
+import {Type, Dir} from "./AppStorageTests.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {wozIToken} from "../../contracts/interfaces/wozIToken.sol";
 import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
@@ -371,6 +371,7 @@ contract BaseMethods is Setup {
         return duration;
     }
 
+    
     function _mock_rETH_ETH() internal {
         uint bpsIncrease = 400; //92 - 400
         uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
@@ -379,6 +380,45 @@ contract BaseMethods is Setup {
             rEthEthChainlink,
             abi.encodeWithSignature('latestRoundData()'),
             abi.encode(uint80(1), int(rETHETHmock), uint(0), block.timestamp, uint80(0))
+        ); 
+    }
+
+    //Put this together with ^^^^
+    function _mock_rETH_ETH(Dir direction_, uint bps_) internal {
+        uint rETHETHmock = OZ.rETH_ETH();
+
+        if (direction_ == Dir.UP) {
+            rETHETHmock += bps_.mulDivDown(OZ.rETH_ETH(), 10_000);
+        } else {
+            rETHETHmock -= bps_.mulDivDown(OZ.rETH_ETH(), 10_000);
+        }
+
+        vm.mockCall( 
+            rEthEthChainlink,
+            abi.encodeWithSignature('latestRoundData()'),
+            abi.encode(uint80(1), int(rETHETHmock), uint(0), block.timestamp, uint80(0))
+        ); 
+    }
+
+    function _mock_ETH_trend(Dir direction_, uint bps_) internal {
+        _mock_ETH_USD(direction_, bps_);
+        _mock_rETH_ETH(direction_, bps_);
+    }
+
+
+    function _mock_ETH_USD(Dir direction_, uint bps_) internal {
+        uint ETHUSDmock = OZ.ETH_USD();
+
+        if (direction_ == Dir.DOWN) {
+            ETHUSDmock -= bps_.mulDivDown(OZ.ETH_USD(), 10_000);
+        } else {
+            ETHUSDmock += OZ.ETH_USD() + bps_.mulDivDown(OZ.ETH_USD(), 10_000);
+        }
+
+        vm.mockCall( 
+            ethUsdChainlink,
+            abi.encodeWithSignature('latestRoundData()'),
+            abi.encode(uint80(1), int(ETHUSDmock / 1e10), uint(0), block.timestamp, uint80(0))
         ); 
     }
 

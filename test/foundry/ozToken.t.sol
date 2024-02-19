@@ -6,7 +6,7 @@ import {TestMethods} from "./TestMethods.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersLib} from "./HelpersLib.sol";
-import {Type} from "./AppStorageTests.sol";
+import {Type, Dir} from "./AppStorageTests.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {AmountsIn} from "../../contracts/AppStorage.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -157,15 +157,74 @@ contract ozTokenTest is TestMethods {
     }
 
 
+    function test_rETH_USD_down() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+
+        uint balPre = ozERC20.balanceOf(alice);
+        console.log('ozBal alice - pre: ', balPre);
+
+        // _mock_ETH_trend(Dir.UP, 400);
+        _mock_rETH_ETH();
+        //check the mock functions, if they're returning correctly
+        //finish down test
+        //continue with APR test using either rETH_ETH value that goes constantly up, or...
+        //using USD values, but would need to use Chainlink for historical data and comparrison
+
+        uint balPost = ozERC20.balanceOf(alice);
+        console.log('ozBal alice - post: ', balPost);
+
+        // uint ethUsd = OZ.ETH_USD();
+        // console.log('ethUsd - pre down: ', ethUsd);
+
+        // console.log('-----');
+
+        // _mock_ETH_USD(Dir.DOWN);
+
+        // uint ethUsd = OZ.ETH_USD();
+        // console.log('ethUsd - post down: ', ethUsd);
+
+        // balPost = ozERC20.balanceOf(alice);
+        // console.log('ozBal alice - post down: ', balPost);
+    }
+
+
     function test_x() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        console.log('amountIn: ', amountIn);
         
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
 
-        uint preShareRate = ozERC20.totalSupply() * 1e27 / ozERC20.totalShares();
+        uint balPre = ozERC20.balanceOf(alice);
+        console.log('ozBal alice - pre: ', balPre);
+
+        _mock_rETH_ETH();
+
+        uint balPost = ozERC20.balanceOf(alice);
+        console.log('ozBal alice: ', balPost);
+
+        uint delta = (balPost - balPre) * 1e18;
+        console.log('ozBal delta - amp: ', delta);
+        console.log('ozBal delta - no amp: ', balPost - balPre);
+
+        uint apr = uint(delta / amountIn) * uint(uint(365) / uint(30)) * 100;
+        console.log('apr: ', apr);
+
+       //------
+        console.log('-----');
+
+        uint rethUsd = OZ.rETH_USD();
+        console.log('rethUsd: ', rethUsd);
+
+        uint ethUsd = OZ.ETH_USD();
+        console.log('ethUsd: ', ethUsd);
 
     }
 

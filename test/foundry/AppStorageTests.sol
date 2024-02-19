@@ -11,6 +11,11 @@ enum Type {
     OUT
 }
 
+enum Dir {
+    UP,
+    DOWN
+}
+
 struct RequestType {
     IVault.JoinPoolRequest join;
     IVault.ExitPoolRequest exit;

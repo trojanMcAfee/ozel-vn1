@@ -71,6 +71,7 @@ contract ozOracle {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
+
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
             answer > 0 && 
@@ -179,6 +180,11 @@ contract ozOracle {
         uint amountReth = ozToken_ == address(this) ?
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_]; 
+
+        console.log('-----');
+        console.log('rETH_USD(): ', rETH_USD());
+        console.log('amountReth: ', amountReth);
+        console.log('ETH_USD(): ', ETH_USD());
 
         return (rETH_USD() * amountReth) / 1 ether;
     }
