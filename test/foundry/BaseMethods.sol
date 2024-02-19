@@ -412,7 +412,7 @@ contract BaseMethods is Setup {
         if (direction_ == Dir.DOWN) {
             ETHUSDmock -= bps_.mulDivDown(OZ.ETH_USD(), 10_000);
         } else {
-            ETHUSDmock += OZ.ETH_USD() + bps_.mulDivDown(OZ.ETH_USD(), 10_000);
+            ETHUSDmock += bps_.mulDivDown(OZ.ETH_USD(), 10_000);
         }
 
         vm.mockCall( 

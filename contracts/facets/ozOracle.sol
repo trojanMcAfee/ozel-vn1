@@ -181,10 +181,10 @@ contract ozOracle {
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_]; 
 
-        console.log('-----');
-        console.log('rETH_USD(): ', rETH_USD());
-        console.log('amountReth: ', amountReth);
-        console.log('ETH_USD(): ', ETH_USD());
+        // console.log('-----');
+        // console.log('rETH_USD(): ', rETH_USD());
+        // console.log('amountReth: ', amountReth);
+        // console.log('ETH_USD(): ', ETH_USD());
 
         return (rETH_USD() * amountReth) / 1 ether;
     }

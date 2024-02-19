@@ -168,32 +168,29 @@ contract ozTokenTest is TestMethods {
         uint balPre = ozERC20.balanceOf(alice);
         console.log('ozBal alice - pre: ', balPre);
 
-        // _mock_ETH_trend(Dir.UP, 400);
-        _mock_rETH_ETH();
+        _mock_ETH_trend(Dir.UP, 400);
+        
+        uint balPost = ozERC20.balanceOf(alice);
+        console.log('ozBal alice - post: ', balPost);
+
+        _mock_rETH_ETH(Dir.UP, 200);
+
+        balPost = ozERC20.balanceOf(alice);
+        console.log('ozBal alice - post reth only: ', balPost);
+
+        _mock_ETH_trend(Dir.DOWN, 500);
+
+        balPost = ozERC20.balanceOf(alice);
+        console.log('ozBal alice - post down: ', balPost);
+    }
+
+
+    function test_x() public {
         //check the mock functions, if they're returning correctly
         //finish down test
         //continue with APR test using either rETH_ETH value that goes constantly up, or...
         //using USD values, but would need to use Chainlink for historical data and comparrison
 
-        uint balPost = ozERC20.balanceOf(alice);
-        console.log('ozBal alice - post: ', balPost);
-
-        // uint ethUsd = OZ.ETH_USD();
-        // console.log('ethUsd - pre down: ', ethUsd);
-
-        // console.log('-----');
-
-        // _mock_ETH_USD(Dir.DOWN);
-
-        // uint ethUsd = OZ.ETH_USD();
-        // console.log('ethUsd - post down: ', ethUsd);
-
-        // balPost = ozERC20.balanceOf(alice);
-        // console.log('ozBal alice - post down: ', balPost);
-    }
-
-
-    function test_x() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
