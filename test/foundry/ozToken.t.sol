@@ -13,6 +13,8 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import "../../contracts/Errors.sol";
 import {Dummy1} from "./Dummy1.sol";
 import {NewToken} from "../../contracts/AppStorage.sol";
+import "@prb/math/src/UD60x18.sol";
+import {PRBMathCastingUint256} from "@prb/math/src/casting/Uint256.sol";
 
 import "forge-std/console.sol";
 
@@ -20,6 +22,12 @@ import "forge-std/console.sol";
 contract ozTokenTest is TestMethods {
 
     using SafeERC20 for IERC20;
+    using PRBMathCastingUint256 for uint;
+
+    // uint SCALE = 1e18;
+    // uint HALF_SCALE = 5e17;
+    // uint LOG2_E = 1442695040888963407;
+    // uint MAX_SD59x18 = 57896044618658097711785492504343953926634992332820282019728792003956564819967;
 
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
     function test_mint_catch_internal_errors() public {
@@ -224,7 +232,41 @@ contract ozTokenTest is TestMethods {
 
         uint ethUsd = OZ.ETH_USD();
         console.log('ethUsd: ', ethUsd);
+    }
+
+    //----------------------------------------      
+
+
+    function test_y() public {
+        
+
+        // uint num = 54802476401439357 * 1e18;
+
+        // UD60x18 y = num.intoUD60x18();
+        // uint num2 = intoUint256(y.ln());
+        // console.log('num2: ', num2);
+
+        //-----
+
+        uint a1 = 1934464428151493937044;
+        uint a2 = 1837741206733939183658;
+
+        uint b = 54802476401439357 * 1e18;
+        uint base = 1108895170451311786;
+        UD60x18 b_prb = b.intoUD60x18();
+        uint b_prime = intoUint256(b_prb.ln());
+
+        uint N = 1e18;
+        uint adjustment = base * 1e17;
+
+        uint result1 = ((a1 - base) * b_prime) / N + adjustment;
+        uint result2 = ((a2 - base) * b_prime) / N + adjustment;
+
+        console.log('result1: ', result1);
+        console.log('result2: ', result2);
 
     }
+
+
 
 }

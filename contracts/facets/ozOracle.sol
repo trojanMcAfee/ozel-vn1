@@ -177,7 +177,7 @@ contract ozOracle {
 
     
     function getUnderlyingValue(address ozToken_) external view returns(uint) {
-        uint amountReth = ozToken_ == address(this) ?
+        uint amountReth = ozToken_ == address(this) ? 
             IERC20Permit(s.rETH).balanceOf(address(this)) :
             s.valuePerOzToken[ozToken_]; 
 
@@ -188,6 +188,12 @@ contract ozOracle {
         console.log('rETH_ETH(): ', rETH_ETH());
         console.log('is: ', (rETH_USD() * amountReth) / 1 ether);
         console.log('-----');
+
+        // uint a = rETH_USD();
+        // uint b = amountReth;
+        // uint c = 1 ether;
+
+        // uint x = (a * b) 
 
         return (rETH_USD() * amountReth) / 1 ether;
     }
