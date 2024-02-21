@@ -550,7 +550,7 @@ contract TestMethods is BaseMethods {
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
-        _createAndMintOzTokens(address(ozERC20), amountIn, bob, BOB_PK, false, false, Type.IN);
+        _createAndMintOzTokens(address(ozERC20), amountIn / 2, bob, BOB_PK, false, false, Type.IN);
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
 
         uint ozAmountIn = ozERC20.balanceOf(alice) / 10;
@@ -577,5 +577,13 @@ contract TestMethods is BaseMethods {
             percentageDiffAmounts < percentageDiffIliquid ||
             percentageDiffAmounts < percentageDiffPaused
         );
+
+        console.log('');
+        console.log('shares alice: ', ozERC20.sharesOf(alice));
+        console.log('shares bob: ', ozERC20.sharesOf(bob));
+        console.log('oz bal alice: ', ozERC20.balanceOf(alice));
+        console.log('oz bal bob: ', ozERC20.balanceOf(bob));
+        console.log('totalShares: ', ozERC20.totalShares());
+        // console.log('totalAssets)
     }
 }

@@ -13,8 +13,10 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import "../../contracts/Errors.sol";
 import {Dummy1} from "./Dummy1.sol";
 import {NewToken} from "../../contracts/AppStorage.sol";
+
 import "@prb/math/src/UD60x18.sol";
 import {PRBMathCastingUint256} from "@prb/math/src/casting/Uint256.sol";
+import {ABDKMathQuad} from "../../contracts/libraries/ABDKMathQuad.sol";
 
 import "forge-std/console.sol";
 
@@ -23,6 +25,9 @@ contract ozTokenTest is TestMethods {
 
     using SafeERC20 for IERC20;
     using PRBMathCastingUint256 for uint;
+
+    using ABDKMathQuad for uint;
+    using ABDKMathQuad for bytes16;
 
     // uint SCALE = 1e18;
     // uint HALF_SCALE = 5e17;
@@ -171,9 +176,10 @@ contract ozTokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
-        _mintOzTokens(ozERC20, alice, testToken, amountIn);
-        console.log('totalShares *****: ', ozERC20.totalShares());
+        _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
+        // console.log('totalShares *****: ', ozERC20.totalShares());
         console.log('sharesOf: ', ozERC20.sharesOf(alice));
+        console.log('amountIn: ', amountIn / 2);
 
         uint balPre = ozERC20.balanceOf(alice);
         console.log('ozBal alice - pre: ', balPre);
@@ -181,7 +187,7 @@ contract ozTokenTest is TestMethods {
         _mock_ETH_trend(Dir.UP, 400);
         
         uint balPost = ozERC20.balanceOf(alice);
-        console.log('ozBal alice - post: ', balPost);
+        console.log('ozBal alice - post up: ', balPost);
 
         _mock_rETH_ETH(Dir.UP, 200);
 
@@ -196,7 +202,6 @@ contract ozTokenTest is TestMethods {
 
 
     function test_x() public {
-        //check the mock functions, if they're returning correctly
         //finish down test
         //continue with APR test using either rETH_ETH value that goes constantly up, or...
         //using USD values, but would need to use Chainlink for historical data and comparrison
@@ -239,13 +244,6 @@ contract ozTokenTest is TestMethods {
 
     function test_y() public {
         
-
-        // uint num = 54802476401439357 * 1e18;
-
-        // UD60x18 y = num.intoUD60x18();
-        // uint num2 = intoUint256(y.ln());
-        // console.log('num2: ', num2);
-
         //-----
 
         uint a1 = 1934464428151493937044;
@@ -262,9 +260,31 @@ contract ozTokenTest is TestMethods {
         uint result1 = ((a1 - base) * b_prime) / N + adjustment;
         uint result2 = ((a2 - base) * b_prime) / N + adjustment;
 
-        console.log('result1: ', result1);
-        console.log('result2: ', result2);
+        console.log('result1: ', result1 / 1e27);
+        console.log('result2: ', result2 / 1e27);
 
+    }
+
+    function test_z() public {
+        uint a1 = 1934464428151493937044;
+        uint a2 = 1837741206733939183658;
+
+        uint b = 54802476401439357 * 1e18;
+        uint base = 1108895170451311786;
+        uint b_prime = uint(uint128(bytes16(uint128(base)).ln()));
+        uint b_prime2 = base.fromUInt().ln().toUInt();
+
+        console.log('prime: ', b_prime);
+        console.log('prime2: ', b_prime2);
+
+        uint N = 1e18;
+        uint adjustment = base * 1e17;
+
+        uint result1 = ((a1 - base) * b_prime) / N + adjustment;
+        uint result2 = ((a2 - base) * b_prime) / N + adjustment;
+
+        console.log('result11: ', result1);
+        console.log('result2: ', result2);
     }
 
 
