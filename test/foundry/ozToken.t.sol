@@ -170,6 +170,18 @@ contract ozTokenTest is TestMethods {
     }
 
 
+    function test_oneUser() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
+        uint balPre = ozERC20.balanceOf(alice);
+        console.log('ozBal alice - pre: ', balPre);
+    }
+
+
     function test_rETH_USD_down() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 

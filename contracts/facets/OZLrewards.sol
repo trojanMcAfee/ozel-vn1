@@ -119,7 +119,7 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
     function _getUserTotalOzTokens(address user_) private view returns(uint total) {    
         uint length = s.ozTokenRegistry.length;
         
-        for (uint8 i=0; i < length; i++) {
+        for (uint8 i=0; i < length; i++) { //<--- ****
             total += IERC20Permit(s.ozTokenRegistry[i].ozToken).balanceOf(user_);
         }
     }

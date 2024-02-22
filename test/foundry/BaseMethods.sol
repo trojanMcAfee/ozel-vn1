@@ -117,7 +117,7 @@ contract BaseMethods is Setup {
             minAmountsOut
         );
 
-        ozERC20_.mint(abi.encode(amounts, user_), user_);         
+        ozERC20_.mint(abi.encode(amounts, user_), user_);   
         vm.stopPrank();
     }
 
