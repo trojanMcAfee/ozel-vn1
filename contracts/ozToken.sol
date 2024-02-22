@@ -236,6 +236,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _convertToSharesFromUnderlying(uint assets_) private view returns(uint) {
+        console.log('--- in _convertToSharesFromUnderlying ---');
+        console.log('totalAssets: ', totalAssets());
+        console.log('assets: ', assets_);
+        console.log('totalShares: ', totalShares());
+        console.log('is: ', assets_.mulDivDown(totalShares(), totalAssets()));
+        console.log('--- end _convertToSharesFromUnderlying ---');
+        
         return assets_.mulDivDown(totalShares(), totalAssets());
     }
 
@@ -319,9 +326,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     //remove mulDivDown since it divides by 1. 
     function _convertToAssets(uint256 shares_) private view returns (uint256 assets) { 
-        // console.log('--- in _convertToAssets ---');
-        // console.log('shares: ', shares_);
-        // console.log('totalShares: ', totalShares());
+        console.log('--- in _convertToAssets ---');
+        console.log('shares: ', shares_);
+        console.log('totalShares: ', totalShares());
         // console.log('under: ', ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)));
         // console.log('--- end of _convertToAssets ---');
 
@@ -329,6 +336,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         
         ozIDiamond OZ = ozIDiamond(_ozDiamond);
         uint reth_eth = Helpers.rETH_ETH(OZ);
+
+        console.log('reth_eth: ', reth_eth);
+        console.log('--- end of _convertToAssets ---');
+
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 

@@ -176,28 +176,55 @@ contract ozTokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
+        console.log('amountIn - bob: ', amountIn);
+
         _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
-        // console.log('totalShares *****: ', ozERC20.totalShares());
-        console.log('sharesOf: ', ozERC20.sharesOf(alice));
-        console.log('amountIn: ', amountIn / 2);
-
-        uint balPre = ozERC20.balanceOf(alice);
-        console.log('ozBal alice - pre: ', balPre);
-
-        _mock_ETH_trend(Dir.UP, 400);
+        console.log('-- start bob *** --');
+        _mintOzTokens(ozERC20, bob, testToken, amountIn);
+        console.log('-- end bob *** --');
         
-        uint balPost = ozERC20.balanceOf(alice);
-        console.log('ozBal alice - post up: ', balPost);
+        // console.log('shares alice: ', ozERC20.sharesOf(alice));
+        console.log('shares bob: ', ozERC20.sharesOf(bob));
 
-        _mock_rETH_ETH(Dir.UP, 200);
+        console.log('');
 
-        balPost = ozERC20.balanceOf(alice);
-        console.log('ozBal alice - post reth only: ', balPost);
+        // uint balPre = ozERC20.balanceOf(alice);
+        // console.log('ozBal alice - pre: ', balPre);
 
-        _mock_ETH_trend(Dir.DOWN, 500);
+        uint balPre2 = ozERC20.balanceOf(bob);
+        console.log('ozBal bob - pre: ', balPre2);
 
-        balPost = ozERC20.balanceOf(alice);
-        console.log('ozBal alice - post down: ', balPost);
+        // _mock_ETH_trend(Dir.UP, 400);
+
+        // console.log('');
+        
+        // uint balPost = ozERC20.balanceOf(alice);
+        // console.log('ozBal alice - post up: ', balPost);
+
+        // balPost = ozERC20.balanceOf(bob);
+        // console.log('ozBal bob - post up: ', balPost);
+
+        // _mock_rETH_ETH(Dir.UP, 200);
+
+        // console.log('');
+
+        // balPost = ozERC20.balanceOf(alice);
+        // console.log('ozBal alice - post reth only: ', balPost);
+
+        // balPost = ozERC20.balanceOf(bob);
+        // console.log('ozBal bob - post reth only: ', balPost);
+
+        // _mock_ETH_trend(Dir.DOWN, 500);
+
+        // console.log('');
+
+        // balPost = ozERC20.balanceOf(alice);
+        // console.log('ozBal alice - post down: ', balPost);
+
+        // balPost = ozERC20.balanceOf(bob);
+        // console.log('ozBal bob - post down: ', balPost);
+
+        // console.log('totalShares *****: ', ozERC20.totalShares());
     }
 
 
