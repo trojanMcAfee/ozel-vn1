@@ -299,6 +299,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint shares = convertToShares(amts.ozAmountIn);
 
 
+        console.log('amts.ozAmountIn: ', amts.ozAmountIn);
         console.log('shares: ', shares);
         console.log('accountShares: ', accountShares);
         console.log('owner: ', owner_);
