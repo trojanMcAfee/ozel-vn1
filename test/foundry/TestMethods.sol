@@ -160,13 +160,20 @@ contract TestMethods is BaseMethods {
         assertTrue(sharesBob == sharesCharlie * 2);
         assertTrue(sharesBob / 2 == sharesCharlie);
 
-        uint balanceAlice = ozERC20.balanceOf(alice);
-        uint balanceBob = ozERC20.balanceOf(bob);
-        uint balanceCharlie = ozERC20.balanceOf(charlie);
+        uint balanceAlice = _fm(ozERC20.balanceOf(alice));
+        uint balanceBob = _fm(ozERC20.balanceOf(bob));
+        uint balanceCharlie = _fm(ozERC20.balanceOf(charlie));
     
         assertTrue(balanceAlice / 2 == balanceBob);
         assertTrue(balanceAlice / 4 == balanceCharlie);
         assertTrue(balanceBob == balanceCharlie * 2);
+
+        console.log('bal alice: ', ozERC20.balanceOf(alice));
+        console.log('bal bob: ', ozERC20.balanceOf(bob));
+        console.log('bal charlie: ', ozERC20.balanceOf(charlie));
+
+
+        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
         assertTrue(ozERC20.totalSupply() == balanceAlice + balanceCharlie + balanceBob);
         assertTrue(ozERC20.totalAssets() == (rawAmount + rawAmount / 2 + rawAmount / 4) * 1e6);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);

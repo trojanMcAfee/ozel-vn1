@@ -469,4 +469,8 @@ contract BaseMethods is Setup {
         return (oldSlot0data, oldSharedCash, cashSlot);
     }
 
+    function _fm(uint num_) internal pure returns(uint) {
+        return num_ / 1e6;
+    }
+
 }
