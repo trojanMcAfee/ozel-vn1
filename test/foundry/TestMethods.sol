@@ -278,7 +278,10 @@ contract TestMethods is BaseMethods {
 
         //Action
         vm.startPrank(alice);
+        console.log('alice: ', alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
+        console.log('allow test: ', ozERC20.allowance(alice, address(ozDiamond)));
+        console.log('address(ozDiamond): ', address(ozDiamond));
 
         console.log('shares alice before redeem: ', ozERC20.sharesOf(alice));
         ozERC20.redeem(redeemData, alice); 

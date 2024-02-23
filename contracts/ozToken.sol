@@ -169,19 +169,33 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //-----------
 
-    function _convertToShares(uint assets_) private view returns(uint) { 
+    function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
+        console.log('');
         console.log('--- in _convertToShares ---');
-        // console.log('assets_: ', assets_);
-        // console.log('totalShares: ', totalShares());
+        console.log('assets_: ', assets_);
+        console.log('totalShares: ', totalShares());
+        console.log('totalAssets: ', totalAssets());
 
         ozIDiamond OZ = ozIDiamond(_ozDiamond);
         uint reth_eth = Helpers.rETH_ETH(OZ);
-        // console.log('reth_eth: ', reth_eth);
+        console.log('reth_eth: ', reth_eth);
 
         // shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
 
+        return ( (assets_.mulDivUp(totalShares(), reth_eth)) / 1e5 ) / _calculateScalingFactor(account_);
+        // return (assets_.mulDivUp(totalShares(), reth_eth)) / 1e5;
 
-        return (assets_.mulDivUp(totalShares(), reth_eth)) / 1e5;
+        // return assets_.mulDivUp(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(_ozDiamond));
+    }
+
+    function _convertToShares(uint assets_) private view returns(uint) { 
+        ozIDiamond OZ = ozIDiamond(_ozDiamond);
+        uint reth_eth = Helpers.rETH_ETH(OZ);
+
+        // return (assets_.mulDivUp(totalShares(), reth_eth)) / 1e5;
+
+        return assets_.mulDivUp(totalShares(), reth_eth);
+
         // return assets_.mulDivUp(totalShares(), ozIDiamond(_ozDiamond).getUnderlyingValue(_ozDiamond));
     }
 
@@ -296,17 +310,16 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         (AmountsOut memory amts,) = abi.decode(data_, (AmountsOut, address));
 
         uint256 accountShares = sharesOf(owner_);
-        uint shares = convertToShares(amts.ozAmountIn);
+        uint shares = subConvertToShares(amts.ozAmountIn, owner_);
 
 
         console.log('ozAmountIn: ', amts.ozAmountIn);
         console.log('shares converted from ozAmountIn: ', shares);
         console.log('accountShares - shares the owner has in contract: ', accountShares);
-        console.log('owner: ', owner_);
+        // console.log('owner: ', owner_);
 
 
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
-        console.log(2);
 
         uint assets = previewRedeem(shares);
 
@@ -337,8 +350,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     ) internal {
         if (from == address(0) || to == address(0)) revert OZError04(from, to);
 
-        uint256 shares = convertToShares(amount);
+        uint256 shares = convertToShares(amount) / _calculateScalingFactor(from);
+        //check if i can put here ^^ another method like subConvertTo_ that joins convery and scaling
+
         uint256 fromShares = _shares[from];
+
+        console.log('');
+        console.log('--- in _transfer ---');
+        console.log('shares converted from amount-assets (of sender): ', shares);
+        console.log('fromShares - shares in contract from sender: ', fromShares);
 
         if (fromShares < shares) revert OZError07(from, fromShares, shares);
 
@@ -392,14 +412,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
-        // console.log('');
-        // console.log('--- in scaling factor ---');
-        // console.log('_assets[account_]: ', _assets[account_]);
-        // console.log('subBalanceOf(account_): ', subBalanceOf(account_));
+        console.log('');
+        console.log('--- in scaling factor ---');
+        console.log('_assets[account_]: ', _assets[account_]);
+        console.log('subBalanceOf(account_): ', subBalanceOf(account_));
+        console.log('');
 
         uint x = (_assets[account_] * 1e12) / subBalanceOf(account_);
         
-        // console.log('factor: ', x);
+        console.log('factor: ', x);
 
         return x;
     }
@@ -422,6 +443,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function convertToShares(uint256 assets) public view returns (uint256 shares) {
         return _convertToShares(assets);
+    }
+
+    function subConvertToShares(uint256 assets, address account_) public view returns (uint256 shares) {
+        return _subConvertToShares(assets, account_);
     }
 
     function _setAssetsAndShares(uint assets_, uint shares_, bool addOrSub_) private {

@@ -32,6 +32,7 @@ import {Modifiers} from "../Modifiers.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -124,7 +125,19 @@ contract ozEngine is Modifiers { //change name to ozEngine
         uint[] memory minAmountsOut = amts.minAmountsOut;
         uint amountInReth = amts.amountInReth;
 
-        msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
+        console.log(3);
+        console.log('');
+        console.log('oz bal owner: ', ozIToken(msg.sender).balanceOf(owner_));
+        console.log('amts.ozAmountIn: ', amts.ozAmountIn);
+        console.log('allow in engine: ', ozIToken(msg.sender).allowance(owner_, address(this)));
+        console.log('address(this) - should dia: ', address(this));
+        console.log('owner - shoud alice: ', owner_);
+
+        // msg.sender.safeTransfer(address(this), amts.ozAmountIn);
+        ERC20(msg.sender).transferFrom(owner_, address(this), amts.ozAmountIn);
+        
+        // msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
+        console.log(4);
 
         //Swap rETH to WETH
         uint amountOut = _checkPauseAndSwap(
@@ -239,7 +252,7 @@ contract ozEngine is Modifiers { //change name to ozEngine
     }
 
 
-    function _swapBalancer(
+    function _swapBalancer( //error here in the swap, tokenIn/Out, bals, etc
         address tokenIn_, 
         address tokenOut_, 
         uint amountIn_,
