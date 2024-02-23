@@ -170,17 +170,6 @@ contract ozTokenTest is TestMethods {
     }
 
 
-    function test_oneUser() public {
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-
-        _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
-        uint balPre = ozERC20.balanceOf(alice);
-        console.log('ozBal alice - pre: ', balPre);
-    }
-
     //Tests that when ETHUSD changes, ozToken balances stay the same,
     //and when rETHETH goes up (due to rewards), balances increase.
     function test_ETH_trend() public {
@@ -225,94 +214,5 @@ contract ozTokenTest is TestMethods {
             ozBalanceBobPostDown == ozBalanceBobPostRewards 
         );
     }
-
-
-    function test_x() public {
-        //finish down test
-        //continue with APR test using either rETH_ETH value that goes constantly up, or...
-        //using USD values, but would need to use Chainlink for historical data and comparrison
-
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        console.log('amountIn: ', amountIn);
-        
-        _mintOzTokens(ozERC20, alice, testToken, amountIn);
-
-        uint balPre = ozERC20.balanceOf(alice);
-        console.log('ozBal alice - pre: ', balPre);
-
-        _mock_rETH_ETH();
-
-        uint balPost = ozERC20.balanceOf(alice);
-        console.log('ozBal alice: ', balPost);
-
-        uint delta = (balPost - balPre) * 1e18;
-        console.log('ozBal delta - amp: ', delta);
-        console.log('ozBal delta - no amp: ', balPost - balPre);
-
-        uint apr = uint(delta / amountIn) * uint(uint(365) / uint(30)) * 100;
-        console.log('apr: ', apr);
-
-       //------
-        console.log('-----');
-
-        uint rethUsd = OZ.rETH_USD();
-        console.log('rethUsd: ', rethUsd);
-
-        uint ethUsd = OZ.ETH_USD();
-        console.log('ethUsd: ', ethUsd);
-    }
-
-    //----------------------------------------      
-
-
-    function test_y() public {
-        
-        //-----
-
-        uint a1 = 1934464428151493937044;
-        uint a2 = 1837741206733939183658;
-
-        uint b = 54802476401439357 * 1e18;
-        uint base = 1108895170451311786;
-        UD60x18 b_prb = b.intoUD60x18();
-        uint b_prime = intoUint256(b_prb.ln());
-
-        uint N = 1e18;
-        uint adjustment = base * 1e17;
-
-        uint result1 = ((a1 - base) * b_prime) / N + adjustment;
-        uint result2 = ((a2 - base) * b_prime) / N + adjustment;
-
-        console.log('result1: ', result1 / 1e27);
-        console.log('result2: ', result2 / 1e27);
-
-    }
-
-    function test_z() public {
-        uint a1 = 1934464428151493937044;
-        uint a2 = 1837741206733939183658;
-
-        uint b = 54802476401439357 * 1e18;
-        uint base = 1108895170451311786;
-        uint b_prime = uint(uint128(bytes16(uint128(base)).ln()));
-        uint b_prime2 = base.fromUInt().ln().toUInt();
-
-        console.log('prime: ', b_prime);
-        console.log('prime2: ', b_prime2);
-
-        uint N = 1e18;
-        uint adjustment = base * 1e17;
-
-        uint result1 = ((a1 - base) * b_prime) / N + adjustment;
-        uint result2 = ((a2 - base) * b_prime) / N + adjustment;
-
-        console.log('result11: ', result1);
-        console.log('result2: ', result2);
-    }
-
-
 
 }

@@ -342,8 +342,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         // return shares_.mulDivDown((ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)) / (totalShares() == 0 ? 1: totalShares())), 1);
         
-        ozIDiamond OZ = ozIDiamond(_ozDiamond);
-        uint reth_eth = Helpers.rETH_ETH(OZ);
+        // ozIDiamond OZ = ozIDiamond(_ozDiamond);
+        // uint reth_eth = Helpers.rETH_ETH(OZ);
 
         // console.log('reth_eth: ', reth_eth);
 
