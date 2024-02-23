@@ -255,8 +255,11 @@ contract TestMethods is BaseMethods {
      */
     function _redeeming_bigBalance_bigMint_bigRedeem() internal {
         //Pre-conditions
+        console.log(1);
         _changeSlippage(uint16(9900));
         _dealUnderlying(Quantity.BIG, false);
+
+        console.log(2);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
@@ -276,6 +279,8 @@ contract TestMethods is BaseMethods {
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
+
+        console.log('shares alice ****: ', ozERC20.sharesOf(alice));
         ozERC20.redeem(redeemData, alice); 
 
         //Post-conditions
