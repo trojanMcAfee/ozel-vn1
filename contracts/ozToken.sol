@@ -220,7 +220,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             _setValuePerOzToken(amountRethOut, true);
 
             uint shares = totalShares() == 0 ? assets : previewMint(assets);
-            console.log('shares in mint ***: ', shares);
 
             _setAssetsAndShares(assets, shares, true);
 
@@ -382,7 +381,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
-
+    //check this function below
     function _convertToAssetsFromUnderlying(uint shares_) private view returns(uint){
         return shares_.mulDivDown(ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)), totalSupply());
     }
