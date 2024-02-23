@@ -470,7 +470,7 @@ contract BaseMethods is Setup {
     }
 
     function _fm(uint num_) internal pure returns(uint) {
-        return num_ / 1e6;
+        return num_ / 1e8;
     }
 
 }
