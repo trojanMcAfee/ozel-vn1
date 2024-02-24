@@ -428,7 +428,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // uint preBalance = shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
         uint preBalance = _subConvertToAssets(shares_);
         
-        // console.log('preBalance: ', preBalance);
+        console.log('preBalance: ', preBalance);
         // console.log('');
         // console.log('scaling factor: ', _calculateScalingFactor(account_));
 
@@ -449,6 +449,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return x;
     }
 
+    function _rETH_ETH() private view returns(uint) {
+        ozIDiamond OZ = ozIDiamond(_ozDiamond);
+        return Helpers.rETH_ETH(OZ);
+    }
+
     function _subConvertToAssets(uint256 shares_) private view returns (uint256 assets) { 
         ozIDiamond OZ = ozIDiamond(_ozDiamond);
         uint reth_eth = Helpers.rETH_ETH(OZ);
@@ -456,12 +461,23 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
+    function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
+        uint x = shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
+
+        console.log('_convertToAssetsFromUnderlying2: ', x);
+
+        return x;
+    }
+
     //check this function below
-    function _convertToAssetsFromUnderlying(uint shares_) private view returns(uint){
+    function _convertToAssetsFromUnderlying2(uint shares_) private view returns(uint){
         console.log('');
         console.log('--- in _convertToAssetsFromUnderlying ---');
         console.log('shares: ', shares_);
         console.log('totalSupply ^^^^^^^^^^^^: ', totalSupply());
+        
+        _convertToAssetsFromUnderlying(shares_);
+
         return shares_.mulDivDown(ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)), totalSupply());
     }
 
