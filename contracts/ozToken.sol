@@ -328,14 +328,24 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('shares converted from ozAmountIn: ', shares);
         console.log('accountShares - shares the owner has in contract: ', accountShares);
         // console.log('owner: ', owner_);
+        console.log('');
 
 
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
-        uint assets = previewRedeem(shares);
+        uint assets = previewRedeem(shares); //_convertToAssetsFromUnderlying
         console.log('assets ****: ', assets);
-        console.log('totalAssets in redeem: ', totalAssets());
-        console.log('totalShares in redeem: ', totalShares());
+        // console.log('totalAssets in redeem: ', totalAssets());
+        // console.log('totalShares in redeem: ', totalShares());
+
+        uint assets2 = _subConvertToAssets(shares);
+        console.log('assets2 - output _subConvertToAssets: ', assets2);
+
+        uint assets3 = convertToAssets(shares, owner_);
+        console.log('assets3 - output convertToAssets: ', assets3);
+
+
+        //previewWithdraw(assets) -> _convertToShares(assets) returns(shares)
 
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
             _setValuePerOzToken(amountRethOut, false);
@@ -448,6 +458,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //check this function below
     function _convertToAssetsFromUnderlying(uint shares_) private view returns(uint){
+        console.log('');
+        console.log('--- in _convertToAssetsFromUnderlying ---');
+        console.log('shares: ', shares_);
+        console.log('totalSupply ^^^^^^^^^^^^: ', totalSupply());
         return shares_.mulDivDown(ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)), totalSupply());
     }
 
@@ -464,17 +478,18 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     //Thoroughly test this function that assets and shares (with extract() from Helpers.sol)
-    //are properly extracting and setting up assets/shares where they're supposed to be
+    //are properly extracting and setting up assets/shares where they're supposed to be.
+    //Tests can be with minting and redeeming a non-equal part of tokens (check this)
     function _setAssetsAndShares(uint assets_, uint shares_, bool addOrSub_) private {
         uint assets = _assetsAndShares.extract(TotalType.ASSETS); 
         uint shares = _assetsAndShares.extract(TotalType.SHARES); 
 
-        console.log('');
-        console.log('--- in _setAssetsAndShares ---');
-        console.log('assets from extract: ', assets);
-        console.log('shares from extract: ', shares);
-        console.log('assets_ - param: ', assets_);
-        console.log('shares_ - param: ', shares_);
+        // console.log('');
+        // console.log('--- in _setAssetsAndShares ---');
+        // console.log('assets from extract: ', assets);
+        // console.log('shares from extract: ', shares);
+        // console.log('assets_ - param: ', assets_);
+        // console.log('shares_ - param: ', shares_);
 
         unchecked {
             if (addOrSub_) {
@@ -486,9 +501,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             }
         }
 
-        console.log('new assets: ', assets);
-        console.log('new shares: ', shares);
-        console.log('');
+        // console.log('new assets: ', assets);
+        // console.log('new shares: ', shares);
+        // console.log('');
 
         _assetsAndShares = bytes32((assets << 128) + shares);
     }
