@@ -127,6 +127,7 @@ contract ozEngine is Modifiers { //change name to ozEngine
 
         console.log(3);
         console.log('');
+        console.log('amountInReth: ', amountInReth);
         console.log('oz bal owner: ', ozIToken(msg.sender).balanceOf(owner_));
         console.log('amts.ozAmountIn: ', amts.ozAmountIn);
         console.log('allow in engine: ', ozIToken(msg.sender).allowance(owner_, address(this)));

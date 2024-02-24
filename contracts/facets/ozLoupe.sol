@@ -83,6 +83,8 @@ contract ozLoupe is DiamondLoupeFacet {
             ozERC20.previewWithdraw(ozAmountIn_)
         );
 
+        console.log('amountInReth2 ***: ', amountInReth);
+
         ozIDiamond OZ = ozIDiamond(address(this));
         uint minAmountOutWeth = amountInReth.calculateMinAmountOut(Helpers.rETH_ETH(OZ), slippage_);
         uint minAmountOutAsset = minAmountOutWeth.calculateMinAmountOut(OZ.ETH_USD(), slippage_);
