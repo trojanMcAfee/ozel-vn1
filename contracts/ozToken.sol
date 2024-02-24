@@ -298,7 +298,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function convertToUnderlying(uint shares_) external view returns(uint amountUnderlying) {
+        console.log('');
+        console.log('--- in convertToUnderlying ---');
+        console.log('shares: ', shares_);
+        console.log('totalUnderlying: ', ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING));
+        console.log('totalShares: ', totalShares());
+
         amountUnderlying = (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
+        console.log('amountUnderlying: ', amountUnderlying);
+        console.log('');
     }
 
     //properly check the data_ that's passed here, like if user's ozAmtIn corresponds to the rEthAmount they're passing also

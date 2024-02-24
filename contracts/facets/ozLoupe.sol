@@ -53,7 +53,7 @@ contract ozLoupe is DiamondLoupeFacet {
         uint amountIn_,
         address underlying_,
         uint16 slippage_
-    ) public view returns(AmountsIn memory) {
+    ) public view returns(AmountsIn memory) { //check if this produces the correct values
         ozIDiamond OZ = ozIDiamond(address(this));
         uint[] memory minAmountsOut = new uint[](2);
 
@@ -83,7 +83,16 @@ contract ozLoupe is DiamondLoupeFacet {
             ozERC20.previewWithdraw(ozAmountIn_)
         );
 
-        console.log('amountInReth2 ***: ', amountInReth);
+        address alice = 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E;
+        uint sub = ozERC20.subConvertToShares(ozAmountIn_, alice);
+
+        console.log('');
+        console.log('--- in quoteAmountsOut ---');
+        console.log('subConvertToShares output: ', sub);
+        console.log('previewWithdraw - convertToShares output: ', ozERC20.previewWithdraw(ozAmountIn_));
+        console.log('amountInReth2 - convertToUnderlying output: ', amountInReth);
+        console.log('');
+
 
         ozIDiamond OZ = ozIDiamond(address(this));
         uint minAmountOutWeth = amountInReth.calculateMinAmountOut(Helpers.rETH_ETH(OZ), slippage_);
