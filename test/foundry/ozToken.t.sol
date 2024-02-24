@@ -215,4 +215,74 @@ contract ozTokenTest is TestMethods {
         );
     }
 
+
+    function test_x() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = 
+            _getResetVarsAndChangeSlip();
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
+
+        _mintOzTokens(ozERC20, alice, testToken, (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals());
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        _mintOzTokens(ozERC20, bob, testToken, ((rawAmount / 2) / 3) * 10 ** IERC20Permit(testToken).decimals());
+
+        uint ozBalAlicePre = ozERC20.balanceOf(alice);
+        uint ozBalBobPre = ozERC20.balanceOf(bob);
+        console.log('ozBalAlicePre: ', ozBalAlicePre);
+        console.log('ozBalBobPre: ', ozBalBobPre);
+
+    
+        console.log('totalAssets pre: ', ozERC20.totalAssets());
+        console.log('totalShares pre: ', ozERC20.totalShares());
+
+        bytes memory redeemDataAlice = OZ.getRedeemData(
+            ozBalAlicePre / 3,
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            alice
+        );
+
+        bytes memory redeemDataBob = OZ.getRedeemData(
+            ozBalBobPre / 5,
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            bob
+        );
+
+        uint testBalanceAlice = IERC20Permit(testToken).balanceOf(alice);
+        uint testBalanceBob = IERC20Permit(testToken).balanceOf(bob);
+        console.log('testBalanceAlice - pre: ', testBalanceAlice);
+        console.log('testBalanceBob - post: ', testBalanceBob);
+
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), ozBalAlicePre / 3);
+        ozERC20.redeem(redeemDataAlice, alice); 
+
+        vm.startPrank(bob);
+        ozERC20.approve(address(ozDiamond), ozBalBobPre / 5);
+        ozERC20.redeem(redeemDataBob, bob); 
+
+        console.log('totalAssets post: ', ozERC20.totalAssets());
+        console.log('totalShares post: ', ozERC20.totalShares());
+
+        uint deltaAlice = IERC20Permit(testToken).balanceOf(alice) - testBalanceAlice;
+        uint deltaBob = IERC20Permit(testToken).balanceOf(bob) - testBalanceBob;
+        console.log('test bal gained after reedem - alice: ', deltaAlice);
+        console.log('test bal gained after reedem - bob: ', deltaBob);
+
+    
+        uint ozDeltaAlice = ozBalAlicePre - ozERC20.balanceOf(alice) ;
+        uint ozDeltaBob = ozBalBobPre - ozERC20.balanceOf(bob);
+        console.log('oz bal lost - alice: ', ozDeltaAlice);
+        console.log('oz bal lost - bob: ', ozDeltaBob);
+
+    }
+
+
+    //finish this test ^^^
+    //clean up ozToken.sol
+    //fix funcs in ozLoupe.sol
+
 }
