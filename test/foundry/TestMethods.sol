@@ -273,15 +273,20 @@ contract TestMethods is BaseMethods {
             ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT
         );
 
+        uint assets = ozERC20.totalAssets();
+        uint shares = ozERC20.totalShares();
+        console.log('assets pre ^^^^^^^^^: ', assets);
+        console.log('shares pre: ', shares);
+
         //Action
         vm.startPrank(alice);
-        console.log('alice: ', alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
-        console.log('allow test: ', ozERC20.allowance(alice, address(ozDiamond)));
-        console.log('address(ozDiamond): ', address(ozDiamond));
-
-        console.log('shares alice before redeem: ', ozERC20.sharesOf(alice));
         ozERC20.redeem(redeemData, alice); 
+
+        assets = ozERC20.totalAssets();
+        shares = ozERC20.totalShares();
+        console.log('assets post: ', assets);
+        console.log('shares post: ', shares);
 
         //Post-conditions
         testToken = ozERC20.asset();

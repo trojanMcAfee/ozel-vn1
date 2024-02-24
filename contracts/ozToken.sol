@@ -334,6 +334,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint assets = previewRedeem(shares);
         console.log('assets ****: ', assets);
+        console.log('totalAssets in redeem: ', totalAssets());
+        console.log('totalShares in redeem: ', totalShares());
 
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
             _setValuePerOzToken(amountRethOut, false);
@@ -461,9 +463,18 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return _subConvertToShares(assets, account_);
     }
 
+    //Thoroughly test this function that assets and shares (with extract() from Helpers.sol)
+    //are properly extracting and setting up assets/shares where they're supposed to be
     function _setAssetsAndShares(uint assets_, uint shares_, bool addOrSub_) private {
         uint assets = _assetsAndShares.extract(TotalType.ASSETS); 
         uint shares = _assetsAndShares.extract(TotalType.SHARES); 
+
+        console.log('');
+        console.log('--- in _setAssetsAndShares ---');
+        console.log('assets from extract: ', assets);
+        console.log('shares from extract: ', shares);
+        console.log('assets_ - param: ', assets_);
+        console.log('shares_ - param: ', shares_);
 
         unchecked {
             if (addOrSub_) {
@@ -475,7 +486,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             }
         }
 
-        _assetsAndShares = bytes32((shares << 128) + assets);
+        console.log('new assets: ', assets);
+        console.log('new shares: ', shares);
+        console.log('');
+
+        _assetsAndShares = bytes32((assets << 128) + shares);
     }
 
 
