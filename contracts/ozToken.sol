@@ -330,6 +330,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
         uint assets = previewRedeem(shares);
+        console.log('assets ****: ', assets);
 
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
             _setValuePerOzToken(amountRethOut, false);
