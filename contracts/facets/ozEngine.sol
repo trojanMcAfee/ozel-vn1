@@ -124,21 +124,8 @@ contract ozEngine is Modifiers { //change name to ozEngine
          */
         uint[] memory minAmountsOut = amts.minAmountsOut;
         uint amountInReth = amts.amountInReth;
-
-        console.log(3);
-        console.log('');
-        console.log('amountInReth: ', amountInReth);
-        console.log('oz bal owner: ', ozIToken(msg.sender).balanceOf(owner_));
-        console.log('amts.ozAmountIn: ', amts.ozAmountIn);
-        console.log('allow in engine: ', ozIToken(msg.sender).allowance(owner_, address(this)));
-        console.log('address(this) - should dia: ', address(this));
-        console.log('owner - shoud alice: ', owner_);
-
-        // msg.sender.safeTransfer(address(this), amts.ozAmountIn);
-        ERC20(msg.sender).transferFrom(owner_, address(this), amts.ozAmountIn);
         
-        // msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
-        console.log(4);
+        msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
 
         //Swap rETH to WETH
         uint amountOut = _checkPauseAndSwap(
@@ -253,18 +240,12 @@ contract ozEngine is Modifiers { //change name to ozEngine
     }
 
 
-    function _swapBalancer( //error here in the swap, tokenIn/Out, bals, etc
+    function _swapBalancer( 
         address tokenIn_, 
         address tokenOut_, 
         uint amountIn_,
         uint minAmountOut_
     ) private returns(uint amountOut) {
-
-        console.log('');
-        console.log('--- in _swapBal ---');
-        console.log('tokenIn bal - this: ', IERC20(tokenIn_).balanceOf(address(this)));
-        console.log('amountIn_: ', amountIn_);
-        console.log('minAmountOut_: ', minAmountOut_);
         
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -284,7 +265,6 @@ contract ozEngine is Modifiers { //change name to ozEngine
 
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
-        console.log('success');
     }
 
 

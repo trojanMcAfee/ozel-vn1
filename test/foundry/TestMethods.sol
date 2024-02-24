@@ -276,8 +276,6 @@ contract TestMethods is BaseMethods {
         uint assetsPre = ozERC20.totalAssets();
         uint sharesPre = ozERC20.totalShares();
         assertTrue(assetsPre > 0 && sharesPre > 0);
-        console.log('assets pre ^^^^^^^^^: ', assetsPre);
-        console.log('shares pre: ', sharesPre);
 
         //Action
         vm.startPrank(alice);
@@ -288,8 +286,6 @@ contract TestMethods is BaseMethods {
         uint assetsPost = ozERC20.totalAssets();
         uint sharesPost = ozERC20.totalShares();
         assertTrue(assetsPost == 0 && sharesPost == 0);
-        console.log('assets post: ', assetsPost);
-        console.log('shares post: ', sharesPost);
 
         testToken = ozERC20.asset();
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
