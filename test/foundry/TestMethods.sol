@@ -278,9 +278,13 @@ contract TestMethods is BaseMethods {
         assertTrue(assetsPre > 0 && sharesPre > 0);
 
         //Action
+        console.log('bal pre *****: ', ozERC20.balanceOf(alice));
+
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         ozERC20.redeem(redeemData, alice); 
+
+        console.log('bal post *****: ', ozERC20.balanceOf(alice));
 
         //Post-conditions
         uint assetsPost = ozERC20.totalAssets();

@@ -293,12 +293,18 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _shares[_ozDiamond] = 0;
             }
 
+            console.log('');
+            console.log('************ END OF REDEEM ***************');
+            console.log('current shares alice: ', sharesOf(owner_));
+            console.log('');            
+
+            //put a redeem event here
+
             return amountAssetOut;
         } catch Error(string memory reason) {
             revert OZError22(reason);
         }
 
-        //put a redeem event here
     }
 
 
@@ -338,11 +344,27 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //remove mulDivDown since it divides by 1. 
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_);
+        // console.log('_convertToAssetsFromUnderlying: ', _convertToAssetsFromUnderlying(shares_));
+
+        console.log('');
+        console.log('--- in _convertToAssets ---');
+        console.log('preBalance - output of _subConvertToAssets: ', preBalance);
+        if (preBalance != 0) {
+            console.log('scaling factor: ', _calculateScalingFactor(account_));
+            console.log('is: ', preBalance * _calculateScalingFactor(account_));
+        }
+
         return preBalance == 0 ? 0 : preBalance * _calculateScalingFactor(account_);
     }
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
-        return (_assets[account_] * 1e12) / subBalanceOf(account_);
+        uint x = subBalanceOf(account_);
+        console.log('');
+        console.log('--- in scaling factor');
+        console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
+        console.log('subBalanceOf(account_): ', x);
+
+        return (_assets[account_] * 1e12) / x;
     }
 
     function _rETH_ETH() private view returns(uint) { 
@@ -352,9 +374,18 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function _subConvertToAssets(uint256 shares_) private view returns (uint256 assets) { 
         uint reth_eth = _rETH_ETH();
+
+        // console.log('');
+        // console.log('--- in _subConvertToAssets ---');
+        // console.log('reth_eth: ', reth_eth);
+        // console.log('totalShares: ', totalShares());
+        // console.log('shares: ', shares_);
+        // console.log('is2: ', shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()));
+
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
+    //this is public instead of private. Check
     function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
         return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
     }

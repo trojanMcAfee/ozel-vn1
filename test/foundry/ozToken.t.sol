@@ -215,6 +215,40 @@ contract ozTokenTest is TestMethods {
         );
     }
 
+    //------------
+
+    function test_y() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
+
+        _getResetVarsAndChangeSlip();
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+        
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        console.log('oz bal after mint: ', ozBalanceAlice);
+
+        console.log('');
+        console.log('******** END OF MINT *********');
+        console.log('');
+
+        uint ozAmountIn = ozBalanceAlice / 3;
+        console.log('ozAmountIn: ', ozAmountIn);
+
+        bytes memory redeemDataAlice = _createDataOffchain(
+            ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT
+        );
+
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), ozAmountIn);
+        ozERC20.redeem(redeemDataAlice, alice); 
+        vm.stopPrank();
+
+        console.log('oz bal after redeem: ', ozERC20.balanceOf(alice));
+
+    }
+
 
     function test_x() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
@@ -222,7 +256,7 @@ contract ozTokenTest is TestMethods {
         (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = 
             _getResetVarsAndChangeSlip();
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
 
         _mintOzTokens(ozERC20, alice, testToken, (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals());
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
@@ -258,11 +292,15 @@ contract ozTokenTest is TestMethods {
 
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozBalAlicePre / 3);
+        console.log('bal pre redeem ****: ', ozERC20.balanceOf(alice));
         ozERC20.redeem(redeemDataAlice, alice); 
+        console.log('bal post redeem ****: ', ozERC20.balanceOf(alice));
+        vm.stopPrank();
 
         vm.startPrank(bob);
         ozERC20.approve(address(ozDiamond), ozBalBobPre / 5);
         ozERC20.redeem(redeemDataBob, bob); 
+        vm.stopPrank();
 
         console.log('totalAssets post: ', ozERC20.totalAssets());
         console.log('totalShares post: ', ozERC20.totalShares());
@@ -272,8 +310,10 @@ contract ozTokenTest is TestMethods {
         console.log('test bal gained after reedem - alice: ', deltaAlice);
         console.log('test bal gained after reedem - bob: ', deltaBob);
 
-    
-        uint ozDeltaAlice = ozBalAlicePre - ozERC20.balanceOf(alice) ;
+        console.log(1);
+        console.log('ozBalAlicePost: ', ozERC20.balanceOf(alice));
+        uint ozDeltaAlice = ozBalAlicePre - ozERC20.balanceOf(alice);
+        console.log(2);
         uint ozDeltaBob = ozBalBobPre - ozERC20.balanceOf(bob);
         console.log('oz bal lost - alice: ', ozDeltaAlice);
         console.log('oz bal lost - bob: ', ozDeltaBob);
