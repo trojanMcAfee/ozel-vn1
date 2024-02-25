@@ -280,7 +280,19 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
+
+        //This function from below is not properly calculating assets.
+        //It's calculating here all of the assets instead of the portion to redeem that `shares` represent.
+        //On top of this one, there's no _assets[receiver] -= assets, so this data poitn is not 
+        //getting updated when being used on calculateEscalatingFactor().
+        //Keep checing the funcs from previewRedeem to see how to get the correct assets.
         uint assets = previewRedeem(shares); 
+        console.log('');
+        console.log('shares: ', shares);
+        console.log('accountShares: ', accountShares);
+        console.log('totalAssets: ', totalAssets());
+        console.log('assets ^^^^^^^^^^^^: ', assets);
+        console.log('amts.ozAmountIn: ', amts.ozAmountIn);
 
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
             _setValuePerOzToken(amountRethOut, false);
@@ -387,6 +399,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //this is public instead of private. Check
     function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
+        console.log('');
+        console.log('--- in _convertToAssetsFromUnderlying ---');
+        console.log('shares: ', shares_);
+        console.log('_rETH_ETH(): ', _rETH_ETH());
+        console.log('_subConvertToAssets(shares_): ', _subConvertToAssets(shares_));
+        // console.log('_convertToAssets: ', _convertToAssets(shares_, 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E));
+        
         return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
     }
 

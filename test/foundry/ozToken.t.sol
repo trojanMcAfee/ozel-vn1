@@ -245,7 +245,11 @@ contract ozTokenTest is TestMethods {
         ozERC20.redeem(redeemDataAlice, alice); 
         vm.stopPrank();
 
+        console.log('');
+        console.log('----------------');
         console.log('oz bal after redeem: ', ozERC20.balanceOf(alice));
+        console.log('totalAssets: ', ozERC20.totalAssets());
+        console.log('totalShares: ', ozERC20.totalShares());
 
     }
 
