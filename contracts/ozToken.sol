@@ -287,6 +287,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('shares: ', shares);
         console.log('accountShares: ', accountShares);
         console.log('totalAssets: ', totalAssets());
+        console.log('totalShares: ', totalShares());
         console.log('assets ^^^^^^^^^^^^: ', assets);
         console.log('amts.ozAmountIn: ', amts.ozAmountIn);
 
@@ -297,9 +298,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
             _setAssetsAndShares(assets, accountShares, false);
 
+            console.log('_assets[owner_]: ', _assets[owner_]);
+            _assets[owner_] -= assets; 
+
             unchecked {
                 _shares[_ozDiamond] = 0;
-                _assets[owner_] -= assets; 
+                // _assets[owner_] -= assets; 
             }
 
             console.log('');
@@ -370,6 +374,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint x = subBalanceOf(account_);
         console.log('');
         console.log('--- in scaling factor');
+        console.log('_assets[account_]: ', _assets[account_]);
         console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
         console.log('subBalanceOf(account_): ', x);
 
