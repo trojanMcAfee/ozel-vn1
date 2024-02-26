@@ -299,7 +299,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
             unchecked {
                 _shares[_ozDiamond] = 0;
-                // _assets[owner_] -= assets; 
+                _assets[owner_] -= assets; 
             }
 
             console.log('');
@@ -402,9 +402,16 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('totalShares: ', totalShares());
         console.log('_rETH_ETH(): ', _rETH_ETH());
         console.log('_subConvertToAssets(shares_): ', _subConvertToAssets(shares_));
+        // console.log('is3: ', shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_) * 2));
+        console.log('totalSupply: ', totalSupply());
         // console.log('_convertToAssets: ', _convertToAssets(shares_, 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E));
         
-        return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
+        uint deltaShares = totalShares() - shares_;
+        uint x = shares_.mulDivDown(_rETH_ETH(), deltaShares);
+        console.log('x: ', x);
+
+        // return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
+        return shares_.mulDivDown(_rETH_ETH(), x * 2);
     }
 
     
