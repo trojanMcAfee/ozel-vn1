@@ -260,13 +260,12 @@ contract ozTokenTest is TestMethods {
     function test_x() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
-        (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = 
-            _getResetVarsAndChangeSlip();
+        _getResetVarsAndChangeSlip();
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
 
         _mintOzTokens(ozERC20, alice, testToken, (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals());
-        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+        // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
         _mintOzTokens(ozERC20, bob, testToken, ((rawAmount / 2) / 3) * 10 ** IERC20Permit(testToken).decimals());
 
         uint ozBalAlicePre = ozERC20.balanceOf(alice);
@@ -299,7 +298,7 @@ contract ozTokenTest is TestMethods {
         );
 
         uint testBalanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
-        // uint testBalanceBob = IERC20Permit(testToken).balanceOf(bob);
+        uint testBalanceBobPre = IERC20Permit(testToken).balanceOf(bob);
         // console.log('testBalanceAlice - pre: ', testBalanceAlice);
         // console.log('testBalanceBob - post: ', testBalanceBob);
         // console.log('');
@@ -313,7 +312,7 @@ contract ozTokenTest is TestMethods {
 
         vm.startPrank(bob);
         ozERC20.approve(address(ozDiamond), ozBalBobPre / 5);
-        ozERC20.redeem(redeemDataBob, bob); 
+        uint assetsOutBob = ozERC20.redeem(redeemDataBob, bob); 
         vm.stopPrank();
 
         //Difference between balances of 0.00007325169679990087%
@@ -325,7 +324,8 @@ contract ozTokenTest is TestMethods {
         // console.log('totalShares post: ', ozERC20.totalShares());
 
         // uint deltaAlice = IERC20Permit(testToken).balanceOf(alice) - testBalanceAlicePre;
-        assertTrue(assetsOutAlice + testBalanceAlicePre == IERC20Permit(testToken).balanceOf(alice));
+        assertTrue(assetsOutAlice + testBalanceAlicePre == IERC20Permit(testToken).balanceOf(alice)); 
+        assertTrue(assetsOutBob + testBalanceBobPre == IERC20Permit(testToken).balanceOf(bob));
         // console.log('assetsOutAlice: ', assetsOutAlice + testBalanceAlicePre);
         // console.log('IERC20Permit(testToken).balanceOf(alice): ', IERC20Permit(testToken).balanceOf(alice));
         // uint deltaBob = IERC20Permit(testToken).balanceOf(bob) - testBalanceBob;
