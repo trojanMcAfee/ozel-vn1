@@ -359,24 +359,27 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint preBalance = _subConvertToAssets(shares_);
         // console.log('_convertToAssetsFromUnderlying: ', _convertToAssetsFromUnderlying(shares_));
 
-        // console.log('');
-        // console.log('--- in _convertToAssets ---');
-        // console.log('preBalance - output of _subConvertToAssets: ', preBalance);
-        // if (preBalance != 0) {
-        //     console.log('scaling factor: ', _calculateScalingFactor(account_));
-        //     console.log('is: ', preBalance * _calculateScalingFactor(account_));
-        // }
+        console.log('');
+        console.log('--- in _convertToAssets ---');
+        console.log('preBalance - output of _subConvertToAssets: ', preBalance);
+        if (preBalance != 0) {
+            console.log('scaling factor: ', _calculateScalingFactor(account_));
+            console.log('is: ', preBalance * _calculateScalingFactor(account_));
+        } else {
+            console.log('preBalance was 0');
+        }
 
         return preBalance == 0 ? 0 : preBalance * _calculateScalingFactor(account_);
     }
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
         uint x = subBalanceOf(account_);
-        // console.log('');
-        // console.log('--- in scaling factor');
-        // console.log('_assets[account_]: ', _assets[account_]);
-        // console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
-        // console.log('subBalanceOf(account_): ', x);
+        console.log('');
+        console.log('--- in scaling factor');
+        console.log('_assets[account_]: ', _assets[account_]);
+        console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
+        console.log('subBalanceOf(account_): ', x);
+        console.log('is2: ', (_assets[account_] * 1e12) / x);
 
         return (_assets[account_] * 1e12) / x;
     }

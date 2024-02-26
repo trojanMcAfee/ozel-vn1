@@ -14,9 +14,6 @@ import "../../contracts/Errors.sol";
 import {Dummy1} from "./Dummy1.sol";
 import {NewToken} from "../../contracts/AppStorage.sol";
 
-import "@prb/math/src/UD60x18.sol";
-import {PRBMathCastingUint256} from "@prb/math/src/casting/Uint256.sol";
-import {ABDKMathQuad} from "../../contracts/libraries/ABDKMathQuad.sol";
 
 import "forge-std/console.sol";
 
@@ -24,15 +21,7 @@ import "forge-std/console.sol";
 contract ozTokenTest is TestMethods {
 
     using SafeERC20 for IERC20;
-    using PRBMathCastingUint256 for uint;
 
-    using ABDKMathQuad for uint;
-    using ABDKMathQuad for bytes16;
-
-    // uint SCALE = 1e18;
-    // uint HALF_SCALE = 5e17;
-    // uint LOG2_E = 1442695040888963407;
-    // uint MAX_SD59x18 = 57896044618658097711785492504343953926634992332820282019728792003956564819967;
 
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
     function test_mint_catch_internal_errors() public {
@@ -219,6 +208,64 @@ contract ozTokenTest is TestMethods {
 
     //------------
 
+    function test_ETH_trend_success() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        console.log('amountIn: ', amountIn /3);
+
+        _mintOzTokens(ozERC20, alice, testToken, amountIn / 3);
+
+        console.log('');
+        console.log('************************ END OF MINTING ************************');
+        console.log('');
+
+        uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlicePre: ', ozBalanceAlicePre);
+
+        _mock_rETH_ETH(Dir.UP, 200);
+
+        console.log('');
+        console.log('************************ END OF MOCKING ************************');
+        console.log('');
+
+        uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlicePostRewards: ', ozBalanceAlicePostRewards);
+
+        assertTrue(ozBalanceAlicePostRewards > ozBalanceAlicePre);
+    }
+
+    function test_ETH_trend_fails() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+        console.log('amountIn: ', amountIn);
+
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+
+        console.log('');
+        console.log('************************ END OF MINTING ************************');
+        console.log('');
+
+        uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlicePre: ', ozBalanceAlicePre);
+
+        _mock_rETH_ETH(Dir.UP, 200);
+
+        console.log('');
+        console.log('************************ END OF MOCKING ************************');
+        console.log('');
+
+        uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlicePostRewards: ', ozBalanceAlicePostRewards);
+
+        assertTrue(ozBalanceAlicePostRewards > ozBalanceAlicePre);
+    }
+
+    
+
     function test_y() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
@@ -253,6 +300,25 @@ contract ozTokenTest is TestMethods {
         console.log('totalAssets: ', ozERC20.totalAssets());
         console.log('totalShares: ', ozERC20.totalShares());
 
+    }
+
+
+    function test_redeem_rewards() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
+
+        // _getResetVarsAndChangeSlip();
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        console.log('oz bal pre mock: ', ozBalanceAlice);
+
+        _mock_rETH_ETH(Dir.UP, 200);
+
+        ozBalanceAlice = ozERC20.balanceOf(alice);
+        console.log('oz bal post mock: ', ozBalanceAlice);
     }
 
 
