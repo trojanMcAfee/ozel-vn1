@@ -215,6 +215,8 @@ contract ozTokenTest is TestMethods {
         );
     }
 
+    //tests that an user can redeem accrual rewards from ozTokens ^
+
     //------------
 
     function test_y() public {
@@ -254,6 +256,104 @@ contract ozTokenTest is TestMethods {
     }
 
 
+    //Alice, bob and charlie
+    // function test_z() public {
+    //     (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+    //     (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = 
+    //         _getResetVarsAndChangeSlip();
+
+    //     (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
+
+    //     _mintOzTokens(ozERC20, alice, testToken, (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals());
+    //     _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+    //     _mintOzTokens(ozERC20, bob, testToken, ((rawAmount / 2) / 3) * 10 ** IERC20Permit(testToken).decimals());
+    //     _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+    //     _mintOzTokens(ozERC20, charlie, testToken, (rawAmount / 4) * 10 ** IERC20Permit(testToken).decimals());
+
+    //     uint ozBalAlicePre = ozERC20.balanceOf(alice);
+    //     uint ozBalBobPre = ozERC20.balanceOf(bob);
+    //     uint ozBalCharliePre = ozERC20.balanceOf(charlie);
+
+    //     console.log('ozBalAlicePre: ', ozBalAlicePre);
+    //     console.log('ozBalBobPre: ', ozBalBobPre);
+    //     console.log('ozBalCharliePre: ', ozBalCharliePre);
+    //     console.log('');
+
+    //     console.log('ozAmountIn alice: ', ozBalAlicePre / 3);
+    //     console.log('ozAmountIn bob: ', ozBalBobPre / 5);
+    //     console.log('ozAmountIn charlie: ', ozBalCharliePre / 2);
+    //     console.log('');
+
+    //     bytes memory redeemDataAlice = OZ.getRedeemData(
+    //         ozBalAlicePre / 3,
+    //         address(ozERC20),
+    //         OZ.getDefaultSlippage(),
+    //         alice
+    //     );
+
+    //     bytes memory redeemDataBob = OZ.getRedeemData(
+    //         ozBalBobPre / 5,
+    //         address(ozERC20),
+    //         OZ.getDefaultSlippage(),
+    //         bob
+    //     );
+
+    //     bytes memory redeemDataCharlie = OZ.getRedeemData(
+    //         ozBalCharliePre / 2,
+    //         address(ozERC20),
+    //         OZ.getDefaultSlippage(),
+    //         charlie
+    //     );
+
+    //     console.log('totalSupply before redeem: ', ozERC20.totalSupply());
+    //     console.log('');
+
+    //     uint testBalanceAlice = IERC20Permit(testToken).balanceOf(alice);
+    //     uint testBalanceBob = IERC20Permit(testToken).balanceOf(bob);
+    //     uint testBalanceCharlie = IERC20Permit(testToken).balanceOf(charlie);
+
+    //     console.log('testBalanceAlice - pre: ', testBalanceAlice);
+    //     console.log('testBalanceBob - pre: ', testBalanceBob);
+    //     console.log('testBalanceCharlie - pre: ', testBalanceCharlie);
+    //     console.log('');
+
+    //     vm.startPrank(alice);
+    //     ozERC20.approve(address(ozDiamond), ozBalAlicePre / 3);
+    //     ozERC20.redeem(redeemDataAlice, alice); 
+    //     vm.stopPrank();
+
+    //     vm.startPrank(bob);
+    //     ozERC20.approve(address(ozDiamond), ozBalBobPre / 5);
+    //     ozERC20.redeem(redeemDataBob, bob); 
+    //     vm.stopPrank();
+
+    //     vm.startPrank(bob);
+    //     ozERC20.approve(address(ozDiamond), ozBalCharliePre / 2);
+    //     ozERC20.redeem(redeemDataCharlie, bob); 
+    //     vm.stopPrank();
+
+    //     console.log('totalSupply after redeem: ', ozERC20.totalSupply());
+    //     console.log('');
+
+    //     uint deltaAlice = IERC20Permit(testToken).balanceOf(alice) - testBalanceAlice;
+    //     uint deltaBob = IERC20Permit(testToken).balanceOf(bob) - testBalanceBob;
+    //     uint deltaCharlie = IERC20Permit(testToken).balanceOf(charlie) - testBalanceCharlie;
+    //     console.log('test bal gained after reedem - alice: ', deltaAlice);
+    //     console.log('test bal gained after reedem - bob: ', deltaBob);
+    //     console.log('test bal gained after reedem - charlie: ', deltaCharlie);
+    //     console.log('');
+
+    //     uint ozDeltaAlice = ozBalAlicePre - ozERC20.balanceOf(alice);
+    //     uint ozDeltaBob = ozBalBobPre - ozERC20.balanceOf(bob);
+    //     uint ozDeltaCharlie = ozBalCharliePre - ozERC20.balanceOf(charlie);
+    //     console.log('oz bal lost - alice: ', ozDeltaAlice);
+    //     console.log('oz bal lost - bob: ', ozDeltaBob);
+    //     console.log('oz bal lost - charlie: ', ozDeltaCharlie);
+
+    // }
+
+
+    //Alice and bob
     function test_x() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
@@ -277,9 +377,9 @@ contract ozTokenTest is TestMethods {
         // console.log('totalAssets pre: ', ozERC20.totalAssets());
         // console.log('totalShares pre: ', ozERC20.totalShares());
 
-        console.log('ozAmountIn alice: ', ozBalAlicePre / 3);
-        console.log('ozAmountIn bob: ', ozBalBobPre / 5);
-        console.log('');
+        // console.log('ozAmountIn alice: ', ozBalAlicePre / 3);
+        // console.log('ozAmountIn bob: ', ozBalBobPre / 5);
+        // console.log('');
 
         bytes memory redeemDataAlice = OZ.getRedeemData(
             ozBalAlicePre / 3,
@@ -295,13 +395,13 @@ contract ozTokenTest is TestMethods {
             bob
         );
 
-        uint testBalanceAlice = IERC20Permit(testToken).balanceOf(alice);
-        uint testBalanceBob = IERC20Permit(testToken).balanceOf(bob);
-        console.log('testBalanceAlice - pre: ', testBalanceAlice);
-        console.log('testBalanceBob - post: ', testBalanceBob);
-        console.log('');
+        // uint testBalanceAlice = IERC20Permit(testToken).balanceOf(alice);
+        // uint testBalanceBob = IERC20Permit(testToken).balanceOf(bob);
+        // console.log('testBalanceAlice - pre: ', testBalanceAlice);
+        // console.log('testBalanceBob - post: ', testBalanceBob);
+        // console.log('');
 
-        console.log('totalSupply before redeem: ', ozERC20.totalSupply());
+        uint ozTotalSupplyPreRedeem = ozERC20.totalSupply();
 
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozBalAlicePre / 3);
@@ -313,25 +413,25 @@ contract ozTokenTest is TestMethods {
         ozERC20.redeem(redeemDataBob, bob); 
         vm.stopPrank();
 
-        console.log('totalSupply after redeem: ', ozERC20.totalSupply());
-        console.log('');
+        //Difference between balances of 0.00007325169679990087%
+        assertTrue(_fm2(ozTotalSupplyPreRedeem) == _fm2(ozERC20.totalSupply() + (ozBalAlicePre / 3) + (ozBalBobPre / 5)));
+        // console.log('totalSupply after redeem: ', ozERC20.totalSupply());
+        // console.log('');
 
         // console.log('totalAssets post: ', ozERC20.totalAssets());
         // console.log('totalShares post: ', ozERC20.totalShares());
 
-        uint deltaAlice = IERC20Permit(testToken).balanceOf(alice) - testBalanceAlice;
-        uint deltaBob = IERC20Permit(testToken).balanceOf(bob) - testBalanceBob;
-        console.log('test bal gained after reedem - alice: ', deltaAlice);
-        console.log('test bal gained after reedem - bob: ', deltaBob);
-        console.log('');
+        // uint deltaAlice = IERC20Permit(testToken).balanceOf(alice) - testBalanceAlice;
+        // uint deltaBob = IERC20Permit(testToken).balanceOf(bob) - testBalanceBob;
+        // console.log('test bal gained after reedem - alice: ', deltaAlice);
+        // console.log('test bal gained after reedem - bob: ', deltaBob);
+        // console.log('');
 
-        console.log(1);
-        console.log('ozBalAlicePost: ', ozERC20.balanceOf(alice));
-        uint ozDeltaAlice = ozBalAlicePre - ozERC20.balanceOf(alice);
-        console.log(2);
-        uint ozDeltaBob = ozBalBobPre - ozERC20.balanceOf(bob);
-        console.log('oz bal lost - alice: ', ozDeltaAlice);
-        console.log('oz bal lost - bob: ', ozDeltaBob);
+        // console.log('ozBalAlicePost: ', ozERC20.balanceOf(alice));
+        // uint ozDeltaAlice = ozBalAlicePre - ozERC20.balanceOf(alice);
+        // uint ozDeltaBob = ozBalBobPre - ozERC20.balanceOf(bob);
+        // console.log('oz bal lost - alice: ', ozDeltaAlice);
+        // console.log('oz bal lost - bob: ', ozDeltaBob);
 
     }
 

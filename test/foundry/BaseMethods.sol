@@ -473,4 +473,8 @@ contract BaseMethods is Setup {
         return num_ / 1e8;
     }
 
+    function _fm2(uint num_) internal pure returns(uint) {
+        return num_ / 1e18;
+    }
+
 }
