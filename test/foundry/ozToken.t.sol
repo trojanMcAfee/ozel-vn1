@@ -256,8 +256,9 @@ contract ozTokenTest is TestMethods {
     }
 
 
-    //Alice and bob
-    function test_x() public {
+    //Tests minting/redeeming with several users involved and with odd, non-whole amounts
+    function test_multiple_users_odd_amounts() public {
+        //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         _getResetVarsAndChangeSlip();
@@ -265,23 +266,10 @@ contract ozTokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
 
         _mintOzTokens(ozERC20, alice, testToken, (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals());
-        // _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
         _mintOzTokens(ozERC20, bob, testToken, ((rawAmount / 2) / 3) * 10 ** IERC20Permit(testToken).decimals());
 
         uint ozBalAlicePre = ozERC20.balanceOf(alice);
         uint ozBalBobPre = ozERC20.balanceOf(bob);
-        console.log('');
-        console.log('ozBalAlicePre: ', ozBalAlicePre);
-        console.log('ozBalBobPre: ', ozBalBobPre);
-        console.log('');
-
-    
-        // console.log('totalAssets pre: ', ozERC20.totalAssets());
-        // console.log('totalShares pre: ', ozERC20.totalShares());
-
-        // console.log('ozAmountIn alice: ', ozBalAlicePre / 3);
-        // console.log('ozAmountIn bob: ', ozBalBobPre / 5);
-        // console.log('');
 
         bytes memory redeemDataAlice = OZ.getRedeemData(
             ozBalAlicePre / 3,
@@ -299,12 +287,9 @@ contract ozTokenTest is TestMethods {
 
         uint testBalanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
         uint testBalanceBobPre = IERC20Permit(testToken).balanceOf(bob);
-        // console.log('testBalanceAlice - pre: ', testBalanceAlice);
-        // console.log('testBalanceBob - post: ', testBalanceBob);
-        // console.log('');
-
         uint ozTotalSupplyPreRedeem = ozERC20.totalSupply();
 
+        //Actions
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozBalAlicePre / 3);
         uint assetsOutAlice = ozERC20.redeem(redeemDataAlice, alice); 
@@ -315,35 +300,18 @@ contract ozTokenTest is TestMethods {
         uint assetsOutBob = ozERC20.redeem(redeemDataBob, bob); 
         vm.stopPrank();
 
-        //Difference between balances of 0.00007325169679990087%
-        assertTrue(_fm2(ozTotalSupplyPreRedeem) == _fm2(ozERC20.totalSupply() + (ozBalAlicePre / 3) + (ozBalBobPre / 5)));
-        // console.log('totalSupply after redeem: ', ozERC20.totalSupply());
-        // console.log('');
-
-        // console.log('totalAssets post: ', ozERC20.totalAssets());
-        // console.log('totalShares post: ', ozERC20.totalShares());
-
-        // uint deltaAlice = IERC20Permit(testToken).balanceOf(alice) - testBalanceAlicePre;
+        //Post-conditions
         assertTrue(assetsOutAlice + testBalanceAlicePre == IERC20Permit(testToken).balanceOf(alice)); 
         assertTrue(assetsOutBob + testBalanceBobPre == IERC20Permit(testToken).balanceOf(bob));
-        // console.log('assetsOutAlice: ', assetsOutAlice + testBalanceAlicePre);
-        // console.log('IERC20Permit(testToken).balanceOf(alice): ', IERC20Permit(testToken).balanceOf(alice));
-        // uint deltaBob = IERC20Permit(testToken).balanceOf(bob) - testBalanceBob;
-        // console.log('test bal gained after reedem - alice: ', deltaAlice);
-        // console.log('test bal gained after reedem - bob: ', deltaBob);
-        // console.log('');
-
-        // console.log('ozBalAlicePost: ', ozERC20.balanceOf(alice));
         assertTrue(_fm2(ozERC20.balanceOf(alice) + ozBalAlicePre / 3) == _fm2(ozBalAlicePre));
         assertTrue(_fm2(ozERC20.balanceOf(bob) + ozBalBobPre / 5) == _fm2(ozBalBobPre));
-        // console.log('z: ', ozBalAlicePre);
-        // console.log('oz bal lost - alice: ', ozDeltaAlice);
-        // console.log('oz bal lost - bob: ', ozDeltaBob);
 
+        //Difference between balances of 0.00007325169679990087%
+        assertTrue(_fm2(ozTotalSupplyPreRedeem) == _fm2(ozERC20.totalSupply() + (ozBalAlicePre / 3) + (ozBalBobPre / 5)));
     }
 
 
-    //finish this test ^^^
+    //finish this test ^^^ - done
     //clean up ozToken.sol
     //fix funcs in ozLoupe.sol
 
