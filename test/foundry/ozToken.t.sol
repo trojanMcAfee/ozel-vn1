@@ -298,7 +298,7 @@ contract ozTokenTest is TestMethods {
             bob
         );
 
-        // uint testBalanceAlice = IERC20Permit(testToken).balanceOf(alice);
+        uint testBalanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
         // uint testBalanceBob = IERC20Permit(testToken).balanceOf(bob);
         // console.log('testBalanceAlice - pre: ', testBalanceAlice);
         // console.log('testBalanceBob - post: ', testBalanceBob);
@@ -308,7 +308,7 @@ contract ozTokenTest is TestMethods {
 
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozBalAlicePre / 3);
-        ozERC20.redeem(redeemDataAlice, alice); 
+        uint assetsOutAlice = ozERC20.redeem(redeemDataAlice, alice); 
         vm.stopPrank();
 
         vm.startPrank(bob);
@@ -324,7 +324,10 @@ contract ozTokenTest is TestMethods {
         // console.log('totalAssets post: ', ozERC20.totalAssets());
         // console.log('totalShares post: ', ozERC20.totalShares());
 
-        // uint deltaAlice = IERC20Permit(testToken).balanceOf(alice) - testBalanceAlice;
+        // uint deltaAlice = IERC20Permit(testToken).balanceOf(alice) - testBalanceAlicePre;
+        assertTrue(assetsOutAlice + testBalanceAlicePre == IERC20Permit(testToken).balanceOf(alice));
+        // console.log('assetsOutAlice: ', assetsOutAlice + testBalanceAlicePre);
+        // console.log('IERC20Permit(testToken).balanceOf(alice): ', IERC20Permit(testToken).balanceOf(alice));
         // uint deltaBob = IERC20Permit(testToken).balanceOf(bob) - testBalanceBob;
         // console.log('test bal gained after reedem - alice: ', deltaAlice);
         // console.log('test bal gained after reedem - bob: ', deltaBob);
