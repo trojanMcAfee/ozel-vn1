@@ -281,15 +281,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
-
-        uint assets = previewRedeem(shares); 
+        // uint assets = previewRedeem(shares); 
+        uint assets = shares; 
         console.log('');
-        console.log('shares: ', shares);
-        console.log('accountShares: ', accountShares);
+        // console.log('shares: ', shares);
+        // console.log('accountShares: ', accountShares);
         console.log('totalAssets: ', totalAssets());
         console.log('totalShares: ', totalShares());
         console.log('assets ^^^^^^^^^^^^: ', assets);
-        console.log('amts.ozAmountIn: ', amts.ozAmountIn);
+        // console.log('amts.ozAmountIn: ', amts.ozAmountIn);
 
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
             _setValuePerOzToken(amountRethOut, false);
@@ -298,7 +298,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
             _setAssetsAndShares(assets, accountShares, false);
 
-            console.log('_assets[owner_]: ', _assets[owner_]);
+            // console.log('_assets[owner_]: ', _assets[owner_]);
             _assets[owner_] -= assets; 
 
             unchecked {
@@ -306,10 +306,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 // _assets[owner_] -= assets; 
             }
 
-            console.log('');
-            console.log('************ END OF REDEEM ***************');
-            console.log('current shares alice: ', sharesOf(owner_));
-            console.log('');            
+            // console.log('');
+            // console.log('************ END OF REDEEM ***************');
+            // console.log('current shares alice: ', sharesOf(owner_));
+            // console.log('');            
 
             //put a redeem event here
 
@@ -359,24 +359,24 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint preBalance = _subConvertToAssets(shares_);
         // console.log('_convertToAssetsFromUnderlying: ', _convertToAssetsFromUnderlying(shares_));
 
-        console.log('');
-        console.log('--- in _convertToAssets ---');
-        console.log('preBalance - output of _subConvertToAssets: ', preBalance);
-        if (preBalance != 0) {
-            console.log('scaling factor: ', _calculateScalingFactor(account_));
-            console.log('is: ', preBalance * _calculateScalingFactor(account_));
-        }
+        // console.log('');
+        // console.log('--- in _convertToAssets ---');
+        // console.log('preBalance - output of _subConvertToAssets: ', preBalance);
+        // if (preBalance != 0) {
+        //     console.log('scaling factor: ', _calculateScalingFactor(account_));
+        //     console.log('is: ', preBalance * _calculateScalingFactor(account_));
+        // }
 
         return preBalance == 0 ? 0 : preBalance * _calculateScalingFactor(account_);
     }
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
         uint x = subBalanceOf(account_);
-        console.log('');
-        console.log('--- in scaling factor');
-        console.log('_assets[account_]: ', _assets[account_]);
-        console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
-        console.log('subBalanceOf(account_): ', x);
+        // console.log('');
+        // console.log('--- in scaling factor');
+        // console.log('_assets[account_]: ', _assets[account_]);
+        // console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
+        // console.log('subBalanceOf(account_): ', x);
 
         return (_assets[account_] * 1e12) / x;
     }
@@ -401,19 +401,19 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //this is public instead of private. Check
     function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
-        console.log('');
-        console.log('--- in _convertToAssetsFromUnderlying ---');
-        console.log('shares: ', shares_);
-        console.log('totalShares: ', totalShares());
-        console.log('_rETH_ETH(): ', _rETH_ETH());
-        console.log('_subConvertToAssets(shares_): ', _subConvertToAssets(shares_));
-        // console.log('is3: ', shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_) * 2));
-        console.log('totalSupply: ', totalSupply());
+        // console.log('');
+        // console.log('--- in _convertToAssetsFromUnderlying ---');
+        // console.log('shares: ', shares_);
+        // console.log('totalShares: ', totalShares());
+        // console.log('_rETH_ETH(): ', _rETH_ETH());
+        // console.log('_subConvertToAssets(shares_): ', _subConvertToAssets(shares_));
+        // // console.log('is3: ', shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_) * 2));
+        // console.log('totalSupply: ', totalSupply());
         // console.log('_convertToAssets: ', _convertToAssets(shares_, 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E));
         
         uint deltaShares = totalShares() - shares_;
         uint x = shares_.mulDivDown(_rETH_ETH(), deltaShares);
-        console.log('x: ', x);
+        // console.log('x: ', x);
 
         // return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
         return shares_.mulDivDown(_rETH_ETH(), x * 2);
