@@ -260,6 +260,7 @@ contract ozTokenTest is TestMethods {
 
         uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
         console.log('ozBalanceAlicePostRewards: ', ozBalanceAlicePostRewards);
+        // console.log('ozBalanceAlicePre: ', ozBalanceAlicePre);
 
         assertTrue(ozBalanceAlicePostRewards > ozBalanceAlicePre);
     }
