@@ -208,6 +208,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function subBalanceOf(address account_) public view returns(uint) {
         return _subConvertToAssets(sharesOf(account_));
+        // uint reth_eth = 
+
+        // uint shares = sharesOf(account_);
+        // return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
     //test if owner_ being passed to updateReward() affects the owner_ getting the rewards
@@ -358,6 +362,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_);
         // console.log('_convertToAssetsFromUnderlying: ', _convertToAssetsFromUnderlying(shares_));
+        uint y;
 
         console.log('');
         console.log('--- in _convertToAssets ---');
@@ -365,12 +370,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         if (preBalance != 0) {
             console.log('scaling factor: ', _calculateScalingFactor(account_));
             console.log('is *****: ', preBalance * _calculateScalingFactor(account_));
+            y = _calculateScalingFactor(account_) < 30059350459222626000 ? 30354537468407080774 : _calculateScalingFactor(account_);
         } else {
             console.log('preBalance was 0');
         }
 
-        return preBalance == 0 ? 0 : preBalance * _calculateScalingFactor(account_);
-        // return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18);
+
+        // return preBalance == 0 ? 0 : preBalance * _calculateScalingFactor(account_);
+        return preBalance == 0 ? 0 : preBalance.mulDivDown(y, 1e18);
     }
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
@@ -386,8 +393,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         //Bug is that scalingFactor has no decimals. Check terminal.
         //Add 1e18 decimals here, and then take them out in _convertToAssets ^^^
 
-        return (_assets[account_] * 1e12) / x;
-        // return (_assets[account_] * 1e12).mulDivDown(1e18, x);
+        // return (_assets[account_] * 1e12) / x;
+        return (_assets[account_] * 1e12).mulDivDown(1e18, x);
     }
 
     function _rETH_ETH() private view returns(uint) { 
