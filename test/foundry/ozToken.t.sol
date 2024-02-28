@@ -308,7 +308,14 @@ contract ozTokenTest is TestMethods {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
 
-        // _getResetVarsAndChangeSlip();
+        /**
+         * Have to increase slippage even when using a SMALL dealUnderlying() because we're 
+         * mocking the rETH_ETH's Chainlink rate with a higher value (to simulate rewards),
+         * but the mockCall() cheatcode doesn't work on internal calls, which is what the
+         * Composable Balancer pool uses to price rETH, through a Chainlink feed, when we 
+         * have to swap rETH to ETH on _swapBalancer() from ozEngine.sol
+         */
+        _getResetVarsAndChangeSlip();
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
