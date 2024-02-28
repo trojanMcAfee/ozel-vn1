@@ -172,25 +172,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
         uint x = 30354537468407080774;
 
-        console.log('');
-        console.log('--- _subConvertToShares ---');
-        console.log('assets: ', assets_);
-        console.log('totalShares(): ', totalShares());
-        console.log('_rETH_ETH(): ', _rETH_ETH());
-        console.log('_calculateScalingFactor(account_): ', x); //_calculateScalingFactor(account_)
-        console.log('is: ', ( (assets_.mulDivUp(totalShares(), _rETH_ETH())) * 1e18 ) / x);
-        // console.log('---------');
-        // uint a = assets_ * totalShares();
-        // console.log('a: ', a);
-        // uint b = a / _rETH_ETH();
-        // console.log('b: ', b);
-        // uint c = b / x;
-        // console.log('c: ', c);
-        // uint d = c * 1e18;
-        // console.log('d - is2: ', d);
         // console.log('');
-
-        // return d;
+        // console.log('--- _subConvertToShares ---');
+        // console.log('assets: ', assets_);
+        // console.log('totalShares(): ', totalShares());
+        // console.log('_rETH_ETH(): ', _rETH_ETH());
+        // console.log('_calculateScalingFactor(account_): ', x); //_calculateScalingFactor(account_)
+        // console.log('is: ', ( (assets_.mulDivUp(totalShares(), _rETH_ETH())) * 1e18 ) / x);
+   
         return ( (assets_.mulDivUp(totalShares(), _rETH_ETH())) * 1e18 ) / x; //x = _calculateScalingFactor(account_)
     }
 
@@ -263,7 +252,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _assets[receiver] += assets;
             }
 
-            console.log('shares in mint ****: ', shares);
+            // console.log('shares in mint ****: ', shares);
             return shares;
 
         } catch Error(string memory reason) {
@@ -307,14 +296,17 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
-        // uint assets = previewRedeem(shares); 
         uint assets = shares; 
-        console.log('');
+        // console.log('assets ^^^^^^^^^^^^: ', assets);
+
+        uint assets2 = previewRedeem(shares); 
+        // console.log('assets2: ', assets2);
+        
+        // console.log('');
         // console.log('shares: ', shares);
         // console.log('accountShares: ', accountShares);
         // console.log('totalAssets: ', totalAssets());
         // console.log('totalShares: ', totalShares());
-        // console.log('assets ^^^^^^^^^^^^: ', assets);
         // console.log('amts.ozAmountIn: ', amts.ozAmountIn);
 
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
@@ -449,12 +441,25 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('totalSupply: ', totalSupply());
         // console.log('_convertToAssets: ', _convertToAssets(shares_, 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E));
         
+        // console.log(1);
         uint deltaShares = totalShares() - shares_;
-        uint x = shares_.mulDivDown(_rETH_ETH(), deltaShares);
+
+        // console.log(2);
+        // console.log('shares: ', shares_);
+        // console.log('_rETH_ETH(): ', _rETH_ETH());
+        // console.log('deltaShares: ', deltaShares);
+        // console.log('totalShares: ', totalShares());
+        // console.log('is: ', shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_)));
+        
+        // uint x = shares_.mulDivDown(_rETH_ETH(), deltaShares);
+        // console.log(3);
         // console.log('x: ', x);
 
-        // return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
-        return shares_.mulDivDown(_rETH_ETH(), x * 2);
+        return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
+        
+        // uint y = shares_.mulDivDown(_rETH_ETH(), x * 2);
+        // console.log(4);
+        // return y;
     }
 
     

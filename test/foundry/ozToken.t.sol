@@ -313,7 +313,7 @@ contract ozTokenTest is TestMethods {
          * mocking the rETH_ETH's Chainlink rate with a higher value (to simulate rewards),
          * but the mockCall() cheatcode doesn't work on internal calls, which is what the
          * Composable Balancer pool uses to price rETH, through a Chainlink feed, when we 
-         * have to swap rETH to ETH on _swapBalancer() from ozEngine.sol
+         * have to swap rETH to ETH on _swapBalancer() from ozEngine.sol.
          */
         _getResetVarsAndChangeSlip();
 
