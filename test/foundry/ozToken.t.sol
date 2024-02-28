@@ -319,7 +319,7 @@ contract ozTokenTest is TestMethods {
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
-        _mintOzTokens(ozERC20, bob, testToken, amountIn);
+        // _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('oz bal pre mock: ', ozBalanceAlice);
@@ -328,6 +328,8 @@ contract ozTokenTest is TestMethods {
 
         ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('oz bal post mock: ', ozBalanceAlice);
+
+        // revert('hereeee');
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlice, // / 2

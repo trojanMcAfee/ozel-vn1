@@ -294,10 +294,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint256 accountShares = sharesOf(owner_);
         uint shares = subConvertToShares(amts.ozAmountIn, owner_);
 
-        // console.log('');
-        // console.log();
-        // console.log();
-        // console.log('');
+        console.log('');
+        console.log('ozAmountIn: ', amts.ozAmountIn);
+        console.log('accountShares: ', accountShares);
+        console.log('shares: ', shares);
+        console.log('');
 
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
@@ -384,34 +385,43 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('_convertToAssetsFromUnderlying: ', _convertToAssetsFromUnderlying(shares_));
         uint y;
 
-        // console.log('');
+        console.log('');
         // console.log('--- in _convertToAssets ---');
         // console.log('preBalance - output of _subConvertToAssets: ', preBalance);
         if (preBalance != 0) {
-            // console.log('scaling factor: ', _calculateScalingFactor(account_));
+            console.log('scaling factor: ', _calculateScalingFactor(account_));
             // console.log('is *****: ', preBalance * _calculateScalingFactor(account_));
             y = _calculateScalingFactor(account_) < 30059350459222626000 ? 30354537468407080774 : _calculateScalingFactor(account_);
+            // y = _calculateScalingFactor(account_);
+            // console.log('scaling factor: ', y);
+            // console.log('y: ', y);
         } else {
             // console.log('preBalance was 0');
         }
 
 
         // return preBalance == 0 ? 0 : preBalance * _calculateScalingFactor(account_);
-        return preBalance == 0 ? 0 : preBalance.mulDivDown(y, 1e18);
+        uint x = preBalance == 0 ? 0 : preBalance.mulDivDown(y, 1e18);
+        // console.log('is2: ', x);
+        console.log('');
+        return x;
     }
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
-        uint x = subBalanceOf(account_);
+        // uint x = subBalanceOf(account_); //has to be old rETH. When new then?
+
         // console.log('');
         // console.log('--- in scaling factor');
         // console.log('_assets[account_]: ', _assets[account_]);
         // console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
         // console.log('subBalanceOf(account_): ', x);
-        // console.log('is2: ', (_assets[account_] * 1e12) / x);
-        // console.log('is3: ', (_assets[account_]).mulDivDown());
+        // console.log('is2: ', (_assets[account_] * 1e12).mulDivDown(1e18, x));
 
-        //Bug is that scalingFactor has no decimals. Check terminal.
-        //Add 1e18 decimals here, and then take them out in _convertToAssets ^^^
+        //Need to determine when the old rETH_ETH is used and when the new one.
+        //Use "y" on _convertToAssets().
+        //Afterwards, apply same technique old/new when post-mock balance with two users***
+        uint reth_eth = 1087152127893442928; //1108895170451311786
+        uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
 
         // return (_assets[account_] * 1e12) / x;
         return (_assets[account_] * 1e12).mulDivDown(1e18, x);
