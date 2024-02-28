@@ -86,9 +86,13 @@ contract ozLoupe is DiamondLoupeFacet {
         address alice = 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E;
         // uint sub = ozERC20.subConvertToShares(ozAmountIn_, alice);
 
+        console.log('ozERC20.subConvertToShares(ozAmountIn_, alice): ', ozERC20.subConvertToShares(ozAmountIn_, alice));
+
         uint amountInReth = ozERC20.convertToUnderlying(
             ozERC20.subConvertToShares(ozAmountIn_, alice)
         );
+
+        console.log('amountInReth ^^^^^: ', amountInReth); //<---- this is 0. Why??? Compare with other commits
 
         //put alice here ^^^
 

@@ -170,7 +170,28 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //-----------
 
     function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
-        return (assets_.mulDivUp(totalShares(), _rETH_ETH())) / _calculateScalingFactor(account_);
+        uint x = 30354537468407080774;
+
+        console.log('');
+        console.log('--- _subConvertToShares ---');
+        console.log('assets: ', assets_);
+        console.log('totalShares(): ', totalShares());
+        console.log('_rETH_ETH(): ', _rETH_ETH());
+        console.log('_calculateScalingFactor(account_): ', x); //_calculateScalingFactor(account_)
+        console.log('is: ', ( (assets_.mulDivUp(totalShares(), _rETH_ETH())) * 1e18 ) / x);
+        // console.log('---------');
+        // uint a = assets_ * totalShares();
+        // console.log('a: ', a);
+        // uint b = a / _rETH_ETH();
+        // console.log('b: ', b);
+        // uint c = b / x;
+        // console.log('c: ', c);
+        // uint d = c * 1e18;
+        // console.log('d - is2: ', d);
+        // console.log('');
+
+        // return d;
+        return ( (assets_.mulDivUp(totalShares(), _rETH_ETH())) * 1e18 ) / x; //x = _calculateScalingFactor(account_)
     }
 
     function _convertToShares(uint assets_) private view returns(uint) { 
@@ -242,6 +263,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _assets[receiver] += assets;
             }
 
+            console.log('shares in mint ****: ', shares);
             return shares;
 
         } catch Error(string memory reason) {
@@ -364,15 +386,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('_convertToAssetsFromUnderlying: ', _convertToAssetsFromUnderlying(shares_));
         uint y;
 
-        console.log('');
-        console.log('--- in _convertToAssets ---');
-        console.log('preBalance - output of _subConvertToAssets: ', preBalance);
+        // console.log('');
+        // console.log('--- in _convertToAssets ---');
+        // console.log('preBalance - output of _subConvertToAssets: ', preBalance);
         if (preBalance != 0) {
-            console.log('scaling factor: ', _calculateScalingFactor(account_));
-            console.log('is *****: ', preBalance * _calculateScalingFactor(account_));
+            // console.log('scaling factor: ', _calculateScalingFactor(account_));
+            // console.log('is *****: ', preBalance * _calculateScalingFactor(account_));
             y = _calculateScalingFactor(account_) < 30059350459222626000 ? 30354537468407080774 : _calculateScalingFactor(account_);
         } else {
-            console.log('preBalance was 0');
+            // console.log('preBalance was 0');
         }
 
 
@@ -382,12 +404,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
         uint x = subBalanceOf(account_);
-        console.log('');
-        console.log('--- in scaling factor');
-        console.log('_assets[account_]: ', _assets[account_]);
-        console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
-        console.log('subBalanceOf(account_): ', x);
-        console.log('is2: ', (_assets[account_] * 1e12) / x);
+        // console.log('');
+        // console.log('--- in scaling factor');
+        // console.log('_assets[account_]: ', _assets[account_]);
+        // console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
+        // console.log('subBalanceOf(account_): ', x);
+        // console.log('is2: ', (_assets[account_] * 1e12) / x);
         // console.log('is3: ', (_assets[account_]).mulDivDown());
 
         //Bug is that scalingFactor has no decimals. Check terminal.
