@@ -294,15 +294,21 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint256 accountShares = sharesOf(owner_);
         uint shares = subConvertToShares(amts.ozAmountIn, owner_);
 
+        // console.log('');
+        // console.log();
+        // console.log();
+        // console.log('');
+
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
         uint assets = shares; 
-        // console.log('assets ^^^^^^^^^^^^: ', assets);
+        console.log('');
+        console.log('assets ^^^^^^^^^^^^: ', assets);
 
         uint assets2 = previewRedeem(shares); 
-        // console.log('assets2: ', assets2);
+        console.log('assets2: ', assets2);
         
-        // console.log('');
+        console.log('');
         // console.log('shares: ', shares);
         // console.log('accountShares: ', accountShares);
         // console.log('totalAssets: ', totalAssets());
