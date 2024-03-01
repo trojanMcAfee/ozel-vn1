@@ -14,6 +14,9 @@ import "../../contracts/Errors.sol";
 import {Dummy1} from "./Dummy1.sol";
 import {NewToken} from "../../contracts/AppStorage.sol";
 
+import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
+import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol";
 
 import "forge-std/console.sol";
 
@@ -302,6 +305,42 @@ contract ozTokenTest is TestMethods {
         console.log('totalShares: ', ozERC20.totalShares());
 
     }
+
+    function _getUniPrice(address token0_, address token1_, uint32 secs_) private view returns(uint) {
+        address pool = IUniswapV3Factory(uniFactory).getPool(token0_, token1_, uniPoolFee);
+        uint32 secondsAgo = secs_;
+        uint BASE = 1e12;
+
+        if (token1_ == wethAddr) BASE = 1;
+
+        uint32[] memory secondsAgos = new uint32[](2);
+        secondsAgos[0] = secondsAgo;
+        secondsAgos[1] = 0;
+
+        (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
+
+        int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
+        int24 tick = int24(tickCumulativesDelta / int32(secondsAgo));
+        
+        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secondsAgo) != 0)) tick--;
+        
+        uint amountOut = OracleLibrary.getQuoteAtTick(
+            tick, 1 ether, token0_, token1_
+        );
+    
+        return amountOut * BASE;
+    }
+
+
+    function test_manipulate() public {
+        uint price1 = _getUniPrice(wethAddr, usdcAddr, uint32(10));
+        uint price2 = _getUniPrice(wethAddr, usdcAddr, uint32(100));
+
+        console.log('price1: ', price1);
+        console.log('price2: ', price2);
+
+    }
+
 
 
     function test_redeem_rewards() public {

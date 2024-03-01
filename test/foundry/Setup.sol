@@ -219,7 +219,7 @@ contract Setup is Test {
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
             aeWETH = address(0);
-            rEthEthChainlink = 0x536218f9E9Eb48863970252233c8F271f554C2d0; //check that it's chainlink's feed, ant not gravita
+            rEthEthChainlink = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
             rEthImpl = address(0);
             feesCollectorBalancer = address(0);
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
