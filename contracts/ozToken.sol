@@ -391,8 +391,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         if (preBalance != 0) {
             console.log('scaling factor: ', _calculateScalingFactor(account_));
             // console.log('is *****: ', preBalance * _calculateScalingFactor(account_));
-            y = _calculateScalingFactor(account_) < 30059350459222626000 ? 30354537468407080774 : _calculateScalingFactor(account_);
-            // y = _calculateScalingFactor(account_);
+            // y = _calculateScalingFactor(account_) < 30059350459222626000 ? 30354537468407080774 : _calculateScalingFactor(account_);
+            y = _calculateScalingFactor(account_);
             // console.log('scaling factor: ', y);
             // console.log('y: ', y);
         } else {
@@ -408,7 +408,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
-        // uint x = subBalanceOf(account_); //has to be old rETH. When new then?
+        // uint x = subBalanceOf(account_);
 
         // console.log('');
         // console.log('--- in scaling factor');
@@ -420,6 +420,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         //Need to determine when the old rETH_ETH is used and when the new one.
         //Use "y" on _convertToAssets().
         //Afterwards, apply same technique old/new when post-mock balance with two users***
+        
         uint reth_eth = 1087152127893442928; //1108895170451311786
         uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
 

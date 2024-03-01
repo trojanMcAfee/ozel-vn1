@@ -329,7 +329,7 @@ contract ozTokenTest is TestMethods {
         ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('oz bal post mock: ', ozBalanceAlice);
 
-        // revert('hereeee');
+        revert('hereeee');
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlice, // / 2
