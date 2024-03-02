@@ -25,6 +25,11 @@ import {Helpers, TotalType} from "./libraries/Helpers.sol";
 import {Modifiers} from "./Modifiers.sol";
 import "./Errors.sol";
 
+import {OracleLibrary} from "./libraries/oracle/OracleLibrary.sol";
+import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
+
+
 import "forge-std/console.sol";
 
 
@@ -407,8 +412,45 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return x;
     }
 
+
+    // ---------------------------- /
+    function _getUniPrice(address token0_, address token1_, uint32 secsAgo_) private view returns(uint) {
+        // address uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
+        // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        // uint24 fee = 500;
+
+        // address pool = IUniswapV3Factory(uniFactory).getPool(token0_, token1_, fee);
+        address pool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+        // uint32 secondsAgo = uint32(secsAgo_);
+        // uint BASE = 1e12;
+
+        // if (token1_ == WETH) BASE = 1;
+
+        uint32[] memory secondsAgos = new uint32[](2);
+        secondsAgos[0] = secsAgo_;
+        secondsAgos[1] = 0;
+
+        (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
+
+        int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
+        int24 tick = int24(tickCumulativesDelta / int32(secsAgo_));
+        
+        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo_) != 0)) tick--;
+        
+        uint amountOut = OracleLibrary.getQuoteAtTick(
+            tick, 1 ether, token0_, token1_
+        );
+    
+        return amountOut;
+    }
+    // ---------------------------- /
+
+
     function _calculateScalingFactor(address account_) private view returns(uint) {
         // uint x = subBalanceOf(account_);
+
+        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
         // console.log('');
         // console.log('--- in scaling factor');
@@ -417,11 +459,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('subBalanceOf(account_): ', x);
         // console.log('is2: ', (_assets[account_] * 1e12).mulDivDown(1e18, x));
 
-        //Need to determine when the old rETH_ETH is used and when the new one.
-        //Use "y" on _convertToAssets().
-        //Afterwards, apply same technique old/new when post-mock balance with two users***
+        //In case the other method doesn't work, the scaling factor is called with the previos rETH-ETH update.
+        //Use uniswap v3 oracle to put here an old update and in balanceOf(), i think it is, the new update
         
-        uint reth_eth = 1087152127893442928; //1108895170451311786
+        // uint reth_eth = 1087152127893442928; //1108895170451311786
+        uint reth_eth = _getUniPrice(rETH, WETH, uint32(72000));
         uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
 
         // return (_assets[account_] * 1e12) / x;
