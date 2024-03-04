@@ -416,15 +416,17 @@ contract ozTokenTest is TestMethods {
          * Composable Balancer pool uses to price rETH, through a Chainlink feed, when we 
          * have to swap rETH to ETH on _swapBalancer() from ozEngine.sol.
          */
-        _getResetVarsAndChangeSlip();
-
-        //*** NEW cardinality */
-        address rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-        bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
-        bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;        
+        _getResetVarsAndChangeSlip();        
         
+        /**
+         * In order to properly test that rETH reward accrual happens with using Uniswap V3's TWAP oracle,
+         * we first store an old observation on the pool's slot0, and then, to simulate the accrual,
+         * we put back the original and updated observation, which contains an updated (and higher) spot price
+         */
+        bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
+        bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
+
         vm.store(rethWethUniPool, bytes32(0), newSlot0WithCardinality);
-        /****** */
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
@@ -433,36 +435,12 @@ contract ozTokenTest is TestMethods {
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('oz bal pre mock: ', ozBalanceAlice);
 
-        //--------------------
-        // address rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-        // (,,,uint16 observationCardinality,,,) = IUniswapV3Pool(rethWethUniPool).slot0();        
-        // console.log('observationCardinality: ', uint(observationCardinality));
-
-        // // bytes32 slot0 = vm.load(rethWethUniPool, bytes32(0));
-        // // console.logBytes32(slot0);
-
-        // bytes32 newCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
-        // vm.store(rethWethUniPool, bytes32(0), newCardinality);
-
-        // console.log('');
-
-        // (,,,uint16 observationCardinality2,,,) = IUniswapV3Pool(rethWethUniPool).slot0();        
-        // console.log('observationCardinality2: ', uint(observationCardinality2));
-
-        // revert('heree2');
-
-
-        //--------------------
-
-        // _mock_rETH_ETH(Dir.UP, 200); 
+        //This simulates the rETH rewards accrual.
         vm.store(rethWethUniPool, bytes32(0), originalSlot0);
 
         uint ozBalanceAlice2 = ozERC20.balanceOf(alice);
         console.log('oz bal post mock: ', ozBalanceAlice2);
 
-        console.log('are equal? - false: ', ozBalanceAlice == ozBalanceAlice2);
-
-        revert('hereeee');
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlice, // / 2

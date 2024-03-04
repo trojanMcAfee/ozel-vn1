@@ -99,6 +99,7 @@ contract Setup is Test {
     address internal rocketDAOProtocolSettingsDeposit;
     address internal uniFactory;
     address internal protocolGuildSplit;
+    address internal rethWethUniPool;
 
     address internal testToken;
     address internal secondTestToken;
@@ -231,6 +232,7 @@ contract Setup is Test {
             weETHETHredStone = 0x8751F736E94F6CD167e8C5B97E245680FbD9CC36;
             weETHUSDredStone = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
+            rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
 
             network = "ethereum";
             mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
