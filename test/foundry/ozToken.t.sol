@@ -438,12 +438,12 @@ contract ozTokenTest is TestMethods {
         //This simulates the rETH rewards accrual.
         vm.store(rethWethUniPool, bytes32(0), originalSlot0);
 
-        uint ozBalanceAlice2 = ozERC20.balanceOf(alice);
-        console.log('oz bal post mock: ', ozBalanceAlice2);
+        uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
+        console.log('oz bal post mock: ', ozBalanceAlicePostMock);
 
 
         bytes memory redeemData = OZ.getRedeemData(
-            ozBalanceAlice, // / 2
+            ozBalanceAlicePostMock, // / 2
             address(ozERC20),
             OZ.getDefaultSlippage(),
             alice

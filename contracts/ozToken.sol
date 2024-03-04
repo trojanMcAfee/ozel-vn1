@@ -175,7 +175,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //-----------
 
     function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
-        uint x = 30354537468407080774;
+        // uint x = 30354537468407080774;
+        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        
+        uint x = _calculateScalingFactor(account_);
+        uint reth_eth = _getUniPrice(rETH, WETH, uint32(10));
 
         // console.log('');
         // console.log('--- _subConvertToShares ---');
@@ -185,7 +190,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('_calculateScalingFactor(account_): ', x); //_calculateScalingFactor(account_)
         // console.log('is: ', ( (assets_.mulDivUp(totalShares(), _rETH_ETH())) * 1e18 ) / x);
    
-        return ( (assets_.mulDivUp(totalShares(), _rETH_ETH())) * 1e18 ) / x; //x = _calculateScalingFactor(account_)
+        return ( (assets_.mulDivUp(totalShares(), reth_eth)) * 1e18 ) / x; //x = _calculateScalingFactor(account_)
     }
 
     function _convertToShares(uint assets_) private view returns(uint) { 
@@ -464,7 +469,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         
         // uint reth_eth = 1087152127893442928; //1108895170451311786
         uint reth_eth = _getUniPrice(rETH, WETH, uint32(86400));
-        console.log('reth_eth from uni - 172800 *******: ', reth_eth);
+        // console.log('reth_eth from uni - 172800 *******: ', reth_eth);
         uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
 
         // return (_assets[account_] * 1e12) / x;
@@ -481,12 +486,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-        console.log('');
-        console.log('--- in _subConvertToAssets ---');
-        console.log('reth_eth from chainlink: ', reth_eth2);
+        // console.log('');
+        // console.log('--- in _subConvertToAssets ---');
+        // console.log('reth_eth from chainlink: ', reth_eth2);
 
         uint reth_eth = _getUniPrice(rETH, WETH, uint32(10));
-        console.log('reth_eth from uni - 10 secs - used: ', reth_eth);
+        // console.log('reth_eth from uni - 10 secs - used: ', reth_eth);
 
         // console.log('');
         // console.log('--- in _subConvertToAssets ---');
