@@ -463,7 +463,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         //Use uniswap v3 oracle to put here an old update and in balanceOf(), i think it is, the new update
         
         // uint reth_eth = 1087152127893442928; //1108895170451311786
-        uint reth_eth = _getUniPrice(rETH, WETH, uint32(1209600));
+        uint reth_eth = _getUniPrice(rETH, WETH, uint32(86400));
         console.log('reth_eth from uni - 172800 *******: ', reth_eth);
         uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
 
@@ -485,7 +485,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('--- in _subConvertToAssets ---');
         console.log('reth_eth from chainlink: ', reth_eth2);
 
-        uint reth_eth = _getUniPrice(rETH, WETH, uint32(1123200));
+        uint reth_eth = _getUniPrice(rETH, WETH, uint32(10));
         console.log('reth_eth from uni - 10 secs - used: ', reth_eth);
 
         // console.log('');

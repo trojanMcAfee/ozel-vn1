@@ -418,6 +418,14 @@ contract ozTokenTest is TestMethods {
          */
         _getResetVarsAndChangeSlip();
 
+        //*** NEW cardinality */
+        address rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+        bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
+        bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;        
+        
+        vm.store(rethWethUniPool, bytes32(0), newSlot0WithCardinality);
+        /****** */
+
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
         // _mintOzTokens(ozERC20, bob, testToken, amountIn);
@@ -426,27 +434,28 @@ contract ozTokenTest is TestMethods {
         console.log('oz bal pre mock: ', ozBalanceAlice);
 
         //--------------------
-        address rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-        (,,,uint16 observationCardinality,,,) = IUniswapV3Pool(rethWethUniPool).slot0();        
-        console.log('observationCardinality: ', uint(observationCardinality));
+        // address rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+        // (,,,uint16 observationCardinality,,,) = IUniswapV3Pool(rethWethUniPool).slot0();        
+        // console.log('observationCardinality: ', uint(observationCardinality));
 
-        // bytes32 slot0 = vm.load(rethWethUniPool, bytes32(0));
-        // console.logBytes32(slot0);
+        // // bytes32 slot0 = vm.load(rethWethUniPool, bytes32(0));
+        // // console.logBytes32(slot0);
 
-        bytes32 newCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
-        vm.store(rethWethUniPool, bytes32(0), newCardinality);
+        // bytes32 newCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
+        // vm.store(rethWethUniPool, bytes32(0), newCardinality);
 
-        console.log('');
+        // console.log('');
 
-        (,,,uint16 observationCardinality2,,,) = IUniswapV3Pool(rethWethUniPool).slot0();        
-        console.log('observationCardinality2: ', uint(observationCardinality2));
+        // (,,,uint16 observationCardinality2,,,) = IUniswapV3Pool(rethWethUniPool).slot0();        
+        // console.log('observationCardinality2: ', uint(observationCardinality2));
 
-        revert('heree2');
+        // revert('heree2');
 
 
         //--------------------
 
-        _mock_rETH_ETH(Dir.UP, 200); 
+        // _mock_rETH_ETH(Dir.UP, 200); 
+        vm.store(rethWethUniPool, bytes32(0), originalSlot0);
 
         uint ozBalanceAlice2 = ozERC20.balanceOf(alice);
         console.log('oz bal post mock: ', ozBalanceAlice2);
