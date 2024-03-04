@@ -331,13 +331,75 @@ contract ozTokenTest is TestMethods {
         return amountOut * BASE;
     }
 
+   
+
 
     function test_manipulate() public {
-        uint price1 = _getUniPrice(wethAddr, usdcAddr, uint32(10));
-        uint price2 = _getUniPrice(wethAddr, usdcAddr, uint32(100));
+        address rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+        bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
+        bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
+        
+        vm.store(rethWethUniPool, bytes32(0), newSlot0WithCardinality);
 
-        console.log('price1: ', price1);
-        console.log('price2: ', price2);
+        uint price1 = _getUniPrice(rEthAddr, wethAddr, uint32(10));
+        uint price2 = _getUniPrice(rEthAddr, wethAddr, uint32(86400));
+        // uint price3 = _getUniPrice(rEthAddr, wethAddr, uint32(172800 * 2));
+        // uint price4 = _getUniPrice(rEthAddr, wethAddr, uint32(172800 * 3));
+
+        console.log('price1 - 10: ', price1);
+        console.log('price2 - 86400: ', price2);
+        // console.log('price3 - 172800 * 2: ', price3);
+        // console.log('price4 - 172800 * 3: ', price4);
+
+        vm.store(rethWethUniPool, bytes32(0), originalSlot0);
+
+        price1 = _getUniPrice(rEthAddr, wethAddr, uint32(10));
+        price2 = _getUniPrice(rEthAddr, wethAddr, uint32(172800));
+
+        console.log('');
+        console.log('price1 - post: ', price1);
+        console.log('price2 - 86400: ', price2);
+
+        //--------
+
+        // uint pricePrev = _getUniPrice(rEthAddr, wethAddr, uint32(10));
+        // console.log('pricePrev: ', pricePrev);
+
+        // for (uint i=1; i < 30; i++) {
+        //     uint price = _getUniPrice(rEthAddr, wethAddr, uint32(86400 * i));
+        //     // console.log('is true: ', price >= pricePrev);
+        //     console.log('price: ', price);
+        //     console.log('secsAgo: ', 86400 * i);
+        //     console.log('');
+        //     // pricePrev = price;
+        // }
+
+        //-------
+        // uint price1 = _getUniPrice(wethAddr, usdcAddr, uint32(10));
+        // console.log('price1: ', price1);
+
+        // uint price2 = _getUniPrice(wethAddr, usdcAddr, uint32(3600));
+        // console.log('price2: ', price2);
+
+        //-------
+        // address pool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613; //reth-eth
+        // // address pool = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; //usdc-weth
+        // uint32[] memory secondsAgos = new uint32[](2);
+        // secondsAgos[0] = uint32(10);
+        // secondsAgos[1] = 0;
+
+        // (int24 arithmeticMeanTick,) = OracleLibrary.consult(pool, uint32(10));
+        // console.log('arithmeticMeanTick 1: ', uint(int(arithmeticMeanTick)));
+
+        // // secondsAgos[0] = uint32(3600);
+        // (int24 arithmeticMeanTick2,) = OracleLibrary.consult(pool, uint32(100600));
+        // console.log('arithmeticMeanTick 2: ', uint(int(arithmeticMeanTick2)));
+
+        // // secondsAgos[0] = uint32(7200);
+        // (int24 arithmeticMeanTick3,) = OracleLibrary.consult(pool, uint32(272000));
+        // console.log('arithmeticMeanTick 3: ', uint(int(arithmeticMeanTick3)));
+
+        //--------------
 
     }
 
@@ -363,10 +425,33 @@ contract ozTokenTest is TestMethods {
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('oz bal pre mock: ', ozBalanceAlice);
 
-        _mock_rETH_ETH(Dir.UP, 200);
+        //--------------------
+        address rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+        (,,,uint16 observationCardinality,,,) = IUniswapV3Pool(rethWethUniPool).slot0();        
+        console.log('observationCardinality: ', uint(observationCardinality));
 
-        ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('oz bal post mock: ', ozBalanceAlice);
+        // bytes32 slot0 = vm.load(rethWethUniPool, bytes32(0));
+        // console.logBytes32(slot0);
+
+        bytes32 newCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
+        vm.store(rethWethUniPool, bytes32(0), newCardinality);
+
+        console.log('');
+
+        (,,,uint16 observationCardinality2,,,) = IUniswapV3Pool(rethWethUniPool).slot0();        
+        console.log('observationCardinality2: ', uint(observationCardinality2));
+
+        revert('heree2');
+
+
+        //--------------------
+
+        _mock_rETH_ETH(Dir.UP, 200); 
+
+        uint ozBalanceAlice2 = ozERC20.balanceOf(alice);
+        console.log('oz bal post mock: ', ozBalanceAlice2);
+
+        console.log('are equal? - false: ', ozBalanceAlice == ozBalanceAlice2);
 
         revert('hereeee');
 

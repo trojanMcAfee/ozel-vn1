@@ -394,7 +394,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('--- in _convertToAssets ---');
         // console.log('preBalance - output of _subConvertToAssets: ', preBalance);
         if (preBalance != 0) {
-            console.log('scaling factor: ', _calculateScalingFactor(account_));
+            // console.log('scaling factor: ', _calculateScalingFactor(account_));
             // console.log('is *****: ', preBalance * _calculateScalingFactor(account_));
             // y = _calculateScalingFactor(account_) < 30059350459222626000 ? 30354537468407080774 : _calculateScalingFactor(account_);
             y = _calculateScalingFactor(account_);
@@ -463,7 +463,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         //Use uniswap v3 oracle to put here an old update and in balanceOf(), i think it is, the new update
         
         // uint reth_eth = 1087152127893442928; //1108895170451311786
-        uint reth_eth = _getUniPrice(rETH, WETH, uint32(72000));
+        uint reth_eth = _getUniPrice(rETH, WETH, uint32(1209600));
+        console.log('reth_eth from uni - 172800 *******: ', reth_eth);
         uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
 
         // return (_assets[account_] * 1e12) / x;
@@ -476,7 +477,16 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _subConvertToAssets(uint256 shares_) private view returns (uint256 assets) { 
-        uint reth_eth = _rETH_ETH();
+        uint reth_eth2 = _rETH_ETH();
+        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
+        console.log('');
+        console.log('--- in _subConvertToAssets ---');
+        console.log('reth_eth from chainlink: ', reth_eth2);
+
+        uint reth_eth = _getUniPrice(rETH, WETH, uint32(1123200));
+        console.log('reth_eth from uni - 10 secs - used: ', reth_eth);
 
         // console.log('');
         // console.log('--- in _subConvertToAssets ---');
