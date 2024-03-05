@@ -271,12 +271,7 @@ contract ozTokenTest is TestMethods {
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         uint ozBalanceBob = ozERC20.balanceOf(bob);
-
-        console.log('ozBalanceAlice - post mint: ', ozBalanceAlice);
-        console.log('ozBalanceBob - post mint: ', ozBalanceBob);
-        console.log('addition: ', ozBalanceBob + ozBalanceAlice);
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('totalSupply2: ', ozERC20.totalSupply2());
+        assertTrue(_fm(ozBalanceBob + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
 
         //This simulates the rETH rewards accrual.
         vm.store(rethWethUniPool, bytes32(0), originalSlot0);
@@ -298,21 +293,15 @@ contract ozTokenTest is TestMethods {
         ozERC20.approve(address(ozDiamond), type(uint).max);
         ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
-        
-        ozBalanceAlice = ozERC20.balanceOf(alice);
-        ozBalanceBob = ozERC20.balanceOf(bob);
-
-        console.log('');
-        console.log('ozBalanceAlice - post redeem: ', ozBalanceAlice);
-        console.log('ozBalanceBob - post redeem: ', ozBalanceBob);
-        console.log('ozBalance diamond: ', ozERC20.balanceOf(address(OZ)));
-        console.log('totalSupply: ', ozERC20.totalSupply());
 
         //POST-CONDITIONS
         uint ozBalanceAlicePostRedeem = ozERC20.balanceOf(alice);
         uint balanceAliceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
         uint deltaBalanceTestToken = balanceAliceTestTokenPostRedeem - balanceAliceTestTokenPreRedeem;
+        ozBalanceAlice = ozERC20.balanceOf(alice);
+        ozBalanceBob = ozERC20.balanceOf(bob);
 
+        assertTrue(_fm(ozBalanceBob + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
         assertTrue(ozBalanceAlicePostMock > ozBalanceAlicePostRedeem);
         assertTrue(ozBalanceAlicePostRedeem == 0);
         assertTrue(balanceAliceTestTokenPreRedeem < balanceAliceTestTokenPostRedeem);

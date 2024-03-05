@@ -73,6 +73,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     
     mapping(address user => uint assets) private _assets;
 
+    enum Dir {
+        UP,
+        DOWN
+    }
+
 
     constructor() {
         _disableInitializers();
@@ -180,7 +185,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
         uint x = _calculateScalingFactor(account_);
-        uint reth_eth = _getUniPrice(rETH, WETH, uint32(10));
+        uint reth_eth = _getUniPrice(rETH, WETH, Dir.UP);
 
         // console.log('');
         // console.log('--- _subConvertToShares ---');
@@ -206,12 +211,28 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     // function totalSupply2() public view returns(uint) {
-    //     return totalShares() == 0 ? 0 : _subConvertToAssets(totalShares());
+    //     return totalShares() == 0 ? 0 : _subConvertToAssets(totalShares(), Dir.UP);
     // }
 
     function totalSupply() public view returns(uint) {
+        // uint x = _subConvertToAssets(totalShares(), Dir.DOWN);
+        // uint y = _subConvertToAssets(totalShares(), Dir.UP);
+
+        // console.log('');
+        // console.log('down: ', x);
+        // console.log('up: ', y);
+        // console.log('totalAssets: ', totalAssets() * 1e12);
+        // console.log('totalShares: ', totalShares());
+        // console.log('');
+
+        // // uint a = _convertToAssets(totalShares(), account_);
+
+        // uint sum = totalShares() == 0 ? 0 : _subConvertToAssets(totalShares(), Dir.UP).mulDivDown(totalAssets() * 1e12, _subConvertToAssets(totalShares(), Dir.DOWN));
+        // console.log('sum *****: ', sum);
+
+
         return totalShares() == 0 ? 0 : 
-            _subConvertToAssets(totalShares()) * ((totalAssets() * 1e12) / _subConvertToAssets(totalShares()));
+            _subConvertToAssets(totalShares(), Dir.UP).mulDivDown(totalAssets() * 1e12, _subConvertToAssets(totalShares(), Dir.DOWN));
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -226,8 +247,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return convertToAssets(sharesOf(account_), account_);
     }
 
-    function subBalanceOf(address account_) public view returns(uint) {
-        return _subConvertToAssets(sharesOf(account_));
+    function subBalanceOf(address account_, Dir side_) public view returns(uint) {
+        return _subConvertToAssets(sharesOf(account_), side_);
     }
 
     //test if owner_ being passed to updateReward() affects the owner_ getting the rewards
@@ -361,13 +382,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     //remove mulDivDown since it divides by 1. 
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
-        uint preBalance = _subConvertToAssets(shares_);
+        uint preBalance = _subConvertToAssets(shares_, Dir.UP);
         return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18);
     }
 
 
     // ---------------------------- /
-    function _getUniPrice(address token0_, address token1_, uint32 secsAgo_) private view returns(uint) {
+    function _getUniPrice(address token0_, address token1_, Dir side_) private view returns(uint) {
         // address uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
         // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
         // uint24 fee = 500;
@@ -379,16 +400,18 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         // if (token1_ == WETH) BASE = 1;
 
+        uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
+
         uint32[] memory secondsAgos = new uint32[](2);
-        secondsAgos[0] = secsAgo_;
+        secondsAgos[0] = secsAgo;
         secondsAgos[1] = 0;
 
         (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
 
         int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
-        int24 tick = int24(tickCumulativesDelta / int32(secsAgo_));
+        int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
         
-        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo_) != 0)) tick--;
+        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
         
         uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1 ether, token0_, token1_
@@ -404,8 +427,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-        uint reth_eth = _getUniPrice(rETH, WETH, uint32(86400));
-        uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
+        // uint reth_eth = _getUniPrice(rETH, WETH, uint32(86400));
+        // uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
+        uint x = subBalanceOf(account_, Dir.DOWN);
 
         return (_assets[account_] * 1e12).mulDivDown(1e18, x);
     }
@@ -416,11 +440,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function _subConvertToAssets(uint256 shares_) private view returns (uint256 assets) { 
+    function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-        uint reth_eth = _getUniPrice(rETH, WETH, uint32(1800));        
+        uint reth_eth = _getUniPrice(rETH, WETH, side_);        
 
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
@@ -429,7 +453,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //**** NOT USED ****/
     function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
         uint deltaShares = totalShares() - shares_;
-        return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
+        return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
     }
 
     
