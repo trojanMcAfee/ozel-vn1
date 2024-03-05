@@ -178,7 +178,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // uint x = 30354537468407080774;
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-        
+
         uint x = _calculateScalingFactor(account_);
         uint reth_eth = _getUniPrice(rETH, WETH, uint32(10));
 
@@ -481,6 +481,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return Helpers.rETH_ETH(OZ);
     }
 
+    //tie the outputs of uniswap's oracle to chainlink with a deviation of 1%
+    //test that if the TWAP is manipulated within the block, the checks fails due to Chainlin check-up
+
     function _subConvertToAssets(uint256 shares_) private view returns (uint256 assets) { 
         uint reth_eth2 = _rETH_ETH();
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
@@ -490,7 +493,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('--- in _subConvertToAssets ---');
         // console.log('reth_eth from chainlink: ', reth_eth2);
 
-        uint reth_eth = _getUniPrice(rETH, WETH, uint32(10));
+        uint reth_eth = _getUniPrice(rETH, WETH, uint32(1800));
         // console.log('reth_eth from uni - 10 secs - used: ', reth_eth);
 
         // console.log('');

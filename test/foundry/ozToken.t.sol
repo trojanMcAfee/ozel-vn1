@@ -404,7 +404,8 @@ contract ozTokenTest is TestMethods {
     }
 
 
-
+    //Tests the the accrual and redemption of rewards happens without issues when there's more
+    //than one user that's being accounted for (for internal proper internal accounting of varaibles)
     function test_redeem_rewards() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
@@ -430,7 +431,7 @@ contract ozTokenTest is TestMethods {
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
-        // _mintOzTokens(ozERC20, bob, testToken, amountIn);
+        _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('oz bal pre mock: ', ozBalanceAlice);
@@ -441,6 +442,8 @@ contract ozTokenTest is TestMethods {
         uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
         console.log('oz bal post mock: ', ozBalanceAlicePostMock);
 
+        assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
+
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlicePostMock, // / 2
@@ -449,19 +452,27 @@ contract ozTokenTest is TestMethods {
             alice
         );
 
-        uint balanceAlice = IERC20Permit(testToken).balanceOf(alice);
-        console.log('bal testToken pre redeem: ', balanceAlice);
+        uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
+        console.log('bal testToken pre redeem: ', balanceAliceTestTokenPreRedeem);
 
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
         ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
 
-        ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('oz bal post redeem: ', ozBalanceAlice);
+        uint ozBalanceAlicePostRedeem = ozERC20.balanceOf(alice);
+        console.log('oz bal post redeem: ', ozBalanceAlicePostRedeem);
 
-        balanceAlice = IERC20Permit(testToken).balanceOf(alice);
-        console.log('bal testToken post redeem: ', balanceAlice);
+        assertTrue(ozBalanceAlicePostMock > ozBalanceAlicePostRedeem);
+        assertTrue(ozBalanceAlicePostRedeem == 0);
+
+        uint balanceAliceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
+        console.log('bal testToken post redeem: ', balanceAliceTestTokenPostRedeem);
+
+        assertTrue(balanceAliceTestTokenPreRedeem < balanceAliceTestTokenPostRedeem);
+
+        uint deltaBalanceTestToken = balanceAliceTestTokenPostRedeem - balanceAliceTestTokenPreRedeem;
+        assertTrue(deltaBalanceTestToken > 32 * 1e18 && deltaBalanceTestToken <= 33 * 1e18);
     }
 
 
