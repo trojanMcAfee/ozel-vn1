@@ -205,7 +205,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return _assetsAndShares.extract(TotalType.SHARES);
     }
 
-    // function totalSupply() public view returns(uint) {
+    // function totalSupply2() public view returns(uint) {
     //     return totalShares() == 0 ? 0 : _subConvertToAssets(totalShares());
     // }
 
@@ -228,10 +228,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function subBalanceOf(address account_) public view returns(uint) {
         return _subConvertToAssets(sharesOf(account_));
-        // uint reth_eth = 
-
-        // uint shares = sharesOf(account_);
-        // return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
     //test if owner_ being passed to updateReward() affects the owner_ getting the rewards
@@ -248,7 +244,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             abi.decode(data_, (AmountsIn, address));
 
         uint assets = amts.amountIn.format(FORMAT_DECIMALS); 
-        // console.log('assets in mint %%%%%%%: ', assets);
 
         try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner_, amts) returns(uint amountRethOut) {
             _setValuePerOzToken(amountRethOut, true);
@@ -262,7 +257,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _assets[receiver] += assets;
             }
 
-            // console.log('shares in mint ****: ', shares);
             return shares;
 
         } catch Error(string memory reason) {
@@ -304,27 +298,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint256 accountShares = sharesOf(owner_);
         uint shares = subConvertToShares(amts.ozAmountIn, owner_);
 
-        console.log('');
-        console.log('ozAmountIn: ', amts.ozAmountIn);
-        console.log('accountShares: ', accountShares);
-        console.log('shares: ', shares);
-        console.log('');
-
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
         uint assets = shares; 
-        console.log('');
-        console.log('assets ^^^^^^^^^^^^: ', assets);
 
-        uint assets2 = previewRedeem(shares); 
-        console.log('assets2: ', assets2);
-        
-        console.log('');
-        // console.log('shares: ', shares);
-        // console.log('accountShares: ', accountShares);
-        // console.log('totalAssets: ', totalAssets());
-        // console.log('totalShares: ', totalShares());
-        // console.log('amts.ozAmountIn: ', amts.ozAmountIn);
+        // uint assets2 = previewRedeem(shares); 
 
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
             _setValuePerOzToken(amountRethOut, false);
@@ -333,18 +311,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
             _setAssetsAndShares(assets, accountShares, false);
 
-            // console.log('_assets[owner_]: ', _assets[owner_]);
-            // _assets[owner_] -= assets; 
-
             unchecked {
                 _shares[_ozDiamond] = 0;
                 _assets[owner_] -= assets; 
-            }
-
-            // console.log('');
-            // console.log('************ END OF REDEEM ***************');
-            // console.log('current shares alice: ', sharesOf(owner_));
-            // console.log('');            
+            }         
 
             //put a redeem event here
 
@@ -392,29 +362,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //remove mulDivDown since it divides by 1. 
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_);
-        // console.log('_convertToAssetsFromUnderlying: ', _convertToAssetsFromUnderlying(shares_));
-        uint y;
-
-        console.log('');
-        // console.log('--- in _convertToAssets ---');
-        // console.log('preBalance - output of _subConvertToAssets: ', preBalance);
-        if (preBalance != 0) {
-            // console.log('scaling factor: ', _calculateScalingFactor(account_));
-            // console.log('is *****: ', preBalance * _calculateScalingFactor(account_));
-            // y = _calculateScalingFactor(account_) < 30059350459222626000 ? 30354537468407080774 : _calculateScalingFactor(account_);
-            y = _calculateScalingFactor(account_);
-            // console.log('scaling factor: ', y);
-            // console.log('y: ', y);
-        } else {
-            // console.log('preBalance was 0');
-        }
-
-
-        // return preBalance == 0 ? 0 : preBalance * _calculateScalingFactor(account_);
-        uint x = preBalance == 0 ? 0 : preBalance.mulDivDown(y, 1e18);
-        // console.log('is2: ', x);
-        console.log('');
-        return x;
+        return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18);
     }
 
 
@@ -452,27 +400,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
-        // uint x = subBalanceOf(account_);
 
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-        // console.log('');
-        // console.log('--- in scaling factor');
-        // console.log('_assets[account_]: ', _assets[account_]);
-        // console.log('_assets[account_] * 1e12: ', _assets[account_] * 1e12);
-        // console.log('subBalanceOf(account_): ', x);
-        // console.log('is2: ', (_assets[account_] * 1e12).mulDivDown(1e18, x));
-
-        //In case the other method doesn't work, the scaling factor is called with the previos rETH-ETH update.
-        //Use uniswap v3 oracle to put here an old update and in balanceOf(), i think it is, the new update
-        
-        // uint reth_eth = 1087152127893442928; //1108895170451311786
         uint reth_eth = _getUniPrice(rETH, WETH, uint32(86400));
-        // console.log('reth_eth from uni - 172800 *******: ', reth_eth);
         uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
 
-        // return (_assets[account_] * 1e12) / x;
         return (_assets[account_] * 1e12).mulDivDown(1e18, x);
     }
 
@@ -481,62 +415,21 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return Helpers.rETH_ETH(OZ);
     }
 
-    //tie the outputs of uniswap's oracle to chainlink with a deviation of 1%
-    //test that if the TWAP is manipulated within the block, the checks fails due to Chainlin check-up
 
     function _subConvertToAssets(uint256 shares_) private view returns (uint256 assets) { 
-        uint reth_eth2 = _rETH_ETH();
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-        // console.log('');
-        // console.log('--- in _subConvertToAssets ---');
-        // console.log('reth_eth from chainlink: ', reth_eth2);
-
-        uint reth_eth = _getUniPrice(rETH, WETH, uint32(1800));
-        // console.log('reth_eth from uni - 10 secs - used: ', reth_eth);
-
-        // console.log('');
-        // console.log('--- in _subConvertToAssets ---');
-        // console.log('reth_eth: ', reth_eth);
-        // console.log('totalShares: ', totalShares());
-        // console.log('shares: ', shares_);
-        // console.log('is2: ', shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()));
+        uint reth_eth = _getUniPrice(rETH, WETH, uint32(1800));        
 
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
     //this is public instead of private. Check
+    //**** NOT USED ****/
     function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
-        // console.log('');
-        // console.log('--- in _convertToAssetsFromUnderlying ---');
-        // console.log('shares: ', shares_);
-        // console.log('totalShares: ', totalShares());
-        // console.log('_rETH_ETH(): ', _rETH_ETH());
-        // console.log('_subConvertToAssets(shares_): ', _subConvertToAssets(shares_));
-        // // console.log('is3: ', shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_) * 2));
-        // console.log('totalSupply: ', totalSupply());
-        // console.log('_convertToAssets: ', _convertToAssets(shares_, 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E));
-        
-        // console.log(1);
         uint deltaShares = totalShares() - shares_;
-
-        // console.log(2);
-        // console.log('shares: ', shares_);
-        // console.log('_rETH_ETH(): ', _rETH_ETH());
-        // console.log('deltaShares: ', deltaShares);
-        // console.log('totalShares: ', totalShares());
-        // console.log('is: ', shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_)));
-        
-        // uint x = shares_.mulDivDown(_rETH_ETH(), deltaShares);
-        // console.log(3);
-        // console.log('x: ', x);
-
         return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_));
-        
-        // uint y = shares_.mulDivDown(_rETH_ETH(), x * 2);
-        // console.log(4);
-        // return y;
     }
 
     

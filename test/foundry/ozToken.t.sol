@@ -270,6 +270,13 @@ contract ozTokenTest is TestMethods {
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        uint ozBalanceBob = ozERC20.balanceOf(bob);
+
+        console.log('ozBalanceAlice - post mint: ', ozBalanceAlice);
+        console.log('ozBalanceBob - post mint: ', ozBalanceBob);
+        console.log('addition: ', ozBalanceBob + ozBalanceAlice);
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('totalSupply2: ', ozERC20.totalSupply2());
 
         //This simulates the rETH rewards accrual.
         vm.store(rethWethUniPool, bytes32(0), originalSlot0);
@@ -291,6 +298,15 @@ contract ozTokenTest is TestMethods {
         ozERC20.approve(address(ozDiamond), type(uint).max);
         ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
+        
+        ozBalanceAlice = ozERC20.balanceOf(alice);
+        ozBalanceBob = ozERC20.balanceOf(bob);
+
+        console.log('');
+        console.log('ozBalanceAlice - post redeem: ', ozBalanceAlice);
+        console.log('ozBalanceBob - post redeem: ', ozBalanceBob);
+        console.log('ozBalance diamond: ', ozERC20.balanceOf(address(OZ)));
+        console.log('totalSupply: ', ozERC20.totalSupply());
 
         //POST-CONDITIONS
         uint ozBalanceAlicePostRedeem = ozERC20.balanceOf(alice);
