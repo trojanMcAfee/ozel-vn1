@@ -210,27 +210,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return _assetsAndShares.extract(TotalType.SHARES);
     }
 
-    // function totalSupply2() public view returns(uint) {
-    //     return totalShares() == 0 ? 0 : _subConvertToAssets(totalShares(), Dir.UP);
-    // }
 
     function totalSupply() public view returns(uint) {
-        // uint x = _subConvertToAssets(totalShares(), Dir.DOWN);
-        // uint y = _subConvertToAssets(totalShares(), Dir.UP);
-
-        // console.log('');
-        // console.log('down: ', x);
-        // console.log('up: ', y);
-        // console.log('totalAssets: ', totalAssets() * 1e12);
-        // console.log('totalShares: ', totalShares());
-        // console.log('');
-
-        // // uint a = _convertToAssets(totalShares(), account_);
-
-        // uint sum = totalShares() == 0 ? 0 : _subConvertToAssets(totalShares(), Dir.UP).mulDivDown(totalAssets() * 1e12, _subConvertToAssets(totalShares(), Dir.DOWN));
-        // console.log('sum *****: ', sum);
-
-
         return totalShares() == 0 ? 0 : 
             _subConvertToAssets(totalShares(), Dir.UP).mulDivDown(totalAssets() * 1e12, _subConvertToAssets(totalShares(), Dir.DOWN));
     }
@@ -423,15 +404,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
-
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-        // uint reth_eth = _getUniPrice(rETH, WETH, uint32(86400));
-        // uint x = sharesOf(account_).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares()); //this is subBalanceOf() using the old rETH_ETH
-        uint x = subBalanceOf(account_, Dir.DOWN);
-
-        return (_assets[account_] * 1e12).mulDivDown(1e18, x);
+        return (_assets[account_] * 1e12).mulDivDown(1e18, subBalanceOf(account_, Dir.DOWN));
     }
 
     function _rETH_ETH() private view returns(uint) { 
@@ -456,17 +432,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
     }
 
-    
-    // function _convertToAssetsFromUnderlying2(uint shares_) private view returns(uint){
-    //     console.log('');
-    //     console.log('--- in _convertToAssetsFromUnderlying ---');
-    //     console.log('shares: ', shares_);
-    //     console.log('totalSupply ^^^^^^^^^^^^: ', totalSupply());
-        
-    //     _convertToAssetsFromUnderlying(shares_);
-
-    //     return shares_.mulDivDown(ozIDiamond(_ozDiamond).getUnderlyingValue(address(this)), totalSupply());
-    // }
 
     function convertToAssets(uint256 shares, address account_) public view returns (uint256 assets) {
         return _convertToAssets(shares, account_);
