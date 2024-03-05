@@ -211,100 +211,6 @@ contract ozTokenTest is TestMethods {
 
     //------------
 
-    function test_ETH_trend_success() public {
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        console.log('amountIn: ', amountIn /3);
-
-        _mintOzTokens(ozERC20, alice, testToken, amountIn / 3);
-
-        console.log('');
-        console.log('************************ END OF MINTING ************************');
-        console.log('');
-
-        uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlicePre: ', ozBalanceAlicePre);
-
-        _mock_rETH_ETH(Dir.UP, 200);
-
-        console.log('');
-        console.log('************************ END OF MOCKING ************************');
-        console.log('');
-
-        uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlicePostRewards: ', ozBalanceAlicePostRewards);
-
-        assertTrue(ozBalanceAlicePostRewards > ozBalanceAlicePre);
-    }
-
-    function test_ETH_trend_fails() public {
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
-        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
-        console.log('amountIn: ', amountIn);
-
-        _mintOzTokens(ozERC20, alice, testToken, amountIn);
-
-        console.log('');
-        console.log('************************ END OF MINTING ************************');
-        console.log('');
-
-        uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlicePre: ', ozBalanceAlicePre);
-
-        _mock_rETH_ETH(Dir.UP, 200);
-
-        console.log('');
-        console.log('************************ END OF MOCKING ************************');
-        console.log('');
-
-        uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlicePostRewards: ', ozBalanceAlicePostRewards);
-        // console.log('ozBalanceAlicePre: ', ozBalanceAlicePre);
-
-        assertTrue(ozBalanceAlicePostRewards > ozBalanceAlicePre);
-    }
-
-    
-
-    function test_y() public {
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
-
-        _getResetVarsAndChangeSlip();
-
-        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
-        _mintOzTokens(ozERC20, alice, testToken, amountIn);
-        
-        uint ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('oz bal after mint: ', ozBalanceAlice);
-
-        console.log('');
-        console.log('******** END OF MINT *********');
-        console.log('');
-
-        uint ozAmountIn = ozBalanceAlice / 3;
-        console.log('ozAmountIn: ', ozAmountIn);
-
-        bytes memory redeemDataAlice = _createDataOffchain(
-            ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT
-        );
-
-        vm.startPrank(alice);
-        ozERC20.approve(address(ozDiamond), ozAmountIn);
-        ozERC20.redeem(redeemDataAlice, alice); 
-        vm.stopPrank();
-
-        console.log('');
-        console.log('----------------');
-        console.log('oz bal after redeem: ', ozERC20.balanceOf(alice));
-        console.log('totalAssets: ', ozERC20.totalAssets());
-        console.log('totalShares: ', ozERC20.totalShares());
-
-    }
 
     function _getUniPrice(address token0_, address token1_, uint32 secs_) private view returns(uint) {
         address pool = IUniswapV3Factory(uniFactory).getPool(token0_, token1_, uniPoolFee);
@@ -331,82 +237,12 @@ contract ozTokenTest is TestMethods {
         return amountOut * BASE;
     }
 
-   
-
-
-    function test_manipulate() public {
-        address rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-        bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
-        bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
-        
-        vm.store(rethWethUniPool, bytes32(0), newSlot0WithCardinality);
-
-        uint price1 = _getUniPrice(rEthAddr, wethAddr, uint32(10));
-        uint price2 = _getUniPrice(rEthAddr, wethAddr, uint32(86400));
-        // uint price3 = _getUniPrice(rEthAddr, wethAddr, uint32(172800 * 2));
-        // uint price4 = _getUniPrice(rEthAddr, wethAddr, uint32(172800 * 3));
-
-        console.log('price1 - 10: ', price1);
-        console.log('price2 - 86400: ', price2);
-        // console.log('price3 - 172800 * 2: ', price3);
-        // console.log('price4 - 172800 * 3: ', price4);
-
-        vm.store(rethWethUniPool, bytes32(0), originalSlot0);
-
-        price1 = _getUniPrice(rEthAddr, wethAddr, uint32(10));
-        price2 = _getUniPrice(rEthAddr, wethAddr, uint32(172800));
-
-        console.log('');
-        console.log('price1 - post: ', price1);
-        console.log('price2 - 86400: ', price2);
-
-        //--------
-
-        // uint pricePrev = _getUniPrice(rEthAddr, wethAddr, uint32(10));
-        // console.log('pricePrev: ', pricePrev);
-
-        // for (uint i=1; i < 30; i++) {
-        //     uint price = _getUniPrice(rEthAddr, wethAddr, uint32(86400 * i));
-        //     // console.log('is true: ', price >= pricePrev);
-        //     console.log('price: ', price);
-        //     console.log('secsAgo: ', 86400 * i);
-        //     console.log('');
-        //     // pricePrev = price;
-        // }
-
-        //-------
-        // uint price1 = _getUniPrice(wethAddr, usdcAddr, uint32(10));
-        // console.log('price1: ', price1);
-
-        // uint price2 = _getUniPrice(wethAddr, usdcAddr, uint32(3600));
-        // console.log('price2: ', price2);
-
-        //-------
-        // address pool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613; //reth-eth
-        // // address pool = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; //usdc-weth
-        // uint32[] memory secondsAgos = new uint32[](2);
-        // secondsAgos[0] = uint32(10);
-        // secondsAgos[1] = 0;
-
-        // (int24 arithmeticMeanTick,) = OracleLibrary.consult(pool, uint32(10));
-        // console.log('arithmeticMeanTick 1: ', uint(int(arithmeticMeanTick)));
-
-        // // secondsAgos[0] = uint32(3600);
-        // (int24 arithmeticMeanTick2,) = OracleLibrary.consult(pool, uint32(100600));
-        // console.log('arithmeticMeanTick 2: ', uint(int(arithmeticMeanTick2)));
-
-        // // secondsAgos[0] = uint32(7200);
-        // (int24 arithmeticMeanTick3,) = OracleLibrary.consult(pool, uint32(272000));
-        // console.log('arithmeticMeanTick 3: ', uint(int(arithmeticMeanTick3)));
-
-        //--------------
-
-    }
 
 
     //Tests the the accrual and redemption of rewards happens without issues when there's more
     //than one user that's being accounted for (for internal proper internal accounting of varaibles)
     function test_redeem_rewards() public {
+        //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
 
@@ -434,44 +270,36 @@ contract ozTokenTest is TestMethods {
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('oz bal pre mock: ', ozBalanceAlice);
 
         //This simulates the rETH rewards accrual.
         vm.store(rethWethUniPool, bytes32(0), originalSlot0);
 
         uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
-        console.log('oz bal post mock: ', ozBalanceAlicePostMock);
-
         assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
 
-
         bytes memory redeemData = OZ.getRedeemData(
-            ozBalanceAlicePostMock, // / 2
+            ozBalanceAlicePostMock, 
             address(ozERC20),
             OZ.getDefaultSlippage(),
             alice
         );
 
         uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
-        console.log('bal testToken pre redeem: ', balanceAliceTestTokenPreRedeem);
 
+        //ACTION
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
         ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
 
+        //POST-CONDITIONS
         uint ozBalanceAlicePostRedeem = ozERC20.balanceOf(alice);
-        console.log('oz bal post redeem: ', ozBalanceAlicePostRedeem);
+        uint balanceAliceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
+        uint deltaBalanceTestToken = balanceAliceTestTokenPostRedeem - balanceAliceTestTokenPreRedeem;
 
         assertTrue(ozBalanceAlicePostMock > ozBalanceAlicePostRedeem);
         assertTrue(ozBalanceAlicePostRedeem == 0);
-
-        uint balanceAliceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
-        console.log('bal testToken post redeem: ', balanceAliceTestTokenPostRedeem);
-
         assertTrue(balanceAliceTestTokenPreRedeem < balanceAliceTestTokenPostRedeem);
-
-        uint deltaBalanceTestToken = balanceAliceTestTokenPostRedeem - balanceAliceTestTokenPreRedeem;
         assertTrue(deltaBalanceTestToken > 32 * 1e18 && deltaBalanceTestToken <= 33 * 1e18);
     }
 
