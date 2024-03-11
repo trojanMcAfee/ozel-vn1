@@ -106,8 +106,13 @@ contract TestMethods is BaseMethods {
         //Post-conditions
         uint balAlice = ozERC20.balanceOf(alice);
 
+        console.log(1);
         assertTrue(address(ozERC20) != address(0));
+        console.log(2);
         assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
+        console.log(3);
+        console.log('balAlice: ', balAlice);
+        console.log('rawAmount: ', rawAmount);
         assertTrue(balAlice > 977_000 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 

@@ -364,7 +364,7 @@ contract ozTokenTest is TestMethods {
     }
 
 
-    //finish this test ^^^ - done
+    //make all tests pass
     //clean up ozToken.sol
     //fix funcs in ozLoupe.sol
 
