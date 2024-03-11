@@ -483,7 +483,7 @@ contract BaseMethods is Setup {
         uint baseAmount_, 
         uint variableAmount_, 
         uint bps_
-    ) internal returns(bool) {
+    ) internal view returns(bool) {
         uint delta = stdMath.abs(int(variableAmount_) - int(baseAmount_));
         return bps_ > delta.mulDivDown(10_000, baseAmount_);
     }
