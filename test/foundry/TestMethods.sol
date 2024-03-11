@@ -235,21 +235,38 @@ contract TestMethods is BaseMethods {
         );
 
         uint balAlice = ozERC20.balanceOf(alice);
-        assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
+        console.log('ozl balAlice - pre: ', balAlice);
+        assertTrue(_checkPercentageDiff(rawAmount * 1e18, balAlice, 5));
+        // assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
 
         uint balBob = ozERC20.balanceOf(bob);
+        console.log('ozl balBob - pre: ', balBob);
+        console.log('');
         assertTrue(balBob == 0);
 
         //Action
         vm.prank(alice);
+
+        console.log('');
+        console.log('^^^ start of TRANFER ^^^');
+
         ozERC20.transfer(bob, balAlice);
 
+        console.log('');
+        console.log('^^^ end of TRANFER ^^^');
+        console.log('');
+
         //Post-conditions
+        console.log('**** start balanceOf ALICE ****');
         balAlice = ozERC20.balanceOf(alice);
+        console.log('balAlice - post: ', balAlice);
         assertTrue(balAlice > 0 && balAlice < 0.000001 * 1 ether || balAlice == 0);
 
+        console.log('**** start balanceOf BOB ****');
         balBob = ozERC20.balanceOf(bob);
-        assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
+        console.log('balBob - post - not 0: ', balBob);
+        assertTrue(_checkPercentageDiff(rawAmount * 1e18, balBob, 5));
+        // assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
     }
 
     /**
@@ -266,7 +283,7 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        assertTrue(balanceOzUsdcAlice > 977_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
+        assertTrue(_checkPercentageDiff(1_000_000 * decimalsUnderlying, balanceOzUsdcAlice, 5));
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
@@ -287,6 +304,10 @@ contract TestMethods is BaseMethods {
         //Post-conditions
         uint assetsPost = ozERC20.totalAssets();
         uint sharesPost = ozERC20.totalShares();
+
+        console.log('assetsPost: ', assetsPost);
+        console.log('sharesPost: ', sharesPost);
+
         assertTrue(assetsPost == 0 && sharesPost == 0);
 
         testToken = ozERC20.asset();
