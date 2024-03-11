@@ -125,9 +125,7 @@ contract ozEngine is Modifiers {
         uint[] memory minAmountsOut = amts.minAmountsOut;
         uint amountInReth = amts.amountInReth;
         
-        console.log('before safeTransfer ****');
         msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
-        console.log('after safeTransfer ****');
 
         //Swap rETH to WETH
         uint amountOut = _checkPauseAndSwap(

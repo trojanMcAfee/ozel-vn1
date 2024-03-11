@@ -235,38 +235,21 @@ contract TestMethods is BaseMethods {
         );
 
         uint balAlice = ozERC20.balanceOf(alice);
-        console.log('ozl balAlice - pre: ', balAlice);
         assertTrue(_checkPercentageDiff(rawAmount * 1e18, balAlice, 5));
-        // assertTrue(balAlice > 99 * 1 ether && balAlice < rawAmount * 1 ether);
 
         uint balBob = ozERC20.balanceOf(bob);
-        console.log('ozl balBob - pre: ', balBob);
-        console.log('');
         assertTrue(balBob == 0);
 
         //Action
         vm.prank(alice);
-
-        console.log('');
-        console.log('^^^ start of TRANFER ^^^');
-
         ozERC20.transfer(bob, balAlice);
 
-        console.log('');
-        console.log('^^^ end of TRANFER ^^^');
-        console.log('');
-
         //Post-conditions
-        console.log('**** start balanceOf ALICE ****');
         balAlice = ozERC20.balanceOf(alice);
-        console.log('balAlice - post: ', balAlice);
         assertTrue(balAlice > 0 && balAlice < 0.000001 * 1 ether || balAlice == 0);
 
-        console.log('**** start balanceOf BOB ****');
         balBob = ozERC20.balanceOf(bob);
-        console.log('balBob - post - not 0: ', balBob);
         assertTrue(_checkPercentageDiff(rawAmount * 1e18, balBob, 5));
-        // assertTrue(balBob > 99 * 1 ether && balBob < rawAmount * 1 ether);
     }
 
     /**
@@ -503,9 +486,9 @@ contract TestMethods is BaseMethods {
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
 
-        //Measures that the difference between the amount of ozTokens that went in to
-        //the amount of underlying that went out is less than 0.15%, which translates to
-        //differences between pools balances during swaps. 
+        console.log('ozAmountIn: ', ozAmountIn);
+        console.log('underlyingOut: ', underlyingOut);
+
         /**
          * Measures that the difference between the amount of ozTokens that went in to
          * the amount of underlying that went out is less than N, which translates to
@@ -515,6 +498,9 @@ contract TestMethods is BaseMethods {
          */
         uint percentageDiffLiquid = 15;
         uint percentageDiffIliquid = 37;
+
+        console.log('percentageDiffAmounts: ', percentageDiffAmounts);
+
         assertTrue(percentageDiffAmounts < percentageDiffLiquid || percentageDiffAmounts < percentageDiffIliquid);
         vm.stopPrank();
     }
