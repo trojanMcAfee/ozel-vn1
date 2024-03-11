@@ -250,7 +250,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner_, amts) returns(uint amountRethOut) {
             _setValuePerOzToken(amountRethOut, true);
 
-            uint shares = totalShares() == 0 ? assets : previewMint(assets);
+            // uint shares = totalShares() == 0 ? assets : previewMint(assets);
+            uint shares = assets;
 
             _setAssetsAndShares(assets, shares, true);
 
@@ -449,7 +450,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
         console.log('');
 
-        return (_assets[account_] * 1e12).mulDivDown(1e18, subBalanceOf(account_, Dir.DOWN));
+        return (_shares[account_] * 1e12).mulDivDown(1e18, subBalanceOf(account_, Dir.DOWN));
     }
 
     function _rETH_ETH() private view returns(uint) { 
