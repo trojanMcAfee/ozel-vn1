@@ -15,37 +15,6 @@ contract BalancerPathTest is TestMethods {
 
     using FixedPointMathLib for uint;
 
-    function test_z() public {
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-
-        _getResetVarsAndChangeSlip();
-
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
-
-        _mintOzTokens(ozERC20, alice, testToken, rawAmount * 10 ** IERC20Permit(testToken).decimals());
-
-        uint ozBalAlicePre = ozERC20.balanceOf(alice);
-        console.log('ozBalAlicePre: ', ozBalAlicePre);
-
-        bytes memory redeemDataAlice = OZ.getRedeemData(
-            ozBalAlicePre,
-            address(ozERC20),
-            OZ.getDefaultSlippage(),
-            alice
-        );
-
-        uint testBalanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
-        console.log('testBalanceAlicePre: ', testBalanceAlicePre);
-
-        vm.startPrank(alice);
-        ozERC20.approve(address(ozDiamond), ozBalAlicePre);
-        uint assetsOutAlice = ozERC20.redeem(redeemDataAlice, alice); 
-        vm.stopPrank();
-
-        testBalanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
-        console.log('testBalanceAlicePost: ', testBalanceAlicePre);
-    }
-
    
     function test_minting_approve_smallMint_balancer() public {
         _minting_approve_smallMint();

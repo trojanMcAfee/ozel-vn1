@@ -17,6 +17,7 @@ import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRo
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 
 import "forge-std/console.sol";
 
@@ -475,6 +476,16 @@ contract BaseMethods is Setup {
 
     function _fm2(uint num_) internal pure returns(uint) {
         return num_ / 1e18;
+    }
+
+    //Checks that the basis points difference between amounts is not more than bps_
+    function _checkPercentageDiff(
+        uint baseAmount_, 
+        uint variableAmount_, 
+        uint bps_
+    ) internal returns(bool) {
+        uint delta = stdMath.abs(int(variableAmount_) - int(baseAmount_));
+        return bps_ > delta.mulDivDown(10_000, baseAmount_);
     }
 
 }
