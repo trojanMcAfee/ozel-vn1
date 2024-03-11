@@ -155,7 +155,6 @@ contract TestMethods is BaseMethods {
 
 
         //Post-conditions
-        // console.log(1)
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
         assertTrue(sharesAlice / 2 == sharesBob);

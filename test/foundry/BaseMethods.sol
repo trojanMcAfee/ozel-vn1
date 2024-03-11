@@ -471,7 +471,7 @@ contract BaseMethods is Setup {
     }
 
     function _fm(uint num_) internal pure returns(uint) {
-        return num_ / 1e8;
+        return num_ / 1e13;
     }
 
     function _fm2(uint num_) internal pure returns(uint) {
@@ -483,7 +483,7 @@ contract BaseMethods is Setup {
         uint baseAmount_, 
         uint variableAmount_, 
         uint bps_
-    ) internal view returns(bool) {
+    ) internal pure returns(bool) {
         uint delta = stdMath.abs(int(variableAmount_) - int(baseAmount_));
         return bps_ > delta.mulDivDown(10_000, baseAmount_);
     }
