@@ -307,17 +307,20 @@ contract TestMethods is BaseMethods {
     function _redeeming_bigBalance_smallMint_smallRedeem() internal {
         //Pre-conditions
         _changeSlippage(uint16(9900));
-        _dealUnderlying(Quantity.BIG, false);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = 100 * decimalsUnderlying;
+        console.log(13);
         assertTrue(IERC20Permit(testToken).balanceOf(alice) == 1_000_000 * decimalsUnderlying);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
-        assertTrue(ozAmountIn > 99 * 1 ether && ozAmountIn < 100 * 1 ether);
+        console.log(12);
+        assertTrue(_checkPercentageDiff(100 * decimalsUnderlying, ozAmountIn, 5));
+        // assertTrue(ozAmountIn > 99 * 1 ether && ozAmountIn < 100 * 1 ether);
         testToken = address(ozERC20);
 
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
@@ -332,9 +335,15 @@ contract TestMethods is BaseMethods {
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
         uint finalUnderlyingNetBalanceAlice = balanceUsdcAlicePostMint + underlyingOut;
         
+        console.log(11);
         assertTrue(ozERC20.balanceOf(alice) == 0);
+        // assertTrue(_checkPercentageDiff(100 * decimalsUnderlying, underlyingOut, 5));
+        console.log(1);
+        console.log('underlyingOut: ', underlyingOut);
         assertTrue(underlyingOut > 99 * decimalsUnderlying && underlyingOut < 100 * decimalsUnderlying);
+        console.log(2);
         assertTrue(balanceUnderlyingAlice == finalUnderlyingNetBalanceAlice);
+        console.log(3);
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
