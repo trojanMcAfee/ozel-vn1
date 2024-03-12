@@ -62,7 +62,7 @@ contract ozTokenOnlyTest is TestMethods {
     function test_redeem_catch_internal_errors() public {
         //Pre-conditions
         _changeSlippage(uint16(9900));
-        _dealUnderlying(Quantity.BIG, false);
+        (uint rawAmount,,) =_dealUnderlying(Quantity.BIG, false);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
@@ -70,7 +70,7 @@ contract ozTokenOnlyTest is TestMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        assertTrue(balanceOzUsdcAlice > 977_000 * 1 ether && balanceOzUsdcAlice < 1_000_000 * 1 ether);
+        assertTrue(_checkPercentageDiff(rawAmount * 1 ether, balanceOzUsdcAlice, 5));
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
