@@ -374,9 +374,6 @@ contract BaseMethods is Setup {
 
     //This function needs to happen before the minting of ozTokens.
     function _mock_rETH_ETH_pt1() internal {
-        // bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
-        // bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
-
         vm.store(rethWethUniPool, bytes32(0), newSlot0WithCardinality);
     }
 
