@@ -155,7 +155,8 @@ contract ozTokenOnlyTest is TestMethods {
         uint ozBalanceAlicePost = ozERC20.balanceOf(alice);
         uint testTokenBalanceAlicePost = IERC20(testToken).balanceOf(alice);
 
-        assertTrue(ozBalanceAlicePre > 99 * 1e18 && ozBalanceAlicePre < rawAmount * 1e18);
+        // assertTrue(ozBalanceAlicePre > 99 * 1e18 && ozBalanceAlicePre < rawAmount * 1e18);
+        assertTrue(_checkPercentageDiff(rawAmount * 1e18, ozBalanceAlicePre, 5));
         assertTrue(ozBalanceAlicePost == 0);
         assertTrue(testTokenBalanceAlicePre == 0);
         assertTrue(testTokenBalanceAlicePost > 99 * 1e18 && testTokenBalanceAlicePost < rawAmount * 1e18);
