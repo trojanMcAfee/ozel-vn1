@@ -170,6 +170,9 @@ contract ozTokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
 
+        //This function needs to happen before the minting.
+        _mock_rETH_ETH_pt1();
+
         _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
@@ -187,6 +190,7 @@ contract ozTokenTest is TestMethods {
         );
 
         _mock_rETH_ETH(Dir.UP, 200);
+        _mock_rETH_ETH_pt2();
 
         uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
         uint ozBalanceBobPostRewards = ozERC20.balanceOf(bob);
@@ -263,10 +267,11 @@ contract ozTokenTest is TestMethods {
          * we first store an old observation on the pool's slot0, and then, for simulating the accrual,
          * we put back the original and updated observation, which contains an updated (and higher) spot price
          */
-        bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
-        bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
+        // bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
+        // bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
 
-        vm.store(rethWethUniPool, bytes32(0), newSlot0WithCardinality);
+        _mock_rETH_ETH_pt1();
+        // vm.store(rethWethUniPool, bytes32(0), newSlot0WithCardinality);
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
@@ -277,7 +282,8 @@ contract ozTokenTest is TestMethods {
         assertTrue(_fm(ozBalanceBob + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
 
         //This simulates the rETH rewards accrual.
-        vm.store(rethWethUniPool, bytes32(0), originalSlot0);
+        _mock_rETH_ETH_pt2();
+        // vm.store(rethWethUniPool, bytes32(0), originalSlot0);
 
         uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
         assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
