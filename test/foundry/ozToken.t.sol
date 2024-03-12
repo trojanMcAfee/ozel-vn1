@@ -21,7 +21,7 @@ import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol"
 import "forge-std/console.sol";
 
 
-contract ozTokenTest is TestMethods {
+contract ozTokenOnlyTest is TestMethods {
 
     using SafeERC20 for IERC20;
 
@@ -119,8 +119,8 @@ contract ozTokenTest is TestMethods {
         vm.clearMockedCalls();
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-        assertTrue(ozBalanceAlice > 99 * 1e18 && ozBalanceAlice < rawAmount * 1e18);
-        assertTrue((_getRewardRate() * secs) / 100 == claimed / 100);
+        assertTrue(_checkPercentageDiff(rawAmount * 1e18, ozBalanceAlice, 5));
+        assertTrue(_fm3(_getRewardRate() * secs) == _fm3(claimed));
 
         return (dummy1, ozERC20);
     }
@@ -189,16 +189,11 @@ contract ozTokenTest is TestMethods {
             ozBalanceBobPre == ozBalanceBobPostUp
         );
 
-        // _mock_rETH_ETH(Dir.UP, 200);
+        //Simulates rETH accrual.
         _mock_rETH_ETH_pt2();
 
         uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
         uint ozBalanceBobPostRewards = ozERC20.balanceOf(bob);
-
-        console.log('ozBalanceAlicePostRewards: ', ozBalanceAlicePostRewards);
-        console.log('ozBalanceAlicePostUp: ', ozBalanceAlicePostUp);
-        console.log('ozBalanceBobPostRewards: ', ozBalanceBobPostRewards);
-        console.log('ozBalanceBobPostUp: ', ozBalanceBobPostUp);
 
         assertTrue(
             ozBalanceAlicePostRewards > ozBalanceAlicePostUp &&

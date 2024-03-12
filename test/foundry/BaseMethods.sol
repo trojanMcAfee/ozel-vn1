@@ -488,6 +488,12 @@ contract BaseMethods is Setup {
         return num_ / 1e18;
     }
 
+    function _fm3(uint num_) internal pure returns(uint) {
+        return num_ / 1e3;
+    }
+
+
+
     //Checks that the basis points difference between amounts is not more than bps_
     function _checkPercentageDiff(
         uint baseAmount_, 
