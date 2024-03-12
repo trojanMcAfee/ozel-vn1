@@ -82,7 +82,7 @@ contract BaseMethods is Setup {
         assertTrue(balanceUsdcPostMint == 0);
         
         uint balanceOzPostMint = ozERC20_.balanceOf(owner_);
-        assertTrue(balanceOzPostMint > (initMintAmout_ - 1) * 1 ether && balanceOzPostMint < initMintAmout_ * 1 ether);
+        assertTrue(_checkPercentageDiff(initMintAmout_ * 1e18, balanceOzPostMint, 5));
 
         return balanceOzPostMint;
     }

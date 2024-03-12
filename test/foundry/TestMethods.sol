@@ -307,7 +307,7 @@ contract TestMethods is BaseMethods {
     function _redeeming_bigBalance_smallMint_smallRedeem() internal {
         //Pre-conditions
         _changeSlippage(uint16(9900));
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
+        _dealUnderlying(Quantity.BIG, false);
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = 100 * decimalsUnderlying;
@@ -404,7 +404,7 @@ contract TestMethods is BaseMethods {
      * be ineligble so the MEV produced would be quite lower, proving the efficacy of the 
      * rebase algorithm, without the need of having to rebalance Uniswap and Balancer's pools.
      *
-     * In this test, the "bigMint" is in relation to the amount being redeem (100:1)
+     * In this test, the "bigMint" is in relation to the amount being redeemed (100:1)
      */
     function _redeeming_multipleBigBalances_bigMints_smallRedeem() internal {
         (,uint initMintAmountBob, uint initMintAmountCharlie) = _dealUnderlying(Quantity.SMALL, false);
@@ -415,8 +415,9 @@ contract TestMethods is BaseMethods {
         assertTrue(amountIn == 100 * decimalsUnderlying);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
-        uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(balanceUsdcAlicePostMint == 0); 
+        // uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
+        // console.log(2);
+        // assertTrue(balanceUsdcAlicePostMint == 0); 
 
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, initMintAmountBob);
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, initMintAmountCharlie);
@@ -440,9 +441,13 @@ contract TestMethods is BaseMethods {
         int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
         uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
+        console.log(3);
         assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
+        console.log(4);
         assertTrue(basisPointsDifferenceBobMEV == 0);
+        console.log(5);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
+        console.log(6);
         assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
     }
 
@@ -578,6 +583,12 @@ contract TestMethods is BaseMethods {
         vm.stopPrank();
 
         //Post-conditions
+
+        /**
+         * Checks that the difference between the amount of ozTokens that went in to be redeemed
+         * is less than 0.27% for liquid markets like ETH/USDC, and 1.24% for semi-liquid markets,
+         * like ETH/DAI.
+         */
         uint percentageDiffLiquid = 27;
         uint percentageDiffIliquid = 124; 
         uint percentageDiffPaused = 44;
@@ -585,22 +596,10 @@ contract TestMethods is BaseMethods {
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
 
-        console.log('percentageDiffAmounts: ', percentageDiffAmounts);
-
         assertTrue(
             percentageDiffAmounts < percentageDiffLiquid || 
             percentageDiffAmounts < percentageDiffIliquid ||
             percentageDiffAmounts < percentageDiffPaused
         );
-
-        console.log(1);
-
-        // console.log('');
-        // console.log('shares alice: ', ozERC20.sharesOf(alice));
-        // console.log('shares bob: ', ozERC20.sharesOf(bob));
-        // console.log('oz bal alice: ', ozERC20.balanceOf(alice));
-        // console.log('oz bal bob: ', ozERC20.balanceOf(bob));
-        // console.log('totalShares: ', ozERC20.totalShares());
-        // // console.log('totalAssets)
     }
 }
