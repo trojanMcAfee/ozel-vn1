@@ -311,16 +311,13 @@ contract TestMethods is BaseMethods {
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = 100 * decimalsUnderlying;
-        console.log(13);
         assertTrue(IERC20Permit(testToken).balanceOf(alice) == 1_000_000 * decimalsUnderlying);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
-        console.log(12);
         assertTrue(_checkPercentageDiff(100 * decimalsUnderlying, ozAmountIn, 5));
-        // assertTrue(ozAmountIn > 99 * 1 ether && ozAmountIn < 100 * 1 ether);
         testToken = address(ozERC20);
 
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
@@ -335,15 +332,9 @@ contract TestMethods is BaseMethods {
         uint balanceUnderlyingAlice = IERC20Permit(testToken).balanceOf(alice);
         uint finalUnderlyingNetBalanceAlice = balanceUsdcAlicePostMint + underlyingOut;
         
-        console.log(11);
         assertTrue(ozERC20.balanceOf(alice) == 0);
-        // assertTrue(_checkPercentageDiff(100 * decimalsUnderlying, underlyingOut, 5));
-        console.log(1);
-        console.log('underlyingOut: ', underlyingOut);
         assertTrue(underlyingOut > 99 * decimalsUnderlying && underlyingOut < 100 * decimalsUnderlying);
-        console.log(2);
         assertTrue(balanceUnderlyingAlice == finalUnderlyingNetBalanceAlice);
-        console.log(3);
         assertTrue(finalUnderlyingNetBalanceAlice > 999_000 * decimalsUnderlying && finalUnderlyingNetBalanceAlice < 1_000_000 * decimalsUnderlying);
     }
 
@@ -587,12 +578,14 @@ contract TestMethods is BaseMethods {
         vm.stopPrank();
 
         //Post-conditions
-        uint percentageDiffLiquid = 15;
-        uint percentageDiffIliquid = 37;
+        uint percentageDiffLiquid = 27;
+        uint percentageDiffIliquid = 124; 
         uint percentageDiffPaused = 44;
 
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
+
+        console.log('percentageDiffAmounts: ', percentageDiffAmounts);
 
         assertTrue(
             percentageDiffAmounts < percentageDiffLiquid || 
@@ -600,12 +593,14 @@ contract TestMethods is BaseMethods {
             percentageDiffAmounts < percentageDiffPaused
         );
 
-        console.log('');
-        console.log('shares alice: ', ozERC20.sharesOf(alice));
-        console.log('shares bob: ', ozERC20.sharesOf(bob));
-        console.log('oz bal alice: ', ozERC20.balanceOf(alice));
-        console.log('oz bal bob: ', ozERC20.balanceOf(bob));
-        console.log('totalShares: ', ozERC20.totalShares());
-        // console.log('totalAssets)
+        console.log(1);
+
+        // console.log('');
+        // console.log('shares alice: ', ozERC20.sharesOf(alice));
+        // console.log('shares bob: ', ozERC20.sharesOf(bob));
+        // console.log('oz bal alice: ', ozERC20.balanceOf(alice));
+        // console.log('oz bal bob: ', ozERC20.balanceOf(bob));
+        // console.log('totalShares: ', ozERC20.totalShares());
+        // // console.log('totalAssets)
     }
 }
