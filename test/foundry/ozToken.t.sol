@@ -21,7 +21,7 @@ import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol"
 import "forge-std/console.sol";
 
 
-contract ozTokenOnlyTest is TestMethods {
+contract ozERC20TokenTest is TestMethods {
 
     using SafeERC20 for IERC20;
 
@@ -155,7 +155,6 @@ contract ozTokenOnlyTest is TestMethods {
         uint ozBalanceAlicePost = ozERC20.balanceOf(alice);
         uint testTokenBalanceAlicePost = IERC20(testToken).balanceOf(alice);
 
-        // assertTrue(ozBalanceAlicePre > 99 * 1e18 && ozBalanceAlicePre < rawAmount * 1e18);
         assertTrue(_checkPercentageDiff(rawAmount * 1e18, ozBalanceAlicePre, 5));
         assertTrue(ozBalanceAlicePost == 0);
         assertTrue(testTokenBalanceAlicePre == 0);

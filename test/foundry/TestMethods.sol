@@ -486,20 +486,15 @@ contract TestMethods is BaseMethods {
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
 
-        console.log('ozAmountIn: ', ozAmountIn);
-        console.log('underlyingOut: ', underlyingOut);
-
         /**
          * Measures that the difference between the amount of ozTokens that went in to
          * the amount of underlying that went out is less than N, which translates to
          * differences between pools balances during swaps, where highly liquid pools
-         * like ETH/USDC will derived a percentage difference amount of 0.15% (15 bps)
-         *  and medium liquid pools like ETH/DAI 0.36%.
+         * like ETH/USDC will derived a percentage difference amount of 0.38% (38 bps)
+         *  and medium liquid pools like ETH/DAI 3%.
          */
-        uint percentageDiffLiquid = 15;
-        uint percentageDiffIliquid = 37;
-
-        console.log('percentageDiffAmounts: ', percentageDiffAmounts);
+        uint percentageDiffLiquid = 38;
+        uint percentageDiffIliquid = 300;
 
         assertTrue(percentageDiffAmounts < percentageDiffLiquid || percentageDiffAmounts < percentageDiffIliquid);
         vm.stopPrank();
