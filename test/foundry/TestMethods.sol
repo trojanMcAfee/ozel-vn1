@@ -418,24 +418,30 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
 
-        console.log(1);
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, initMintAmountBob);
-        console.log(2);
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, initMintAmountCharlie);
-        console.log(3);
 
         uint ozAmountIn = amountToRedeem * 1 ether;
         testToken = address(ozERC20);
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
-        console.log(4);
+        console.log('shares bob pre redeem: ', ozERC20.sharesOf(bob));
+
+        console.log('');
+        console.log('*** STARTING REDEEM ***');
+        console.log('');
 
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.redeem(redeemData, alice);
+        vm.stopPrank();
 
-        console.log(5);
+        console.log('');
+        console.log('*** END REDEEM ***');
+        console.log('');
+
+        console.log('shares bob post redeem: ', ozERC20.sharesOf(bob));
 
         //Post-conditions
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
@@ -445,7 +451,8 @@ contract TestMethods is BaseMethods {
         console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
         console.log('ozERC20.balanceOf(bob) - post redeem: ', ozERC20.balanceOf(bob)); 
 
-        uint basisPointsDifferenceBobMEV = stdMath.abs(int(balanceOzBobPostMint) - int(balanceOzBobPostRedeem)).mulDivDown(10000, balanceOzBobPostMint);
+        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
+        // uint basisPointsDifferenceBobMEV = stdMath.abs(int(balanceOzBobPostMint) - int(balanceOzBobPostRedeem)).mulDivDown(10000, balanceOzBobPostMint);
         
         console.log(51);
         
