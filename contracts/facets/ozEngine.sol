@@ -124,8 +124,14 @@ contract ozEngine is Modifiers {
          */
         uint[] memory minAmountsOut = amts.minAmountsOut;
         uint amountInReth = amts.amountInReth;
+
+        uint x = ozIToken(msg.sender).sharesOf(owner_);
+        console.log('shares owner pre ###########: ', x);
         
         msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
+
+        x = ozIToken(msg.sender).sharesOf(owner_);
+        console.log('shares owner post ###########: ', x);
 
         //Swap rETH to WETH
         uint amountOut = _checkPauseAndSwap(

@@ -418,7 +418,12 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
 
+        console.log('');
+        console.log('*** start of BOB (mint) ***');
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, initMintAmountBob);
+        console.log('balanceOzBobPostMint ^^^^^^^^^^^^^^^^^^^^: ', balanceOzBobPostMint);
+        console.log('*** end of BOB ***');
+        console.log('');
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, initMintAmountCharlie);
 
         uint ozAmountIn = amountToRedeem * 1 ether;
@@ -444,11 +449,15 @@ contract TestMethods is BaseMethods {
         console.log('shares bob post redeem: ', ozERC20.sharesOf(bob));
 
         //Post-conditions
+        console.log('');
+        console.log('*** start of BOB (redeem) ***');
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
+        console.log('balanceOzBobPostRedeem ^^^^^^^^^^^^^^^^^^^^: ', balanceOzBobPostRedeem);
+        console.log('*** end of BOB ***');
         uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
 
-        console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
-        console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
+        // console.log('balanceOzBobPostMint ', balanceOzBobPostMint);
+        // console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
         console.log('ozERC20.balanceOf(bob) - post redeem: ', ozERC20.balanceOf(bob)); 
 
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
