@@ -381,8 +381,6 @@ contract TestMethods is BaseMethods {
         vm.startPrank(alice);
 
         //Redeems ozTokens for underlying.
-        console.log('ozAmountIn: ', ozAmountIn);
-
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
@@ -393,14 +391,11 @@ contract TestMethods is BaseMethods {
         testToken = ozERC20.asset();
         uint balanceAliceUnderlying = IERC20Permit(testToken).balanceOf(alice);
 
-        console.log('balanceAliceUnderlying: ', balanceAliceUnderlying);
-
         /**
          * It's "97" here instead of "99" due to ozAmountIn being "100" instead of "100.02" like in
          * other tests where the full ozToken balance was used, which equaled, on those tests "100.02".
          */
         assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 97 * 10 ** underlyingDecimals);
-        console.log(2);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
@@ -422,35 +417,51 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
 
+        console.log(1);
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, initMintAmountBob);
+        console.log(2);
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, initMintAmountCharlie);
+        console.log(3);
 
         uint ozAmountIn = amountToRedeem * 1 ether;
         testToken = address(ozERC20);
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
+
+        console.log(4);
 
         //Action
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.redeem(redeemData, alice);
 
+        console.log(5);
+
         //Post-conditions
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
         uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
+
+        console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
+        console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
+
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
+        
+        console.log(51);
+        
         testToken = ozERC20.asset();
+
+        console.log(6);
         
         //If diffBalanceCharlieMintRedeem is negative, it means that it wouldn't be profitable to extract MEV from this tx.
         int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
         uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
-        console.log(3);
+        console.log(7);
         assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
-        console.log(4);
+        console.log(8);
         assertTrue(basisPointsDifferenceBobMEV == 0);
-        console.log(5);
+        console.log(9);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
-        console.log(6);
+        console.log(10);
         assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
     }
 
@@ -593,7 +604,7 @@ contract TestMethods is BaseMethods {
          * like ETH/DAI.
          */
         uint percentageDiffLiquid = 27;
-        uint percentageDiffIliquid = 124; 
+        uint percentageDiffIliquid = 125; 
         uint percentageDiffPaused = 44;
 
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;

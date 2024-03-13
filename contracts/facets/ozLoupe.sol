@@ -86,14 +86,14 @@ contract ozLoupe is DiamondLoupeFacet {
         address alice = 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E;
         // uint sub = ozERC20.subConvertToShares(ozAmountIn_, alice);
 
-        console.log('ozAmountIn_: ', ozAmountIn_);
-        console.log('ozERC20.subConvertToShares(ozAmountIn_, alice): ', ozERC20.subConvertToShares(ozAmountIn_, alice));
+        // console.log('ozAmountIn_: ', ozAmountIn_);
+
 
         uint amountInReth = ozERC20.convertToUnderlying(
             ozERC20.subConvertToShares(ozAmountIn_, alice)
         );
 
-        console.log('amountInReth - loupe ^^^^^: ', amountInReth); 
+        // console.log('amountInReth - loupe ^^^^^: ', amountInReth); 
 
         //put alice here ^^^
 
