@@ -492,8 +492,6 @@ contract BaseMethods is Setup {
         return num_ / 1e3;
     }
 
-
-
     //Checks that the basis points difference between amounts is not more than bps_
     function _checkPercentageDiff(
         uint baseAmount_, 

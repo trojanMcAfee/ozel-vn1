@@ -25,6 +25,7 @@ import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Po
 import {BaseMethods} from "./BaseMethods.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IRocketStorage} from "../../contracts/interfaces/IRocketPool.sol";
+import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 
 import "forge-std/console.sol";
 
@@ -442,8 +443,9 @@ contract TestMethods is BaseMethods {
 
         console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
         console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
+        console.log('ozERC20.balanceOf(bob) - post redeem: ', ozERC20.balanceOf(bob)); 
 
-        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
+        uint basisPointsDifferenceBobMEV = stdMath.abs(int(balanceOzBobPostMint) - int(balanceOzBobPostRedeem)).mulDivDown(10000, balanceOzBobPostMint);
         
         console.log(51);
         
