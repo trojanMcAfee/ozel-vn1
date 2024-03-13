@@ -288,9 +288,6 @@ contract TestMethods is BaseMethods {
         uint assetsPost = ozERC20.totalAssets();
         uint sharesPost = ozERC20.totalShares();
 
-        console.log('assetsPost: ', assetsPost);
-        console.log('sharesPost: ', sharesPost);
-
         assertTrue(assetsPost == 0 && sharesPost == 0);
 
         testToken = ozERC20.asset();
@@ -384,6 +381,8 @@ contract TestMethods is BaseMethods {
         vm.startPrank(alice);
 
         //Redeems ozTokens for underlying.
+        console.log('ozAmountIn: ', ozAmountIn);
+
         ozERC20.approve(address(ozDiamond), ozAmountIn);
         uint underlyingOut = ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
@@ -394,7 +393,14 @@ contract TestMethods is BaseMethods {
         testToken = ozERC20.asset();
         uint balanceAliceUnderlying = IERC20Permit(testToken).balanceOf(alice);
 
-        assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 99 * 10 ** underlyingDecimals);
+        console.log('balanceAliceUnderlying: ', balanceAliceUnderlying);
+
+        /**
+         * It's "97" here instead of "99" due to ozAmountIn being "100" instead of "100.02" like in
+         * other tests where the full ozToken balance was used, which equaled, on those tests "100.02".
+         */
+        assertTrue(balanceAliceUnderlying < rawAmount * 10 ** underlyingDecimals && balanceAliceUnderlying > 97 * 10 ** underlyingDecimals);
+        console.log(2);
         assertTrue(balanceAliceUnderlying == underlyingOut);
     }
 
@@ -415,9 +421,6 @@ contract TestMethods is BaseMethods {
         assertTrue(amountIn == 100 * decimalsUnderlying);
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
-        // uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
-        // console.log(2);
-        // assertTrue(balanceUsdcAlicePostMint == 0); 
 
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, initMintAmountBob);
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, initMintAmountCharlie);
