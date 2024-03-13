@@ -430,7 +430,7 @@ contract TestMethods is BaseMethods {
         testToken = address(ozERC20);
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
-        console.log('shares bob pre redeem: ', ozERC20.sharesOf(bob));
+        console.log('shares alice pre redeem: ', ozERC20.sharesOf(alice));
 
         console.log('');
         console.log('*** STARTING REDEEM ***');
@@ -446,7 +446,7 @@ contract TestMethods is BaseMethods {
         console.log('*** END REDEEM ***');
         console.log('');
 
-        console.log('shares bob post redeem: ', ozERC20.sharesOf(bob));
+        console.log('shares alice post redeem: ', ozERC20.sharesOf(alice));
 
         //Post-conditions
         console.log('');

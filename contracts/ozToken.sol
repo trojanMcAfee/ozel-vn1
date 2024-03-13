@@ -374,6 +374,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('preBalance: ', preBalance);
         if (preBalance != 0) {
             console.log('_calculateScalingFactor(account_): ', _calculateScalingFactor(account_));
+            console.log('totalSupply; ', totalSupply());
             console.log('sum: ', preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18));
         }
         console.log('--- end _convertToAssets ---');
@@ -442,7 +443,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('reth_eth: ', reth_eth);     
         console.log('shares_: ', shares_);
         console.log('totalShares: ', totalShares());
-        console.log('--- enf of _subConvertToAssets ---');
+        console.log('--- end of _subConvertToAssets ---');
         console.log('');
 
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
