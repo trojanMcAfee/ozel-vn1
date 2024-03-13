@@ -184,7 +184,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-        uint x = _calculateScalingFactor(account_);
+        uint x = _calculateScalingFactor2(account_);
         uint reth_eth = _getUniPrice(rETH, WETH, Dir.UP);
 
         // console.log('');
@@ -230,6 +230,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function subBalanceOf(address account_, Dir side_) public view returns(uint) {
         return _subConvertToAssets(sharesOf(account_), side_);
+    }
+
+    function subBalanceOf2(address account_, Dir side_) public view returns(uint) {
+        return _subConvertToAssets2(sharesOf(account_), side_);
     }
 
     //test if owner_ being passed to updateReward() affects the owner_ getting the rewards
@@ -423,6 +427,19 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
+        console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
+        console.log('subBalanceOf(account_, Dir.DOWN) - 2: ', subBalanceOf2(account_, Dir.DOWN));
+
+        return (_shares[account_] * 1e12).mulDivDown(1e18, subBalanceOf2(account_, Dir.DOWN));
+    }
+
+    function _calculateScalingFactor2(address account_) private view returns(uint) {
+        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
+        // console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
+        // console.log('subBalanceOf(account_, Dir.DOWN) - 2: ', subBalanceOf2(account_, Dir.DOWN));
+
         return (_shares[account_] * 1e12).mulDivDown(1e18, subBalanceOf(account_, Dir.DOWN));
     }
 
@@ -447,6 +464,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('');
 
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
+    }
+
+    function _subConvertToAssets2(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
+        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
+        uint reth_eth = _getUniPrice(rETH, WETH, side_);   
+
+        return shares_.mulDivDown(reth_eth, totalSupply() == 0 ? reth_eth : totalSupply());
     }
 
     //this is public instead of private. Check

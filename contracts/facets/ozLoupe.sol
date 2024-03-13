@@ -88,6 +88,8 @@ contract ozLoupe is DiamondLoupeFacet {
 
         // console.log('ozAmountIn_: ', ozAmountIn_);
 
+        console.log('ozERC20.subConvertToShares(ozAmountIn_, alice): ', ozERC20.subConvertToShares(ozAmountIn_, alice));
+
 
         uint amountInReth = ozERC20.convertToUnderlying(
             ozERC20.subConvertToShares(ozAmountIn_, alice)
