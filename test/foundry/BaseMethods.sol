@@ -499,6 +499,10 @@ contract BaseMethods is Setup {
         return num_ / 1e3;
     }
 
+    function _fm5(uint num_) internal pure returns(uint) { //check if this can be joined with fm3
+        return num_ / 1e4;
+    }
+
     function _fm4(uint num_) internal pure returns(uint) {
         return num_ / 1e17;
     }

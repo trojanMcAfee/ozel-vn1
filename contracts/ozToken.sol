@@ -384,7 +384,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('--- end _convertToAssets ---');
         // console.log('');
 
-        return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18);
+        return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor2(account_), 1e18);
     }
 
 

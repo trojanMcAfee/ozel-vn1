@@ -218,10 +218,15 @@ contract TestMethods is BaseMethods {
         balancesSum += ozERC20.balanceOf(alice);
         sharesSum += sharesAlice;
 
-        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
-        console.log('balancesSum): ', balancesSum);
+        // console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
+        // console.log('balancesSum): ', balancesSum);
 
-        assertTrue(_fm3(ozERC20.totalSupply()) == _fm3(balancesSum));
+        // console.log('_fm(ozERC20.totalSupply()): ', _fm(ozERC20.totalSupply()));
+        // console.log('_fm(balancesSum): ', _fm(balancesSum));
+        // console.log('is2: ', _fm(ozERC20.totalSupply()) == _fm(balancesSum));
+
+        // assertTrue(_fm3(ozERC20.totalSupply()) == _fm3(balancesSum));
+        assertTrue(_fm5(ozERC20.totalSupply()) == _fm5(balancesSum));
         assertTrue(ozERC20.totalShares() == sharesSum);
     } 
 

@@ -589,5 +589,6 @@ contract Setup is Test {
         vm.label(protocolGuildSplit, 'ProtocolGuild');
         vm.label(address(teamVesting), 'TeamVestingWallet');
         vm.label(address(guildVesting), 'GuildVestingWallet');
+        vm.label(rethWethUniPool, 'rethWethUniPool');
     }
 }
