@@ -430,7 +430,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
         console.log('subBalanceOf(account_, Dir.DOWN) - 2: ', subBalanceOf2(account_, Dir.DOWN));
 
-        return (_shares[account_]).mulDivDown(1e18, subBalanceOf2(account_, Dir.DOWN));
+        return _shares[account_].mulDivDown(1e18, subBalanceOf2(account_, Dir.DOWN));
     }
 
     function _calculateScalingFactor2(address account_) private view returns(uint) {
