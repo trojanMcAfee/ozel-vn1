@@ -402,14 +402,14 @@ contract TestMethods is BaseMethods {
 
 
     /**
-     * Used 100 of underlying to mint ozTokens, where redeeming 1 ozTokens, would
+     * Use 100 of underlying to mint ozTokens, where redeeming 1 ozTokens, would
      * be ineligble so the MEV produced would be quite lower, proving the efficacy of the 
      * rebase algorithm, without the need of having to rebalance Uniswap and Balancer's pools.
      *
      * In this test, the "bigMint" is in relation to the amount being redeemed (100:1)
      */
     function _redeeming_multipleBigBalances_bigMints_smallRedeem() internal {
-        (,uint initMintAmountBob, uint initMintAmountCharlie) = _dealUnderlying(Quantity.SMALL, false);
+        (,uint rawAmountBob, uint rawAmountCharlie) = _dealUnderlying(Quantity.SMALL, false);
         uint amountToRedeem = 1;
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
@@ -420,13 +420,13 @@ contract TestMethods is BaseMethods {
 
         console.log('');
         console.log('*** start of BOB (mint) ***');
-        uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, initMintAmountBob);
+        uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, rawAmountBob);
         console.log('balanceOzBobPostMint ^^^^^^^^^^^^^^^^^^^^: ', balanceOzBobPostMint);
         console.log('*** end of BOB ***');
         console.log('');
-        uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, initMintAmountCharlie);
+        uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, rawAmountCharlie);
 
-        uint ozAmountIn = amountToRedeem * 1 ether;
+        uint ozAmountIn = amountToRedeem * 1e18;
         testToken = address(ozERC20);
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
 
@@ -473,14 +473,17 @@ contract TestMethods is BaseMethods {
         int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
         uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
-        console.log(7);
+        console.log(71);
         assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
-        console.log(8);
+        console.log(81);
         assertTrue(basisPointsDifferenceBobMEV == 0);
-        console.log(9);
+        console.log(91);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
-        console.log(10);
-        assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
+        console.log(101);
+        console.log('underlyingOut: ', underlyingOut);
+        console.log('testToken bal alice: ', IERC20(testToken).balanceOf(alice));
+        // assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
+        assertTrue(underlyingOut > 998 * 1e15 && underlyingOut < 1 * decimalsUnderlying);
     }
 
 

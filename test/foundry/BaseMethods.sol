@@ -73,7 +73,7 @@ contract BaseMethods is Setup {
         address owner_,
         ozIToken ozERC20_,
         uint ownerPK_,
-        uint initMintAmout_
+        uint rawAmount_
     ) internal returns(uint) {
         uint amountIn = IERC20Permit(testToken).balanceOf(owner_);
         _createAndMintOzTokens(address(ozERC20_), amountIn, owner_, ownerPK_, false, false, Type.IN);
@@ -83,8 +83,13 @@ contract BaseMethods is Setup {
         
         console.log('--- balanceOf ---');
         uint balanceOzPostMint = ozERC20_.balanceOf(owner_);
+        console.log('');
         console.log('--- en of balanceOf ---');
-        assertTrue(_checkPercentageDiff(initMintAmout_ * 1e18, balanceOzPostMint, 5));
+        console.log('rawAmount_: ', rawAmount_);
+        console.log('balanceOzPostMint: ', balanceOzPostMint);
+        console.log('_checkPercentageDiff(rawAmount_ * 1e18, balanceOzPostMint, 5): ', _checkPercentageDiff(rawAmount_ * 1e18, balanceOzPostMint, 5));
+        console.log('');
+        assertTrue(_checkPercentageDiff(rawAmount_ * 1e18, balanceOzPostMint, 5));
 
         return balanceOzPostMint;
     }
