@@ -171,18 +171,7 @@ contract TestMethods is BaseMethods {
         assertTrue(_fm(balanceAlice) / 4 == _fm(balanceCharlie));
         assertTrue(_fm(balanceBob) == _fm(balanceCharlie) * 2);
 
-        
-        console.log('_fm(ozERC20.totalSupply()): ', _fm(ozERC20.totalSupply()));
-        console.log('sum: ', balanceAlice + balanceCharlie + balanceBob);
-        
-        console.log('');
-
-        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
-        console.log('sum2: ', ozERC20.balanceOf(alice) + ozERC20.balanceOf(bob) + ozERC20.balanceOf(charlie));
-
         assertTrue(_fm4(ozERC20.totalSupply()) == _fm4(balanceAlice) + _fm4(balanceCharlie) + _fm4(balanceBob));
-        console.log(2);
-
         assertTrue(ozERC20.totalAssets() == (rawAmount + rawAmount / 2 + rawAmount / 4) * 1e6);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
     }   
@@ -229,7 +218,10 @@ contract TestMethods is BaseMethods {
         balancesSum += ozERC20.balanceOf(alice);
         sharesSum += sharesAlice;
 
-        assertTrue(_fm(ozERC20.totalSupply()) == _fm(balancesSum));
+        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
+        console.log('balancesSum): ', balancesSum);
+
+        assertTrue(_fm3(ozERC20.totalSupply()) == _fm3(balancesSum));
         assertTrue(ozERC20.totalShares() == sharesSum);
     } 
 
