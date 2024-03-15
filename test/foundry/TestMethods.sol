@@ -163,15 +163,26 @@ contract TestMethods is BaseMethods {
         assertTrue(sharesBob == sharesCharlie * 2);
         assertTrue(sharesBob / 2 == sharesCharlie);
 
-        uint balanceAlice = _fm(ozERC20.balanceOf(alice));
-        uint balanceBob = _fm(ozERC20.balanceOf(bob));
-        uint balanceCharlie = _fm(ozERC20.balanceOf(charlie));
+        uint balanceAlice = ozERC20.balanceOf(alice);
+        uint balanceBob = ozERC20.balanceOf(bob);
+        uint balanceCharlie = ozERC20.balanceOf(charlie);
     
-        assertTrue(balanceAlice / 2 == balanceBob);
-        assertTrue(balanceAlice / 4 == balanceCharlie);
-        assertTrue(balanceBob == balanceCharlie * 2);
+        assertTrue(_fm(balanceAlice) / 2 == _fm(balanceBob));
+        assertTrue(_fm(balanceAlice) / 4 == _fm(balanceCharlie));
+        assertTrue(_fm(balanceBob) == _fm(balanceCharlie) * 2);
 
-        assertTrue(_fm(ozERC20.totalSupply()) == balanceAlice + balanceCharlie + balanceBob);
+        
+        console.log('_fm(ozERC20.totalSupply()): ', _fm(ozERC20.totalSupply()));
+        console.log('sum: ', balanceAlice + balanceCharlie + balanceBob);
+        
+        console.log('');
+
+        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
+        console.log('sum2: ', ozERC20.balanceOf(alice) + ozERC20.balanceOf(bob) + ozERC20.balanceOf(charlie));
+
+        assertTrue(_fm4(ozERC20.totalSupply()) == _fm4(balanceAlice) + _fm4(balanceCharlie) + _fm4(balanceBob));
+        console.log(2);
+
         assertTrue(ozERC20.totalAssets() == (rawAmount + rawAmount / 2 + rawAmount / 4) * 1e6);
         assertTrue(ozERC20.totalShares() == sharesAlice + sharesBob + sharesCharlie);
     }   
@@ -418,23 +429,12 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
 
-        console.log('');
-        console.log('*** start of BOB (mint) ***');
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, rawAmountBob);
-        console.log('balanceOzBobPostMint ^^^^^^^^^^^^^^^^^^^^: ', balanceOzBobPostMint);
-        console.log('*** end of BOB ***');
-        console.log('');
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, rawAmountCharlie);
 
         uint ozAmountIn = amountToRedeem * 1e18;
         testToken = address(ozERC20);
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
-
-        console.log('shares alice pre redeem: ', ozERC20.sharesOf(alice));
-
-        console.log('');
-        console.log('*** STARTING REDEEM ***');
-        console.log('');
 
         //Action
         vm.startPrank(alice);
@@ -442,47 +442,20 @@ contract TestMethods is BaseMethods {
         uint underlyingOut = ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
 
-        console.log('');
-        console.log('*** END REDEEM ***');
-        console.log('');
-
-        console.log('shares alice post redeem: ', ozERC20.sharesOf(alice));
-
         //Post-conditions
-        console.log('');
-        console.log('*** start of BOB (redeem) ***');
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
-        console.log('balanceOzBobPostRedeem ^^^^^^^^^^^^^^^^^^^^: ', balanceOzBobPostRedeem);
-        console.log('*** end of BOB ***');
         uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
-
-        // console.log('balanceOzBobPostMint ', balanceOzBobPostMint);
-        // console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
-        console.log('ozERC20.balanceOf(bob) - post redeem: ', ozERC20.balanceOf(bob)); 
-
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
-        // uint basisPointsDifferenceBobMEV = stdMath.abs(int(balanceOzBobPostMint) - int(balanceOzBobPostRedeem)).mulDivDown(10000, balanceOzBobPostMint);
-        
-        console.log(51);
         
         testToken = ozERC20.asset();
 
-        console.log(6);
-        
         //If diffBalanceCharlieMintRedeem is negative, it means that it wouldn't be profitable to extract MEV from this tx.
         int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
         uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
-        console.log(71);
         assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
-        console.log(81);
         assertTrue(basisPointsDifferenceBobMEV == 0);
-        console.log(91);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
-        console.log(101);
-        console.log('underlyingOut: ', underlyingOut);
-        console.log('testToken bal alice: ', IERC20(testToken).balanceOf(alice));
-        // assertTrue(underlyingOut > 998_000 && underlyingOut < 1 * decimalsUnderlying);
         assertTrue(underlyingOut > 998 * 1e15 && underlyingOut < 1 * decimalsUnderlying);
     }
 

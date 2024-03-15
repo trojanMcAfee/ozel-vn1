@@ -488,7 +488,7 @@ contract BaseMethods is Setup {
     }
 
     function _fm(uint num_) internal pure returns(uint) {
-        return num_ / 1e13;
+        return num_ / 1e14;
     }
 
     function _fm2(uint num_) internal pure returns(uint) {
@@ -497,6 +497,10 @@ contract BaseMethods is Setup {
 
     function _fm3(uint num_) internal pure returns(uint) {
         return num_ / 1e3;
+    }
+
+    function _fm4(uint num_) internal pure returns(uint) {
+        return num_ / 1e17;
     }
 
     //Checks that the basis points difference between amounts is not more than bps_

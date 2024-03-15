@@ -373,16 +373,16 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
 
-        console.log('');
-        console.log('--- _convertToAssets ---');
-        console.log('preBalance: ', preBalance);
-        if (preBalance != 0) {
-            console.log('_calculateScalingFactor(account_): ', _calculateScalingFactor(account_));
-            console.log('totalSupply; ', totalSupply());
-            console.log('sum: ', preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18));
-        }
-        console.log('--- end _convertToAssets ---');
-        console.log('');
+        // console.log('');
+        // console.log('--- _convertToAssets ---');
+        // console.log('preBalance: ', preBalance);
+        // if (preBalance != 0) {
+        //     console.log('_calculateScalingFactor(account_): ', _calculateScalingFactor(account_));
+        //     console.log('totalSupply; ', totalSupply());
+        //     console.log('sum: ', preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18));
+        // }
+        // console.log('--- end _convertToAssets ---');
+        // console.log('');
 
         return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18);
     }
@@ -427,8 +427,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-        console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
-        console.log('subBalanceOf(account_, Dir.DOWN) - 2: ', subBalanceOf2(account_, Dir.DOWN));
+        // console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
+        // console.log('subBalanceOf(account_, Dir.DOWN) - 2: ', subBalanceOf2(account_, Dir.DOWN));
 
         return _shares[account_].mulDivDown(1e18, subBalanceOf2(account_, Dir.DOWN));
     }
@@ -455,13 +455,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint reth_eth = _getUniPrice(rETH, WETH, side_);   
 
-        console.log('');
-        console.log('--- _subConvertToAssets ---');
-        console.log('reth_eth: ', reth_eth);     
-        console.log('shares_: ', shares_);
-        console.log('totalShares: ', totalShares());
-        console.log('--- end of _subConvertToAssets ---');
-        console.log('');
+        // console.log('');
+        // console.log('--- _subConvertToAssets ---');
+        // console.log('reth_eth: ', reth_eth);     
+        // console.log('shares_: ', shares_);
+        // console.log('totalShares: ', totalShares());
+        // console.log('--- end of _subConvertToAssets ---');
+        // console.log('');
 
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
