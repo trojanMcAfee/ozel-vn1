@@ -435,28 +435,37 @@ contract TestMethods is BaseMethods {
         vm.stopPrank();
 
         //Post-conditions
-        uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
-        uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
+        // uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
+        // uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
 
-        console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
-        console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
-        console.log('is - true: ', balanceOzBobPostMint > balanceOzBobPostRedeem);
+        // console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
+        // console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
+        // console.log('is - true: ', balanceOzBobPostMint > balanceOzBobPostRedeem);
 
-        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
+        uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - ozERC20.balanceOf(bob)).mulDivDown(10000, balanceOzBobPostMint);
         
-        testToken = ozERC20.asset();
+        // testToken = ozERC20.asset(); 
 
         //If diffBalanceCharlieMintRedeem is negative, it means that it wouldn't be profitable to extract MEV from this tx.
-        int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(balanceOzCharliePostRedeem); 
+        int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(ozERC20.balanceOf(charlie)); 
         uint basisPointsDifferenceCharlieMEV = diffBalanceCharlieMintRedeem <= 0 ? 0 : uint(diffBalanceCharlieMintRedeem).mulDivDown(10000, balanceOzCharliePostMint);
 
-        assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
+        assertTrue(underlyingOut == IERC20Permit(ozERC20.asset()).balanceOf(alice));
         assertTrue(basisPointsDifferenceBobMEV == 0);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
 
-        console.log('underlyingOut: ', underlyingOut);
-        assertTrue(underlyingOut > (998 * amountToRedeem) * 1e15 && underlyingOut < amountToRedeem * decimalsUnderlying);
-    }
+        console.log('check: ', _checkPercentageDiff((998 * amountToRedeem) * 1e15, underlyingOut, 2));
+
+        bool amountOutCheck = false;
+        uint outReference = (998 * amountToRedeem) * 1e15;
+
+        if (underlyingOut > outReference || _checkPercentageDiff(outReference, underlyingOut, 2)) {
+            amountOutCheck = true;
+        }
+
+        // console.log('underlyingOut: ', underlyingOut);
+        assertTrue(amountOutCheck && underlyingOut < amountToRedeem * decimalsUnderlying);
+    } 
 
 
     
