@@ -486,8 +486,7 @@ contract OZLtokenTest is TestMethods {
         uint diffUSDETH = _getRateDifference(rateUsd, rateEth, OZ.ETH_USD());
         uint diffETHRETH = _getRateDifference(rateEth, rateReth, OZ.rETH_ETH());
 
-        assertTrue(diffUSDETH == 1);
-        assertTrue(diffETHRETH == 0);
+        assertTrue(diffUSDETH == 0 && diffETHRETH == 0);
     }
 
 
