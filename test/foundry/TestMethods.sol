@@ -218,14 +218,9 @@ contract TestMethods is BaseMethods {
         balancesSum += ozERC20.balanceOf(alice);
         sharesSum += sharesAlice;
 
-        // console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
-        // console.log('balancesSum): ', balancesSum);
+        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
+        console.log('balancesSum: ', balancesSum);
 
-        // console.log('_fm(ozERC20.totalSupply()): ', _fm(ozERC20.totalSupply()));
-        // console.log('_fm(balancesSum): ', _fm(balancesSum));
-        // console.log('is2: ', _fm(ozERC20.totalSupply()) == _fm(balancesSum));
-
-        // assertTrue(_fm3(ozERC20.totalSupply()) == _fm3(balancesSum));
         assertTrue(_fm5(ozERC20.totalSupply()) == _fm5(balancesSum));
         assertTrue(ozERC20.totalShares() == sharesSum);
     } 
@@ -418,7 +413,7 @@ contract TestMethods is BaseMethods {
      */
     function _redeeming_multipleBigBalances_bigMints_smallRedeem() internal {
         (,uint rawAmountBob, uint rawAmountCharlie) = _dealUnderlying(Quantity.SMALL, false);
-        uint amountToRedeem = 1;
+        uint amountToRedeem = 2;
 
         uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
@@ -442,6 +437,11 @@ contract TestMethods is BaseMethods {
         //Post-conditions
         uint balanceOzBobPostRedeem = ozERC20.balanceOf(bob);
         uint balanceOzCharliePostRedeem = ozERC20.balanceOf(charlie);
+
+        console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
+        console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
+        console.log('is - true: ', balanceOzBobPostMint > balanceOzBobPostRedeem);
+
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - balanceOzBobPostRedeem).mulDivDown(10000, balanceOzBobPostMint);
         
         testToken = ozERC20.asset();
@@ -453,7 +453,9 @@ contract TestMethods is BaseMethods {
         assertTrue(underlyingOut == IERC20Permit(testToken).balanceOf(alice));
         assertTrue(basisPointsDifferenceBobMEV == 0);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
-        assertTrue(underlyingOut > 998 * 1e15 && underlyingOut < 1 * decimalsUnderlying);
+
+        console.log('underlyingOut: ', underlyingOut);
+        assertTrue(underlyingOut > (998 * amountToRedeem) * 1e15 && underlyingOut < amountToRedeem * decimalsUnderlying);
     }
 
 
