@@ -153,6 +153,8 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             return rETHtoRedeem;
         }
 
+        // emit Withdraw(msg.sender, receiver_, owner_, assets, shares);
+        
         return OZ.useOZL( 
             tokenOut_,
             receiver_,
@@ -160,7 +162,6 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             minAmountsOut_
         );
 
-        // emit Withdraw(msg.sender, receiver_, owner_, assets, shares);
     }
 
 

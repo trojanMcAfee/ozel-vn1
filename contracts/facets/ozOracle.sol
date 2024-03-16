@@ -40,7 +40,7 @@ contract ozOracle {
         int currentRewards
     );
 
-
+    //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
         (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
         return success ? price : _callFallbackOracle(s.rETH); 
@@ -276,9 +276,9 @@ contract ozOracle {
 
     /**
      * @dev Calculates the values in ETH of the variables
-     * @param assets_ How much in stablecoins there are in ozToken contrats
+     * @param assets_ How much in stablecoins there are in ozToken contracts
      * @param amountReth_ How much rETH in total the protocol manages
-     * @return (uint, uint) - assets_ valued in ETH / all protocol rETH valued in ETH
+     * @return (uint, uint) - assets_ valued in ETH / all protocol's rETH valued in ETH
      */
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();

@@ -45,18 +45,18 @@ contract OZLtokenTest is TestMethods {
     function test_new_recicling_campaing() public {
         vm.selectFork(redStoneFork);
 
-        bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
-            bytes32(0)
-        );
-        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+        (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = 
+            _getResetVarsAndChangeSlip();
         
-        //Pre-conditions
+        /**
+         * Pre-conditions
+         */
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
-        _changeSlippage(uint16(9900));
+
+        _mock_rETH_ETH_pt1();
 
         _startCampaign();
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
@@ -76,7 +76,9 @@ contract OZLtokenTest is TestMethods {
         IOZL OZL = IOZL(address(ozlProxy));
         (uint ozlBalanceAlice, uint claimedReward) = _checkChargeFeeClaimOZL(OZL);
 
-        //Actions
+        /**
+         * Actions 1
+         */
         uint pendingAllocPreRedeem = _getPendingAllocation();
         assertTrue(pendingAllocPreRedeem < (1 * 1e18) / 1000000);
 
@@ -95,7 +97,9 @@ contract OZLtokenTest is TestMethods {
         (uint oldRecicledSupply, uint oldRewardRate) = 
             _checkSupplyAndRate(pendingAllocPreRedeem, OZL, ozlBalanceAlice);
 
-        //Actions
+        /**
+         * Actions 2
+         */
         uint oneYear = 31560000;
         vm.prank(owner);
 
@@ -104,11 +108,13 @@ contract OZLtokenTest is TestMethods {
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         vm.clearMockedCalls();
 
+        _mock_rETH_ETH_pt2();
+
         uint newOzTokenBalance = ozERC20.balanceOf(alice);
         uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
 
         //Difference between balances (old and new) is less than 0.32% (slippage between orders)
-        assertTrue(diff < 32);        
+        assertTrue(diff < 32);  
 
         vm.warp(block.timestamp + secs);
 
@@ -116,7 +122,9 @@ contract OZLtokenTest is TestMethods {
         uint earned = OZ.earned(alice);
         assertTrue(claimedReward / 1e9 == earned / 1e9);
 
-        //Post-conditions
+        /**
+         * Post-conditions
+         */
         uint newRewardRate = _getRewardRate();
 
         assertTrue(oldRewardRate != newRewardRate);
@@ -587,7 +595,7 @@ contract OZLtokenTest is TestMethods {
         uint pendingOZLallocPre = _getPendingAllocation();
         assertTrue(communityAmount == pendingOZLallocPre);
 
-         bool wasCharged = OZ.chargeOZLfee();
+        bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
         uint circulatingSupply = _getCirculatingSupply();
