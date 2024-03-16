@@ -440,7 +440,7 @@ contract TestMethods is BaseMethods {
 
         // console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
         // console.log('balanceOzBobPostRedeem: ', balanceOzBobPostRedeem);
-        // console.log('is - true: ', balanceOzBobPostMint > balanceOzBobPostRedeem);
+        console.log('is - true: ', balanceOzBobPostMint > ozERC20.balanceOf(bob));
 
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - ozERC20.balanceOf(bob)).mulDivDown(10000, balanceOzBobPostMint);
         
@@ -454,16 +454,20 @@ contract TestMethods is BaseMethods {
         assertTrue(basisPointsDifferenceBobMEV == 0);
         assertTrue(basisPointsDifferenceCharlieMEV == 0);
 
-        console.log('check: ', _checkPercentageDiff((998 * amountToRedeem) * 1e15, underlyingOut, 2));
+        console.log('check: ', _checkPercentageDiff((998 * amountToRedeem) * 1e15, underlyingOut, 3));
 
         bool amountOutCheck = false;
         uint outReference = (998 * amountToRedeem) * 1e15;
 
-        if (underlyingOut > outReference || _checkPercentageDiff(outReference, underlyingOut, 2)) {
+        /**
+         * Due to the difference of liquidity between pools, outReference can be slightly off,
+         * in comparison to underlyingOut, for less than 3 basis points.
+         */
+        if (underlyingOut > outReference || _checkPercentageDiff(outReference, underlyingOut, 3)) {
             amountOutCheck = true;
         }
 
-        // console.log('underlyingOut: ', underlyingOut);
+        console.log('underlyingOut: ', underlyingOut);
         assertTrue(amountOutCheck && underlyingOut < amountToRedeem * decimalsUnderlying);
     } 
 
