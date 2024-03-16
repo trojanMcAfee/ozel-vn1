@@ -593,12 +593,16 @@ contract TestMethods is BaseMethods {
 
         /**
          * Checks that the difference between the amount of ozTokens that went in to be redeemed
-         * is less than 0.27% for liquid markets like ETH/USDC, and 1.24% for semi-liquid markets,
+         * is less than 0.27% for liquid markets like ETH/USDC, and 1.25% for semi-liquid markets,
          * like ETH/DAI.
+         *
+         * The difference is bigger (1.38%) when the Balancer rETH-ETH pool is paused because the swap
+         * needs to use here Uniswap's rETH-ETH pool instead, which has less liquidity, increasing the 
+         * difference margin.
          */
         uint percentageDiffLiquid = 27;
         uint percentageDiffIliquid = 125; 
-        uint percentageDiffPaused = 44;
+        uint percentageDiffPaused = 138;
 
         uint decimals = IERC20Permit(ozERC20.asset()).decimals() == 18 ? 1 : 1e12;
         uint percentageDiffAmounts = (ozAmountIn - (underlyingOut * decimals)).mulDivDown(10000, ozAmountIn);
