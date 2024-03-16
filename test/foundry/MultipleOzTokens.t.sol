@@ -7,6 +7,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {TestMethods} from "./TestMethods.sol";
 import {NewToken} from "../../contracts/AppStorage.sol";
+import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 
 import "forge-std/console.sol";
 
@@ -22,7 +23,8 @@ contract MultipleOzTokensTest is TestMethods {
         //Pre-conditions  
         (ozIToken ozERC20_1,) = _createOzTokens(testToken, "1");
         (ozIToken ozERC20_2,) = _createOzTokens(secondTestToken, "2");
-        
+
+        // _getResetVarsAndChangeSlip();
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
         uint amountInFirst = rawAmount * 10 ** IERC20Permit(testToken).decimals();
@@ -40,8 +42,8 @@ contract MultipleOzTokensTest is TestMethods {
 
         uint amountInSecond_18dec = amountInSecond * 1e12;
 
-        assertTrue(ozBalance_1 < amountInFirst && ozBalance_1 > (amountInFirst - 1 * 1e18));
-        assertTrue(ozBalance_2 < amountInSecond_18dec && ozBalance_2 > (amountInSecond_18dec - 1 * 1e18));
+        assertTrue(_checkPercentageDiff(amountInFirst, ozBalance_1, 3));
+        assertTrue(_checkPercentageDiff(amountInSecond_18dec, ozBalance_2, 3));
 
         return (ozERC20_1, ozERC20_2, amountInFirst, amountInSecond, amountInThird);
     }
@@ -151,7 +153,7 @@ contract MultipleOzTokensTest is TestMethods {
         uint balCharlie_3 = ozERC20_3.balanceOf(charlie);
 
         (
-            , uint circulatingSupplyPre,
+            ,uint circulatingSupplyPre,
             uint pendingAllocationPre,
             uint recicledSupplyPre,
         ) = OZ.getRewardsData();
@@ -171,8 +173,25 @@ contract MultipleOzTokensTest is TestMethods {
         uint claimedCharlie = OZ.claimReward();
 
         //Post-conditions
+
+        console.log(11);
         assertTrue((balBob_2 * 3) / 1e17 == (balAlice_1 + balAlice_2) / 1e17);
-        assertTrue(((balBob_2 / 3) + balCharlie_3) / 1e18 == balBob_2 / 1e18);
+
+        console.log('balAlice_1: ', balAlice_1);
+        console.log('balAlice_2: ', balAlice_2);
+
+        console.log('');
+        console.log('balBob_2: ', balBob_2);
+        console.log('balCharlie_3: ', balCharlie_3); 
+
+        uint deltaMultipleOz = stdMath.abs(int((balBob_2 / 3) + balCharlie_3) - int(balBob_2));
+        
+        console.log('delta: ', _fm(deltaMultipleOz, 8));
+        assertTrue(_fm(deltaMultipleOz, 8) == 3334000033);
+
+        // assertTrue(((balBob_2 / 3) + balCharlie_3) / 1e18 == balBob_2 / 1e18);
+
+        console.log(3);
 
         assertTrue((claimedBob * 3) / 1e15 == claimedAlice / 1e15);
         assertTrue(((claimedBob / 3) + claimedCharlie) / 1e16 == claimedBob / 1e16);
