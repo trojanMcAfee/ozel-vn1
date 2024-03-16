@@ -40,6 +40,7 @@ error OZError06(address sender, uint accountShares, uint shares); //redeem - ins
 error OZError07(address from, uint fromShares, uint shares); //ozToken.sol / _transfer - insufficient sender balance
 error OZError08(uint deadline, uint blockTimestamp); //permit - ERC2612ExpiredDeadline
 error OZError09(address owner, address spender); //permit - ERC2612InvalidSignature
+error OZError35(uint ozAmountIn); //redeem - ozAmountIn is less than allowed
 
 //--- OZLrewards errors
 error OZError15(); //setRewardsDuration - rewards duration not finished
