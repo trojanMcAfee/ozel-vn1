@@ -77,7 +77,9 @@ contract ozEngine is Modifiers {
          */
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
         
+        console.log(1);
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
+        console.log(2);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
