@@ -57,11 +57,16 @@ contract wozToken is ERC20PermitUpgradeable {
         return address(_ozERC20);
     }
 
-
+    /**
+     * Gets an amount of wozTokens given an amount of ozTokens.
+     */
     function getWozAmount(uint ozAmount_) public view returns(uint) {
         return ozAmount_.mulDivDown(_ozERC20.totalShares() * 1e12, _ozERC20.totalSupply());
     }
 
+    /**
+     * Gets an amount of ozTokens given an amount of wozTokens.
+     */
     function getOzAmount(uint wozAmount_) public view returns(uint) {
         return wozAmount_.mulDivDown(_ozERC20.totalSupply(), _ozERC20.totalShares() * 1e12);
     }
@@ -93,7 +98,7 @@ contract wozToken is ERC20PermitUpgradeable {
     function mintAndWrap(bytes memory data_, address owner_) external returns(uint wozAmountOut) {
         (bytes memory data, address originalReceiver) = _changeReceiver(data_);
         uint shares = _ozERC20.mint(data, owner_);
-        uint ozAmountIn = _ozERC20.convertToAssets(shares);
+        uint ozAmountIn = _ozERC20.convertToAssets(shares, address(this));
         wozAmountOut = wrap(ozAmountIn, address(this), originalReceiver);
     }
 

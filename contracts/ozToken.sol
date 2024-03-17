@@ -225,6 +225,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
+        // console.log('sharesOf(account_) *********: ', sharesOf(account_));
         return convertToAssets(sharesOf(account_), account_);
     }
 
@@ -293,6 +294,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function previewRedeem(uint shares_) public view returns(uint) {
         return _convertToAssetsFromUnderlying(shares_);
     }
+
+    // function previewRedeem(uint shares_) public view returns(uint) {
+    //     console.log('convertToAssets: ', convertToAssets(shares_, 0x65B6A5f2965e6f125A8B1189ed57739Ca49Bc70e));
+    //     return _subConvertToAssets(shares_, Dir.UP);
+    // }
+
+    // function previewRedeem2(uint shares_) public view returns(uint) {
+    //     return _subConvertToAssets2(shares_, Dir.UP);
+    // }
 
     function convertToUnderlying(uint shares_) external view returns(uint) {
         return (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
