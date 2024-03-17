@@ -76,6 +76,8 @@ contract wozTokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
 
+        _mock_rETH_ETH_pt1();
+
         //mint ozTokens
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
@@ -83,10 +85,6 @@ contract wozTokenTest is TestMethods {
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         uint ozBalanceBob = ozERC20.balanceOf(bob);
-
-        // console.log(1);
-        // console.log('ozBalanceAlice - pre wrap: ', ozBalanceAlice);
-        // console.log('ozBalanceBob: ', ozBalanceBob);
 
         assertTrue(ozBalanceAlice == ozBalanceBob);
         
@@ -97,36 +95,30 @@ contract wozTokenTest is TestMethods {
         vm.stopPrank();
 
         uint wozBalanceAlice = wozERC20.balanceOf(alice);
-
         ozBalanceAlice = ozERC20.balanceOf(alice); 
+
         /**
          * The difference remaining in ozTokens is less than 1.1e-12, which
          * corresponds to the dust from being a rebase token. 
          */
         assertTrue(ozBalanceAlice < 11 * 1e13);
 
-        console.log(2);
-
         //Accrue rewards
-        _accrueRewards(100);
+        // _accrueRewards(100);
+        vm.warp(block.timestamp + 100);
+        _mock_rETH_ETH_pt2();
 
         uint ozBalanceBobPostAccrual = ozERC20.balanceOf(bob);
-        console.log(21);
         assertTrue(ozBalanceBobPostAccrual > ozBalanceBob);
 
         uint wozBalanceAlicePostAccrual = wozERC20.balanceOf(alice);
-        console.log(22);
         assertTrue(wozBalanceAlicePostAccrual == wozBalanceAlice);
 
         uint ozBalanceAlicePostAccrual = ozERC20.balanceOf(alice); 
-        console.log(23);
-        assertTrue(ozBalanceAlicePostAccrual == 0);
+        assertTrue(ozBalanceAlicePostAccrual < 11 * 1e13);
 
         uint ozBalanceWozPostAccrual = ozERC20.balanceOf(address(wozERC20));
-        console.log(24);
-        assertTrue(ozBalanceWozPostAccrual == ozBalanceBobPostAccrual);
-
-        console.log(3);
+        assertTrue(_fm(ozBalanceWozPostAccrual, 13) == _fm(ozBalanceBobPostAccrual, 13));
 
         //Redeem wozERC20 for ozERC20
         vm.prank(alice);

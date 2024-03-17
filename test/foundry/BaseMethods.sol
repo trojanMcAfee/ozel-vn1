@@ -81,14 +81,7 @@ contract BaseMethods is Setup {
         uint balanceUsdcPostMint = IERC20Permit(testToken).balanceOf(owner_);
         assertTrue(balanceUsdcPostMint == 0);
         
-        console.log('--- balanceOf ---');
         uint balanceOzPostMint = ozERC20_.balanceOf(owner_);
-        console.log('');
-        console.log('--- en of balanceOf ---');
-        console.log('rawAmount_: ', rawAmount_);
-        console.log('balanceOzPostMint: ', balanceOzPostMint);
-        console.log('_checkPercentageDiff(rawAmount_ * 1e18, balanceOzPostMint, 5): ', _checkPercentageDiff(rawAmount_ * 1e18, balanceOzPostMint, 5));
-        console.log('');
         assertTrue(_checkPercentageDiff(rawAmount_ * 1e18, balanceOzPostMint, 5));
 
         return balanceOzPostMint;
