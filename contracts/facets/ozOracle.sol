@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage, LastRewards} from "../AppStorage.sol";
+import {AppStorage, LastRewards, Dir} from "../AppStorage.sol";
 import {IPool} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
@@ -85,33 +85,41 @@ contract ozOracle {
     }
 
 
-    function _getUniPrice(address token0_, address token1_, uint24 fee_) private view returns(uint) {
+    function getUniPrice(
+        address token0_, 
+        address token1_, 
+        uint24 fee_,
+        Dir side_
+    ) public view returns(uint) {
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0_, token1_, fee_);
-        uint32 secondsAgo = uint32(1800); 
-        uint BASE = 1e12;
+        // uint32 secondsAgo = uint32(1800); 
+        // uint BASE = 1e12;
 
-        if (token1_ == s.WETH) BASE = 1;
+        // if (token1_ == s.WETH) BASE = 1;
+
+        uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
 
         uint32[] memory secondsAgos = new uint32[](2);
-        secondsAgos[0] = secondsAgo;
+        secondsAgos[0] = secsAgo;
         secondsAgos[1] = 0;
 
         (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
 
         int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
-        int24 tick = int24(tickCumulativesDelta / int32(secondsAgo));
+        int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
         
-        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secondsAgo) != 0)) tick--;
+        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
         
         uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1 ether, token0_, token1_
         );
     
-        return amountOut * BASE;
+        return amountOut * (token1_ == s.WETH ? 1 : 1e12);
+        // return amountOut * BASE;
     }
 
-
-    function _getTellorPrice() private view returns(bool, uint) { 
+    //Tellor
+    function getOracleBackUp1() public view returns(bool, uint) { 
         bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd")));
 
         (bool success, bytes memory value, uint timestamp) = 
@@ -122,8 +130,8 @@ contract ozOracle {
         return (true, abi.decode(value, (uint)));
     }
 
-
-    function _getRedPrice() private view returns(bool, uint) {
+    //RedStone
+    function getOracleBackUp2() public view returns(bool, uint) {
         (bool success, uint weETH_ETH) = _useLinkInterface(s.weETHETHredStone, false);
         (bool success2, uint weETH_USD) = _useLinkInterface(s.weETHUSDredStone, false);
 
@@ -138,9 +146,9 @@ contract ozOracle {
 
     function _callFallbackOracle(address baseToken_) private view returns(uint) {
         if (baseToken_ == s.WETH) {
-            uint uniPrice = _getUniPrice(s.WETH, s.USDC, s.uniFee);
-            (bool success, uint tellorPrice) = _getTellorPrice();
-            (bool success2, uint redPrice) = _getRedPrice();
+            uint uniPrice = getUniPrice(s.WETH, s.USDC, s.uniFee, Dir.UP);
+            (bool success, uint tellorPrice) = getOracleBackUp1();
+            (bool success2, uint redPrice) = getOracleBackUp2();
 
             if (success && success2) {
                 return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
@@ -148,8 +156,8 @@ contract ozOracle {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
-            uint uniPrice05 = _getUniPrice(s.rETH, s.WETH, s.uniFee);
-            uint uniPrice01 = _getUniPrice(s.rETH, s.WETH, s.uniFee01);
+            uint uniPrice05 = getUniPrice(s.rETH, s.WETH, s.uniFee, Dir.UP);
+            uint uniPrice01 = getUniPrice(s.rETH, s.WETH, s.uniFee01, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 
             return Helpers.getMedium(uniPrice05, uniPrice01, protocolPrice);

@@ -19,7 +19,7 @@ import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/CountersUpgradeable.sol";
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 
-import {AmountsIn} from "./AppStorage.sol";
+import {AmountsIn, Dir} from "./AppStorage.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {Helpers, TotalType} from "./libraries/Helpers.sol";
 import {Modifiers} from "./Modifiers.sol";
@@ -73,10 +73,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     
     mapping(address user => uint assets) private _assets;
 
-    enum Dir {
-        UP,
-        DOWN
-    }
+    // enum Dir {
+    //     UP,
+    //     DOWN
+    // }
 
 
     constructor() {
@@ -183,9 +183,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // uint x = 30354537468407080774;
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        uint24 uniPoolFee = 500;
 
         uint x = _calculateScalingFactor2(account_);
-        uint reth_eth = _getUniPrice(rETH, WETH, Dir.UP);
+        uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, Dir.UP);
 
         // console.log('');
         // console.log('--- _subConvertToShares ---');
@@ -381,37 +382,37 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     // ---------------------------- /
-    function _getUniPrice(address token0_, address token1_, Dir side_) private view returns(uint) {
-        // address uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
-        // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-        // uint24 fee = 500;
+    // function _getUniPrice(address token0_, address token1_, Dir side_) private view returns(uint) {
+    //     // address uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
+    //     // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    //     // uint24 fee = 500;
 
-        // address pool = IUniswapV3Factory(uniFactory).getPool(token0_, token1_, fee);
-        address pool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-        // uint32 secondsAgo = uint32(secsAgo_);
-        // uint BASE = 1e12;
+    //     // address pool = IUniswapV3Factory(uniFactory).getPool(token0_, token1_, fee);
+    //     address pool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+    //     // uint32 secondsAgo = uint32(secsAgo_);
+    //     // uint BASE = 1e12;
 
-        // if (token1_ == WETH) BASE = 1;
+    //     // if (token1_ == WETH) BASE = 1;
 
-        uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
+    //     uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
 
-        uint32[] memory secondsAgos = new uint32[](2);
-        secondsAgos[0] = secsAgo;
-        secondsAgos[1] = 0;
+    //     uint32[] memory secondsAgos = new uint32[](2);
+    //     secondsAgos[0] = secsAgo;
+    //     secondsAgos[1] = 0;
 
-        (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
+    //     (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
 
-        int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
-        int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
+    //     int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
+    //     int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
         
-        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
+    //     if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
         
-        uint amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, token0_, token1_
-        );
+    //     uint amountOut = OracleLibrary.getQuoteAtTick(
+    //         tick, 1 ether, token0_, token1_
+    //     );
     
-        return amountOut;
-    }
+    //     return amountOut;
+    // }
     // ---------------------------- /
 
 
@@ -436,16 +437,21 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _rETH_ETH() private view returns(uint) { 
-        ozIDiamond OZ = ozIDiamond(_ozDiamond);
-        return Helpers.rETH_ETH(OZ);
+        // ozIDiamond OZ = ozIDiamond(_ozDiamond);
+        return Helpers.rETH_ETH(_OZ());
+    }
+
+    function _OZ() private view returns(ozIDiamond) {
+        return ozIDiamond(_ozDiamond);
     }
 
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        uint24 uniPoolFee = 500;
 
-        uint reth_eth = _getUniPrice(rETH, WETH, side_);   
+        uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
 
         // console.log('');
         // console.log('--- _subConvertToAssets ---');
@@ -461,8 +467,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function _subConvertToAssets2(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        uint24 uniPoolFee = 500;
 
-        uint reth_eth = _getUniPrice(rETH, WETH, side_);   
+        uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
 
         return shares_.mulDivDown(reth_eth, totalSupply() == 0 ? reth_eth : totalSupply());
     }

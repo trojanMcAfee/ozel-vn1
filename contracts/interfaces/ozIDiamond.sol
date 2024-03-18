@@ -9,7 +9,8 @@ import {
     Asset, 
     LastRewards,
     OZLrewards,
-    NewToken
+    NewToken,
+    Dir
 } from "../AppStorage.sol";
 
 
@@ -142,4 +143,8 @@ interface ozIDiamond {
     function getPausedContracts() external view returns(uint[] memory);
 
     function addToCirculatingSupply(uint amount_) external;
+
+    function getUniPrice(address token0_, address token1_, uint24 fee_, Dir side_) external view returns(uint);
+    function getOracleBackUp1() external view returns(bool, uint);
+    function getOracleBackUp2() external view returns(bool, uint);
 }

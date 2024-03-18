@@ -411,7 +411,7 @@ contract Setup is Test {
         } else if (id_ == 10) {
             length = 11;
         } else if (id_ == 6) {
-            length = 7;
+            length = 10;
         } else if (id_ == 0) {
             length = 17;
         } else if (id_ == 11) { //remove if not used
@@ -464,6 +464,9 @@ contract Setup is Test {
             selectors[4] = oracle.chargeOZLfee.selector;
             selectors[5] = oracle.getLastRewards.selector;
             selectors[6] = oracle.setValuePerOzToken.selector;
+            selectors[7] = oracle.getUniPrice.selector;
+            selectors[8] = oracle.getOracleBackUp1.selector;
+            selectors[9] = oracle.getOracleBackUp2.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.getOzImplementations.selector;
             selectors[1] = beacon.upgradeToBeacons.selector;

@@ -177,6 +177,11 @@ struct BitMap {
     mapping(uint256 => uint256) _data;
 }
 
+enum Dir {
+    UP,
+    DOWN
+}
+
 // 1st round - 
 // rETH        - 110
 // totalAssets - 100
