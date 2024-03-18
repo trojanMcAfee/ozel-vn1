@@ -75,30 +75,14 @@ contract ozLoupe is DiamondLoupeFacet {
     function quoteAmountsOut(
         uint ozAmountIn_,
         address ozToken_,
-        uint16 slippage_
+        uint16 slippage_,
+        address owner_
     ) public view returns(AmountsOut memory) {
         ozIToken ozERC20 = ozIToken(ozToken_);
 
-        // uint amountInReth = ozERC20.convertToUnderlying(
-        //     ozERC20.previewWithdraw(ozAmountIn_)
-        // );
-
-        address alice = 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E;
-        // uint sub = ozERC20.subConvertToShares(ozAmountIn_, alice);
-
-        // console.log('ozAmountIn_: ', ozAmountIn_);
-
-        console.log('ozERC20.subConvertToShares(ozAmountIn_, alice): ', ozERC20.subConvertToShares(ozAmountIn_, alice));
-
-
         uint amountInReth = ozERC20.convertToUnderlying(
-            ozERC20.subConvertToShares(ozAmountIn_, alice)
+            ozERC20.subConvertToShares(ozAmountIn_, owner_)
         );
-
-        // console.log('amountInReth - loupe ^^^^^: ', amountInReth); 
-
-        //put alice here ^^^
-
 
         ozIDiamond OZ = ozIDiamond(address(this));
         uint minAmountOutWeth = amountInReth.calculateMinAmountOut(Helpers.rETH_ETH(OZ), slippage_);
@@ -115,10 +99,11 @@ contract ozLoupe is DiamondLoupeFacet {
         uint ozAmountIn_,
         address ozToken_,
         uint16 slippage_,
-        address receiver_
+        address receiver_,
+        address owner_
     ) external view returns(bytes memory) {
         return abi.encode(
-            quoteAmountsOut(ozAmountIn_, ozToken_, slippage_), 
+            quoteAmountsOut(ozAmountIn_, ozToken_, slippage_, owner_), 
             receiver_
         );
     } 

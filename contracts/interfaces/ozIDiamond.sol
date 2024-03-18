@@ -117,14 +117,16 @@ interface ozIDiamond {
     function quoteAmountsOut(
         uint ozAmountIn_,
         address ozToken_,
-        uint16 slippage_
+        uint16 slippage_,
+        address owner_
     ) external view returns(AmountsOut memory);
 
     function getRedeemData(
         uint ozAmountIn_,
         address ozToken_,
         uint16 slippage_,
-        address receiver_
+        address receiver_,
+        address owner_
     ) external view returns(bytes memory);
 
     function upgradeToBeacons(address[] memory newImplementations_) external;

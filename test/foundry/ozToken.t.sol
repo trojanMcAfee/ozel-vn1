@@ -282,6 +282,7 @@ contract ozERC20TokenTest is TestMethods {
             ozBalanceAlicePostMock, 
             address(ozERC20),
             OZ.getDefaultSlippage(),
+            alice,
             alice
         );
 
@@ -327,6 +328,7 @@ contract ozERC20TokenTest is TestMethods {
             ozBalAlicePre / 3,
             address(ozERC20),
             OZ.getDefaultSlippage(),
+            alice,
             alice
         );
 
@@ -334,6 +336,7 @@ contract ozERC20TokenTest is TestMethods {
             ozBalBobPre / 5,
             address(ozERC20),
             OZ.getDefaultSlippage(),
+            bob,
             bob
         );
 

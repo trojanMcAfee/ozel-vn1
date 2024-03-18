@@ -109,6 +109,7 @@ contract DiamondInit {
         //Enables checks for paused system and/or sections
         s.isSwitchEnabled = true;
 
+        //Combinations of tokens used for pairs on Uniswap oracle
         s.tokenPairs[0] = Pair(s.rETH, s.WETH, s.uniFee);
         s.tokenPairs[1] = Pair(s.rETH, s.WETH, s.uniFee01);
         s.tokenPairs[2] = Pair(s.WETH, s.USDC, s.uniFee);  

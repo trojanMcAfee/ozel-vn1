@@ -68,7 +68,6 @@ struct AppStorage {
     mapping(address facet => uint index) contractToIndex;
     bool isSwitchEnabled;
 
-    //Combinations of tokens used for pairs on Uniswap oracle
     mapping(uint index => Pair pair) tokenPairs;
 
 }
