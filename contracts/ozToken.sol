@@ -264,9 +264,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _assets[receiver] += assets;
             }
 
+            console.log('gasleft before returning: ', gasleft());
+
             return shares;
 
         } catch Error(string memory reason) {
+            console.log('gasleft before throwing: ', gasleft());
             revert OZError22(reason);
         }
 

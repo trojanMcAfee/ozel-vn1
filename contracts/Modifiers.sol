@@ -19,6 +19,7 @@ contract Modifiers is IOZLrewards {
     
 
     modifier updateReward(address user_, address ozDiamond_) {
+        console.log('gasleft in mod: ', gasleft());
         if (ozDiamond_ != address(0)) {
             ozIDiamond(ozDiamond_).setRewardsDataExternally(user_);
         } else {
