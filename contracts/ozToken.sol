@@ -175,15 +175,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //-----------
 
     function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
-        // address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; //move these to their own variable
-        // uint24 uniPoolFee = 500;
-
-        uint x = _calculateScalingFactor2(account_);
-        // uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, Dir.UP);
         uint reth_eth = _OZ().getUniPrice(0, Dir.UP);
-   
-        return ( (assets_.mulDivUp(totalShares(), reth_eth)) * 1e18 ) / x; 
+        return ( (assets_.mulDivUp(totalShares(), reth_eth)) * 1e18 ) / _calculateScalingFactor2(account_); 
     }
 
     function _convertToShares(uint assets_) private view returns(uint) { 
@@ -369,24 +362,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
-        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-
         return _shares[account_].mulDivDown(1e18, subBalanceOf2(account_, Dir.DOWN));
     }
 
     function _calculateScalingFactor2(address account_) private view returns(uint) {
-        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-
-        // console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
-        // console.log('subBalanceOf(account_, Dir.DOWN) - 2: ', subBalanceOf2(account_, Dir.DOWN));
-
         return (_shares[account_] * 1e12).mulDivDown(1e18, subBalanceOf(account_, Dir.DOWN));
     }
 
     function _rETH_ETH() private view returns(uint) { 
-        // ozIDiamond OZ = ozIDiamond(_ozDiamond);
         return Helpers.rETH_ETH(_OZ());
     }
 
@@ -395,32 +378,19 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
-        // address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-        // uint24 uniPoolFee = 500;
-
-        // uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
+    function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         uint reth_eth = _OZ().getUniPrice(0, side_);
-
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
     function _subConvertToAssets2(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
-        // address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-        // uint24 uniPoolFee = 500;
-
-        // uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
         uint reth_eth = _OZ().getUniPrice(0, side_);
-
         return shares_.mulDivDown(reth_eth, totalSupply() == 0 ? reth_eth : totalSupply());
     }
 
     //this is public instead of private. Check
     //**** NOT USED ****/
     function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
-        uint deltaShares = totalShares() - shares_;
         return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
     }
 
