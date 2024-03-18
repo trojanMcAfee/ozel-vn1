@@ -73,12 +73,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     
     mapping(address user => uint assets) private _assets;
 
-    // enum Dir {
-    //     UP,
-    //     DOWN
-    // }
-
-
+   
     constructor() {
         _disableInitializers();
     }
@@ -180,23 +175,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //-----------
 
     function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
-        // uint x = 30354537468407080774;
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; //move these to their own variable
         uint24 uniPoolFee = 500;
 
         uint x = _calculateScalingFactor2(account_);
         uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, Dir.UP);
-
-        // console.log('');
-        // console.log('--- _subConvertToShares ---');
-        // console.log('assets: ', assets_);
-        // console.log('totalShares(): ', totalShares());
-        // console.log('_rETH_ETH(): ', _rETH_ETH());
-        // console.log('_calculateScalingFactor(account_): ', x); //_calculateScalingFactor(account_)
-        // console.log('is: ', ( (assets_.mulDivUp(totalShares(), _rETH_ETH())) * 1e18 ) / x);
    
-        return ( (assets_.mulDivUp(totalShares(), reth_eth)) * 1e18 ) / x; //x = _calculateScalingFactor(account_)
+        return ( (assets_.mulDivUp(totalShares(), reth_eth)) * 1e18 ) / x; 
     }
 
     function _convertToShares(uint assets_) private view returns(uint) { 
@@ -381,47 +367,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    // ---------------------------- /
-    // function _getUniPrice(address token0_, address token1_, Dir side_) private view returns(uint) {
-    //     // address uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
-    //     // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    //     // uint24 fee = 500;
-
-    //     // address pool = IUniswapV3Factory(uniFactory).getPool(token0_, token1_, fee);
-    //     address pool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-    //     // uint32 secondsAgo = uint32(secsAgo_);
-    //     // uint BASE = 1e12;
-
-    //     // if (token1_ == WETH) BASE = 1;
-
-    //     uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
-
-    //     uint32[] memory secondsAgos = new uint32[](2);
-    //     secondsAgos[0] = secsAgo;
-    //     secondsAgos[1] = 0;
-
-    //     (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
-
-    //     int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
-    //     int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
-        
-    //     if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
-        
-    //     uint amountOut = OracleLibrary.getQuoteAtTick(
-    //         tick, 1 ether, token0_, token1_
-    //     );
-    
-    //     return amountOut;
-    // }
-    // ---------------------------- /
-
-
     function _calculateScalingFactor(address account_) private view returns(uint) {
         address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
         address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-
-        // console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
-        // console.log('subBalanceOf(account_, Dir.DOWN) - 2: ', subBalanceOf2(account_, Dir.DOWN));
 
         return _shares[account_].mulDivDown(1e18, subBalanceOf2(account_, Dir.DOWN));
     }
@@ -452,14 +400,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint24 uniPoolFee = 500;
 
         uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
-
-        // console.log('');
-        // console.log('--- _subConvertToAssets ---');
-        // console.log('reth_eth: ', reth_eth);     
-        // console.log('shares_: ', shares_);
-        // console.log('totalShares: ', totalShares());
-        // console.log('--- end of _subConvertToAssets ---');
-        // console.log('');
 
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
