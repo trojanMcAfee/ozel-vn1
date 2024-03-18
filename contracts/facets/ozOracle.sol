@@ -71,7 +71,6 @@ contract ozOracle {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
-
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
             answer > 0 && 
@@ -88,7 +87,7 @@ contract ozOracle {
 
     function _getUniPrice(address token0_, address token1_, uint24 fee_) private view returns(uint) {
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0_, token1_, fee_);
-        uint32 secondsAgo = uint32(10); //<--- change this to 30 mins
+        uint32 secondsAgo = uint32(1800); 
         uint BASE = 1e12;
 
         if (token1_ == s.WETH) BASE = 1;

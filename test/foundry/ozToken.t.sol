@@ -29,7 +29,6 @@ contract ozERC20TokenTest is TestMethods {
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
     function test_mint_catch_internal_errors() public {
         //Pre-conditions  
-        console.log('gasleft pre start: ', gasleft());
         (ozIToken ozERC20_1,) = _createOzTokens(usdtAddr, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);

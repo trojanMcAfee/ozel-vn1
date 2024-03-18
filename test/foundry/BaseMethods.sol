@@ -433,10 +433,11 @@ contract BaseMethods is Setup {
         _mock_rETH_ETH();
     }
 
+    //Change where this is used in tests for getUnitPrice from ozOracle.sol
     function _getUniPrice() internal view returns(uint) {
         address pool = IUniswapV3Factory(uniFactory).getPool(wethAddr, usdcAddr, uniPoolFee);
 
-        (int24 tick,) = OracleLibrary.consult(pool, uint32(10));
+        (int24 tick,) = OracleLibrary.consult(pool, uint32(1800));
 
         uint256 amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1 ether, wethAddr, usdcAddr

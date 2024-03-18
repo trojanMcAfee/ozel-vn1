@@ -264,12 +264,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _assets[receiver] += assets;
             }
 
-            console.log('gasleft before returning: ', gasleft());
-
             return shares;
 
         } catch Error(string memory reason) {
-            console.log('gasleft before throwing: ', gasleft());
             revert OZError22(reason);
         }
 
@@ -297,14 +294,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return _convertToAssetsFromUnderlying(shares_);
     }
 
-    // function previewRedeem(uint shares_) public view returns(uint) {
-    //     console.log('convertToAssets: ', convertToAssets(shares_, 0x65B6A5f2965e6f125A8B1189ed57739Ca49Bc70e));
-    //     return _subConvertToAssets(shares_, Dir.UP);
-    // }
-
-    // function previewRedeem2(uint shares_) public view returns(uint) {
-    //     return _subConvertToAssets2(shares_, Dir.UP);
-    // }
 
     function convertToUnderlying(uint shares_) external view returns(uint) {
         return (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
@@ -387,18 +376,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-
-        // console.log('');
-        // console.log('--- _convertToAssets ---');
-        // console.log('preBalance: ', preBalance);
-        // if (preBalance != 0) {
-        //     console.log('_calculateScalingFactor(account_): ', _calculateScalingFactor(account_));
-        //     console.log('totalSupply; ', totalSupply());
-        //     console.log('sum: ', preBalance.mulDivDown(_calculateScalingFactor(account_), 1e18));
-        // }
-        // console.log('--- end _convertToAssets ---');
-        // console.log('');
-
         return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor2(account_), 1e18);
     }
 
