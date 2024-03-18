@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage, LastRewards, Dir} from "../AppStorage.sol";
+import {AppStorage, LastRewards, Dir, Pair} from "../AppStorage.sol";
 import {IPool} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
@@ -85,17 +85,22 @@ contract ozOracle {
     }
 
 
+    function _triagePair(uint index_) private view returns(address, address, uint24) {
+        Pair memory p = s.tokenPairs[index_];
+        return (p.base, p.quote, p.fee);
+    }
+
+
     function getUniPrice(
-        address token0_, 
-        address token1_, 
-        uint24 fee_,
+        // address token0_, 
+        // address token1_, 
+        uint tokenPair_,
+        // uint24 fee_,
         Dir side_
     ) public view returns(uint) {
-        address pool = IUniswapV3Factory(s.uniFactory).getPool(token0_, token1_, fee_);
-        // uint32 secondsAgo = uint32(1800); 
-        // uint BASE = 1e12;
+        (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
-        // if (token1_ == s.WETH) BASE = 1;
+        address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);
 
         uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
 
@@ -111,11 +116,10 @@ contract ozOracle {
         if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
         
         uint amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, token0_, token1_
+            tick, 1 ether, token0, token1
         );
     
-        return amountOut * (token1_ == s.WETH ? 1 : 1e12);
-        // return amountOut * BASE;
+        return amountOut * (token1 == s.WETH ? 1 : 1e12);
     }
 
     //Tellor
@@ -146,7 +150,8 @@ contract ozOracle {
 
     function _callFallbackOracle(address baseToken_) private view returns(uint) {
         if (baseToken_ == s.WETH) {
-            uint uniPrice = getUniPrice(s.WETH, s.USDC, s.uniFee, Dir.UP);
+            // uint uniPrice = getUniPrice(s.WETH, s.USDC, s.uniFee, Dir.UP);
+            uint uniPrice = getUniPrice(2, Dir.UP);
             (bool success, uint tellorPrice) = getOracleBackUp1();
             (bool success2, uint redPrice) = getOracleBackUp2();
 
@@ -156,8 +161,10 @@ contract ozOracle {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
-            uint uniPrice05 = getUniPrice(s.rETH, s.WETH, s.uniFee, Dir.UP);
-            uint uniPrice01 = getUniPrice(s.rETH, s.WETH, s.uniFee01, Dir.UP);
+            // uint uniPrice05 = getUniPrice(s.rETH, s.WETH, s.uniFee, Dir.UP);
+            // uint uniPrice01 = getUniPrice(s.rETH, s.WETH, s.uniFee01, Dir.UP);
+            uint uniPrice05 = getUniPrice(0, Dir.UP);
+            uint uniPrice01 = getUniPrice(1, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 
             return Helpers.getMedium(uniPrice05, uniPrice01, protocolPrice);

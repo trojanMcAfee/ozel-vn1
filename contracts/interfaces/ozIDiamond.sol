@@ -144,7 +144,7 @@ interface ozIDiamond {
 
     function addToCirculatingSupply(uint amount_) external;
 
-    function getUniPrice(address token0_, address token1_, uint24 fee_, Dir side_) external view returns(uint);
+    function getUniPrice(uint tokenPair_, Dir side_) external view returns(uint);
     function getOracleBackUp1() external view returns(bool, uint);
     function getOracleBackUp2() external view returns(bool, uint);
 }

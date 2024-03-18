@@ -20,7 +20,8 @@ import {
     Dexes,
     Oracles,
     Infra,
-    PauseContracts
+    PauseContracts,
+    Pair
 } from "../AppStorage.sol";
 
 import {IRocketStorage} from "../interfaces/IRocketPool.sol";
@@ -102,12 +103,15 @@ contract DiamondInit {
         s.pauseIndexes = infra_.pauseIndexes;
         s.contractToIndex[pause_.ozDiamond] = 2;
         s.contractToIndex[pause_.ozBeacon] = 3;
-        s.contractToIndex[pause_.factory] = 4; //change this to contractToIndex and everywhereß
+        s.contractToIndex[pause_.factory] = 4; //change this to contractToIndex and everywhere
         s.contractToIndex[pause_.ozlProxy] = 5;
 
         //Enables checks for paused system and/or sections
         s.isSwitchEnabled = true;
-        
+
+        s.tokenPairs[0] = Pair(s.rETH, s.WETH, s.uniFee);
+        s.tokenPairs[1] = Pair(s.rETH, s.WETH, s.uniFee01);
+        s.tokenPairs[2] = Pair(s.WETH, s.USDC, s.uniFee);  
     }
 
 

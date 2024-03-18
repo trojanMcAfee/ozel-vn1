@@ -175,12 +175,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //-----------
 
     function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
-        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; //move these to their own variable
-        uint24 uniPoolFee = 500;
+        // address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+        // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; //move these to their own variable
+        // uint24 uniPoolFee = 500;
 
         uint x = _calculateScalingFactor2(account_);
-        uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, Dir.UP);
+        // uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, Dir.UP);
+        uint reth_eth = _OZ().getUniPrice(0, Dir.UP);
    
         return ( (assets_.mulDivUp(totalShares(), reth_eth)) * 1e18 ) / x; 
     }
@@ -395,21 +396,23 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
-        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-        uint24 uniPoolFee = 500;
+        // address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+        // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        // uint24 uniPoolFee = 500;
 
-        uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
+        // uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
+        uint reth_eth = _OZ().getUniPrice(0, side_);
 
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
     function _subConvertToAssets2(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
-        address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
-        address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-        uint24 uniPoolFee = 500;
+        // address rETH = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+        // address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        // uint24 uniPoolFee = 500;
 
-        uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
+        // uint reth_eth = _OZ().getUniPrice(rETH, WETH, uniPoolFee, side_);   
+        uint reth_eth = _OZ().getUniPrice(0, side_);
 
         return shares_.mulDivDown(reth_eth, totalSupply() == 0 ? reth_eth : totalSupply());
     }
