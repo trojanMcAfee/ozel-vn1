@@ -45,7 +45,14 @@ contract MultipleOzTokensTest is TestMethods {
 
         console.log(4);
 
-        uint amountInSecond_18dec = amountInSecond * 1e12;
+        uint amountInSecond_18dec = amountInSecond * 1e12; //testToken and secondTestToken change dependenly. Do that condition
+        console.log('amountInSecond: ', amountInSecond);
+        // amountInFirst = testToken == usdcAddr ? amountInFirst * 1e12 : amountInFirst;
+        if (testToken == usdcAddr) {
+            console.log('amountInFirst: ', amountInFirst);
+            amountInFirst *= 1e12;
+            console.log('amountInFirst - post mul: ', amountInFirst);
+        }
 
         assertTrue(_checkPercentageDiff(amountInFirst, ozBalance_1, 3));
         assertTrue(_checkPercentageDiff(amountInSecond_18dec, ozBalance_2, 3));
