@@ -415,9 +415,9 @@ contract TestMethods is BaseMethods {
         (,uint rawAmountBob, uint rawAmountCharlie) = _dealUnderlying(Quantity.SMALL, false);
         uint amountToRedeem = 2;
 
-        uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
+        // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
-        assertTrue(amountIn == 100 * decimalsUnderlying);
+        assertTrue(amountIn == 100 * 10 ** IERC20Permit(testToken).decimals());
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
 
@@ -425,8 +425,8 @@ contract TestMethods is BaseMethods {
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, rawAmountCharlie);
 
         uint ozAmountIn = amountToRedeem * 1e18;
-        testToken = address(ozERC20);
-        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
+        // testToken = address(ozERC20);
+        bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, address(ozERC20), Type.OUT);
 
         //Action
         vm.startPrank(alice);
@@ -452,11 +452,13 @@ contract TestMethods is BaseMethods {
          * Due to the difference of liquidity between pools, outReference can be slightly off,
          * in comparison to underlyingOut, for less than 3 basis points.
          */
-        if (underlyingOut > outReference || _checkPercentageDiff(outReference, underlyingOut, 3)) {
+        uint underlyingOut18dec = testToken == usdcAddr ? underlyingOut * 1e12 : underlyingOut;
+
+        if (underlyingOut > outReference || _checkPercentageDiff(outReference, underlyingOut18dec, 3)) {
             amountOutCheck = true;
         }
 
-        assertTrue(amountOutCheck && underlyingOut < amountToRedeem * decimalsUnderlying);
+        assertTrue(amountOutCheck && underlyingOut < amountToRedeem * 10 ** IERC20Permit(testToken).decimals());
     } 
 
 
