@@ -270,7 +270,9 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        assertTrue(_checkPercentageDiff(1_000_000 * decimalsUnderlying, balanceOzUsdcAlice, 5));
+        console.log(1);
+        assertTrue(_checkPercentageDiff(1_000_000 * 1e18, balanceOzUsdcAlice, 5));
+        console.log(2);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
