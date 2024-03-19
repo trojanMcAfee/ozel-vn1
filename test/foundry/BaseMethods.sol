@@ -507,13 +507,22 @@ contract BaseMethods is Setup {
     }
 
     //Checks that the basis points difference between amounts is not more than bps_
-    function _checkPercentageDiff(
+    function _checkPercentageDiff( 
         uint baseAmount_, 
         uint variableAmount_, 
         uint bps_
-    ) internal pure returns(bool) {
-        uint delta = stdMath.abs(int(variableAmount_) - int(baseAmount_));
-        return bps_ > delta.mulDivDown(10_000, baseAmount_);
+    ) internal view returns(bool) {
+        uint baseAmount = testToken == usdcAddr ? baseAmount_ * 1e12 : baseAmount_;
+
+        uint delta = stdMath.abs(int(variableAmount_) - int(baseAmount));
+
+        console.log('delta: ', delta);
+        console.log('variableAmount_: ', variableAmount_);
+        console.log('baseAmount_: ', baseAmount);
+        console.log('bps: ', bps_);
+        console.log('is: ', delta.mulDivDown(10_000, baseAmount));
+
+        return bps_ > delta.mulDivDown(10_000, baseAmount);
     }
 
 }
