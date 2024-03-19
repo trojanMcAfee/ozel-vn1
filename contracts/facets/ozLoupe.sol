@@ -54,11 +54,17 @@ contract ozLoupe is DiamondLoupeFacet {
         address underlying_,
         uint16 slippage_
     ) public view returns(AmountsIn memory) { //check if this produces the correct values
+        console.log('');
+        console.log('--- in loupe ---');
+        
         ozIDiamond OZ = ozIDiamond(address(this));
         uint[] memory minAmountsOut = new uint[](2);
 
         uint amountIn = IERC20(underlying_).decimals() == 18 ? amountIn_ : amountIn_ * 1e12;
         uint[2] memory prices = [OZ.ETH_USD(), Helpers.rETH_ETH(OZ)];
+
+        console.log('eth_usd: ', prices[0]);
+        console.log('reth_eth: ', prices[1]);
 
         uint length = prices.length;
         for (uint i=0; i < length; i++) {
@@ -67,6 +73,11 @@ contract ozLoupe is DiamondLoupeFacet {
 
             minAmountsOut[i] = expectedOut - expectedOut.mulDivDown(uint(slippage_), 10_000);
         }
+
+        console.log('minOut - 0: ', minAmountsOut[0]);
+        console.log('minOut - 1: ', minAmountsOut[1]);
+        console.log('--- end of loupe ---');
+        console.log('');
 
         return AmountsIn(amountIn_, minAmountsOut);
     }

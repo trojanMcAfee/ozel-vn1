@@ -110,6 +110,12 @@ contract BaseMethods is Setup {
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
+        for (uint i=0; i<minAmountsOut.length; i++) {
+            console.log(i, '', minAmountsOut[i]);
+        }
+
+        console.log('amountIn_: ', amountIn_);
+
         vm.startPrank(user_);
         IERC20(token_).safeApprove(address(OZ), amountIn_);
 
@@ -532,15 +538,7 @@ contract BaseMethods is Setup {
         uint variableAmount_, 
         uint bps_
     ) internal view returns(bool) {
-        console.log('');
-        console.log('baseAmount_: ', baseAmount_);
-        console.log('variableAmount_: ', variableAmount_);
-
         uint delta = stdMath.abs(int(variableAmount_) - int(baseAmount_));
-
-        console.log('delta: ', delta);
-        console.log('is: ', delta.mulDivDown(10_000, baseAmount_));
-
         return bps_ > delta.mulDivDown(10_000, baseAmount_);
     }
 
