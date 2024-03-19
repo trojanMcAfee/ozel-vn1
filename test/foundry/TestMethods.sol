@@ -270,9 +270,7 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        console.log(1);
         assertTrue(_checkPercentageDiff(1_000_000 * 1e18, balanceOzUsdcAlice, 5));
-        console.log(2);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);
@@ -320,7 +318,7 @@ contract TestMethods is BaseMethods {
         uint balanceUsdcAlicePostMint = IERC20Permit(testToken).balanceOf(alice);
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
-        assertTrue(_checkPercentageDiff(100 * decimalsUnderlying, ozAmountIn, 5));
+        assertTrue(_checkPercentageDiff(100 * 1e18, ozAmountIn, 5));
         testToken = address(ozERC20);
 
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, testToken, Type.OUT);
