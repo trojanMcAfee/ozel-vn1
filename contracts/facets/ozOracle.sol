@@ -144,7 +144,6 @@ contract ozOracle {
 
     function _callFallbackOracle(address baseToken_) private view returns(uint) {
         if (baseToken_ == s.WETH) {
-            // uint uniPrice = getUniPrice(s.WETH, s.USDC, s.uniFee, Dir.UP);
             uint uniPrice = getUniPrice(2, Dir.UP);
             (bool success, uint tellorPrice) = getOracleBackUp1();
             (bool success2, uint redPrice) = getOracleBackUp2();
@@ -155,8 +154,6 @@ contract ozOracle {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
-            // uint uniPrice05 = getUniPrice(s.rETH, s.WETH, s.uniFee, Dir.UP);
-            // uint uniPrice01 = getUniPrice(s.rETH, s.WETH, s.uniFee01, Dir.UP);
             uint uniPrice05 = getUniPrice(0, Dir.UP);
             uint uniPrice01 = getUniPrice(1, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
@@ -222,10 +219,15 @@ contract ozOracle {
 
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
+        console.log('');
+        // console.log('totalAssets: ', totalAssets);
+        console.log('amountReth: ', amountReth);
+
         (uint assetsInETH, uint valueInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
         // console.log('assetsInETH: ', assetsInETH);
-        // console.log('valueInETH: ', valueInETH);
+        console.log('valueInETH: ', valueInETH);
+        console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
         
@@ -236,7 +238,7 @@ contract ozOracle {
         // console.log('totalAssets - stables: ', totalAssets * 1e12);
         // console.log('----');
 
-        int totalRewards = int(valueInETH) - int(assetsInETH); 
+        int totalRewards = int(valueInETH) - int(assetsInETH); //<--- discrepancy ***
         /**
          * this line needs to be thoroughly tested out ^.
          * edge case --> when the protocol is ready to accrue rewards, but then a new stable
@@ -248,14 +250,17 @@ contract ozOracle {
          * Consider adding a call to this function in an user-calling function. 
          */
 
-        // console.logInt(totalRewards);
+        console.log('totalRewards **************: ', uint(totalRewards));
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
 
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards); //this too (further testing)
 
-        // console.logInt(currentRewards);
+        // console.log('');
+        console.log('currentRewards ****************: ', uint(currentRewards));
+        // console.log('s.rewards.prevTotalRewards: ', s.rewards.prevTotalRewards);
+        console.log('');
         // console.log('currentRewards ^^');
 
         if (currentRewards <= 0) return false;
@@ -269,12 +274,15 @@ contract ozOracle {
 
 
     function _getFeeAndForward(int totalRewards_, int currentRewards_) private returns(uint) {
+
         uint ozelFeesInETH = uint(s.protocolFee).mulDivDown(uint(currentRewards_), 10_000);
         s.rewards.prevTotalRewards = uint(totalRewards_);
 
         uint grossOzelFeesInRETH = (ozelFeesInETH * 1 ether) / rETH_ETH();
+        console.log('grossOzelFeesInRETH ********: ', grossOzelFeesInRETH);
 
         uint netOzelFees = _getAdminFee(grossOzelFeesInRETH);
+
 
         IERC20Permit(s.rETH).transfer(s.ozlProxy, netOzelFees);
         

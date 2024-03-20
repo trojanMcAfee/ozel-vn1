@@ -85,6 +85,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
     }
 
 
+    //make this only to rETH
     function getExchangeRate(QuoteAsset asset_) public view returns(uint) {
         uint ONE = 1 ether;
         uint totalFeesLSD;
@@ -100,6 +101,13 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
 
         uint c_Supply = circulatingSupply();
 
+        console.log('');
+        console.log('totalFeesLSD: ', totalFeesLSD);
+        console.log('_convertToQuote(asset_, totalFeesLSD): ', _convertToQuote(asset_, totalFeesLSD));
+        console.log('totalFeesQuote: ', totalFeesQuote);
+        console.log('');
+
+
         if (c_Supply == 0) return ONE;
 
         return ONE.mulDivDown(totalFeesQuote, c_Supply);
@@ -109,8 +117,8 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
     function _convertToQuote(QuoteAsset qt_, uint totalFeesRETH_) private view returns(uint quote) {
         if (qt_ == QuoteAsset.USD) {
             quote = totalFeesRETH_.mulDivDown(getOZ().rETH_USD(), 1 ether);
-        } else if(qt_ == QuoteAsset.ETH) 
-        {
+        } else if(qt_ == QuoteAsset.ETH) {
+        
             bytes memory data = abi.encodeWithSignature('rETH_ETH()');
             data = Address.functionStaticCall(address(getOZ()), data);
             //^^^ put here rETH_ETH() from Helpers.sol
