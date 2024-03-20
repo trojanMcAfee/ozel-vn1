@@ -513,15 +513,8 @@ contract BaseMethods is Setup {
         uint baseAmount_, 
         uint variableAmount_, 
         uint bps_
-    ) internal view returns(bool) {
+    ) internal pure returns(bool) {
         uint delta = stdMath.abs(int(variableAmount_) - int(baseAmount_));
-
-        console.log('');
-        console.log('baseAmount_: ', baseAmount_);
-        console.log('variableAmount_: ', variableAmount_);
-        console.log('delta: ', delta);
-        console.log('is: ', delta.mulDivDown(10_000, baseAmount_));
-
         return bps_ > delta.mulDivDown(10_000, baseAmount_);
     }
 
