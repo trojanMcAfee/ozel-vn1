@@ -193,12 +193,18 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
+
+            console.log('amountOut - should be 3327516986656762794: ', amountOut);
+            //amount of WETH coming out of the balancer swap is lower.
+            //check why. Perhaps liquidity? Or amount coming in the other side?
         }
 
         if (type_ == Action.OZL_IN) {
             if (tokenOut_ == s.WETH) { 
                 IERC20(s.WETH).safeTransfer(receiver_, amountOut);
             } else {
+                console.log('minAmountsOut_[1] - base on eth: ', minAmountsOut_[1]);
+
                 amountOut = _swapUni(
                     s.WETH,
                     tokenOut_,
@@ -223,6 +229,8 @@ contract ozEngine is Modifiers {
         console.log('');
         console.log('minAmountOut_.formatMinOut(tokenOut_): ', minAmountOut_.formatMinOut(tokenOut_));
         console.log('amountIn_: ', amountIn_);
+        console.log('tokenIn_: ', tokenIn_);
+        console.log('minAmountOut_: ', minAmountOut_);
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 
@@ -232,7 +240,7 @@ contract ozEngine is Modifiers {
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: minAmountOut_.formatMinOut(tokenOut_),
+                amountOutMinimum: 0, //minAmountOut_.formatMinOut(tokenOut_)
                 sqrtPriceLimitX96: 0
             });
 

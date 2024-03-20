@@ -102,9 +102,10 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         uint c_Supply = circulatingSupply();
 
         console.log('');
-        console.log('totalFeesLSD: ', totalFeesLSD);
+        console.log('totalFeesLSD: ', totalFeesLSD); //totalFeesRETH
         console.log('_convertToQuote(asset_, totalFeesLSD): ', _convertToQuote(asset_, totalFeesLSD));
         console.log('totalFeesQuote: ', totalFeesQuote);
+        console.log('exchange rate - OZL/USD: ', ONE.mulDivDown(totalFeesQuote, c_Supply));
         console.log('');
 
 

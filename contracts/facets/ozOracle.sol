@@ -222,18 +222,18 @@ contract ozOracle {
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
         console.log('');
-        // console.log('totalAssets: ', totalAssets);
+        // console.log('totalAssets: ', totalAssets); //same
         console.log('amountReth: ', amountReth);
 
-        (uint assetsInETH, uint valueInETH) = _calculateValuesInETH(totalAssets, amountReth);
+        (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
-        // console.log('assetsInETH: ', assetsInETH);
-        console.log('valueInETH: ', valueInETH);
+        console.log('assetsInETH: ', assetsInETH);
+        console.log('rEthInETH: ', rEthInETH); //different
         console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
         
-        // console.log('ETH_USD: ', ETH_USD());
+        console.log('ETH_USD: ', ETH_USD());
         // console.log('rETH_ETH: ', rETH_ETH());
 
         // console.log('rETH_USD: ', rETH_USD());
@@ -246,21 +246,38 @@ contract ozOracle {
          * deposit comes in that increases assetsInETH. the invariant from above will brake and 
          * no rewards-accrual will be possible.
          * .
-         * Consider putting a check that when valueInETH > assetsInETH, something/someone calls chargeOZLfee()
+         * Consider putting a check that when rEthInETH > assetsInETH, something/someone calls chargeOZLfee()
          * Decrease the gas consumption of this function as much as possible.
          * Consider adding a call to this function in an user-calling function. 
          */
 
-        int totalRewards = int(valueInETH) - int(assetsInETH); 
+        int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
         console.log('totalRewards **************: ', uint(totalRewards));
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
 
-        
+        // rEthInETH --- 10_000
+        // assetsInETH ---- x
 
-        int totalRewards = int(valueInETH) - int(assetsInETH); 
+        uint deltaInETH = assetsInETH.mulDivDown(10_000, rEthInETH);
+        console.log('deltaInETH ^^^^^^^^^^^^^: ', deltaInETH);
+
+        //------
+        // address underlying = ozIToken(s.ozTokenRegistry[0].ozToken).asset();
+        // address USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+        // address DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+
+        // if (underlying == USDC) {
+
+        // } else if (underlying == DAI) {
+
+        // }
+
+        //------
+
+        // int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards); //this too (further testing)
 

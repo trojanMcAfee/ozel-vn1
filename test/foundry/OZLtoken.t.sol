@@ -446,16 +446,16 @@ contract OZLtokenTest is TestMethods {
         
         console.log('ozlBalanceAlice: ', ozlBalanceAlice);
         console.log('OZL.getExchangeRate(): ', OZL.getExchangeRate());
-        console.log('OZL.getExchangeRate(QuoteAsset.ETH): ', OZL.getExchangeRate(QuoteAsset.ETH));
+        // console.log('OZL.getExchangeRate(QuoteAsset.ETH): ', OZL.getExchangeRate(QuoteAsset.ETH));
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
 
         console.log('');
-        console.log('wethToRedeem: ', wethToRedeem);
-        console.log('usdToRedeem: ', usdToRedeem);
+        console.log('wethToRedeem: ', wethToRedeem); 
+        console.log('usdToRedeem: ', usdToRedeem); //this has to be ~5581.580568003178 - is
 
         uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-            [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
+            [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)] //uint16(50) - 0.5%
         );
 
         //Action
@@ -463,8 +463,8 @@ contract OZLtokenTest is TestMethods {
         OZL.approve(address(OZ), ozlBalanceAlice);
 
         console.log('');
-        console.log('minAmountsOut[0]: ', minAmountsOut[0]);
-        console.log('minAmountsOut[1]: ', minAmountsOut[1]);
+        console.log('minAmountsOut[0] - post wethToRedeem: ', minAmountsOut[0]);
+        console.log('minAmountsOut[1] - post usdToRedeem: ', minAmountsOut[1]);
         console.log('ozlBalanceAlice: ', ozlBalanceAlice);
         console.log(1);
         uint amountOut = OZL.redeem(
@@ -474,6 +474,9 @@ contract OZLtokenTest is TestMethods {
             ozlBalanceAlice,
             minAmountsOut
         );
+
+        
+        console.log('amountOut !!!!!!!!!!: ', amountOut);
         console.log(2);
 
         vm.stopPrank();
