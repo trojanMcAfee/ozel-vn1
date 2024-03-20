@@ -213,6 +213,8 @@ contract ozOracle {
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this)); 
 
         uint totalAssets;
+
+        //change this to rETH only and not ozTokenRegistry
         for (uint i=0; i < s.ozTokenRegistry.length; i++) {
             totalAssets += ozIToken(s.ozTokenRegistry[i].ozToken).totalAssets();
         }
@@ -237,10 +239,9 @@ contract ozOracle {
         // console.log('rETH_USD: ', rETH_USD());
         // console.log('totalAssets - stables: ', totalAssets * 1e12);
         // console.log('----');
-
-        int totalRewards = int(valueInETH) - int(assetsInETH); //<--- discrepancy ***
+        
         /**
-         * this line needs to be thoroughly tested out ^.
+         * this line needs to be thoroughly tested out (below).
          * edge case --> when the protocol is ready to accrue rewards, but then a new stable
          * deposit comes in that increases assetsInETH. the invariant from above will brake and 
          * no rewards-accrual will be possible.
@@ -250,10 +251,16 @@ contract ozOracle {
          * Consider adding a call to this function in an user-calling function. 
          */
 
+        int totalRewards = int(valueInETH) - int(assetsInETH); 
+
         console.log('totalRewards **************: ', uint(totalRewards));
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
+
+        
+
+        int totalRewards = int(valueInETH) - int(assetsInETH); 
 
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards); //this too (further testing)
 
