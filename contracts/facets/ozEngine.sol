@@ -79,6 +79,7 @@ contract ozEngine is Modifiers {
         
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
 
+
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
             underlying_, 
@@ -219,14 +220,6 @@ contract ozEngine is Modifiers {
         uint minAmountOut_
     ) private returns(uint) {
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
-
-        console.log('');
-        console.log('--- in uni ---');
-        console.log('amountIn_: ', amountIn_);
-        console.log('minAmountOut_.formatMinOut(tokenOut_): ', minAmountOut_.formatMinOut(tokenOut_));
-        console.log('tokenOut: ', tokenOut_);
-        console.log('--- end uni ---');
-        console.log('');
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 

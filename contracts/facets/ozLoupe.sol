@@ -51,21 +51,14 @@ contract ozLoupe is DiamondLoupeFacet {
 
     function quoteAmountsIn(
         uint amountIn_,
-        address underlying_,
+        address underlying_, //<--- remove this (not used)
         uint16 slippage_
-    ) public view returns(AmountsIn memory) { //check if this produces the correct values
-        console.log('');
-        console.log('--- in loupe ---');
-        
+    ) public view returns(AmountsIn memory) { 
+
         ozIDiamond OZ = ozIDiamond(address(this));
         uint[] memory minAmountsOut = new uint[](2);
 
-        // uint amountIn = IERC20(underlying_).decimals() == 18 ? amountIn_ : amountIn_ * 1e12;
         uint[2] memory prices = [OZ.ETH_USD(), Helpers.rETH_ETH(OZ)];
-
-        console.log('eth_usd: ', prices[0]);
-        console.log('reth_eth: ', prices[1]);
-        console.log('amountIn - usd: ', amountIn_);
 
         /**
          * minAmountsOut[0] - minWethOut
@@ -74,26 +67,11 @@ contract ozLoupe is DiamondLoupeFacet {
 
         uint length = prices.length;
         for (uint i=0; i < length; i++) {
-            console.log('');
-            console.log('i == 0 ? amountIn : minAmountsOut[i - 1]: ', i == 0 ? amountIn_ : minAmountsOut[i - 1]);
-            console.log('1 ether: ', 1 ether);
-            console.log('prices[i]: ', prices[i]);
-
             uint expectedOut = ( i == 0 ? amountIn_ : minAmountsOut[i - 1] )
                 .mulDivDown(1 ether, prices[i]);
 
-            console.log(i, ' expectedOut ', expectedOut);
-
-            // eth_usd ------- 1 ether
-            // amountIn ---- a
-
             minAmountsOut[i] = expectedOut - expectedOut.mulDivDown(uint(slippage_), 10_000);
         }
-
-        console.log('minOut - 0: ', minAmountsOut[0]);
-        console.log('minOut - 1: ', minAmountsOut[1]);
-        console.log('--- end of loupe ---');
-        console.log('');
 
         return AmountsIn(amountIn_, minAmountsOut);
     }

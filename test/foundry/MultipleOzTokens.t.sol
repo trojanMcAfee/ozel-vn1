@@ -33,33 +33,21 @@ contract MultipleOzTokensTest is TestMethods {
 
         //Actions
         _startCampaign();
-        console.log(11);
         _mintOzTokens(ozERC20_1, alice, testToken, amountInFirst);
-        console.log(21);
         _mintOzTokens(ozERC20_2, alice, secondTestToken, amountInSecond);
-        console.log(31);
 
         //Pre-conditions
         uint ozBalance_1 = ozERC20_1.balanceOf(alice);
         uint ozBalance_2 = ozERC20_2.balanceOf(alice);
 
-        console.log(4);
-
-        // uint amountInSecond_18dec = amountInSecond * 1e12; 
-        console.log('amountInSecond: ', amountInSecond);
-        // amountInFirst = testToken == usdcAddr ? amountInFirst * 1e12 : amountInFirst;
         if (testToken == usdcAddr) {
-            console.log('amountInFirst: ', amountInFirst);
             amountInFirst *= 1e12;
-            console.log('amountInFirst - post mul: ', amountInFirst);
         } else {
             amountInSecond *= 1e12; 
         }
 
         assertTrue(_checkPercentageDiff(amountInFirst, ozBalance_1, 3));
         assertTrue(_checkPercentageDiff(amountInSecond, ozBalance_2, 3));
-
-        console.log(5);
 
         return (ozERC20_1, ozERC20_2, amountInFirst, amountInSecond, amountInThird);
     }

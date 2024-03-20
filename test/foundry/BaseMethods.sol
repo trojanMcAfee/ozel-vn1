@@ -94,6 +94,8 @@ contract BaseMethods is Setup {
         address token_, 
         uint amountIn_
     ) internal {
+        // if (token_ == usdcAddr) amountIn_ *= 1e12;
+
         uint pk;
 
         if (user_ == alice) {
@@ -109,12 +111,6 @@ contract BaseMethods is Setup {
         );
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
-
-        for (uint i=0; i<minAmountsOut.length; i++) {
-            console.log(i, '', minAmountsOut[i]);
-        }
-
-        console.log('amountIn_: ', amountIn_);
 
         vm.startPrank(user_);
         IERC20(token_).safeApprove(address(OZ), amountIn_);
