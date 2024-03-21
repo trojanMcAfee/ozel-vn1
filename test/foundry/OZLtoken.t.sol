@@ -385,6 +385,7 @@ contract OZLtokenTest is TestMethods {
 
     function test_redeem_permit_in_stable() public {
         //Pre-conditions
+        uint rETH_ETH_preTest = OZ.rETH_ETH();
         test_claim_OZL();
 
         IOZL OZL = IOZL(address(ozlProxy));
@@ -398,6 +399,15 @@ contract OZLtokenTest is TestMethods {
         _changeSlippage(uint16(500)); //500 - 5% / 50 - 0.5%  / 100 - 1%
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
+
+        /**
+         * Same situation as in test_redeem_in_stable()
+         */
+        uint rETH_ETH_postMock = OZ.rETH_ETH();
+        uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest).mulDivDown(10_000, rETH_ETH_postMock) * 1e16;
+
+        wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
+        usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
 
         uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
             [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
@@ -417,7 +427,7 @@ contract OZLtokenTest is TestMethods {
         uint amountOut = OZL.redeem(
             alice,
             alice,
-            daiAddr,
+            testToken,
             ozlBalanceAlice,
             minAmountsOut
         );
