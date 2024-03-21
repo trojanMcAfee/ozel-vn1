@@ -432,7 +432,7 @@ contract OZLtokenTest is TestMethods {
 
     function test_redeem_in_stable() public {
         uint rETH_ETH_preTest = OZ.rETH_ETH();
-        console.log('reth_eth - pre test: ', x);
+        console.log('reth_eth - pre test: ', rETH_ETH_preTest);
 
         //Pre-conditions
         test_claim_OZL();
@@ -453,9 +453,37 @@ contract OZLtokenTest is TestMethods {
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
 
+        //-------------
+        uint rETH_ETH_postMock = OZ.rETH_ETH();
+        // uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest);
+
+        /**
+         * Due to the fact that the rate for rETH_ETH used in the Balancer swap would still be the one
+         * of the work, it won't be the mock set up in this test, which is used to simulate the accrual
+         * of rewards. 
+         *
+         * For this reason, the amounts-to-redeem would be off, due to rate mismatch, unless we add this 
+         * difference between rates in the amounts-to-redeem. 
+         */
+        uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest).mulDivDown(10_000, rETH_ETH_postMock) * 1e16;
+        
+        console.log('delta_rETHrates: ', delta_rETHrates);
+        console.log('rETH_ETH_postMock: ', rETH_ETH_postMock);
+        console.log('is: ', delta_rETHrates);
+
+        // wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
+        // usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
+        //-------------
+
         console.log('');
         console.log('wethToRedeem: ', wethToRedeem); 
         console.log('usdToRedeem: ', usdToRedeem); //this has to be ~5581.580568003178 - is
+
+        wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
+        usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
+
+        console.log('wethToRedeem delta: ', wethToRedeem);
+        console.log('usdToRedeem delta: ', usdToRedeem);
 
         uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
             [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)] //uint16(50) - 0.5%

@@ -518,4 +518,13 @@ contract BaseMethods is Setup {
         return bps_ > delta.mulDivDown(10_000, baseAmount_);
     }
 
+    function _applyDelta(uint base_, uint delta_) internal pure returns(uint) {
+        // base_ --- (10_000 / 100) * 1e18
+        //   x ----- delta_
+
+        return base_ - delta_.mulDivDown(base_, (10_000 / 100) * 1e18);
+
+        // return base_ - delta_
+    }
+
 }
