@@ -187,29 +187,18 @@ contract ozEngine is Modifiers {
                 minAmountOutFirstLeg
             );
         } else {
-            console.log('amountIn_: ', amountIn_);
-
             amountOut = _swapBalancer(
                 tokenIn_,
                 tokenOutInternal,
                 amountIn_,
                 minAmountOutFirstLeg
             );
-
-            // amountInReth --- amountOutWeth
-            //     1 reth ----- weth ?
-
-            console.log('reth_eth in engine: ', (1e18 * amountOut) / amountIn_);
-
-            console.log('amountOut - should be 3327516986656762794 (wethIn for next): ', amountOut);
         }
 
         if (type_ == Action.OZL_IN) {
             if (tokenOut_ == s.WETH) { 
                 IERC20(s.WETH).safeTransfer(receiver_, amountOut);
             } else {
-                console.log('minAmountsOut_[1] - base on eth: ', minAmountsOut_[1]);
-
                 amountOut = _swapUni(
                     s.WETH,
                     tokenOut_,
@@ -231,12 +220,6 @@ contract ozEngine is Modifiers {
     ) private returns(uint) {
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
 
-        console.log('');
-        console.log('minAmountOut_.formatMinOut(tokenOut_): ', minAmountOut_.formatMinOut(tokenOut_));
-        console.log('amountIn_: ', amountIn_);
-        console.log('tokenIn_: ', tokenIn_);
-        console.log('minAmountOut_: ', minAmountOut_);
-
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 
                 tokenIn: tokenIn_,
@@ -245,7 +228,7 @@ contract ozEngine is Modifiers {
                 recipient: receiver_,
                 deadline: block.timestamp,
                 amountIn: amountIn_,
-                amountOutMinimum: minAmountOut_.formatMinOut(tokenOut_), //minAmountOut_.formatMinOut(tokenOut_)
+                amountOutMinimum: minAmountOut_.formatMinOut(tokenOut_),
                 sqrtPriceLimitX96: 0
             });
 

@@ -431,10 +431,8 @@ contract OZLtokenTest is TestMethods {
 
 
     function test_redeem_in_stable() public {
-        uint rETH_ETH_preTest = OZ.rETH_ETH();
-        console.log('reth_eth - pre test: ', rETH_ETH_preTest);
-
         //Pre-conditions
+        uint rETH_ETH_preTest = OZ.rETH_ETH();
         test_claim_OZL();
 
         IOZL OZL = IOZL(address(ozlProxy));
@@ -446,16 +444,8 @@ contract OZLtokenTest is TestMethods {
         uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
 
         _changeSlippage(uint16(500)); 
-        
-        console.log('ozlBalanceAlice: ', ozlBalanceAlice);
-        console.log('OZL.getExchangeRate(): ', OZL.getExchangeRate());
-        // console.log('OZL.getExchangeRate(QuoteAsset.ETH): ', OZL.getExchangeRate(QuoteAsset.ETH));
 
         uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
-
-        //-------------
-        uint rETH_ETH_postMock = OZ.rETH_ETH();
-        // uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest);
 
         /**
          * Due to the fact that the rate for rETH_ETH used in the Balancer swap would still be the one
@@ -465,39 +455,19 @@ contract OZLtokenTest is TestMethods {
          * For this reason, the amounts-to-redeem would be off, due to rate mismatch, unless we add this 
          * difference between rates in the amounts-to-redeem. 
          */
+        uint rETH_ETH_postMock = OZ.rETH_ETH();
         uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest).mulDivDown(10_000, rETH_ETH_postMock) * 1e16;
-        
-        console.log('delta_rETHrates: ', delta_rETHrates);
-        console.log('rETH_ETH_postMock: ', rETH_ETH_postMock);
-        console.log('is: ', delta_rETHrates);
-
-        // wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
-        // usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
-        //-------------
-
-        console.log('');
-        console.log('wethToRedeem: ', wethToRedeem); 
-        console.log('usdToRedeem: ', usdToRedeem); //this has to be ~5581.580568003178 - is
 
         wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
         usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
 
-        console.log('wethToRedeem delta: ', wethToRedeem);
-        console.log('usdToRedeem delta: ', usdToRedeem);
-
         uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-            [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)] //uint16(50) - 0.5%
+            [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
         );
 
         //Action
         vm.startPrank(alice);
         OZL.approve(address(OZ), ozlBalanceAlice);
-
-        console.log('');
-        console.log('minAmountsOut[0] - post wethToRedeem: ', minAmountsOut[0]);
-        console.log('minAmountsOut[1] - post usdToRedeem: ', minAmountsOut[1]);
-        console.log('ozlBalanceAlice: ', ozlBalanceAlice);
-        console.log(1);
         uint amountOut = OZL.redeem(
             alice,
             alice,
@@ -505,10 +475,6 @@ contract OZLtokenTest is TestMethods {
             ozlBalanceAlice,
             minAmountsOut
         );
-
-        
-        console.log('amountOut !!!!!!!!!!: ', amountOut);
-        console.log(2);
 
         vm.stopPrank();
 

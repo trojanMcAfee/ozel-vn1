@@ -221,19 +221,19 @@ contract ozOracle {
 
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
-        console.log('');
+        // console.log('');
         // console.log('totalAssets: ', totalAssets); //same
-        console.log('amountReth: ', amountReth);
+        // console.log('amountReth: ', amountReth);
 
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
-        console.log('assetsInETH: ', assetsInETH);
-        console.log('rEthInETH: ', rEthInETH); //different
-        console.log('');
+        // console.log('assetsInETH: ', assetsInETH);
+        // console.log('rEthInETH: ', rEthInETH); //different
+        // console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
         
-        console.log('ETH_USD: ', ETH_USD());
+        // console.log('ETH_USD: ', ETH_USD());
         // console.log('rETH_ETH: ', rETH_ETH());
 
         // console.log('rETH_USD: ', rETH_USD());
@@ -253,7 +253,7 @@ contract ozOracle {
 
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
-        console.log('totalRewards **************: ', uint(totalRewards));
+        // console.log('totalRewards **************: ', uint(totalRewards));
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
@@ -261,8 +261,8 @@ contract ozOracle {
         // rEthInETH --- 10_000
         // assetsInETH ---- x
 
-        uint deltaInETH = assetsInETH.mulDivDown(10_000, rEthInETH);
-        console.log('deltaInETH ^^^^^^^^^^^^^: ', deltaInETH);
+        // uint deltaInETH = assetsInETH.mulDivDown(10_000, rEthInETH);
+        // console.log('deltaInETH ^^^^^^^^^^^^^: ', deltaInETH);
 
         //------
         // address underlying = ozIToken(s.ozTokenRegistry[0].ozToken).asset();
@@ -282,9 +282,9 @@ contract ozOracle {
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards); //this too (further testing)
 
         // console.log('');
-        console.log('currentRewards ****************: ', uint(currentRewards));
+        // console.log('currentRewards ****************: ', uint(currentRewards));
         // console.log('s.rewards.prevTotalRewards: ', s.rewards.prevTotalRewards);
-        console.log('');
+        // console.log('');
         // console.log('currentRewards ^^');
 
         if (currentRewards <= 0) return false;
@@ -298,16 +298,11 @@ contract ozOracle {
 
 
     function _getFeeAndForward(int totalRewards_, int currentRewards_) private returns(uint) {
-
         uint ozelFeesInETH = uint(s.protocolFee).mulDivDown(uint(currentRewards_), 10_000);
         s.rewards.prevTotalRewards = uint(totalRewards_);
 
         uint grossOzelFeesInRETH = (ozelFeesInETH * 1 ether) / rETH_ETH();
-        console.log('grossOzelFeesInRETH ********: ', grossOzelFeesInRETH);
-
         uint netOzelFees = _getAdminFee(grossOzelFeesInRETH);
-
-
         IERC20Permit(s.rETH).transfer(s.ozlProxy, netOzelFees);
         
         return netOzelFees;
