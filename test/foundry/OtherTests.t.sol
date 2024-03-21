@@ -69,7 +69,7 @@ contract OtherTests is TestMethods {
         /**
          * Action (attack)
          */
-        amountIn = 10_000e18 - 1;
+        amountIn = testToken == daiAddr ? 10_000e18 - 1 : 10_000e6 - 1;
 
         _createAndMintOzTokens(
             address(ozERC20), amountIn, attacker, ALICE_PK, false, true, Type.IN
@@ -78,7 +78,7 @@ contract OtherTests is TestMethods {
         /**
          * Post-conditions
          */
-        amountIn = 19999e18;
+        amountIn = testToken == daiAddr ? 19999e18 - 1 : 19999e6 - 1;
 
         _createAndMintOzTokens(
             address(ozERC20), amountIn, charlie, CHARLIE_PK, false, true, Type.IN
