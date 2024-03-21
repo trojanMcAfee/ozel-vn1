@@ -187,6 +187,8 @@ contract ozEngine is Modifiers {
                 minAmountOutFirstLeg
             );
         } else {
+            console.log('amountIn_: ', amountIn_);
+
             amountOut = _swapBalancer(
                 tokenIn_,
                 tokenOutInternal,
@@ -194,9 +196,12 @@ contract ozEngine is Modifiers {
                 minAmountOutFirstLeg
             );
 
-            console.log('amountOut - should be 3327516986656762794: ', amountOut);
-            //amount of WETH coming out of the balancer swap is lower.
-            //check why. Perhaps liquidity? Or amount coming in the other side?
+            // amountInReth --- amountOutWeth
+            //     1 reth ----- weth ?
+
+            console.log('reth_eth in engine: ', (1e18 * amountOut) / amountIn_);
+
+            console.log('amountOut - should be 3327516986656762794 (wethIn for next): ', amountOut);
         }
 
         if (type_ == Action.OZL_IN) {

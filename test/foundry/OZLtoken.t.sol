@@ -431,6 +431,9 @@ contract OZLtokenTest is TestMethods {
 
 
     function test_redeem_in_stable() public {
+        uint rETH_ETH_preTest = OZ.rETH_ETH();
+        console.log('reth_eth - pre test: ', x);
+
         //Pre-conditions
         test_claim_OZL();
 

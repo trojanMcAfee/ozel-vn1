@@ -125,6 +125,7 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
             //^^^ put here rETH_ETH() from Helpers.sol
             
             uint reth_eth = abi.decode(data, (uint));
+            console.log('reth_eth in OZL: ', reth_eth);
             quote = totalFeesRETH_.mulDivDown(reth_eth, 1 ether);
         }
     }
@@ -151,6 +152,12 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         }
 
         uint rETHtoRedeem = ozlAmountIn_.mulDivDown(getExchangeRate(QuoteAsset.rETH), 1 ether);
+
+        console.log('');
+        console.log('rETHtoRedeem: ', rETHtoRedeem);
+        console.log('ozlAmountIn_: ', ozlAmountIn_);
+        console.log('getExchangeRate(QuoteAsset.rETH): ', getExchangeRate(QuoteAsset.rETH));
+        console.log('');
 
         OZ.recicleOZL(owner_, address(this), ozlAmountIn_);
         
