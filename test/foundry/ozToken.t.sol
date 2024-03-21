@@ -130,8 +130,9 @@ contract ozERC20TokenTest is TestMethods {
         //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
+        uint decimals = 10 ** IERC20Permit(testToken).decimals();
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, true);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        uint amountIn = rawAmount * decimals;
 
         Dummy1 dummy1 = new Dummy1(address(ozERC20), address(OZ));
 
@@ -158,7 +159,7 @@ contract ozERC20TokenTest is TestMethods {
         assertTrue(_checkPercentageDiff(rawAmount * 1e18, ozBalanceAlicePre, 5));
         assertTrue(ozBalanceAlicePost == 0);
         assertTrue(testTokenBalanceAlicePre == 0);
-        assertTrue(testTokenBalanceAlicePost > 99 * 1e18 && testTokenBalanceAlicePost < rawAmount * 1e18);
+        assertTrue(testTokenBalanceAlicePost > 99 * decimals && testTokenBalanceAlicePost < rawAmount * decimals);
     }
 
 
@@ -264,7 +265,9 @@ contract ozERC20TokenTest is TestMethods {
          */
         _mock_rETH_ETH_pt1();
 
-        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+        uint decimals = 10 ** IERC20Permit(testToken).decimals();
+
+        uint amountIn = (rawAmount / 3) * decimals;
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
@@ -305,7 +308,7 @@ contract ozERC20TokenTest is TestMethods {
         assertTrue(ozBalanceAlicePostMock > ozBalanceAlicePostRedeem);
         assertTrue(ozBalanceAlicePostRedeem == 0 || ozBalanceAlicePostRedeem < 0.0000011 * 1e18);
         assertTrue(balanceAliceTestTokenPreRedeem < balanceAliceTestTokenPostRedeem);
-        assertTrue(deltaBalanceTestToken > 32 * 1e18 && deltaBalanceTestToken <= 33 * 1e18);
+        assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
     }
 
 
