@@ -49,6 +49,12 @@ contract MultipleOzTokensTest is TestMethods {
         assertTrue(_checkPercentageDiff(amountInFirst, ozBalance_1, 3));
         assertTrue(_checkPercentageDiff(amountInSecond, ozBalance_2, 3));
 
+        if (testToken == usdcAddr) {
+            amountInFirst /= 1e12;
+        } else {
+            amountInSecond /= 1e12; 
+        }
+
         return (ozERC20_1, ozERC20_2, amountInFirst, amountInSecond, amountInThird);
     }
 
@@ -113,7 +119,7 @@ contract MultipleOzTokensTest is TestMethods {
         (, ozIToken ozERC20_2,, uint amountInSecond,) =
              test_createAndMint_two_ozTokens_oneUser();
 
-        _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond); //secondTestToken
+        _mintOzTokens(ozERC20_2, bob, secondTestToken, amountInSecond);
 
         uint secs = 15;
         _accrueRewards(secs);
