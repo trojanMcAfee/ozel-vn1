@@ -83,8 +83,6 @@ contract MultipleOzTokensTest is TestMethods {
         (ozIToken ozERC20_1, ozIToken ozERC20_2, uint amountInFirst,,) =
              test_createAndMint_two_ozTokens_oneUser();
 
-        amountInFirst = testToken == usdcAddr ? amountInFirst / 1e12 : amountInFirst;
-
         _mintOzTokens(ozERC20_1, bob, testToken, amountInFirst);
 
         uint secs = 15;
