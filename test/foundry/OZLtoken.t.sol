@@ -862,8 +862,13 @@ contract OZLtokenTest is TestMethods {
 
         _accrueRewards(15);
 
+        uint rETH_ETH_postMock = OZ.rETH_ETH();
+        console.log('rETH-ETH post-accrual: ', rETH_ETH_postMock);
+        console.log('');
+
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlBalancePre = OZL.balanceOf(alice);
+        console.log('OZL balance ownerp pre-claim: ', ozlBalancePre);
 
 
         //Actions
@@ -873,9 +878,12 @@ contract OZLtokenTest is TestMethods {
         OZ.claimReward();
 
         //Post-condtions
-        
-
         uint ozlBalancePost = OZL.balanceOf(alice);
+        console.log('OZL balance owner post-claim: ', ozlBalancePost);
+        console.log('');
+        
+        console.log('OZL/USD rate: ', OZL.getExchangeRate());
+        console.log('');
 
         return ozERC20;
     }
