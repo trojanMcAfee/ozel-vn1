@@ -665,150 +665,7 @@ contract OZLtokenTest is TestMethods {
 
 
     //----------------------------
-    function _mintPart() private returns(uint, ozIToken, uint) {
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-        console.log('ozUSDC: ', address(ozERC20));
-        console.log('is underlying USDC?: ', ozERC20.asset() == usdcAddr);
-        console.log('');
-
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        console.log('owner USDC balance: ', amountIn);
-        
-        uint rETH_ETH_preTest = OZ.rETH_ETH();
-        console.log('rETH-ETH pre-accrual: ', rETH_ETH_preTest);
-        console.log('');
-
-        _changeSlippage(uint16(9900));
-
-        _startCampaign();
-        _mintOzTokens(ozERC20, alice, testToken, amountIn);
-
-        uint ozBalanceOwner = ozERC20.balanceOf(alice);
-        uint usdcBalanceOwnerPostMint = IERC20Permit(testToken).balanceOf(alice);
-
-        console.log('ozBalanceOwner: ', ozBalanceOwner);
-        console.log('usdcBalanceOwnerPostMint: ', usdcBalanceOwnerPostMint);
-
-        return (ozBalanceOwner, ozERC20, rETH_ETH_preTest);
-    }
-
-
-    function test_poc() public { 
-        //Pre-conditions
-        // (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-        // console.log('ozUSDC: ', address(ozERC20));
-        // console.log('is underlying USDC?: ', ozERC20.asset() == usdcAddr);
-        // console.log('');
-
-        // (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
-        // uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        // console.log('owner USDC balance: ', amountIn);
-        
-        // uint rETH_ETH_preTest = OZ.rETH_ETH();
-        // console.log('rETH-ETH pre-accrual: ', rETH_ETH_preTest);
-        // console.log('');
-
-        // _changeSlippage(uint16(9900));
-
-        // _startCampaign();
-        // _mintOzTokens(ozERC20, alice, testToken, amountIn); 
-        
-        // uint ozBalanceOwner = ozERC20.balanceOf(alice);
-        // uint usdcBalanceOwnerPostMint = IERC20Permit(testToken).balanceOf(alice);
-
-        // console.log('ozBalanceOwner: ', ozBalanceOwner);
-        // console.log('usdcBalanceOwnerPostMint: ', usdcBalanceOwnerPostMint);
-
-        (uint ozBalanceOwner, ozIToken ozERC20, uint rETH_ETH_preTest) = _mintPart();
-
-        _accrueRewards(15);
-
-        uint rETH_ETH_postMock = OZ.rETH_ETH();
-        console.log('rETH-ETH post-accrual: ', rETH_ETH_postMock);
-        console.log('');
-
-        IOZL OZL = IOZL(address(ozlProxy));
-        uint ozlBalancePre = OZL.balanceOf(alice);
-        console.log('OZL balance ownerp pre-claim: ', ozlBalancePre);
-
-        //Actions
-        OZ.chargeOZLfee();
     
-        vm.prank(alice);
-        OZ.claimReward();
-
-        //Post-condtions
-        uint ozlBalancePost = OZL.balanceOf(alice);
-        console.log('OZL balance owner post-claim: ', ozlBalancePost);
-        console.log('');
-        
-        console.log('OZL/USD rate: ', OZL.getExchangeRate());
-        console.log('');
-
-        bytes memory redeemData = OZ.getRedeemData(
-            ozBalanceOwner,
-            address(ozERC20),
-            OZ.getDefaultSlippage(),
-            alice,
-            alice
-        );
-
-        vm.startPrank(alice);
-        ozERC20.approve(address(ozDiamond), ozBalanceOwner);
-        ozERC20.redeem(redeemData, alice);
-        vm.stopPrank();
-
-        uint ozBalanceOwnerPostRedeem = ozERC20.balanceOf(alice);
-        uint usdcBalanceOwnerPostRedeem = IERC20Permit(testToken).balanceOf(alice);
-        
-        console.log('ozBalanceOwnerPostRedeem: ', ozBalanceOwnerPostRedeem);
-        console.log('usdcBalanceOwnerPostRedeem: ', usdcBalanceOwnerPostRedeem);
-        console.log('');
-
-        //-----------
-
-        // _OZLredeemPart();
-
-        // uint ozlToRedeem = ozlBalancePost / 2;
-        // uint usdToRedeem = ozlToRedeem * OZL.getExchangeRate() / 1 ether;
-        // uint wethToRedeem = (ozlToRedeem * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
-
-        // uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest).mulDivDown(10_000, rETH_ETH_postMock) * 1e16;
-
-        // wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
-        // usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
-
-        // uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-        //     [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
-        // );
-
-        // vm.startPrank(alice);
-        // OZL.approve(address(OZ), ozlToRedeem);
-
-        // OZL.redeem(
-        //     alice,
-        //     alice,
-        //     testToken,
-        //     ozlToRedeem,
-        //     minAmountsOut
-        // );
-        // vm.stopPrank();
-
-        // uint ozlBalancePostRedeem = OZL.balanceOf(alice);
-        // console.log('ozlBalancePostRedeem: ', ozlBalancePostRedeem);
-
-        // uint usdcBalanceOwnerPostOZLredeem = IERC20Permit(testToken).balanceOf(alice);
-        // uint delta = usdcBalanceOwnerPostOZLredeem - usdcBalanceOwnerPostRedeem;
-
-        // console.log('usdcBalanceOwnerPostOZLredeem: ', usdcBalanceOwnerPostOZLredeem);
-        // console.log('usdc gained from OZL redeemption: ', delta);
-        // console.log('');
-
-        // console.log('OZL/USD rate: ', OZL.getExchangeRate());
-
-    }
-
 
     function _getMinsOut(uint ozlBalanceAlice, uint rETH_ETH_preTest, IOZL OZL) private returns(uint[] memory) {
         uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
@@ -836,43 +693,54 @@ contract OZLtokenTest is TestMethods {
 
     function _OZLpart() private returns(ozIToken, uint) { 
         //Pre-conditions
+        console.log('');
+        console.log('rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
+        console.log('');
+
+        console.log('************ Create and Mint ozUSDC ************');
+
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         console.log('ozUSDC: ', address(ozERC20));
         console.log('is underlying USDC?: ', ozERC20.asset() == usdcAddr);
-        console.log('');
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        console.log('owner USDC balance: ', amountIn);
+        console.log('USDC balance - alice: ', amountIn);
         _changeSlippage(uint16(9900));
 
         uint rETH_ETH_preTest = OZ.rETH_ETH();
-        console.log('rETH-ETH pre-accrual: ', rETH_ETH_preTest);
-        console.log('');
 
         _startCampaign();
+        console.log('');
+        console.log('^^^^^ MINTING ^^^^^');
+        console.log('');
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
         uint ozBalanceOwner = ozERC20.balanceOf(alice);
         uint usdcBalanceOwnerPostMint = IERC20Permit(testToken).balanceOf(alice);
 
-        console.log('ozBalanceOwner: ', ozBalanceOwner);
-        console.log('usdcBalanceOwnerPostMint: ', usdcBalanceOwnerPostMint);
+        console.log('ozUSDC balance - alice: ', ozBalanceOwner);
+        console.log('USDC balance - alice - post ozUSDC mint: ', usdcBalanceOwnerPostMint);
         console.log('');
 
         _accrueRewards(15);
 
         uint rETH_ETH_postMock = OZ.rETH_ETH();
-        console.log('rETH-ETH post-accrual: ', rETH_ETH_postMock);
+        console.log('rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
         console.log('');
 
+        console.log('************ Claim and Redeem OZL ************');
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlBalancePre = OZL.balanceOf(alice);
-        console.log('OZL balance owner pre-claim: ', ozlBalancePre);
+        console.log('OZL balance - alice - pre claim: ', ozlBalancePre);
 
+        console.log('');
+        console.log('balance admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
 
         //Actions
         OZ.chargeOZLfee();
+
+        console.log('balance admin - post fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
 
         vm.prank(alice);
         OZ.claimReward();
