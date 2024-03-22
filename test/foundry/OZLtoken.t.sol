@@ -834,34 +834,63 @@ contract OZLtokenTest is TestMethods {
     }
 
 
+    function _test_claim_OZL2() private returns(ozIToken) { 
+        //Pre-conditions
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+        console.log('ozUSDC: ', address(ozERC20));
+        console.log('is underlying USDC?: ', ozERC20.asset() == usdcAddr);
+        console.log('');
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        console.log('owner USDC balance: ', amountIn);
+        _changeSlippage(uint16(9900));
+
+        uint rETH_ETH_preTest = OZ.rETH_ETH();
+        console.log('rETH-ETH pre-accrual: ', rETH_ETH_preTest);
+        console.log('');
+
+        _startCampaign();
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
+
+        uint ozBalanceOwner = ozERC20.balanceOf(alice);
+        uint usdcBalanceOwnerPostMint = IERC20Permit(testToken).balanceOf(alice);
+
+        console.log('ozBalanceOwner: ', ozBalanceOwner);
+        console.log('usdcBalanceOwnerPostMint: ', usdcBalanceOwnerPostMint);
+        console.log('');
+
+        _accrueRewards(15);
+
+        IOZL OZL = IOZL(address(ozlProxy));
+        uint ozlBalancePre = OZL.balanceOf(alice);
+
+
+        //Actions
+        OZ.chargeOZLfee();
+
+        vm.prank(alice);
+        OZ.claimReward();
+
+        //Post-condtions
+        
+
+        uint ozlBalancePost = OZL.balanceOf(alice);
+
+        return ozERC20;
+    }
+
+
     function test_poc2() public {
         //Pre-conditions
         uint rETH_ETH_preTest = OZ.rETH_ETH();
-        test_claim_OZL();
+        _test_claim_OZL2();
 
         IOZL OZL = IOZL(address(ozlProxy));
 
         uint balanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
 
         uint ozlBalanceAlice = OZL.balanceOf(alice);
-        // uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
-
-        // _changeSlippage(uint16(500)); 
-
-        // uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
-
-        // /**
-        //  * Same situation as in test_redeem_in_stable()
-        //  */
-        // uint rETH_ETH_postMock = OZ.rETH_ETH();
-        // uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest).mulDivDown(10_000, rETH_ETH_postMock) * 1e16;
-
-        // wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
-        // usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
-
-        // uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-        //     [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
-        // );
 
         uint[] memory minAmountsOut = _getMinsOut(ozlBalanceAlice, rETH_ETH_preTest, OZL);
 
