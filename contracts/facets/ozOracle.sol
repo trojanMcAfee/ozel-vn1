@@ -42,8 +42,12 @@ contract ozOracle {
 
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
-        (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
-        return success ? price : _callFallbackOracle(s.rETH); 
+        // (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
+        // return success ? price : _callFallbackOracle(s.rETH); 
+
+        //----------
+
+        return getUniPrice(0, Dir.UP);
     }
 
 
@@ -91,6 +95,11 @@ contract ozOracle {
     }
 
 
+    /**
+     * 0 - rETH/WETH - 0.05%
+     * 1 - rETH/WETH - 0.01%
+     * 2 - WETH/USDC - 0.05%
+     */
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 

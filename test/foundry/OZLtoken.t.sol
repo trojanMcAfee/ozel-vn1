@@ -721,11 +721,11 @@ contract OZLtokenTest is TestMethods {
 
     function _OZLpart() private returns(ozIToken, uint) { 
         //Pre-conditions
-        uint rETH_ETH_preTest = OZ.rETH_ETH();
-        _mock_rETH_ETH_pt1();
+        // _mock_rETH_ETH_pt1();
+        // uint rETH_ETH_preTest = OZ.rETH_ETH();
 
         console.log('');
-        console.log('* rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
+        // console.log('* rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
         console.log('');
 
         console.log('************ Create and Mint ozUSDC ************');
@@ -743,6 +743,11 @@ contract OZLtokenTest is TestMethods {
         console.log('');
         console.log('^^^^^ MINTING ozUSDC ^^^^^');
         console.log('');
+
+        _mock_rETH_ETH_pt1();
+        uint rETH_ETH_preTest = OZ.rETH_ETH();
+        console.log('* rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
+
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
         uint ozBalanceOwner = ozERC20.balanceOf(alice);
@@ -759,6 +764,9 @@ contract OZLtokenTest is TestMethods {
         console.log('************ Collect Admin Fee ************');
         console.log('ozUSDC balance - alice - post accrual: ', ozERC20.balanceOf(alice));
         console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
+
+        revert('hereeee');
+
         console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
         
         OZ.chargeOZLfee();
