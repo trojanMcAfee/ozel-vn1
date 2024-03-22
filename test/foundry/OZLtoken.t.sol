@@ -809,6 +809,7 @@ contract OZLtokenTest is TestMethods {
 
     }
 
+
     function _getMinsOut(uint ozlBalanceAlice, uint rETH_ETH_preTest, IOZL OZL) private returns(uint[] memory) {
         uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
 
@@ -832,12 +833,6 @@ contract OZLtokenTest is TestMethods {
         return minAmountsOut;
     }
 
-    function _getMinsOut() private returns(uint[] memory) {
-
-
-
-    }
-
 
     function test_poc2() public {
         //Pre-conditions
@@ -849,24 +844,26 @@ contract OZLtokenTest is TestMethods {
         uint balanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
 
         uint ozlBalanceAlice = OZL.balanceOf(alice);
-        uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
+        // uint usdToRedeem = ozlBalanceAlice * OZL.getExchangeRate() / 1 ether;
 
-        _changeSlippage(uint16(500)); 
+        // _changeSlippage(uint16(500)); 
 
-        uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
+        // uint wethToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.ETH)) / 1 ether;
 
-        /**
-         * Same situation as in test_redeem_in_stable()
-         */
-        uint rETH_ETH_postMock = OZ.rETH_ETH();
-        uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest).mulDivDown(10_000, rETH_ETH_postMock) * 1e16;
+        // /**
+        //  * Same situation as in test_redeem_in_stable()
+        //  */
+        // uint rETH_ETH_postMock = OZ.rETH_ETH();
+        // uint delta_rETHrates = (rETH_ETH_postMock - rETH_ETH_preTest).mulDivDown(10_000, rETH_ETH_postMock) * 1e16;
 
-        wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
-        usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
+        // wethToRedeem = _applyDelta(wethToRedeem, delta_rETHrates);
+        // usdToRedeem = _applyDelta(usdToRedeem, delta_rETHrates);
 
-        uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
-            [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
-        );
+        // uint[] memory minAmountsOut = HelpersLib.calculateMinAmountsOut(
+        //     [wethToRedeem, usdToRedeem], [OZ.getDefaultSlippage(), uint16(50)]
+        // );
+
+        uint[] memory minAmountsOut = _getMinsOut(ozlBalanceAlice, rETH_ETH_preTest, OZL);
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHashOZL(alice, address(OZ), ozlBalanceAlice));
         
