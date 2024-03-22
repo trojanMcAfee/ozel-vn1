@@ -693,6 +693,8 @@ contract OZLtokenTest is TestMethods {
 
     function _OZLpart() private returns(ozIToken, uint) { 
         //Pre-conditions
+        uint rETH_ETH_preTest = OZ.rETH_ETH();
+
         console.log('');
         console.log('rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
         console.log('');
@@ -707,8 +709,6 @@ contract OZLtokenTest is TestMethods {
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         console.log('USDC balance - alice: ', amountIn);
         _changeSlippage(uint16(9900));
-
-        uint rETH_ETH_preTest = OZ.rETH_ETH();
 
         _startCampaign();
         console.log('');
@@ -726,21 +726,20 @@ contract OZLtokenTest is TestMethods {
         _accrueRewards(15);
 
         uint rETH_ETH_postMock = OZ.rETH_ETH();
+        console.log('************ Collect Admin Fee ************');
         console.log('rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
+        console.log('');
+        console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
+        
+        OZ.chargeOZLfee();
+
+        console.log('rETH balance - admin - post fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
         console.log('');
 
         console.log('************ Claim and Redeem OZL ************');
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlBalancePre = OZL.balanceOf(alice);
         console.log('OZL balance - alice - pre claim: ', ozlBalancePre);
-
-        console.log('');
-        console.log('balance admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
-
-        //Actions
-        OZ.chargeOZLfee();
-
-        console.log('balance admin - post fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
 
         vm.prank(alice);
         OZ.claimReward();
