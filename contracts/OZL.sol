@@ -122,7 +122,8 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
     }
 
 
-    function redeem(
+    //add the other stables to the db so it can redeem in several options
+    function redeem( //create a getRedeemData() for OZL (use redeem tests from OZLtoken.t as guide)
         address owner_,
         address receiver_,
         address tokenOut_,
