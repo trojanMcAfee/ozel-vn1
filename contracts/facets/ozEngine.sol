@@ -246,6 +246,13 @@ contract ozEngine is Modifiers {
         uint amountIn_,
         uint minAmountOut_
     ) private returns(uint amountOut) {
+
+        console.log('');
+        console.log('bal: ', IERC20(tokenIn_).balanceOf(address(this)));
+        console.log('bal2: ', IERC20(tokenIn_).balanceOf(msg.sender));
+        console.log('amountIn_: ', amountIn_);
+        console.log('minAmountOut_: ', minAmountOut_);
+        console.log('tokenIn_: ', tokenIn_);
         
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
