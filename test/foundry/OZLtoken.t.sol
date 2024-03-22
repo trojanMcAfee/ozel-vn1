@@ -696,7 +696,7 @@ contract OZLtokenTest is TestMethods {
         uint rETH_ETH_preTest = OZ.rETH_ETH();
 
         console.log('');
-        console.log('rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
+        console.log('* rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
         console.log('');
 
         console.log('************ Create and Mint ozUSDC ************');
@@ -712,7 +712,7 @@ contract OZLtokenTest is TestMethods {
 
         _startCampaign();
         console.log('');
-        console.log('^^^^^ MINTING ^^^^^');
+        console.log('^^^^^ MINTING ozUSDC ^^^^^');
         console.log('');
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
@@ -727,27 +727,31 @@ contract OZLtokenTest is TestMethods {
 
         uint rETH_ETH_postMock = OZ.rETH_ETH();
         console.log('************ Collect Admin Fee ************');
-        console.log('rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
-        console.log('');
+        console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
         console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
         
         OZ.chargeOZLfee();
-
-        console.log('rETH balance - admin - post fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
+        console.log('');
+        console.log('^^^^^ COLLECTING FEE ^^^^^');
         console.log('');
 
-        console.log('************ Claim and Redeem OZL ************');
+        console.log('rETH balance - admin - post fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
+
+        console.log('');
+        console.log('************ Claim OZL ************');
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlBalancePre = OZL.balanceOf(alice);
         console.log('OZL balance - alice - pre claim: ', ozlBalancePre);
 
         vm.prank(alice);
         OZ.claimReward();
+        console.log('');
+        console.log('^^^^^ CLAIMING OZL ^^^^^');
+        console.log('');
 
         //Post-condtions
         uint ozlBalancePost = OZL.balanceOf(alice);
-        console.log('OZL balance owner post-claim: ', ozlBalancePost);
-        console.log('');
+        console.log('OZL balance - alice - post claim: ', ozlBalancePost);
         
         console.log('OZL/USD rate: ', OZL.getExchangeRate());
         console.log('');
@@ -756,14 +760,12 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-    function test_poc2() public {
+    function test_poc() public {
         //Pre-conditions
         uint rETH_ETH_preTest = OZ.rETH_ETH();
         (ozIToken ozERC20, uint ozBalanceOwner) = _OZLpart();
 
         IOZL OZL = IOZL(address(ozlProxy));
-
-        uint balanceAlicePre = IERC20Permit(testToken).balanceOf(alice);
 
         uint ozlBalanceAlice = OZL.balanceOf(alice);
 
@@ -771,8 +773,9 @@ contract OZLtokenTest is TestMethods {
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(ALICE_PK, _getPermitHashOZL(alice, address(OZ), ozlBalanceAlice));
         
+        console.log('************ Redeem OZL for USDC ************');
         uint usdcBalanceOwnerPreOZLredeem = IERC20Permit(testToken).balanceOf(alice);
-        console.log('usdcBalanceOwnerPreOZLredeem: ', usdcBalanceOwnerPreOZLredeem);
+        console.log('USDC balance - alice - pre OZL redeem: ', usdcBalanceOwnerPreOZLredeem);
 
         vm.startPrank(alice);
         OZL.permit(
@@ -783,7 +786,7 @@ contract OZLtokenTest is TestMethods {
             v, r, s
         );
 
-        uint amountOut = OZL.redeem(
+        OZL.redeem(
             alice,
             alice,
             testToken,
@@ -791,13 +794,18 @@ contract OZLtokenTest is TestMethods {
             minAmountsOut
         );
 
-        vm.stopPrank();
+        console.log('');
+        console.log('^^^^^ REDEEMING OZL ^^^^^');
+        console.log('');
 
-        console.log('OZL/USD rate - post OZL redeemption: ', OZL.getExchangeRate());
+        vm.stopPrank();
 
         //Post-condtions
         uint usdcBalanceOwnerPostOZLredeem = IERC20Permit(testToken).balanceOf(alice);
-        console.log('usdcBalanceOwnerPostOZLredeem: ', usdcBalanceOwnerPostOZLredeem);
+        console.log('USDC balance - alice - post OZL redeem: ', usdcBalanceOwnerPostOZLredeem);
+
+        console.log('OZL/USD rate - post OZL redeemption: ', OZL.getExchangeRate());
+        console.log('');
 
         //-------
         _ozTokenPart(ozBalanceOwner, ozERC20, usdcBalanceOwnerPostOZLredeem);
@@ -805,7 +813,7 @@ contract OZLtokenTest is TestMethods {
 
 
     function _ozTokenPart(uint ozBalanceOwner, ozIToken ozERC20, uint usdcBalanceOwnerPostOZLredeem) private {
-
+        console.log('************ Redeem ozUSDC for USDC ************');
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceOwner,
             address(ozERC20),
@@ -816,15 +824,18 @@ contract OZLtokenTest is TestMethods {
 
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), ozBalanceOwner);
-        uint amountOut = ozERC20.redeem(redeemData, alice);
+        ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
+
+        console.log('');
+        console.log('^^^^^ REDEEMING ozUSDC ^^^^^');
+        console.log('');
 
         uint ozBalanceOwnerPostRedeem = ozERC20.balanceOf(alice);
         uint usdcBalanceOwnerPostRedeem = IERC20Permit(testToken).balanceOf(alice);
         
-        console.log('');
-        console.log('ozBalanceOwnerPostRedeem: ', ozBalanceOwnerPostRedeem);
-        console.log('usdcBalanceOwnerPostRedeem: ', usdcBalanceOwnerPostRedeem);
+        console.log('ozUSDC balance - alice - post redeem: ', ozBalanceOwnerPostRedeem);
+        console.log('USDC balance - alice - post redeem: ', usdcBalanceOwnerPostRedeem);
         
         uint delta = usdcBalanceOwnerPostRedeem - usdcBalanceOwnerPostOZLredeem;
         console.log('USDC gained after redeeming ozUSDC: ', delta);

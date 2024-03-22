@@ -79,7 +79,9 @@ contract OZL is ERC20Upgradeable, EIP712Upgradeable {
         emit Allocated(address(receiver_), amount_);
     }
 
-
+    //there's a difference between what you get when redeem OZL for USDC,
+    //and multiplinyg how much OZL you have times the OZL's exchange rate in USD.
+    //Check why that happens.
     function getExchangeRate() external view returns(uint) {
         return getExchangeRate(QuoteAsset.USD);
     }
