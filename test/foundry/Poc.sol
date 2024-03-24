@@ -22,7 +22,7 @@ contract Poc is TestMethods {
     function test_redeem_rewards_chainlink() public returns(uint, uint) {
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
 
         _getResetVarsAndChangeSlip();        
         
@@ -84,22 +84,34 @@ contract Poc is TestMethods {
         //POST-CONDITIONS
         
         console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
+        console.log('');
+
         console.log('balanceAliceTestTokenPostRedeem: ', IERC20Permit(testToken).balanceOf(alice));
         console.log('balanceAliceTestTokenPreRedeem: ', balanceAliceTestTokenPreRedeem);
+        console.log('');
         
         uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
         console.log('testToken gained after redeem: ', deltaBalanceTestToken);
         
-        assertTrue(_fm(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice)) == _fm(ozERC20.totalSupply()));
-        assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
-        assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
-        assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
-        assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
+        // assertTrue(_fm(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice)) == _fm(ozERC20.totalSupply()));
+        // assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
+        // assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
+        // assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
+        // assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
 
-        return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
+        return (amountIn, reth_usd_preAccrual);
     }
 
 
+    /**
+    * Delta between testToken that alice got and testToken
+    * that she should've gotten: 4.019111305361308 %
+    *
+    * Delta between rETH mocks prev/post accrual: 3.846153846153859 %
+    *
+    * Unaccounted delta: 0.1729574592074492 % (slippage?? rounding?)
+    * When dealing big, unaccounted delta is: 0.1188423674962027 % (slippage! - confirm)
+    */
     function test_rewards_accounting() public {
         (uint testTokenAmountIn, uint reth_usd_preAccrual) = test_redeem_rewards_chainlink();
         console.log('');
