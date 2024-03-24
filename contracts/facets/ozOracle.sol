@@ -95,6 +95,10 @@ contract ozOracle {
     }
 
 
+    function getUniPrice2(uint tokenPair_, Dir side_) public view returns(uint) {
+        
+    }
+
     /**
      * 0 - rETH/WETH - 0.05%
      * 1 - rETH/WETH - 0.01%
@@ -107,6 +111,7 @@ contract ozOracle {
 
         uint32 secsAgo = side_ == Dir.UP ? 1800 : (86400);
         //^ check the values I used for calculatin past rewards
+        //check for Dir.DOWN also
 
         uint32[] memory secondsAgos = new uint32[](2);
         secondsAgos[0] = secsAgo;
