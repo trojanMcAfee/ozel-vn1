@@ -34,6 +34,8 @@ contract Poc is TestMethods {
         uint decimals = 10 ** IERC20Permit(testToken).decimals();
 
         uint amountIn = (rawAmount / 3) * decimals;
+        console.log('amountIn testToken: ', amountIn);
+
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
@@ -84,6 +86,10 @@ contract Poc is TestMethods {
         assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
         assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
     }
+
+
+
+
 
 
     //--------------------
