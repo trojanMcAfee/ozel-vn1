@@ -13,6 +13,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import "../../contracts/Errors.sol";
 import {Dummy1} from "./Dummy1.sol";
 import {NewToken} from "../../contracts/AppStorage.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
@@ -93,6 +94,7 @@ contract ozERC20TokenTest is TestMethods {
 
 
     // }
+
 
 
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
@@ -285,7 +287,18 @@ contract ozERC20TokenTest is TestMethods {
 
     //------------
 
+    function test_x() public {
+        OZ.rETH_ETH();
 
+        _mock_rETH_ETH_historical();
+
+        console.log('');
+        console.log('after mock');
+        console.log('');
+
+        OZ.rETH_ETH();
+
+    }
     
 
     //Tests that the accrual and redemption of rewards happens without issues when there's more

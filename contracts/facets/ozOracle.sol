@@ -46,7 +46,7 @@ contract ozOracle {
         // return success ? price : _callFallbackOracle(s.rETH); 
 
         //----------
-
+        getUniPrice2(0, Dir.DOWN);
         return getUniPrice(0, Dir.UP);
     }
 
@@ -95,8 +95,22 @@ contract ozOracle {
     }
 
 
-    function getUniPrice2(uint tokenPair_, Dir side_) public view returns(uint) {
+    function getUniPrice2(uint tokenPair_, Dir side_) public view {
+        address rETHfeed = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
         
+        (
+            uint80 roundId,
+            int answer,,
+            uint updatedAt,
+        ) = AggregatorV3Interface(rETHfeed).latestRoundData();
+        console.log('reth up uni2: ', uint(answer));
+
+        if (side_ == Dir.DOWN) {
+            (,int answer2,,,) = AggregatorV3Interface(rETHfeed).getRoundData(roundId - 1);
+            console.log('reth down uni22: ', uint(answer2));
+        }
+
+
     }
 
     /**
@@ -104,6 +118,10 @@ contract ozOracle {
      * 1 - rETH/WETH - 0.01%
      * 2 - WETH/USDC - 0.05%
      */
+     //An attacker could spam the observations array and leave the query time (secsAgo)
+     //used for DOWN obsolete, so as the rebasing calculation mechanism. 
+     //Check how observations how are actually written into the array and the timeframe
+     //for getting written. 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 

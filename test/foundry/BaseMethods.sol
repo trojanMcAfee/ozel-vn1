@@ -18,6 +18,7 @@ import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 import "forge-std/console.sol";
 
@@ -383,6 +384,17 @@ contract BaseMethods is Setup {
     //To be used before calling ozERC20.balanceOf()
     function _mock_rETH_ETH_pt2() internal {
         vm.store(rethWethUniPool, bytes32(0), originalSlot0);
+    }
+
+    function _mock_rETH_ETH_historical() internal {
+        int pastAnswer = 1085995250282916400;
+        (uint80 roundId,,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
+
+        vm.mockCall( 
+            rEthEthChainlink,
+            abi.encodeWithSignature('getRoundData(uint80)', roundId - 1),
+            abi.encode(uint80(1), pastAnswer, uint(0), block.timestamp, uint80(0))
+        ); 
     }
 
     
