@@ -18,7 +18,8 @@ contract Poc is TestMethods {
     using FixedPointMathLib for uint;
 
 
-    function test_redeem_rewards_chainlink() public {
+    //It uses Chainlink in getUniPrice instead of TWAP
+    function test_redeem_rewards_chainlink() public returns(uint, uint) {
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
@@ -29,7 +30,12 @@ contract Poc is TestMethods {
         _mock_rETH_ETH_historical(pastAnswer);
 
         uint reth_eth_current = OZ.rETH_ETH();
+        uint reth_usd_preAccrual = OZ.rETH_USD(); 
+
+        console.log('');
         console.log('reth_eth - pre accrual: ', reth_eth_current);
+        console.log('reth_usd - pre accrual: ', reth_usd_preAccrual);
+        console.log('');
 
         uint decimals = 10 ** IERC20Permit(testToken).decimals();
 
@@ -49,7 +55,11 @@ contract Poc is TestMethods {
         _mock_rETH_ETH_historical(reth_eth_current);
 
         assertTrue(OZ.rETH_ETH() > reth_eth_current);
+
+        console.log('');
         console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
+        console.log('reth_usd - post accrual: ', OZ.rETH_USD());
+        console.log('');
 
         uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
         console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
@@ -85,6 +95,29 @@ contract Poc is TestMethods {
         assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
         assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
         assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
+
+        return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
+    }
+
+
+    function test_rewards_accounting() public {
+        (uint testTokenAmountIn, uint reth_usd_preAccrual) = test_redeem_rewards_chainlink();
+        console.log('');
+        console.log('-------------------------');
+        console.log('');
+
+
+        uint eth_usd = OZ.ETH_USD();
+        console.log('eth_usd: ', eth_usd);
+
+        uint reth_preAccrual = (testTokenAmountIn * 1e12).mulDivDown(1e18, reth_usd_preAccrual);
+        console.log('reth_preAccrual: ', reth_preAccrual);
+
+        uint reth_usd_postAccrual = OZ.rETH_USD();
+        uint testToken_alledged_rewards = reth_preAccrual.mulDivDown(reth_usd_postAccrual, 1e18);
+        console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
+
+
     }
 
 
@@ -94,6 +127,7 @@ contract Poc is TestMethods {
 
     //--------------------
 
+    //For running this, gotta change getUniPrice from Chainlink to TWAP
     function test_poc() public {
         //Pre-conditions
         uint rETH_ETH_preTest = OZ.rETH_ETH();
@@ -192,7 +226,7 @@ contract Poc is TestMethods {
         console.log('ozUSDC balance - alice - post accrual: ', ozERC20.balanceOf(alice));
         console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
 
-        revert('hereeee');
+        // revert('hereeee'); //<------------------------- revert here **************
 
         console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
         
