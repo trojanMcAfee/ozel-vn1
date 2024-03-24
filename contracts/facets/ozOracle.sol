@@ -46,7 +46,7 @@ contract ozOracle {
         // return success ? price : _callFallbackOracle(s.rETH); 
 
         //----------
-        getUniPrice2(0, Dir.DOWN);
+        // getUniPrice2(0, Dir.DOWN);
         return getUniPrice(0, Dir.UP);
     }
 
@@ -95,22 +95,23 @@ contract ozOracle {
     }
 
 
-    function getUniPrice2(uint tokenPair_, Dir side_) public view {
+    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         address rETHfeed = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
+        uint price;
         
         (
             uint80 roundId,
             int answer,,
             uint updatedAt,
         ) = AggregatorV3Interface(rETHfeed).latestRoundData();
-        console.log('reth up uni2: ', uint(answer));
+        price = uint(answer);
 
         if (side_ == Dir.DOWN) {
-            (,int answer2,,,) = AggregatorV3Interface(rETHfeed).getRoundData(roundId - 1);
-            console.log('reth down uni22: ', uint(answer2));
+            (,int pastAnswer,,,) = AggregatorV3Interface(rETHfeed).getRoundData(roundId - 1);
+            price = uint(pastAnswer);
         }
 
-
+        return price;
     }
 
     /**
@@ -122,7 +123,7 @@ contract ozOracle {
      //used for DOWN obsolete, so as the rebasing calculation mechanism. 
      //Check how observations how are actually written into the array and the timeframe
      //for getting written. 
-    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
+    function getUniPrice2(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);

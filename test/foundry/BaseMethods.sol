@@ -386,14 +386,13 @@ contract BaseMethods is Setup {
         vm.store(rethWethUniPool, bytes32(0), originalSlot0);
     }
 
-    function _mock_rETH_ETH_historical() internal {
-        int pastAnswer = 1085995250282916400;
+    function _mock_rETH_ETH_historical(uint newPastAnswer_) internal {
         (uint80 roundId,,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
 
         vm.mockCall( 
             rEthEthChainlink,
             abi.encodeWithSignature('getRoundData(uint80)', roundId - 1),
-            abi.encode(uint80(1), pastAnswer, uint(0), block.timestamp, uint80(0))
+            abi.encode(uint80(1), int(newPastAnswer_), uint(0), block.timestamp, uint80(0))
         ); 
     }
 

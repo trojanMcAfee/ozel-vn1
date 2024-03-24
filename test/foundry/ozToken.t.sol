@@ -287,17 +287,78 @@ contract ozERC20TokenTest is TestMethods {
 
     //------------
 
-    function test_x() public {
-        OZ.rETH_ETH();
+    
+    function test_redeem_rewards2() public {
+        //PRE-CONDITIONS
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
 
-        _mock_rETH_ETH_historical();
+        _getResetVarsAndChangeSlip();        
+        
+        // _mock_rETH_ETH_pt1_chainlink();
+        uint pastAnswer = 1085995250282916400;
+        _mock_rETH_ETH_historical(pastAnswer);
 
-        console.log('');
-        console.log('after mock');
-        console.log('');
+        uint reth_eth_current = OZ.rETH_ETH();
+        console.log('reth_eth - pre accrual: ', reth_eth_current);
 
-        OZ.rETH_ETH();
+        uint decimals = 10 ** IERC20Permit(testToken).decimals();
 
+        uint amountIn = (rawAmount / 3) * decimals;
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+        _mintOzTokens(ozERC20, bob, testToken, amountIn);
+
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlice: ', ozBalanceAlice);
+
+        uint ozBalanceBob = ozERC20.balanceOf(bob);
+        // assertTrue(_fm(ozBalanceBob + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
+
+        //This simulates the rETH rewards accrual.
+        _mock_rETH_ETH();
+
+        _mock_rETH_ETH_historical(reth_eth_current);
+
+        reth_eth_current = OZ.rETH_ETH();
+        console.log('reth_eth - post accrual: ', reth_eth_current);
+
+        uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
+        // assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
+
+        bytes memory redeemData = OZ.getRedeemData(
+            ozBalanceAlicePostMock, 
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            alice,
+            alice
+        );
+
+        uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
+
+        //ACTION
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), type(uint).max);
+        ozERC20.redeem(redeemData, alice);
+        vm.stopPrank();
+
+        //POST-CONDITIONS
+        uint ozBalanceAlicePostRedeem = ozERC20.balanceOf(alice);
+        uint balanceAliceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
+        
+        console.log('ozBalanceAlicePostRedeem: ', ozBalanceAlicePostRedeem);
+        console.log('balanceAliceTestTokenPostRedeem: ', balanceAliceTestTokenPostRedeem);
+        console.log('balanceAliceTestTokenPreRedeem: ', balanceAliceTestTokenPreRedeem);
+        
+        uint deltaBalanceTestToken = balanceAliceTestTokenPostRedeem - balanceAliceTestTokenPreRedeem;
+        ozBalanceAlice = ozERC20.balanceOf(alice);
+        ozBalanceBob = ozERC20.balanceOf(bob);
+
+        // assertTrue(_fm(ozBalanceBob + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
+        // assertTrue(ozBalanceAlicePostMock > ozBalanceAlicePostRedeem);
+        // assertTrue(ozBalanceAlicePostRedeem == 0 || ozBalanceAlicePostRedeem < 0.0000011 * 1e18);
+        // assertTrue(balanceAliceTestTokenPreRedeem < balanceAliceTestTokenPostRedeem);
+        // assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
     }
     
 
