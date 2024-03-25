@@ -188,30 +188,7 @@ contract Setup is Test {
     }
 
     function _chooseNetwork(Network chain_) private returns(string memory network) {
-        if (chain_ == Network.ARBITRUM) {
-            usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
-            usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
-            wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
-            usdcAddrImpl = 0x0f4fb9474303d10905AB86aA8d5A65FE44b6E04A;
-            wethUsdPoolUni = 0xC6962004f452bE9203591991D15f6b388e09E8D0; //not used. Remove
-            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
-            ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
-            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
-            rEthAddr = 0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8;
-            rEthWethPoolBalancer = 0xadE4A71BB62bEc25154CFc7e6ff49A513B491E81;
-            accessControlledOffchainAggregator = 0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7;
-            aeWETH = 0x8b194bEae1d3e0788A1a35173978001ACDFba668;
-            rEthEthChainlink = 0xD6aB2298946840262FcC278fF31516D39fF611eF;
-            rEthImpl = 0x3f770Ac673856F105b586bb393d122721265aD46;
-            feesCollectorBalancer = 0xce88686553686DA562CE7Cea497CE749DA109f9F;
-            fraxAddr = 0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F; //doesn't have a pool in Uniswap Arb, so it can only be used in L1.
-            daiAddr = 0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1;
-            rocketPoolStorage = address(0);
-            uniFactory = address(0);
-
-            network = "arbitrum";
-            mainBlockNumber = 136177703;
-        } else if (chain_ == Network.ETHEREUM) {
+        if (chain_ == Network.ETHEREUM) {
             usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
             usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
             wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;

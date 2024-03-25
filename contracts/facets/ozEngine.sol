@@ -127,6 +127,8 @@ contract ozEngine is Modifiers {
         
         msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
 
+        console.log('rETH coming in *******: ', amountInReth);
+
         //Swap rETH to WETH
         uint amountOut = _checkPauseAndSwap(
             s.rETH,
@@ -136,6 +138,8 @@ contract ozEngine is Modifiers {
             minAmountsOut,
             Action.OZ_OUT
         );
+
+        console.log('WETH after swap from rETH *******: ', amountOut);
 
         //swap WETH to underlying
         amountOut = _swapUni(

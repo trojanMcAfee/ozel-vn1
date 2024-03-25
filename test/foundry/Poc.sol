@@ -22,7 +22,7 @@ contract Poc is TestMethods {
     function test_redeem_rewards_chainlink() public returns(uint, uint) {
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
 
         _getResetVarsAndChangeSlip();        
         
@@ -51,6 +51,10 @@ contract Poc is TestMethods {
         assertTrue(_fm(ozERC20.balanceOf(bob) + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
 
         //This simulates the rETH rewards accrual.
+        console.log('');
+        console.log('^^^^^ ACCRUAL ^^^^^');
+        console.log('');
+
         _mock_rETH_ETH();
         _mock_rETH_ETH_historical(reth_eth_current);
 
@@ -110,7 +114,10 @@ contract Poc is TestMethods {
     * Delta between rETH mocks prev/post accrual: 3.846153846153859 %
     *
     * Unaccounted delta: 0.1729574592074492 % (slippage?? rounding?)
-    * When dealing big, unaccounted delta is: 0.1188423674962027 % (slippage! - confirm)
+    * When dealing BIG, unaccounted delta is: 0.1188423674962027 % (slippage! - confirm)
+    *
+    * Confirmed. WETH out in balancer swap is 0.01964522011528811 instead of 0.02043102891989964,
+    * due to balancer pool not using th mock rETH feed.
     */
     function test_rewards_accounting() public {
         (uint testTokenAmountIn, uint reth_usd_preAccrual) = test_redeem_rewards_chainlink();
