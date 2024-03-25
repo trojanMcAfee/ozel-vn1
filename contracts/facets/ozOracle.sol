@@ -52,6 +52,7 @@ contract ozOracle {
 
 
     function ETH_USD() public view returns(uint) {
+        // console.log('ethUsdChainlink in oracle: ', ethUsdChainlink);
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
         return success ? price : _callFallbackOracle(s.WETH);  
     }

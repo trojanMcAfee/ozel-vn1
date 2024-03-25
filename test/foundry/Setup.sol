@@ -46,6 +46,15 @@ import {RethLinkFeed, EthLinkFeed} from "./unit/mocks/MockFeeds.sol";
 
 // import "forge-std/console.sol";
 
+//****** */
+enum Network {
+    ARBITRUM,
+    ETHEREUM,
+    ETH_N_MOCKS
+}
+
+Network constant n = Network.ETH_N_MOCKS;
+//****** */
 
 contract Setup is Test {
 
@@ -60,11 +69,11 @@ contract Setup is Test {
     address internal bob;
     address internal charlie;
    
-    enum Network {
-        ARBITRUM,
-        ETHEREUM,
-        ETH_N_MOCKS
-    }
+    // enum Network {
+    //     ARBITRUM,
+    //     ETHEREUM,
+    //     ETH_N_MOCKS
+    // }
 
     enum Quantity {
         SMALL,
@@ -109,9 +118,8 @@ contract Setup is Test {
     address internal thirdTestToken;
 
     //Mocks 
-    RethLinkFeed internal mockRETH = new RethLinkFeed();
-    EthLinkFeed internal mockETH = new EthLinkFeed();
-
+    RethLinkFeed internal mockRETH;
+    EthLinkFeed internal mockETH;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -186,12 +194,14 @@ contract Setup is Test {
 
     /** FUNCTIONS **/ 
     function setUp() public {
-        string memory network = _chooseNetwork(Network.ETH_N_MOCKS);
+        // Network n = Network.ETH_N_MOCKS;
+        string memory network = _chooseNetwork(n);
+
         redStoneFork = vm.createSelectFork(vm.rpcUrl(network), redStoneBlock);
-        _runSetup();
+        _runSetup(n);
 
         mainFork = vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
-        _runSetup();
+        _runSetup(n);
     }
 
     function _chooseNetwork(Network chain_) private returns(string memory network) {
@@ -233,13 +243,17 @@ contract Setup is Test {
             usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
             wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
-            ethUsdChainlink = address(mockETH); //MOCK
+            
+            // ethUsdChainlink = address(mockETH); //MOCK
+            // console.log('address(mockETH): ', address(mockETH));
+            // console.log('ethUsdChainlink in setup: ', ethUsdChainlink);
+
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
             rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
             aeWETH = address(0);
-            rEthEthChainlink = address(mockRETH); //MOCK
+            // rEthEthChainlink = address(mockRETH); //MOCK
             rEthImpl = address(0);
             feesCollectorBalancer = address(0);
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
@@ -284,7 +298,7 @@ contract Setup is Test {
         return (baseAmount, amountBob, amountCharlie);
     }
 
-    function _runSetup() internal {
+    function _runSetup(Network n_) internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
         testToken = usdcAddr;
         secondTestToken = testToken == daiAddr ? usdcAddr : daiAddr;
@@ -296,6 +310,15 @@ contract Setup is Test {
         alice = vm.addr(ALICE_PK);
         bob = vm.addr(BOB_PK);
         charlie = vm.addr(CHARLIE_PK);
+
+        //Set up mocks
+        mockRETH = new RethLinkFeed();
+        mockETH = new EthLinkFeed();
+
+        if (n_ == Network.ETH_N_MOCKS) {
+            ethUsdChainlink = address(mockETH);
+            rEthEthChainlink = address(mockRETH);
+        }
 
         //Deploys diamond infra
         cutFacet = new DiamondCutFacet();

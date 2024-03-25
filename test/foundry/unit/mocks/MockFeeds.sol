@@ -34,7 +34,7 @@ contract EthLinkFeed is MockStorage {
     ) {
         return (
             uint80(2),
-            int(currentPriceETH),
+            int(currentPriceETH) / 1e10,
             block.timestamp,
             block.timestamp,
             uint80(1)
