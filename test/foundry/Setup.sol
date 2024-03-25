@@ -211,9 +211,9 @@ contract Setup is Test {
             wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
             wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
-            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
+            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; 
             ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
-            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
+            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; 
             rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
@@ -243,17 +243,11 @@ contract Setup is Test {
             usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
             wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
             swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
-            
-            // ethUsdChainlink = address(mockETH); //MOCK
-            // console.log('address(mockETH): ', address(mockETH));
-            // console.log('ethUsdChainlink in setup: ', ethUsdChainlink);
-
             vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
             rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
             aeWETH = address(0);
-            // rEthEthChainlink = address(mockRETH); //MOCK
             rEthImpl = address(0);
             feesCollectorBalancer = address(0);
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;

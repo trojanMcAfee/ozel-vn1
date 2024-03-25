@@ -41,3 +41,16 @@ contract EthLinkFeed is MockStorage {
         );
     }
 }
+
+
+contract SwapRouterMock {
+
+    function exactInputSingle(
+        ExactInputSingleParams calldata params
+    ) external payable returns (uint256 amountOut) {
+        //finish this mock and use it
+
+    }
+
+
+}

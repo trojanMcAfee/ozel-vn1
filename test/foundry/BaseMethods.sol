@@ -95,8 +95,6 @@ contract BaseMethods is Setup {
         address token_, 
         uint amountIn_
     ) internal {
-        // if (token_ == usdcAddr) amountIn_ *= 1e12;
-
         uint pk;
 
         if (user_ == alice) {

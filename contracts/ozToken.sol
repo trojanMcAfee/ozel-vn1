@@ -247,11 +247,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
             return shares;
 
+            //put a mint even here
+
         } catch Error(string memory reason) {
             revert OZError22(reason);
         }
-
-        //put a mint even here
     }
     //-------------
 
