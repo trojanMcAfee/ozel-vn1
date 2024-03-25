@@ -60,7 +60,8 @@ contract Setup is Test {
    
     enum Network {
         ARBITRUM,
-        ETHEREUM
+        ETHEREUM,
+        ETH_N_MOCKS
     }
 
     enum Quantity {
@@ -179,7 +180,7 @@ contract Setup is Test {
 
     /** FUNCTIONS **/ 
     function setUp() public {
-        string memory network = _chooseNetwork(Network.ETHEREUM);
+        string memory network = _chooseNetwork(Network.ETH_N_MOCKS);
         redStoneFork = vm.createSelectFork(vm.rpcUrl(network), redStoneBlock);
         _runSetup();
 
@@ -189,6 +190,37 @@ contract Setup is Test {
 
     function _chooseNetwork(Network chain_) private returns(string memory network) {
         if (chain_ == Network.ETHEREUM) {
+            usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
+            usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+            wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+            usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
+            wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
+            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
+            ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
+            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
+            rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+            rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
+            accessControlledOffchainAggregator = address(0);
+            aeWETH = address(0);
+            rEthEthChainlink = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
+            rEthImpl = address(0);
+            feesCollectorBalancer = address(0);
+            fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
+            daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+            rocketPoolStorage = 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46;
+            rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
+            uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
+            tellorOracle = 0x8cFc184c877154a8F9ffE0fe75649dbe5e2DBEbf;
+            weETHETHredStone = 0x8751F736E94F6CD167e8C5B97E245680FbD9CC36;
+            weETHUSDredStone = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
+            protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
+            rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+
+            network = "ethereum";
+            mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
+            secondaryBlockNumber = 18785221;
+            redStoneBlock = 19154743;
+        } else if (chain_ == Network.ETH_N_MOCKS) {
             usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
             usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
             wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
