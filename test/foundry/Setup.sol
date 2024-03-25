@@ -42,6 +42,8 @@ import {OZLrewards} from "../../contracts/facets/OZLrewards.sol";
 import {VestingWallet} from "@openzeppelin/contracts/finance/VestingWallet.sol";
 import {OZLvesting} from "../../contracts/OZLvesting.sol";
 
+import {RethLinkFeed} from "./unit/mocks/RethLinkFeed.sol";
+
 // import "forge-std/console.sol";
 
 
@@ -105,6 +107,9 @@ contract Setup is Test {
     address internal testToken;
     address internal secondTestToken;
     address internal thirdTestToken;
+
+    //Mocks 
+    RethLinkFeed internal mockRETH = new RethLinkFeed();
 
 
     //Default diamond contracts and facets
@@ -233,7 +238,7 @@ contract Setup is Test {
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
             aeWETH = address(0);
-            rEthEthChainlink = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
+            rEthEthChainlink = address(mockRETH);
             rEthImpl = address(0);
             feesCollectorBalancer = address(0);
             fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
@@ -602,5 +607,6 @@ contract Setup is Test {
         vm.label(address(teamVesting), 'TeamVestingWallet');
         vm.label(address(guildVesting), 'GuildVestingWallet');
         vm.label(rethWethUniPool, 'rethWethUniPool');
+        vm.label(address(mockRETH), 'mockRETH');
     }
 }

@@ -16,7 +16,7 @@ contract RethLinkFeed is MockStorage {
     ) {
 
         return (
-            uint80(2).
+            uint80(2),
             int(rETHPreAccrual),
             block.timestamp,
             block.timestamp,
