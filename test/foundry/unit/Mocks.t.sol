@@ -13,9 +13,12 @@ contract MocksTests is MockStorage, TestMethods {
 
     
 
-    function test_rETH_ETH() public {
-        uint mockPrice = OZ.rETH_ETH();
-        assertTrue(mockPrice == rETHPreAccrual);
+    function test_chainlink_feeds() public {
+        uint mockPriceRETH = OZ.rETH_ETH();
+        assertTrue(mockPriceRETH == rETHPreAccrual);
+
+        // uint mockPriceETH = OZ.ETH_USD();
+        // assertTrue(mockPriceETH == currentPriceETH);
     }
 
 
