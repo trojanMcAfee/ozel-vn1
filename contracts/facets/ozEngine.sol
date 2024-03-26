@@ -88,6 +88,11 @@ contract ozEngine is Modifiers {
             minAmountsOut[0]
         );
 
+        // console.log('sender: ', msg.sender);
+        // console.log('this: ', address(this));
+        console.log('amountOut: ', amountOut);
+        revert('hereeeee');
+
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
@@ -176,7 +181,6 @@ contract ozEngine is Modifiers {
         uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint amountOut) {
-
         (address tokenOutInternal, uint minAmountOutFirstLeg) = 
             _triageInternalVars(type_, minAmountsOut_, tokenOut_);
 
@@ -222,6 +226,10 @@ contract ozEngine is Modifiers {
         uint amountIn_, 
         uint minAmountOut_
     ) private returns(uint) {
+        // console.log('address(this): ', address(this));
+        // console.log('s.swapRouterUni: ', s.swapRouterUni);
+        console.log('allow2: ', IERC20(tokenIn_).allowance(address(this), s.swapRouterUni));
+
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
 
         ISwapRouter.ExactInputSingleParams memory params =
@@ -236,7 +244,7 @@ contract ozEngine is Modifiers {
                 sqrtPriceLimitX96: 0
             });
 
-        try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) { 
+        try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) {     
             return amountOut;
         } catch Error(string memory reason) {
             revert OZError01(reason);
@@ -267,6 +275,11 @@ contract ozEngine is Modifiers {
             toInternalBalance: false
         });
 
+        console.log('');
+        console.log('tokenIn_: ', tokenIn_);
+        console.log('singleSwap.amount in engine: ', singleSwap.amount);
+        console.log('');
+
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
     }
@@ -279,6 +292,13 @@ contract ozEngine is Modifiers {
         uint blockStamp_
     ) private returns(uint) 
     {
+        console.log('');
+        console.log('balance of sender: ', IERC20(address(singleSwap_.assetIn)).balanceOf(msg.sender));
+        console.log('msg.sender: ', msg.sender);
+        console.log('balance of this: ', IERC20(address(singleSwap_.assetIn)).balanceOf(address(this)));
+        console.log('address(this): ', address(this));
+        console.log('');
+
         try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
             if (amountOut == 0) revert OZError02();
             return amountOut;

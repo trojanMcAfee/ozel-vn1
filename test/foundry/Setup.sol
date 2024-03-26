@@ -42,9 +42,15 @@ import {OZLrewards} from "../../contracts/facets/OZLrewards.sol";
 import {VestingWallet} from "@openzeppelin/contracts/finance/VestingWallet.sol";
 import {OZLvesting} from "../../contracts/OZLvesting.sol";
 
-import {RethLinkFeed, EthLinkFeed} from "./unit/mocks/MockFeeds.sol";
+import {
+    RethLinkFeed, 
+    EthLinkFeed,
+    SwapRouterMock,
+    VaultMock
+} from "./unit/mocks/MockContracts.sol";
 
-// import "forge-std/console.sol";
+import "forge-std/console.sol";
+
 
 //****** */
 enum Network {
@@ -53,11 +59,10 @@ enum Network {
     ETH_N_MOCKS
 }
 
-Network constant n = Network.ETH_N_MOCKS;
+Network constant n = Network.ETHEREUM;
 //****** */
 
 contract Setup is Test {
-
 
     uint OWNER_PK = 123;
     uint ALICE_PK = 456;
@@ -68,12 +73,6 @@ contract Setup is Test {
     address internal alice;
     address internal bob;
     address internal charlie;
-   
-    // enum Network {
-    //     ARBITRUM,
-    //     ETHEREUM,
-    //     ETH_N_MOCKS
-    // }
 
     enum Quantity {
         SMALL,
@@ -120,6 +119,8 @@ contract Setup is Test {
     //Mocks 
     RethLinkFeed internal mockRETH;
     EthLinkFeed internal mockETH;
+    SwapRouterMock internal mockRouter;
+    VaultMock internal mockVault;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -194,7 +195,6 @@ contract Setup is Test {
 
     /** FUNCTIONS **/ 
     function setUp() public {
-        // Network n = Network.ETH_N_MOCKS;
         string memory network = _chooseNetwork(n);
 
         redStoneFork = vm.createSelectFork(vm.rpcUrl(network), redStoneBlock);
@@ -242,8 +242,6 @@ contract Setup is Test {
             wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
             wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
-            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
-            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
             rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
@@ -306,12 +304,19 @@ contract Setup is Test {
         charlie = vm.addr(CHARLIE_PK);
 
         //Set up mocks
-        mockRETH = new RethLinkFeed();
-        mockETH = new EthLinkFeed();
-
         if (n_ == Network.ETH_N_MOCKS) {
+            mockRETH = new RethLinkFeed();
+            mockETH = new EthLinkFeed();
+            mockRouter = new SwapRouterMock();
+            mockVault = new VaultMock();
+
             ethUsdChainlink = address(mockETH);
             rEthEthChainlink = address(mockRETH);
+            swapRouterUni = address(mockRouter);
+            vaultBalancer = address(mockVault);
+
+            deal(wethAddr, address(mockRouter), 1000 * 1e18);
+            console.log('weth bal after deal: ', IERC20Permit(wethAddr).balanceOf(address(mockRouter)));
         }
 
         //Deploys diamond infra
@@ -627,5 +632,7 @@ contract Setup is Test {
         vm.label(rethWethUniPool, 'rethWethUniPool');
         vm.label(address(mockRETH), 'mockRETH');
         vm.label(address(mockETH), 'mockETH');
+        vm.label(address(mockRouter), 'mockRouter');
+        vm.label(address(mockVault), 'mockVault');
     }
 }

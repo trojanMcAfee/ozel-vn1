@@ -140,7 +140,6 @@ contract wozTokenTest is TestMethods {
     //tests the mintAndWrap() function    
     function test_mint_and_wrap() public {
         //Pre-conditions
-        console.log(1);
         (ozIToken ozERC20, wozIToken wozERC20) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
@@ -157,9 +156,7 @@ contract wozTokenTest is TestMethods {
         );
 
         //Action
-        console.log(2);
         uint wozAmountOut = wozERC20.mintAndWrap(data, alice);
-        console.log(3);
 
         assertTrue(wozAmountOut == wozERC20.balanceOf(alice));
         vm.stopPrank();

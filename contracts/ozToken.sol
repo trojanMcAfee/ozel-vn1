@@ -226,12 +226,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         bytes memory data_, 
         address owner_
     ) external updateReward(owner_, _ozDiamond) returns(uint) { 
-        
+        console.log('allow4: ', IERC20Permit(asset()).allowance(address(this), 0x3Cff5E7eBecb676c3Cb602D0ef2d46710b88854E));
+
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
 
         uint assets = amts.amountIn.format(FORMAT_DECIMALS); 
 
+        console.log('sender2: ', msg.sender);
+        console.log('this: ', address(this));
         try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner_, amts) returns(uint amountRethOut) {
             _setValuePerOzToken(amountRethOut, true);
 
