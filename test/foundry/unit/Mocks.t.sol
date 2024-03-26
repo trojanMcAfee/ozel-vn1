@@ -50,16 +50,17 @@ contract MocksTests is MockStorage, TestMethods {
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('ozBalanceAlice: ', ozBalanceAlice);
 
-        revert('hereeeeee');
-
-        assertTrue(_fm(ozERC20.balanceOf(bob) + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
+        // assertTrue(_fm(ozERC20.balanceOf(bob) + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
 
         //This simulates the rETH rewards accrual.
         console.log('');
         console.log('^^^^^ ACCRUAL ^^^^^');
         console.log('');
 
-        _mock_rETH_ETH();
+        _mock_rETH_ETH_unit();
+        console.log('reth pre-revert: ', OZ.rETH_ETH());
+        revert('hereeeeee22');
+
         _mock_rETH_ETH_historical(reth_eth_current);
 
         assertTrue(OZ.rETH_ETH() > reth_eth_current);

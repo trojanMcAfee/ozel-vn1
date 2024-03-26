@@ -97,18 +97,17 @@ contract ozOracle {
 
 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
-        address rETHfeed = 0x536218f9E9Eb48863970252233c8F271f554C2d0;
         uint price;
         
         (
             uint80 roundId,
             int answer,,
             uint updatedAt,
-        ) = AggregatorV3Interface(rETHfeed).latestRoundData();
+        ) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
         price = uint(answer);
 
         if (side_ == Dir.DOWN) {
-            (,int pastAnswer,,,) = AggregatorV3Interface(rETHfeed).getRoundData(roundId - 1);
+            (,int pastAnswer,,,) = AggregatorV3Interface(s.rEthEthChainlink).getRoundData(roundId - 1);
             price = uint(pastAnswer);
         }
 

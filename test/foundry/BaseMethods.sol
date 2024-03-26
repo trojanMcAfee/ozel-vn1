@@ -19,6 +19,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {RethLinkFeedAccrued} from "./unit/mocks/MockContracts.sol";
 
 import "forge-std/console.sol";
 
@@ -394,10 +395,30 @@ contract BaseMethods is Setup {
         ); 
     }
 
+
+    function _mock_rETH_ETH_unit() internal {
+        RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
+
+        bytes memory bytecode = address(mockRETHaccrual).code;
+        // console.logBytes(bytecode);
+        console.log('');
+
+        bytes memory pre = rEthEthChainlink.code;
+        // console.logBytes(pre);
+        console.log('');
+
+        vm.etch(rEthEthChainlink, bytecode);   
+
+        bytes memory post = rEthEthChainlink.code;
+        // console.logBytes(post);
+    }
+
     
     function _mock_rETH_ETH() internal {
         uint bpsIncrease = 400; //92 - 400
         uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
+
+        console.log('rETHETHmock: ', rETHETHmock);
 
         vm.mockCall( 
             rEthEthChainlink,
@@ -405,6 +426,7 @@ contract BaseMethods is Setup {
             abi.encode(uint80(1), int(rETHETHmock), uint(0), block.timestamp, uint80(0))
         ); 
     }
+
 
     //Put this together with ^^^^
     function _mock_rETH_ETH(Dir direction_, uint bps_) internal {

@@ -79,10 +79,6 @@ contract ozEngine is Modifiers {
         
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
 
-        console.log('sender3: ', msg.sender);
-        console.log('this: ', address(this));
-        console.log('');
-
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
             underlying_, 
@@ -91,11 +87,6 @@ contract ozEngine is Modifiers {
             amountIn, 
             minAmountsOut[0]
         );
-
-        // console.log('sender: ', msg.sender);
-        // console.log('this: ', address(this));
-        console.log('amountOut: ', amountOut);
-        // revert('hereeeee');
 
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
@@ -279,11 +270,6 @@ contract ozEngine is Modifiers {
             toInternalBalance: false
         });
 
-        console.log('');
-        console.log('tokenIn_: ', tokenIn_);
-        console.log('singleSwap.amount in engine: ', singleSwap.amount);
-        console.log('');
-
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
     }
@@ -296,13 +282,6 @@ contract ozEngine is Modifiers {
         uint blockStamp_
     ) private returns(uint) 
     {
-        console.log('');
-        console.log('balance of sender: ', IERC20(address(singleSwap_.assetIn)).balanceOf(msg.sender));
-        console.log('msg.sender: ', msg.sender);
-        console.log('balance of this: ', IERC20(address(singleSwap_.assetIn)).balanceOf(address(this)));
-        console.log('address(this): ', address(this));
-        console.log('');
-
         try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
             if (amountOut == 0) revert OZError02();
             return amountOut;

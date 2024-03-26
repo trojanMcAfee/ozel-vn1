@@ -5,7 +5,7 @@ pragma solidity 0.8.21;
 import {MockStorage} from "../MockStorage.sol";
 import {IAsset} from "../../../../contracts/interfaces/IBalancer.sol";
 import {IERC20} from "@uniswap/v2-core/contracts/interfaces/IERC20.sol";
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+// import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -18,9 +18,53 @@ contract RethLinkFeed is MockStorage {
         uint256 updatedAt,
         uint80 answeredInRound
     ) {
+        console.log('should not log');
+
         return (
             uint80(2),
             int(rETHPreAccrual),
+            block.timestamp,
+            block.timestamp,
+            uint80(1)
+        );
+    }
+
+    function getRoundData(uint80 roundId_) external view returns (
+      uint80 roundId,
+      int256 answer,
+      uint256 startedAt,
+      uint256 updatedAt,
+      uint80 answeredInRound
+    ) {
+        int price;
+
+        if (roundId_ == 18446744073709551853) price = 1085995250282916400;
+        if (roundId_ == 0) price = 1086486906594931900;
+
+        return (
+            uint80(1),
+            price,
+            1,
+            1,
+            uint80(1)
+        );
+    }
+}
+
+contract RethLinkFeedAccrued is MockStorage {
+    function latestRoundData() external view returns(
+        uint80 roundId,
+        int256 answer,
+        uint256 startedAt,
+        uint256 updatedAt,
+        uint80 answeredInRound
+    ) {
+        console.log('should log');
+        console.log('rETHPostAccrual: ', rETHPostAccrual);
+
+        return (
+            uint80(2),
+            int(rETHPostAccrual),
             block.timestamp,
             block.timestamp,
             uint80(1)
@@ -64,7 +108,7 @@ contract SwapRouterMock {
 
     function exactInputSingle(
         ExactInputSingleParams calldata params
-    ) external payable returns (uint256 amountOut) {
+    ) external payable returns (uint256) {
         emit DeadVar(params);
 
         address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1;
@@ -100,10 +144,6 @@ contract VaultMock {
 
     event DeadVars(FundManagement funds, uint limit, uint deadline);
 
-    // function getPoolId() public view returns (bytes32) {
-    //     return 0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112;
-    // }
-
 
     function swap(
         SingleSwap memory singleSwap,
@@ -111,24 +151,9 @@ contract VaultMock {
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint256) {
-        address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; //0xDB25A7b768311dE128BBDa7B8426c3f9C74f3240
+        address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; 
 
-        console.log('allow - vault: ', IERC20(address(singleSwap.assetIn)).allowance(msg.sender, address(this)));
-        console.log('singleSwap.amount: ', singleSwap.amount);
-        console.log('address(singleSwap.assetIn): ', address(singleSwap.assetIn));
-        console.log('bal tokenIn - sender: ', IERC20(address(singleSwap.assetIn)).balanceOf(msg.sender));
-        console.log('bal tokenIn - this: ', IERC20(address(singleSwap.assetIn)).balanceOf(address(this)));
-        console.log('bal tokenIn - ozDiamond: ', IERC20(address(singleSwap.assetIn)).balanceOf(ozDiamond));
-        console.log('owner of coins - sender: ', msg.sender);
-        console.log('owner of coins - this: ', address(this));
-
-        //spender -> mockVault
-        //owner -> ozDiamond
-        //msg.sender -> 
-        //address(this) -> mockVault
-
-        ERC20(address(singleSwap.assetIn)).transferFrom(ozDiamond, address(1), singleSwap.amount);
-        console.log(2);
+        IERC20(address(singleSwap.assetIn)).transferFrom(ozDiamond, address(1), singleSwap.amount);
         
         if (singleSwap.amount == 19662547189176713) return 18081415515835888;
         if (singleSwap.amount == 19662545835237478) return 18081413499483890;

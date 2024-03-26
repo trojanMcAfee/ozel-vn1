@@ -232,10 +232,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint assets = amts.amountIn.format(FORMAT_DECIMALS); 
 
-        console.log('sender2: ', msg.sender);
-        console.log('this: ', address(this));
-        console.log('');
-
         try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner_, amts) returns(uint amountRethOut) {
             _setValuePerOzToken(amountRethOut, true);
 

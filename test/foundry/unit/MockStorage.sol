@@ -7,5 +7,6 @@ contract MockStorage {
 
     uint rETHPreAccrual = 1086486906594931900;
     uint currentPriceETH = 1677401074250000000000;
+    uint constant rETHPostAccrual = 1129946382858729176;
 
 }
