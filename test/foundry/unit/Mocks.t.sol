@@ -47,7 +47,7 @@ contract MocksTests is MockStorage, TestMethods {
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
-        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        uint ozBalanceAlice = ozERC20.balanceOf(alice); //<--- debugging this
         console.log('ozBalanceAlice: ', ozBalanceAlice);
 
         // assertTrue(_fm(ozERC20.balanceOf(bob) + ozBalanceAlice) == _fm(ozERC20.totalSupply()));

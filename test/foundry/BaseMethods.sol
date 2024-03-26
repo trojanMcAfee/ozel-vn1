@@ -398,27 +398,13 @@ contract BaseMethods is Setup {
 
     function _mock_rETH_ETH_unit() internal {
         RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
-
-        bytes memory bytecode = address(mockRETHaccrual).code;
-        // console.logBytes(bytecode);
-        console.log('');
-
-        bytes memory pre = rEthEthChainlink.code;
-        // console.logBytes(pre);
-        console.log('');
-
-        vm.etch(rEthEthChainlink, bytecode);   
-
-        bytes memory post = rEthEthChainlink.code;
-        // console.logBytes(post);
+        vm.etch(rEthEthChainlink, address(mockRETHaccrual).code);   
     }
 
     
     function _mock_rETH_ETH() internal {
         uint bpsIncrease = 400; //92 - 400
         uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
-
-        console.log('rETHETHmock: ', rETHETHmock);
 
         vm.mockCall( 
             rEthEthChainlink,

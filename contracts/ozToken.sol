@@ -357,6 +357,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
+
+        // if (preBalance != 0) {
+        //     console.log('preBalance: ', preBalance);
+        //     console.log('_calculateScalingFactor2(account_): ', _calculateScalingFactor2(account_));
+        // }
+
         return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor2(account_), 1e18);
     }
 

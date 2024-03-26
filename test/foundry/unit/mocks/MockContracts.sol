@@ -18,8 +18,6 @@ contract RethLinkFeed is MockStorage {
         uint256 updatedAt,
         uint80 answeredInRound
     ) {
-        console.log('should not log');
-
         return (
             uint80(2),
             int(rETHPreAccrual),
@@ -59,9 +57,6 @@ contract RethLinkFeedAccrued is MockStorage {
         uint256 updatedAt,
         uint80 answeredInRound
     ) {
-        console.log('should log');
-        console.log('rETHPostAccrual: ', rETHPostAccrual);
-
         return (
             uint80(2),
             int(rETHPostAccrual),
