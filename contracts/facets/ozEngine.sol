@@ -79,6 +79,10 @@ contract ozEngine is Modifiers {
         
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
 
+        console.log('sender3: ', msg.sender);
+        console.log('this: ', address(this));
+        console.log('');
+
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
             underlying_, 
@@ -91,7 +95,7 @@ contract ozEngine is Modifiers {
         // console.log('sender: ', msg.sender);
         // console.log('this: ', address(this));
         console.log('amountOut: ', amountOut);
-        revert('hereeeee');
+        // revert('hereeeee');
 
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
@@ -228,7 +232,7 @@ contract ozEngine is Modifiers {
     ) private returns(uint) {
         // console.log('address(this): ', address(this));
         // console.log('s.swapRouterUni: ', s.swapRouterUni);
-        console.log('allow2: ', IERC20(tokenIn_).allowance(address(this), s.swapRouterUni));
+        // console.log('allow2: ', IERC20(tokenIn_).allowance(address(this), s.swapRouterUni));
 
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
 

@@ -66,8 +66,8 @@ contract SwapRouterMock {
         ExactInputSingleParams calldata params
     ) external payable returns (uint256 amountOut) {
         emit DeadVar(params);
-        
-        address ozDiamond = 0xDB25A7b768311dE128BBDa7B8426c3f9C74f3240;
+
+        address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1;
         uint amountOut = 19662547189176713;
 
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
@@ -111,7 +111,7 @@ contract VaultMock {
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint256) {
-        address ozDiamond = 0xDB25A7b768311dE128BBDa7B8426c3f9C74f3240; //0xDB25A7b768311dE128BBDa7B8426c3f9C74f3240
+        address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; //0xDB25A7b768311dE128BBDa7B8426c3f9C74f3240
 
         console.log('allow - vault: ', IERC20(address(singleSwap.assetIn)).allowance(msg.sender, address(this)));
         console.log('singleSwap.amount: ', singleSwap.amount);
