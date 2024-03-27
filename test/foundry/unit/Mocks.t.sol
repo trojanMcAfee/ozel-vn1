@@ -6,6 +6,8 @@ import {TestMethods} from "../TestMethods.sol";
 import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
 import {MockStorage} from "./MockStorage.sol";
+// import {AppStorage, Asset, OZLrewards, AmountsIn, AmountsOut} from "../AppStorage.sol";
+import {AmountsIn} from "../../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -46,7 +48,9 @@ contract MocksTests is MockStorage, TestMethods {
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
         console.log(12);
+
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
+
         console.log(13);
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);

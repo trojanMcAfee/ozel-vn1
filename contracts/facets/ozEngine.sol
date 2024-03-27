@@ -94,6 +94,8 @@ contract ozEngine is Modifiers {
             minAmountsOut[0]
         );
 
+        console.log('amountOut from swapUni: ', amountOut);
+
         x = IERC20(s.rETH).balanceOf(address(this));
         console.log('rETH bal diamond ######: ', x);
 
@@ -236,10 +238,6 @@ contract ozEngine is Modifiers {
         uint amountIn_, 
         uint minAmountOut_
     ) private returns(uint) {
-        // console.log('address(this): ', address(this));
-        // console.log('s.swapRouterUni: ', s.swapRouterUni);
-        // console.log('allow2: ', IERC20(tokenIn_).allowance(address(this), s.swapRouterUni));
-
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
 
         ISwapRouter.ExactInputSingleParams memory params =
@@ -253,6 +251,11 @@ contract ozEngine is Modifiers {
                 amountOutMinimum: minAmountOut_.formatMinOut(tokenOut_), 
                 sqrtPriceLimitX96: 0
             });
+
+        // console.log('params.amountOutMinimum: ', params.amountOutMinimum);
+        // console.log('block.timestamp: ', block.timestamp);
+        // console.log('tokenIn_: ', tokenIn_);
+        // console.log('tokenOut_: ', tokenOut_);
 
         try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) {     
             return amountOut;

@@ -103,14 +103,24 @@ contract SwapRouterMock {
 
     function exactInputSingle(
         ExactInputSingleParams calldata params
-    ) external payable returns (uint256) {
+    ) external payable returns (uint) {
         emit DeadVar(params);
 
         address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1;
         uint amountOut = 19662547189176713;
 
+        console.log('bal addr(1): ', IERC20(params.tokenIn).balanceOf(address(1)));
+
+        if (IERC20(params.tokenIn).balanceOf(address(1)) == 27444635666) {
+            amountOut = 19662545835237478;
+        }
+        
+        
+
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
         IERC20(params.tokenOut).transfer(ozDiamond, amountOut);
+
+        console.log('amountOut inside mock uni: ', amountOut);
 
         if (params.amountIn == 33000000) return amountOut;
         if (params.amountIn == 19646820040369690) return 32940641;
@@ -148,19 +158,26 @@ contract VaultMock {
     ) external payable returns (uint) {
         address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; 
         uint amountOut;
-        
+        // bool flag;
 
         IERC20(address(singleSwap.assetIn)).transferFrom(ozDiamond, address(1), singleSwap.amount);
     
+        // if (flag) {
+            // singleSwap.amount = 19662545835237478;
+        // }
 
-        if (singleSwap.amount == 19662547189176713) amountOut = 18081415515835888;
+        if (singleSwap.amount == 19662547189176713) {
+            amountOut = 18081415515835888;
+            // flag = true;
+        }
+
         if (singleSwap.amount == 19662545835237478) amountOut = 18081413499483890;
         if (singleSwap.amount == 18081414507659889) amountOut = 19646820040369690;
 
         console.log('singleSwap.amount == 18081414507659889: ', singleSwap.amount == 18081414507659889);
 
         //It should be the first from || and not the 2nd. Check *******
-        if (singleSwap.amount == 18081414507659889) { //singleSwap.amount == 18081415515835888
+        if (singleSwap.amount == 18081414507659889) { //18081415515835888/singleSwap.amount == 
             console.log('should log2');
             amountOut = 19646820040369690;
         }
