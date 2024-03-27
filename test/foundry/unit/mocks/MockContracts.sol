@@ -156,8 +156,8 @@ contract VaultMock {
 
         console.log('singleSwap.amount == 18081414507659889: ', singleSwap.amount == 18081414507659889);
 
-        //It should be the first from || and not the 2nd. Check
-        if (singleSwap.amount == 18081414507659888 || singleSwap.amount == 18081415515835888) {
+        //It should be the first from || and not the 2nd. Check *******
+        if (singleSwap.amount == 18081414507659889) { //singleSwap.amount == 18081415515835888
             console.log('should log2');
             amountOut = 19646820040369690;
         }
