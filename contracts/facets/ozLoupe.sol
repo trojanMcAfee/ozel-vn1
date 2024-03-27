@@ -32,7 +32,11 @@ contract ozLoupe is DiamondLoupeFacet {
     //Put this function together with getUnderlyingValue() from ozOracle.sol
     function totalUnderlying(Asset type_) public view returns(uint total) {
         total = IERC20Permit(s.rETH).balanceOf(address(this));
+        console.log('total ^^^^^^^^: ', total);
         if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
+        //Put a check for Asset.UNDERLYING
+        //Check if an attack could break the system by dusting ozDiamond with rETH,
+        //if it could break the calculations of balances, ozTokens, etc
     }
 
 
@@ -88,6 +92,9 @@ contract ozLoupe is DiamondLoupeFacet {
         uint amountInReth = ozERC20.convertToUnderlying(
             ozERC20.subConvertToShares(ozAmountIn_, owner_)
         );
+
+        console.log('amountInReth ***************: ', amountInReth);
+        console.log('ozERC20.subConvertToShares(ozAmountIn_, owner_): ', ozERC20.subConvertToShares(ozAmountIn_, owner_));
 
         ozIDiamond OZ = ozIDiamond(address(this));
         uint minAmountOutWeth = amountInReth.calculateMinAmountOut(Helpers.rETH_ETH(OZ), slippage_);

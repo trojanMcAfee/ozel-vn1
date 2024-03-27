@@ -45,9 +45,11 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('amountIn testToken: ', amountIn);
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
+        console.log(12);
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
+        console.log(13);
 
-        uint ozBalanceAlice = ozERC20.balanceOf(alice); //<--- debugging this
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('ozBalanceAlice: ', ozBalanceAlice);
 
         // assertTrue(_fm(ozERC20.balanceOf(bob) + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
@@ -59,7 +61,7 @@ contract MocksTests is MockStorage, TestMethods {
 
         _mock_rETH_ETH_unit();
         console.log('reth pre-revert: ', OZ.rETH_ETH());
-        revert('hereeeeee22');
+        // revert('hereeeeee23');
 
         _mock_rETH_ETH_historical(reth_eth_current);
 

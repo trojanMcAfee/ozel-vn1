@@ -19,7 +19,7 @@ contract RethLinkFeed is MockStorage {
         uint80 answeredInRound
     ) {
         return (
-            uint80(2),
+            uint80(18446744073709551854),
             int(rETHPreAccrual),
             block.timestamp,
             block.timestamp,
@@ -27,7 +27,7 @@ contract RethLinkFeed is MockStorage {
         );
     }
 
-    function getRoundData(uint80 roundId_) external view returns (
+    function getRoundData(uint80 roundId_) external pure returns (
       uint80 roundId,
       int256 answer,
       uint256 startedAt,
@@ -145,15 +145,28 @@ contract VaultMock {
         FundManagement memory funds,
         uint256 limit,
         uint256 deadline
-    ) external payable returns (uint256) {
+    ) external payable returns (uint) {
         address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; 
+        uint amountOut;
 
         IERC20(address(singleSwap.assetIn)).transferFrom(ozDiamond, address(1), singleSwap.amount);
         
-        if (singleSwap.amount == 19662547189176713) return 18081415515835888;
-        if (singleSwap.amount == 19662545835237478) return 18081413499483890;
-        if (singleSwap.amount == 18081414507659889) return 19646820040369690;
+        if (singleSwap.amount == 19662547189176713) amountOut = 18081415515835888;
+        if (singleSwap.amount == 19662545835237478) amountOut = 18081413499483890;
 
+        console.log('singleSwap.amount == 18081414507659889: ', singleSwap.amount == 18081414507659889);
+
+        //It should be the first from || and not the 2nd. Check
+        if (singleSwap.amount == 18081414507659888 || singleSwap.amount == 18081415515835888) {
+            console.log('should log2');
+            amountOut = 19646820040369690;
+        }
+
+        IERC20(address(singleSwap.assetOut)).transfer(ozDiamond, amountOut);
         emit DeadVars(funds, limit, deadline);
+
+        console.log('amountOut in mock: ', amountOut);
+
+        return amountOut;
     }
 }

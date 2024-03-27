@@ -270,8 +270,12 @@ contract ozEngine is Modifiers {
             toInternalBalance: false
         });
 
+        console.log('333');
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
+        console.log('singleSwap.amount: ', singleSwap.amount);
+        console.log('334');
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
+        console.log('335');
     }
 
 
@@ -283,6 +287,8 @@ contract ozEngine is Modifiers {
     ) private returns(uint) 
     {
         try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
+            console.log('amountOut: ', amountOut);
+            
             if (amountOut == 0) revert OZError02();
             return amountOut;
         } catch Error(string memory reason) {
