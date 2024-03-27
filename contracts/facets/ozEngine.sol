@@ -71,6 +71,9 @@ contract ozEngine is Modifiers {
     ) external onlyOzToken returns(uint) { 
         uint amountIn = amounts_.amountIn;
 
+        uint x = IERC20(s.rETH).balanceOf(address(this));
+        console.log('rETH bal diamond ######: ', x);
+
         /**
          * minAmountsOut[0] - minWethOut
          * minAmountsOut[1] - minRethOut
@@ -78,6 +81,9 @@ contract ozEngine is Modifiers {
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
         
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
+
+        x = IERC20(s.rETH).balanceOf(address(this));
+        console.log('rETH bal diamond ######: ', x);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
@@ -87,6 +93,9 @@ contract ozEngine is Modifiers {
             amountIn, 
             minAmountsOut[0]
         );
+
+        x = IERC20(s.rETH).balanceOf(address(this));
+        console.log('rETH bal diamond ######: ', x);
 
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
@@ -190,12 +199,18 @@ contract ozEngine is Modifiers {
                 minAmountOutFirstLeg
             );
         } else {
+            uint x = IERC20(s.rETH).balanceOf(address(this));
+            console.log('rETH bal diamond ######: ', x);
+
             amountOut = _swapBalancer(
                 tokenIn_,
                 tokenOutInternal,
                 amountIn_,
                 minAmountOutFirstLeg
             );
+
+            x = IERC20(s.rETH).balanceOf(address(this));
+            console.log('rETH bal diamond ######: ', x);
         }
 
         if (type_ == Action.OZL_IN) {
@@ -287,7 +302,7 @@ contract ozEngine is Modifiers {
     ) private returns(uint) 
     {
         try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
-            console.log('amountOut: ', amountOut);
+            console.log('amountOut in bal: ', amountOut);
             
             if (amountOut == 0) revert OZError02();
             return amountOut;

@@ -148,11 +148,14 @@ contract VaultMock {
     ) external payable returns (uint) {
         address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; 
         uint amountOut;
+        
 
         IERC20(address(singleSwap.assetIn)).transferFrom(ozDiamond, address(1), singleSwap.amount);
-        
+    
+
         if (singleSwap.amount == 19662547189176713) amountOut = 18081415515835888;
         if (singleSwap.amount == 19662545835237478) amountOut = 18081413499483890;
+        if (singleSwap.amount == 18081414507659889) amountOut = 19646820040369690;
 
         console.log('singleSwap.amount == 18081414507659889: ', singleSwap.amount == 18081414507659889);
 
