@@ -47,11 +47,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('amountIn testToken: ', amountIn);
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
-        console.log(12);
-
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
-
-        console.log(13);
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('ozBalanceAlice: ', ozBalanceAlice);

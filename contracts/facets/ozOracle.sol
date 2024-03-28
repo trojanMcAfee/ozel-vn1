@@ -107,11 +107,8 @@ contract ozOracle {
         price = uint(answer);
 
         if (side_ == Dir.DOWN) {
-            console.log('roundId - 1: ', roundId - 1);
             (,int pastAnswer,,,) = AggregatorV3Interface(s.rEthEthChainlink).getRoundData(roundId - 1);
-            console.log('pastAnswer: ******** ', uint(pastAnswer));
             price = uint(pastAnswer);
-            console.log('price: ', price);
         }
 
         return price;

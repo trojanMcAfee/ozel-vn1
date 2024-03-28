@@ -5,7 +5,6 @@ pragma solidity 0.8.21;
 import {MockStorage} from "../MockStorage.sol";
 import {IAsset} from "../../../../contracts/interfaces/IBalancer.sol";
 import {IERC20} from "@uniswap/v2-core/contracts/interfaces/IERC20.sol";
-// import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "forge-std/console.sol";
 
@@ -109,8 +108,6 @@ contract SwapRouterMock {
         address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1;
         uint amountOut = 19662547189176713;
 
-        console.log('bal addr(1): ', IERC20(params.tokenIn).balanceOf(address(1)));
-
         if (IERC20(params.tokenIn).balanceOf(address(1)) == 27444635666) {
             amountOut = 19662545835237478;
         }
@@ -120,17 +117,11 @@ contract SwapRouterMock {
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
         }
         
-        
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
-        console.log('params.tokenOut: ', params.tokenOut);
-        console.log('amountOut: ', amountOut);
-        console.log('IERC20(params.tokenOut): ', IERC20(params.tokenOut).balanceOf(address(this)));
         
         if (IERC20(params.tokenOut).balanceOf(address(this)) / 1e18 != 0) {
             IERC20(params.tokenOut).transfer(ozDiamond, amountOut);
         }
-
-        console.log('amountOut inside mock uni: ', amountOut);
 
         if (params.amountIn == 33000000) return amountOut;
         
@@ -169,38 +160,18 @@ contract VaultMock {
     ) external payable returns (uint) {
         address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; 
         uint amountOut;
-        // bool flag;
 
         IERC20(address(singleSwap.assetIn)).transferFrom(ozDiamond, address(1), singleSwap.amount);
     
-        // if (flag) {
-            // singleSwap.amount = 19662545835237478;
-        // }
 
-        if (singleSwap.amount == 19662547189176713) {
-            amountOut = 18081415515835888;
-            // flag = true;
-        }
-
+        if (singleSwap.amount == 19662547189176713) amountOut = 18081415515835888;
         if (singleSwap.amount == 19662545835237478) amountOut = 18081413499483890;
         if (singleSwap.amount == 18081414507659889) amountOut = 19646820040369690;
+        if (singleSwap.amount == 18081414507659889) amountOut = 19646820040369690;
 
-        console.log('singleSwap.amount == 18081414507659889: ', singleSwap.amount == 18081414507659889);
-
-        //It should be the first from || and not the 2nd. Check *******
-        if (singleSwap.amount == 18081414507659889) { //18081415515835888/singleSwap.amount == 
-            console.log('should log2');
-            amountOut = 19646820040369690;
-        }
-
-        console.log('bal this assetOUt: ', IERC20(address(singleSwap.assetOut)).balanceOf(address(this)));
-        console.log('address(singleSwap.assetOut): ', address(singleSwap.assetOut));
-        console.log(1);
         IERC20(address(singleSwap.assetOut)).transfer(ozDiamond, amountOut);
-        console.log(2);
+        
         emit DeadVars(funds, limit, deadline);
-
-        console.log('amountOut in mock: ', amountOut);
 
         return amountOut;
     }

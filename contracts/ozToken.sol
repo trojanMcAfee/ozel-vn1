@@ -193,18 +193,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function totalSupply() public view returns(uint) {
-        console.log(21);
-        if (totalShares() != 0) {
-            console.log(22);
-            uint x = _subConvertToAssets(totalShares(), Dir.UP);
-            console.log('x: ', x);
-            console.log(23);
-            uint y = _subConvertToAssets(totalShares(), Dir.DOWN);
-            console.log('y: ', y);
-            _subConvertToAssets(totalShares(), Dir.UP).mulDivDown(totalAssets() * 1e12, _subConvertToAssets(totalShares(), Dir.DOWN));
-            console.log(25);
-        }
-
         return totalShares() == 0 ? 0 : 
             _subConvertToAssets(totalShares(), Dir.UP).mulDivDown(totalAssets() * 1e12, _subConvertToAssets(totalShares(), Dir.DOWN));
     }
@@ -368,17 +356,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
-        console.log(1);
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-        console.log(2);
-        console.log('preBalance: ', preBalance);
-
-        if (preBalance != 0) {
-            console.log(3);
-            console.log('_calculateScalingFactor2(account_): ', _calculateScalingFactor2(account_));
-            console.log(4);
-        }
-
         return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor2(account_), 1e18);
     }
 
@@ -402,11 +380,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         uint reth_eth = _OZ().getUniPrice(0, side_);
-
-        console.log('shares_: ', shares_);
-        console.log('reth_eth: ', reth_eth);
-        console.log('totalShares(): ', totalShares());
-
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 

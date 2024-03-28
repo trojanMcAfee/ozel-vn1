@@ -71,9 +71,6 @@ contract ozEngine is Modifiers {
     ) external onlyOzToken returns(uint) { 
         uint amountIn = amounts_.amountIn;
 
-        uint x = IERC20(s.rETH).balanceOf(address(this));
-        console.log('rETH bal diamond ######: ', x);
-
         /**
          * minAmountsOut[0] - minWethOut
          * minAmountsOut[1] - minRethOut
@@ -81,9 +78,6 @@ contract ozEngine is Modifiers {
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
         
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
-
-        x = IERC20(s.rETH).balanceOf(address(this));
-        console.log('rETH bal diamond ######: ', x);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
@@ -93,11 +87,6 @@ contract ozEngine is Modifiers {
             amountIn, 
             minAmountsOut[0]
         );
-
-        console.log('amountOut from swapUni: ', amountOut);
-
-        x = IERC20(s.rETH).balanceOf(address(this));
-        console.log('rETH bal diamond ######: ', x);
 
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
@@ -138,8 +127,6 @@ contract ozEngine is Modifiers {
         
         msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
 
-        console.log('rETH coming in *******: ', amountInReth);
-
         //Swap rETH to WETH
         uint amountOut = _checkPauseAndSwap(
             s.rETH,
@@ -150,8 +137,6 @@ contract ozEngine is Modifiers {
             Action.OZ_OUT
         );
 
-        console.log('WETH after swap from rETH *******: ', amountOut);
-
         //swap WETH to underlying
         amountOut = _swapUni(
             s.WETH,
@@ -160,8 +145,6 @@ contract ozEngine is Modifiers {
             amountOut,
             minAmountsOut[1]
         );
-        
-        console.log('amountOut after _swapUni: ', amountOut);
 
         return (amountInReth, amountOut);
     }
@@ -202,19 +185,13 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
-        } else {
-            uint x = IERC20(s.rETH).balanceOf(address(this));
-            console.log('rETH bal diamond ######: ', x);
-
+        } else {        
             amountOut = _swapBalancer(
                 tokenIn_,
                 tokenOutInternal,
                 amountIn_,
                 minAmountOutFirstLeg
             );
-
-            x = IERC20(s.rETH).balanceOf(address(this));
-            console.log('rETH bal diamond ######: ', x);
         }
 
         if (type_ == Action.OZL_IN) {
@@ -254,11 +231,6 @@ contract ozEngine is Modifiers {
                 sqrtPriceLimitX96: 0
             });
 
-        // console.log('params.amountOutMinimum: ', params.amountOutMinimum);
-        // console.log('block.timestamp: ', block.timestamp);
-        // console.log('tokenIn_: ', tokenIn_);
-        // console.log('tokenOut_: ', tokenOut_);
-
         try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) {     
             return amountOut;
         } catch Error(string memory reason) {
@@ -290,12 +262,8 @@ contract ozEngine is Modifiers {
             toInternalBalance: false
         });
 
-        console.log('333');
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
-        console.log('singleSwap.amount: ', singleSwap.amount);
-        console.log('334');
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
-        console.log('335');
     }
 
 
@@ -307,8 +275,6 @@ contract ozEngine is Modifiers {
     ) private returns(uint) 
     {
         try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
-            console.log('amountOut in bal: ', amountOut);
-            
             if (amountOut == 0) revert OZError02();
             return amountOut;
         } catch Error(string memory reason) {
