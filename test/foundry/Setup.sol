@@ -202,6 +202,9 @@ contract Setup is Test {
 
         mainFork = vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
         _runSetup(n);
+
+        console.log('*** NETWORK ***: ', network);
+        console.log('');
     }
 
     function _chooseNetwork(Network chain_) private returns(string memory network) {
@@ -259,7 +262,7 @@ contract Setup is Test {
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
             rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
 
-            network = "ethereum";
+            network = "ethereum-mocks";
             mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
             secondaryBlockNumber = 18785221;
             redStoneBlock = 19154743;

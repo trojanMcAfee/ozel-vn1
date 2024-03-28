@@ -6,13 +6,15 @@ import {TestMethods} from "../TestMethods.sol";
 import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
 import {MockStorage} from "./MockStorage.sol";
-// import {AppStorage, Asset, OZLrewards, AmountsIn, AmountsOut} from "../AppStorage.sol";
 import {AmountsIn} from "../../../contracts/AppStorage.sol";
+import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 
 
 contract MocksTests is MockStorage, TestMethods {
+
+    using FixedPointMathLib for uint;
 
     
     function test_chainlink_feeds() public {
@@ -111,6 +113,26 @@ contract MocksTests is MockStorage, TestMethods {
         // assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
 
         return (amountIn, reth_usd_preAccrual);
+    }
+
+
+    function test_rewards_mock_accounting() public {
+        (uint testTokenAmountIn, uint reth_usd_preAccrual) = test_redeem_rewards_mock_chainlink();
+        console.log('');
+        console.log('-------------------------');
+        console.log('');
+
+
+        uint eth_usd = OZ.ETH_USD();
+        console.log('eth_usd: ', eth_usd);
+
+        uint reth_preAccrual = (testTokenAmountIn * 1e12).mulDivDown(1e18, reth_usd_preAccrual);
+        console.log('reth_preAccrual: ', reth_preAccrual);
+
+        uint reth_usd_postAccrual = OZ.rETH_USD();
+        uint testToken_alledged_rewards = reth_preAccrual.mulDivDown(reth_usd_postAccrual, 1e18);
+        console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
+
     }
 
 

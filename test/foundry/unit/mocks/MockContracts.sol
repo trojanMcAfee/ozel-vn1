@@ -9,6 +9,10 @@ import {IERC20} from "@uniswap/v2-core/contracts/interfaces/IERC20.sol";
 import "forge-std/console.sol";
 
 
+/**
+ * Has the rETH-ETH price before staking rewards accrual +
+ * how to get historical rETH-ETH price
+ */
 contract RethLinkFeed is MockStorage {
     function latestRoundData() external view returns(
         uint80 roundId,
@@ -48,6 +52,8 @@ contract RethLinkFeed is MockStorage {
     }
 }
 
+
+//Has the rETH-ETH price after staking rewards accrual
 contract RethLinkFeedAccrued is MockStorage {
     function latestRoundData() external view returns(
         uint80 roundId,
@@ -67,6 +73,7 @@ contract RethLinkFeedAccrued is MockStorage {
 }
 
 
+//Has current ETH-USD price
 contract EthLinkFeed is MockStorage {
     function latestRoundData() external view returns(
         uint80 roundId,
