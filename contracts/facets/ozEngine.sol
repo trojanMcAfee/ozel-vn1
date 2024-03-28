@@ -79,7 +79,8 @@ contract ozEngine is Modifiers {
         
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
 
-        // console.log('USDC in for WETH out: ', amountIn);
+        console.log('');
+        console.log('USDC in for WETH out: ', amountIn);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
@@ -90,7 +91,7 @@ contract ozEngine is Modifiers {
             minAmountsOut[0]
         );
 
-        // console.log('WETH out: ', amountOut);
+        console.log('WETH out: ', amountOut);
 
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
@@ -198,9 +199,6 @@ contract ozEngine is Modifiers {
                 minAmountOutFirstLeg
             );
         } else {   
-            console.log('');
-            console.log();
-
             amountOut = _swapBalancer(
                 tokenIn_,
                 tokenOutInternal,
@@ -260,6 +258,7 @@ contract ozEngine is Modifiers {
         uint amountIn_,
         uint minAmountOut_
     ) private returns(uint amountOut) {
+        console.log('tokenIn_ in swapBal (WETH): ', tokenIn_ == s.WETH);
 
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -269,6 +268,8 @@ contract ozEngine is Modifiers {
             amount: amountIn_,
             userData: new bytes(0)
         });
+
+        console.log('singleSwap.amount - 19673291323457012: ', singleSwap.amount);
 
         IVault.FundManagement memory funds = IVault.FundManagement({
             sender: address(this),

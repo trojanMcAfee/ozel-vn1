@@ -96,7 +96,9 @@ contract EthLinkFeed is MockStorage {
 
 
 contract SwapRouterMock {
-    event DeadVar(ExactInputSingleParams params);
+    using FixedPointMathLib for *;
+
+    // event DeadVar(ExactInputSingleParams params);
 
     struct ExactInputSingleParams {
         address tokenIn;
@@ -112,16 +114,21 @@ contract SwapRouterMock {
     function exactInputSingle(
         ExactInputSingleParams calldata params
     ) external payable returns (uint) {
-        emit DeadVar(params);
+        ozIDiamond OZ = ozIDiamond(0x92a6649Fdcc044DA968d94202465578a9371C7b1);
+        // emit DeadVar(params);
 
-        address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1;
-        uint amountOut = 19662547189176713;
+        // address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1;
+        // uint amountOut = 19662547189176713;
 
-        if (IERC20(params.tokenIn).balanceOf(address(1)) == 27444635666) {
-            amountOut = 19662545835237478;
-        }
+        // if (IERC20(params.tokenIn).balanceOf(address(1)) == 27444635666) {
+            // amountOut = 19662545835237478;
+            uint amountOut = (params.amountIn * 1e12).mulDivDown(1e18, OZ.ETH_USD());
+            console.log('amountOut in router mock - 19673291323457012: ', amountOut);
+        // }
 
-        if (params.amountIn == 19646820040369690) {
+        if (params.amountIn == 20431028919899641) {
+            // params.amountIn * OZ.ETH_USD()
+
             amountOut = 32940641;
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
         }
@@ -129,7 +136,7 @@ contract SwapRouterMock {
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
         
         if (IERC20(params.tokenOut).balanceOf(address(this)) / 1e18 != 0) {
-            IERC20(params.tokenOut).transfer(ozDiamond, amountOut);
+            IERC20(params.tokenOut).transfer(address(OZ), amountOut);
         }
 
         if (params.amountIn == 33000000) return amountOut;
@@ -170,7 +177,6 @@ contract VaultMock {
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint) {
-        // address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; 
         ozIDiamond OZ = ozIDiamond(0x92a6649Fdcc044DA968d94202465578a9371C7b1);
         uint amountOut;
 
@@ -178,7 +184,20 @@ contract VaultMock {
     
 
         if (singleSwap.amount == 19662547189176713) amountOut = 18081415515835888;
-        if (singleSwap.amount == 19662545835237478) amountOut = 18081413499483890;
+        if (singleSwap.amount == 19673291323457014) { //19673291323457012
+            // amountOut = 18081413499483890;
+
+            uint wethIn = 19673291323457014;
+            // uint reth_eth = OZ.rETH_ETH();
+
+            amountOut =  wethIn.mulDivDown(1 ether, OZ.rETH_ETH());
+            console.log('amountOut in mock swap bal - 18107251181805252: ', amountOut);
+            //^^^ working. Check next nums in terminal.
+            //doing what alice should've gotten with accrued rewards feed
+
+            // 1 eth --- reth_eth
+            //     x ---- wethIn
+        } //19662545835237478
         if (singleSwap.amount == 18081414507659889) {
             console.log('OZ.rETH_ETH() in mock: ', OZ.rETH_ETH());
 
