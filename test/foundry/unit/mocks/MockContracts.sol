@@ -115,7 +115,10 @@ contract SwapRouterMock {
             amountOut = 19662545835237478;
         }
 
-        if (params.amountIn == 19646820040369690) amountOut = 32940641;
+        if (params.amountIn == 19646820040369690) {
+            amountOut = 32940641;
+            IERC20(params.tokenOut).transfer(params.recipient, amountOut);
+        }
         
         
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
