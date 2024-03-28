@@ -87,12 +87,13 @@ contract MocksTests is MockStorage, TestMethods {
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
         uint amountOut = ozERC20.redeem(redeemData, alice);
-        console.log('amountOut from redeem: ', amountOut);
         vm.stopPrank();
 
         console.log('');
         console.log('^^^^^ REDEEM ^^^^^');
         console.log('');
+
+        console.log('amountOut from redeem: ', amountOut);
 
         //POST-CONDITIONS
         console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
@@ -124,7 +125,7 @@ contract MocksTests is MockStorage, TestMethods {
 
         uint eth_usd = OZ.ETH_USD();
         uint reth_usd = OZ.rETH_USD();
-        
+
         console.log('eth_usd: ', eth_usd);
         console.log('reth_usd: ', reth_usd);
 

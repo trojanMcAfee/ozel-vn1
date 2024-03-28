@@ -4,7 +4,9 @@ pragma solidity 0.8.21;
 
 import {MockStorage} from "../MockStorage.sol";
 import {IAsset} from "../../../../contracts/interfaces/IBalancer.sol";
+import {ozIDiamond} from "../../../../contracts/interfaces/ozIDiamond.sol";
 import {IERC20} from "@uniswap/v2-core/contracts/interfaces/IERC20.sol";
+import {FixedPointMathLib} from "../../../../contracts/libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 
@@ -138,6 +140,9 @@ contract SwapRouterMock {
 
 
 contract VaultMock {
+
+    using FixedPointMathLib for *;
+
     enum SwapKind { GIVEN_IN, GIVEN_OUT }
 
     struct SingleSwap {
@@ -165,18 +170,26 @@ contract VaultMock {
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint) {
-        address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; 
+        // address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1; 
+        ozIDiamond OZ = ozIDiamond(0x92a6649Fdcc044DA968d94202465578a9371C7b1);
         uint amountOut;
 
-        IERC20(address(singleSwap.assetIn)).transferFrom(ozDiamond, address(1), singleSwap.amount);
+        IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
     
 
         if (singleSwap.amount == 19662547189176713) amountOut = 18081415515835888;
         if (singleSwap.amount == 19662545835237478) amountOut = 18081413499483890;
-        if (singleSwap.amount == 18081414507659889) amountOut = 19646820040369690;
-        if (singleSwap.amount == 18081414507659889) amountOut = 19646820040369690;
+        if (singleSwap.amount == 18081414507659889) {
+            console.log('OZ.rETH_ETH() in mock: ', OZ.rETH_ETH());
 
-        IERC20(address(singleSwap.assetOut)).transfer(ozDiamond, amountOut);
+            amountOut = (18081414507659889).mulDivDown(OZ.rETH_ETH(), 1e18);
+            console.log('amountOut in mock - 20431028919899640: ', amountOut);
+            
+            // amountOut = 19646820040369690;
+        }
+        // if (singleSwap.amount == 18081414507659889) amountOut = 19646820040369690;
+
+        IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
         
         emit DeadVars(funds, limit, deadline);
 

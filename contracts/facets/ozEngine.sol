@@ -79,6 +79,8 @@ contract ozEngine is Modifiers {
         
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
 
+        // console.log('USDC in for WETH out: ', amountIn);
+
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
             underlying_, 
@@ -87,6 +89,8 @@ contract ozEngine is Modifiers {
             amountIn, 
             minAmountsOut[0]
         );
+
+        // console.log('WETH out: ', amountOut);
 
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
@@ -128,6 +132,9 @@ contract ozEngine is Modifiers {
         msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
 
         //Swap rETH to WETH
+        console.log('');
+        console.log('rETH in: ', amountInReth);
+
         uint amountOut = _checkPauseAndSwap(
             s.rETH,
             s.WETH,
@@ -137,6 +144,8 @@ contract ozEngine is Modifiers {
             Action.OZ_OUT
         );
 
+        console.log('WETH out (in next leg): ', amountOut);
+
         //swap WETH to underlying
         amountOut = _swapUni(
             s.WETH,
@@ -145,6 +154,9 @@ contract ozEngine is Modifiers {
             amountOut,
             minAmountsOut[1]
         );
+
+        console.log('USDC out: ', amountOut);
+        console.log('');
 
         return (amountInReth, amountOut);
     }
@@ -185,7 +197,10 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
-        } else {        
+        } else {   
+            console.log('');
+            console.log();
+
             amountOut = _swapBalancer(
                 tokenIn_,
                 tokenOutInternal,
