@@ -125,7 +125,10 @@ contract SwapRouterMock {
         console.log('params.tokenOut: ', params.tokenOut);
         console.log('amountOut: ', amountOut);
         console.log('IERC20(params.tokenOut): ', IERC20(params.tokenOut).balanceOf(address(this)));
-        IERC20(params.tokenOut).transfer(ozDiamond, amountOut);
+        
+        if (IERC20(params.tokenOut).balanceOf(address(this)) / 1e18 != 0) {
+            IERC20(params.tokenOut).transfer(ozDiamond, amountOut);
+        }
 
         console.log('amountOut inside mock uni: ', amountOut);
 
