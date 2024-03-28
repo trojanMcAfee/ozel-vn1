@@ -31,9 +31,6 @@ contract MocksTests is MockStorage, TestMethods {
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);       
-        
-        // uint pastAnswer = 1085995250282916400;
-        // _mock_rETH_ETH_historical(pastAnswer);
 
         uint reth_eth_current = OZ.rETH_ETH();
         uint reth_usd_preAccrual = OZ.rETH_USD(); 
@@ -62,8 +59,6 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('');
 
         _mock_rETH_ETH_unit();
-        console.log('reth pre-revert: ', OZ.rETH_ETH());
-        // revert('hereeeeee23');
 
         _mock_rETH_ETH_historical(reth_eth_current);
 
@@ -91,11 +86,15 @@ contract MocksTests is MockStorage, TestMethods {
         //ACTION
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
-        ozERC20.redeem(redeemData, alice);
+        uint amountOut = ozERC20.redeem(redeemData, alice);
+        console.log('amountOut from redeem: ', amountOut);
         vm.stopPrank();
 
+        console.log('');
+        console.log('^^^^^ REDEEM ^^^^^');
+        console.log('');
+
         //POST-CONDITIONS
-        
         console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
         console.log('');
 
@@ -124,7 +123,10 @@ contract MocksTests is MockStorage, TestMethods {
 
 
         uint eth_usd = OZ.ETH_USD();
+        uint reth_usd = OZ.rETH_USD();
+        
         console.log('eth_usd: ', eth_usd);
+        console.log('reth_usd: ', reth_usd);
 
         uint reth_preAccrual = (testTokenAmountIn * 1e12).mulDivDown(1e18, reth_usd_preAccrual);
         console.log('reth_preAccrual: ', reth_preAccrual);
