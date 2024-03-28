@@ -316,7 +316,9 @@ contract Setup is Test {
             vaultBalancer = address(mockVault);
 
             deal(wethAddr, address(mockRouter), 1000 * 1e18);
+            deal(usdcAddr, address(mockRouter), 100000 * 1e6);
             deal(rEthAddr, address(mockVault), 1000 * 1e18);
+            deal(wethAddr, address(mockVault), 1000 * 1e18);
         }
 
         //Deploys diamond infra

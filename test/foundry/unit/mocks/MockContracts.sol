@@ -114,16 +114,21 @@ contract SwapRouterMock {
         if (IERC20(params.tokenIn).balanceOf(address(1)) == 27444635666) {
             amountOut = 19662545835237478;
         }
-        
-        
 
+        if (params.amountIn == 19646820040369690) amountOut = 32940641;
+        
+        
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
+        console.log('params.tokenOut: ', params.tokenOut);
+        console.log('amountOut: ', amountOut);
+        console.log('IERC20(params.tokenOut): ', IERC20(params.tokenOut).balanceOf(address(this)));
         IERC20(params.tokenOut).transfer(ozDiamond, amountOut);
 
         console.log('amountOut inside mock uni: ', amountOut);
 
         if (params.amountIn == 33000000) return amountOut;
-        if (params.amountIn == 19646820040369690) return 32940641;
+        
+        return amountOut;
     }
 }
 
@@ -182,7 +187,11 @@ contract VaultMock {
             amountOut = 19646820040369690;
         }
 
+        console.log('bal this assetOUt: ', IERC20(address(singleSwap.assetOut)).balanceOf(address(this)));
+        console.log('address(singleSwap.assetOut): ', address(singleSwap.assetOut));
+        console.log(1);
         IERC20(address(singleSwap.assetOut)).transfer(ozDiamond, amountOut);
+        console.log(2);
         emit DeadVars(funds, limit, deadline);
 
         console.log('amountOut in mock: ', amountOut);
