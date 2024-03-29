@@ -95,7 +95,7 @@ contract EthLinkFeed is MockStorage {
 }
 
 
-contract SwapRouterMock {
+contract SwapRouterMock is MockStorage {
     using FixedPointMathLib for *;
 
     // event DeadVar(ExactInputSingleParams params);
@@ -119,12 +119,25 @@ contract SwapRouterMock {
 
         // address ozDiamond = 0x92a6649Fdcc044DA968d94202465578a9371C7b1;
         // uint amountOut = 19662547189176713;
+        uint amountOut;
 
-        // if (IERC20(params.tokenIn).balanceOf(address(1)) == 27444635666) {
+        if (params.tokenIn == USDC) {
             // amountOut = 19662545835237478;
-            uint amountOut = (params.amountIn * 1e12).mulDivDown(1e18, OZ.ETH_USD());
-            console.log('amountOut in router mock - 19673291323457012: ', amountOut);
-        // }
+            amountOut = (params.amountIn * 1e12).mulDivDown(1e18, OZ.ETH_USD());
+            console.log('amountOut in router mock (WETH) - 19673291323457012: ', amountOut);
+            // console.log('params.tokenIn *********: ', params.tokenIn);
+        } else if (params.tokenIn == WETH) {
+            // 1 weth --- eth-usd
+            //   x   --- amountIn
+
+            console.log('');
+            console.log('params.amountIn ****: ', params.amountIn);
+            console.log('OZ.ETH_USD(): ', OZ.ETH_USD());
+
+            amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / 1e12;   
+            console.log('amountOut in router mock (USDC): ', amountOut);
+            console.log('');
+        }
 
         if (params.amountIn == 20431028919899641) {
             // params.amountIn * OZ.ETH_USD()
@@ -191,18 +204,17 @@ contract VaultMock {
             // uint reth_eth = OZ.rETH_ETH();
 
             amountOut =  wethIn.mulDivDown(1 ether, OZ.rETH_ETH());
-            console.log('amountOut in mock swap bal - 18107251181805252: ', amountOut);
-            //^^^ working. Check next nums in terminal.
+            console.log('amountOut in mock swap bal (rETH) - 18107251181805252: ', amountOut);
             //doing what alice should've gotten with accrued rewards feed
 
-            // 1 eth --- reth_eth
-            //     x ---- wethIn
         } //19662545835237478
-        if (singleSwap.amount == 18081414507659889) {
+        if (singleSwap.amount == 18107251181805252) { //18081414507659889
+            uint rETHin = 18107251181805252;
             console.log('OZ.rETH_ETH() in mock: ', OZ.rETH_ETH());
 
-            amountOut = (18081414507659889).mulDivDown(OZ.rETH_ETH(), 1e18);
-            console.log('amountOut in mock - 20431028919899640: ', amountOut);
+            amountOut = rETHin.mulDivDown(OZ.rETH_ETH(), 1e18);
+            console.log('amountOut in mock - 20460222976395293: ', amountOut);
+            console.log('');
             
             // amountOut = 19646820040369690;
         }
