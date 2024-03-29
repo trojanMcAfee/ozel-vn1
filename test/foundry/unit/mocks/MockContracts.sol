@@ -137,6 +137,8 @@ contract SwapRouterMock is MockStorage {
             amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / 1e12;   
             console.log('amountOut in router mock (USDC): ', amountOut);
             console.log('');
+            IERC20(params.tokenOut).transfer(params.recipient, amountOut);
+            return amountOut;
         }
 
         if (params.amountIn == 20431028919899641) {
