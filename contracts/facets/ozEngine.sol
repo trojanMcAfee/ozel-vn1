@@ -245,7 +245,6 @@ contract ozEngine is Modifiers {
         uint amountIn_,
         uint minAmountOut_
     ) private returns(uint amountOut) {
-        console.log('tokenIn_ in swapBal (WETH): ', tokenIn_ == s.WETH);
 
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),
@@ -255,8 +254,6 @@ contract ozEngine is Modifiers {
             amount: amountIn_,
             userData: new bytes(0)
         });
-
-        console.log('singleSwap.amount - 19673291323457012: ', singleSwap.amount);
 
         IVault.FundManagement memory funds = IVault.FundManagement({
             sender: address(this),
