@@ -374,7 +374,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-        return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor2(account_), 1e18);
+        return preBalance == 0 ? 0 : preBalance.mulDivUp(_calculateScalingFactor2(account_), 1e18);
+        /**
+        * Normally, this would be mulDivDown, like in majority of protocols. 
+        * I have to use mulDivUp to the ozBalance of all holders matches with totalSupply.
+        * Further test this to make sure it doesn't introduce an inflation risk (known inflation attacks,
+        * fuzz, more unit tests, etc.).
+        * I discovered with test_rewards_mock_accounting();
+        */
     }
 
 
