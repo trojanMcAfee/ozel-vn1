@@ -107,7 +107,7 @@ contract MocksTests is MockStorage, TestMethods {
 
         console.log('');
         console.log('ozERC20.balanceOf(bob): ', ozERC20.balanceOf(bob));
-        console.log('ozERC20.balanceOf(alice): ', ozERC20.balanceOf(alice));
+        console.log('ozERC20.balanceOf(alice) ^^^^^^^^^^^^^^^^^^^^: ', ozERC20.balanceOf(alice));
         console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
         console.log('deltaBalanceTestToken: ', deltaBalanceTestToken);
         

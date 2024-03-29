@@ -193,6 +193,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function totalSupply() public view returns(uint) {
+
+        // if (totalShares() == 0) {
+        //     console.log('');
+        //     console.log('totalShares(): ', totalShares());
+        //     console.log('_subConvertToAssets(totalShares(), Dir.UP): ', _subConvertToAssets(totalShares(), Dir.UP));
+        //     console.log('totalAssets() ', totalAssets());
+        // }
+
         return totalShares() == 0 ? 0 : 
             _subConvertToAssets(totalShares(), Dir.UP).mulDivDown(totalAssets() * 1e12, _subConvertToAssets(totalShares(), Dir.DOWN));
     }
@@ -206,6 +214,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
+        // console.log('sharesOf(account_): ', sharesOf(account_));
         return convertToAssets(sharesOf(account_), account_);
     }
 
@@ -293,6 +302,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint256 accountShares = sharesOf(owner_);
         uint shares = subConvertToShares(ozAmountIn, owner_);
+
+        console.log('');
+        console.log('accountShares: ', accountShares);
+        console.log('shares: ', shares);
+        console.log('ozAmountIn: ', ozAmountIn);
+        console.log(''); //<--- problem not here
 
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
