@@ -96,7 +96,7 @@ contract ozOracle {
     }
 
 
-    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
+    function getUniPrice2(uint tokenPair_, Dir side_) public view returns(uint) {
         uint price;
         
         (
@@ -123,7 +123,7 @@ contract ozOracle {
      //used for DOWN obsolete, so as the rebasing calculation mechanism. 
      //Check how observations how are actually written into the array and the timeframe
      //for getting written. 
-    function getUniPrice2(uint tokenPair_, Dir side_) public view returns(uint) {
+    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);

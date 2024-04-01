@@ -9,6 +9,10 @@ import {MockStorage} from "./MockStorage.sol";
 import {AmountsIn} from "../../../contracts/AppStorage.sol";
 import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
 
+// import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
+// import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+// import {Oracle} from "@uniswap/v3-core/contracts/libraries/Oracle.sol";
+
 import "forge-std/console.sol";
 
 
@@ -85,7 +89,7 @@ contract MocksTests is MockStorage, TestMethods {
         //ACTION
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
-        uint amountOut = ozERC20.redeem(redeemData, alice);
+        ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
 
         console.log('');
@@ -135,8 +139,45 @@ contract MocksTests is MockStorage, TestMethods {
         console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
 
         assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
-
     }
+
+
+    //-------
+
+    // interface UniPool {
+    //     function observations() external view returns(Oracle.Observation[65535] memory);
+    //     function observations(uint index) external view returns(uint32, int56, uint160, bool);
+    //     function getPool(address token0, address token1, uint24 fee) external view returns(address);
+    // }   
+
+    // function test_xx() public {
+    //     address wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
+    //     UniPool pool = UniPool(IUniswapV3Factory(uniFactory).getPool(rEthAddr, wethAddr, uniPoolFee));
+    //     console.log('rETH-ETH uni pool: ', address(pool));
+
+    //     (,,uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext,,) = 
+    //         pool.slot0();
+
+    //     console.log('observationIndex: ',  observationIndex);
+    //     console.log('observationCardinality: ', observationCardinality);
+    //     console.log('observationCardinalityNext: ', observationCardinalityNext);
+
+    //     // Oracle.Observation[65535] observations = pool.observations(0);
+
+    //     (uint32 stamp,,,) = pool.observations(0);
+    //     console.log('obs timestamp: ', uint(stamp));
+    //     console.log('block.timestamp: ', block.timestamp);
+
+    //     Oracle.Observation[65535] observations = pool.observations();
+    //     console.log('observations.length: ', observations.length);
+
+
+
+
+    // }
+
+    //checking the properties of observations (timestampt of the last one)
+    //how it can be forged
 
 
 }
