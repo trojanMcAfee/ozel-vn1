@@ -43,15 +43,11 @@ contract MocksTests is MockStorage, TestMethods {
         uint decimals = 10 ** IERC20Permit(testToken).decimals();
 
         uint amountIn = (rawAmount / 3) * decimals;
-        console.log('amountIn testToken: ', amountIn);
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlice: ', ozBalanceAlice);
-        console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
-        console.log('totalSupply: ', ozERC20.totalSupply());
 
         assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() + 1);
 
@@ -72,13 +68,6 @@ contract MocksTests is MockStorage, TestMethods {
 
         uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
         uint ozBalanceBobPostMock = ozERC20.balanceOf(bob);
-        // uint totalSupplyPostMock = ozERC20.totalSupply();
-
-        console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
-        console.log('ozBalanceBobPostMock: ', ozBalanceBobPostMock);
-        console.log('totalSupplyPostMock: ', ozERC20.totalSupply());
-        console.log('is: ', ozBalanceAlicePostMock + ozBalanceBobPostMock);
-        console.log('is2 - true: ', (ozBalanceAlicePostMock + ozBalanceBobPostMock) == ozERC20.totalSupply());
 
         assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
@@ -103,8 +92,6 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('^^^^^ REDEEM ^^^^^');
         console.log('');
 
-        console.log('amountOut from redeem: ', amountOut);
-
         //POST-CONDITIONS
         console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
         console.log('');
@@ -115,22 +102,12 @@ contract MocksTests is MockStorage, TestMethods {
         
         uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
         console.log('testToken gained after redeem: ', deltaBalanceTestToken);
-
-        console.log('');
-        console.log('ozERC20.balanceOf(bob): ', ozERC20.balanceOf(bob));
-        console.log('ozERC20.balanceOf(alice) ^^^^^^^^^^^^^^^^^^^^: ', ozERC20.balanceOf(alice));
-        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
-        console.log('deltaBalanceTestToken: ', deltaBalanceTestToken);
         
         assertTrue(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice) == ozERC20.totalSupply());
         assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
         assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
         assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
-        console.log(5);
-        // console.log('rawAmount: ', rawAmount * 10 ** IERC20Permit(testToken).balanceOf(alice));
         assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / 1e12, deltaBalanceTestToken, 1));
-        // assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
-        console.log(6);
 
         return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
     }

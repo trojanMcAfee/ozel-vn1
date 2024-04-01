@@ -206,7 +206,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        // console.log('sharesOf(account_): ', sharesOf(account_));
         return convertToAssets(sharesOf(account_), account_);
     }
 
@@ -295,12 +294,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint256 accountShares = sharesOf(owner_);
         uint shares = subConvertToShares(ozAmountIn, owner_);
 
-        console.log('');
-        console.log('accountShares: ', accountShares);
-        console.log('shares: ', shares);
-        console.log('ozAmountIn: ', ozAmountIn);
-        console.log(''); 
-
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
 
         uint assets = shares; 
@@ -311,7 +304,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             _setValuePerOzToken(amountRethOut, false);
 
             accountShares = sharesOf(_ozDiamond);
-            console.log('shares in diamond before setting ^^^^: ', accountShares);
 
             _setAssetsAndShares(assets, accountShares, false);
 
@@ -337,9 +329,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     ) internal {
         if (from == address(0) || to == address(0)) revert OZError04(from, to);
 
-        // uint256 shares = convertToShares(amount) / _calculateScalingFactor(from);
         uint shares = _convertToSharesFromOzBalance(amount);
-        console.log('shares &&&&&: ', shares);
     
         uint256 fromShares = _shares[from];
 
