@@ -27,7 +27,7 @@ contract MocksTests is MockStorage, TestMethods {
 
     //-----------
 
-    function test_redeem_rewards_mock_chainlink() public returns(uint, uint) {
+    function test_redeem_rewards_mock_chainlink() public returns(uint, uint, uint) {
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);       
@@ -122,24 +122,23 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
         console.log('deltaBalanceTestToken: ', deltaBalanceTestToken);
         
-        console.log(1);
         assertTrue(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice) == ozERC20.totalSupply());
-        console.log(2);
         assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
-        console.log(3);
         assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
-        console.log(4);
         assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
         console.log(5);
-        assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
+        // console.log('rawAmount: ', rawAmount * 10 ** IERC20Permit(testToken).balanceOf(alice));
+        assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / 1e12, deltaBalanceTestToken, 1));
+        // assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
         console.log(6);
 
-        return (amountIn, reth_usd_preAccrual);
+        return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
     }
 
 
     function test_rewards_mock_accounting() public {
-        (uint testTokenAmountIn, uint reth_usd_preAccrual) = test_redeem_rewards_mock_chainlink();
+        (uint testTokenAmountIn, uint reth_usd_preAccrual, uint deltaBalanceTestToken) = 
+            test_redeem_rewards_mock_chainlink();
         console.log('');
         console.log('-------------------------');
         console.log('');
@@ -157,6 +156,8 @@ contract MocksTests is MockStorage, TestMethods {
         uint reth_usd_postAccrual = OZ.rETH_USD();
         uint testToken_alledged_rewards = reth_preAccrual.mulDivDown(reth_usd_postAccrual, 1e18);
         console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
+
+        assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
 
     }
 
