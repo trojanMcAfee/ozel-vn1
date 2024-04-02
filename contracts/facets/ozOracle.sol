@@ -119,10 +119,22 @@ contract ozOracle {
      * 1 - rETH/WETH - 0.01%
      * 2 - WETH/USDC - 0.05%
      */
-     //An attacker could spam the observations array and leave the query time (secsAgo)
+     //STATEMENT: An attacker could spam the observations array and leave the query time (secsAgo)
      //used for DOWN obsolete, so as the rebasing calculation mechanism. 
-     //Check how observations how are actually written into the array and the timeframe
+     //ACTION: Check how observations how are actually written into the array and the timeframe
      //for getting written. 
+     //CONCLUSION: Observations are written whenever a swap crosses an initialized tick, but only once
+     //per tick per block. Once the Observations array is full, old observations get overwritten, so
+     //the flow of overrides depends on the amount of trading activity of the pool (among other variables
+     //like tick spacing). 
+     //Right now, the ETH/USDC pool's oldest observation is from 10 hrs ago, but this pool has a 24hrs
+     //volume of $365m. 
+     //In contract, the rETH/ETH pool's oldest observation is from 30 days ago, but the pool has a 24hrs
+     //volume of $22m. 
+     //The difference between cardinalities is 722 against 150, so a possible mitigation is to drastically 
+     //increase the Observations array with increaseObservationCardinalityNext() on the pool to avoid 
+     //getting timed out, since the mechanism needs 24 hrs historical price data. 
+     //It worth mentioning that this won't be a problem until trading on this pool considerably rises. 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
