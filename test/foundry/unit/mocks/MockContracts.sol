@@ -75,6 +75,26 @@ contract RethLinkFeedAccrued is MockStorage {
 }
 
 
+contract RethLinkFeedAccruedTWAP {
+
+    function observe(uint32[] calldata secondsAgos) external view returns(
+        int56[] memory tickCumulatives,
+        uint160[] memory secondsPerLiquidityCumulativeX128s
+    ) {
+        secondsPerLiquidityCumulativeX128s = new uint160[](1);
+        secondsPerLiquidityCumulativeX128s[0] = 2;
+
+        tickCumulatives[0] = 
+        tickCumulatives[1] = 
+
+        return (, secondsPerLiquidityCumulativeX128s);
+    }
+
+
+}
+
+
+
 //Has current ETH-USD price
 contract EthLinkFeed is MockStorage {
     function latestRoundData() external view returns(

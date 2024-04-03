@@ -14,36 +14,10 @@ import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.
 // import {Oracle} from "@uniswap/v3-core/contracts/libraries/Oracle.sol";
 
 // import {Oracle} from "../../../contracts/libraries/oracle/Oracle.sol";
-import {OracleLibrary} from "../../../contracts/libraries/oracle/OracleLibrary.sol";
+// import {OracleLibrary} from "../../../contracts/libraries/oracle/OracleLibrary.sol";
 
 import "forge-std/console.sol";
 
-struct Observation {
-    // the block timestamp of the observation
-    uint32 blockTimestamp;
-    // the tick accumulator, i.e. tick * time elapsed since the pool was first initialized
-    int56 tickCumulative;
-    // the seconds per liquidity, i.e. seconds elapsed / max(1, liquidity) since the pool was first initialized
-    uint160 secondsPerLiquidityCumulativeX128;
-    // whether or not the observation is initialized
-    bool initialized;
-}
-
-
-interface IUniPool {
-    function observations() external view returns(Observation[65535] memory);
-    function observations(uint index) external view returns(uint32, int56, uint160, bool);
-    function getPool(address token0, address token1, uint24 fee) external view returns(address);
-    function slot0() external view returns (
-            uint160 sqrtPriceX96,
-            int24 tick,
-            uint16 observationIndex,
-            uint16 observationCardinality,
-            uint16 observationCardinalityNext,
-            uint8 feeProtocol,
-            bool unlocked
-        );
-}   
 
 
 contract MocksTests is MockStorage, TestMethods {
@@ -169,56 +143,6 @@ contract MocksTests is MockStorage, TestMethods {
         console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
 
         assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
-    }
-
-
-    //-------
-
-    function test_xx() public {
-        address wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
-        address rEthWethPoolUni = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-        IUniPool pool = IUniPool(rEthWethPoolUni);
-        console.log('rETH-ETH uni pool: ', address(pool));
-
-        (,,uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext,,) = 
-            pool.slot0();
-
-        console.log('observationIndex: ',  observationIndex);
-        console.log('observationCardinality: ', observationCardinality);
-        console.log('observationCardinalityNext: ', observationCardinalityNext);
-
-        // Oracle.Observation[65535] observations = pool.observations(0);
-
-        console.log('');
-        // console.log('observation #0');
-        // console.log('');
-
-        //---------------------
-
-        // (uint32 stamp,,,) = pool.observations(0);
-        // console.log('obs timestamp: ', uint(stamp));
-        // console.log('block.timestamp: ', block.timestamp);
-
-
-        // console.log('');
-        // console.log('observation #', observationCardinality - 1);
-        // console.log('');
-
-        // (uint32 stamp2,,,) = pool.observations(observationCardinality - 1);
-        // console.log('obs timestamp: ', uint(stamp2));
-
-        //---------------------
-
-        // for (uint i=0; i < observationCardinality; i++) {
-        //     (uint32 stamp,,,) = pool.observations(i);
-        //     console.log('index ', i, '', stamp);
-        // }
-
-        //---------------------
-        uint32 secsAgo = OracleLibrary.getOldestObservationSecondsAgo(rEthWethPoolUni);
-        console.log('oldest obs: ', uint(secsAgo));
-        console.log('block.number: ', block.number);
-
     }
 
 }
