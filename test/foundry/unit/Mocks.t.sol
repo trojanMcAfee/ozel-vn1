@@ -147,6 +147,7 @@ contract MocksTests is MockStorage, TestMethods {
 
         assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() + 1);
 
+        console.log('totalSupply: ', ozERC20.totalSupply());
         console.log('ozBalanceAlice: ', ozBalanceAlice);
         console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
 
@@ -156,7 +157,18 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('');
 
         // _mock_rETH_ETH_unit();
+        console.log('');
+        console.log('^^^ begin of rETH mock TWAP ^^^');
+        console.logBytes(rethWethUniPool.code);
+        console.log('before mock: ^^^');
+
         _mock_rETH_ETH_unit_TWAP();
+        // vm.etch(rethWethUniPool, address(mockRETHaccrual).code);   
+
+        console.logBytes(rethWethUniPool.code);
+        console.log('after mock: ');
+        console.log('');
+
         console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
         revert('here');
 

@@ -104,6 +104,8 @@ contract RethAccruedTWAP {
         int56[] memory tickCumulatives,
         uint160[] memory secondsPerLiquidityCumulativeX128s
     ) {
+        console.log('should log');
+        
         secondsPerLiquidityCumulativeX128s = new uint160[](1);
         secondsPerLiquidityCumulativeX128s[0] = 2;
 
@@ -165,25 +167,13 @@ contract SwapRouterMock is MockStorage {
     function exactInputSingle(
         ExactInputSingleParams calldata params
     ) external payable returns (uint) {
-        console.log(1);
-
-        // ozIDiamond OZ = ozIDiamond(0x92a6649Fdcc044DA968d94202465578a9371C7b1);
         uint amountOut;
 
-        console.log(2);  
-        console.log('params.tokenIn == USDC - true: ', params.tokenIn == USDC);
-        console.log('OZ: ', address(OZ));
-
         if (params.tokenIn == USDC) amountOut = (params.amountIn * 1e12).mulDivDown(1e18, OZ.ETH_USD());
-
-        console.log(3);
     
         if (params.tokenIn == WETH) {
-            console.log(4);
             amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / 1e12;   
-            console.log(5);
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
-            console.log(6);
             return amountOut;
         }
         
