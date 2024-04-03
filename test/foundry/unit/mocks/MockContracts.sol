@@ -84,10 +84,11 @@ contract RethLinkFeedAccruedTWAP {
         secondsPerLiquidityCumulativeX128s = new uint160[](1);
         secondsPerLiquidityCumulativeX128s[0] = 2;
 
-        tickCumulatives[0] = 
-        tickCumulatives[1] = 
+        tickCumulatives = new int56[](2);
+        tickCumulatives[0] = 48369955231;
+        tickCumulatives[1] = 48372579181;
 
-        return (, secondsPerLiquidityCumulativeX128s);
+        return (tickCumulatives, secondsPerLiquidityCumulativeX128s);
     }
 
 

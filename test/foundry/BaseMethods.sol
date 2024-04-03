@@ -19,7 +19,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {RethLinkFeedAccrued} from "./unit/mocks/MockContracts.sol";
+import {RethLinkFeedAccrued, RethLinkFeedAccruedTWAP} from "./unit/mocks/MockContracts.sol";
 
 import "forge-std/console.sol";
 
@@ -399,6 +399,11 @@ contract BaseMethods is Setup {
     function _mock_rETH_ETH_unit() internal {
         RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
         vm.etch(rEthEthChainlink, address(mockRETHaccrual).code);   
+    }
+
+    function _mock_rETH_ETH_unit_TWAP() internal {
+        RethLinkFeedAccruedTWAP mockRETHaccrual = new RethLinkFeedAccruedTWAP();
+        vm.etch(rethWethUniPool, address(mockRETHaccrual).code);   
     }
 
     
