@@ -75,7 +75,30 @@ contract RethLinkFeedAccrued is MockStorage {
 }
 
 
-contract RethLinkFeedAccruedTWAP {
+contract RethPreAccrualTWAP {
+
+    function observe(uint32[] calldata secondsAgos) external view returns(
+        int56[] memory tickCumulatives,
+        uint160[] memory secondsPerLiquidityCumulativeX128s
+    ) {
+        secondsPerLiquidityCumulativeX128s = new uint160[](1);
+        secondsPerLiquidityCumulativeX128s[0] = 2;
+        tickCumulatives = new int56[](2);
+
+        if (secondsAgos[0] == 1800) {
+            tickCumulatives[0] = 27639974418;
+            tickCumulatives[1] = 27641473818;
+        } else if (secondsAgos[0] == 86400) {
+            tickCumulatives[0] = 27569162970;
+            tickCumulatives[1] = 27641473818;
+        }
+
+        return (tickCumulatives, secondsPerLiquidityCumulativeX128s);
+    }
+}
+
+
+contract RethAccruedTWAP {
 
     function observe(uint32[] calldata secondsAgos) external view returns(
         int56[] memory tickCumulatives,
@@ -90,8 +113,6 @@ contract RethLinkFeedAccruedTWAP {
 
         return (tickCumulatives, secondsPerLiquidityCumulativeX128s);
     }
-
-
 }
 
 

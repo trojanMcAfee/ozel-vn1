@@ -46,7 +46,8 @@ import {
     RethLinkFeed, 
     EthLinkFeed,
     SwapRouterMock,
-    VaultMock
+    VaultMock,
+    RethPreAccrualTWAP
 } from "./unit/mocks/MockContracts.sol";
 
 import "forge-std/console.sol";
@@ -121,6 +122,7 @@ contract Setup is Test {
     EthLinkFeed internal mockETH;
     SwapRouterMock internal mockRouter;
     VaultMock internal mockVault;
+    RethPreAccrualTWAP internal mockTWAP;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -312,11 +314,13 @@ contract Setup is Test {
             mockETH = new EthLinkFeed();
             mockRouter = new SwapRouterMock();
             mockVault = new VaultMock();
+            mockTWAP = new RethPreAccrualTWAP();
 
             ethUsdChainlink = address(mockETH);
             rEthEthChainlink = address(mockRETH);
             swapRouterUni = address(mockRouter);
             vaultBalancer = address(mockVault);
+            rethWethUniPool = address(mockTWAP);
 
             deal(wethAddr, address(mockRouter), 1000 * 1e18);
             deal(usdcAddr, address(mockRouter), 100000 * 1e6);
