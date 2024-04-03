@@ -308,12 +308,17 @@ contract Setup is Test {
         bob = vm.addr(BOB_PK);
         charlie = vm.addr(CHARLIE_PK);
 
+        //Deploys diamond infra
+        cutFacet = new DiamondCutFacet();
+        ozDiamond = new Diamond(owner, address(cutFacet));
+        initDiamond = new DiamondInit();
+
         //Set up mocks
         if (n_ == Network.ETH_N_MOCKS) {
             mockRETH = new RethLinkFeed();
             mockETH = new EthLinkFeed();
-            mockRouter = new SwapRouterMock();
-            mockVault = new VaultMock();
+            mockRouter = new SwapRouterMock(address(ozDiamond));
+            mockVault = new VaultMock(address(ozDiamond));
             mockTWAP = new RethPreAccrualTWAP();
 
             ethUsdChainlink = address(mockETH);
@@ -322,19 +327,11 @@ contract Setup is Test {
             vaultBalancer = address(mockVault);
             rethWethUniPool = address(mockTWAP);
 
-            console.log('rethWethUniPool: ', rethWethUniPool);
-            console.log('address(mockTWAP): ', address(mockTWAP));
-
             deal(wethAddr, address(mockRouter), 1000 * 1e18);
             deal(usdcAddr, address(mockRouter), 100000 * 1e6);
             deal(rEthAddr, address(mockVault), 1000 * 1e18);
             deal(wethAddr, address(mockVault), 1000 * 1e18);
         }
-
-        //Deploys diamond infra
-        cutFacet = new DiamondCutFacet();
-        ozDiamond = new Diamond(owner, address(cutFacet));
-        initDiamond = new DiamondInit();
 
         //Deploys ozToken implementation contract for ozBeacon
         tokenOz = new ozToken();

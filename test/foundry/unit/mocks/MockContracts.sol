@@ -145,6 +145,12 @@ contract EthLinkFeed is MockStorage {
 contract SwapRouterMock is MockStorage {
     using FixedPointMathLib for *;
 
+    ozIDiamond immutable OZ;
+
+    constructor(address ozDiamond_) {
+        OZ = ozIDiamond(ozDiamond_);
+    }
+
     struct ExactInputSingleParams {
         address tokenIn;
         address tokenOut;
@@ -161,7 +167,7 @@ contract SwapRouterMock is MockStorage {
     ) external payable returns (uint) {
         console.log(1);
 
-        ozIDiamond OZ = ozIDiamond(0x92a6649Fdcc044DA968d94202465578a9371C7b1);
+        // ozIDiamond OZ = ozIDiamond(0x92a6649Fdcc044DA968d94202465578a9371C7b1);
         uint amountOut;
 
         console.log(2);  
@@ -199,6 +205,9 @@ contract VaultMock {
 
     using FixedPointMathLib for *;
 
+
+    ozIDiamond immutable OZ;
+
     enum SwapKind { GIVEN_IN, GIVEN_OUT }
 
     struct SingleSwap {
@@ -219,6 +228,10 @@ contract VaultMock {
 
     event DeadVars(FundManagement funds, uint limit, uint deadline);
 
+    constructor(address ozDiamond_) {
+        OZ = ozIDiamond(ozDiamond_);
+    }
+
 
     function swap(
         SingleSwap memory singleSwap,
@@ -226,7 +239,7 @@ contract VaultMock {
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint) {
-        ozIDiamond OZ = ozIDiamond(0x92a6649Fdcc044DA968d94202465578a9371C7b1);
+        // ozIDiamond OZ = ozIDiamond(0x92a6649Fdcc044DA968d94202465578a9371C7b1);
         uint amountOut;
 
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
