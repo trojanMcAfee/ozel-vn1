@@ -322,6 +322,9 @@ contract Setup is Test {
             vaultBalancer = address(mockVault);
             rethWethUniPool = address(mockTWAP);
 
+            console.log('rethWethUniPool: ', rethWethUniPool);
+            console.log('address(mockTWAP): ', address(mockTWAP));
+
             deal(wethAddr, address(mockRouter), 1000 * 1e18);
             deal(usdcAddr, address(mockRouter), 100000 * 1e6);
             deal(rEthAddr, address(mockVault), 1000 * 1e18);
@@ -643,5 +646,6 @@ contract Setup is Test {
         vm.label(address(mockETH), 'mockETH');
         vm.label(address(mockRouter), 'mockRouter');
         vm.label(address(mockVault), 'mockVault');
+        vm.label(address(mockTWAP), 'mockTWAP');
     }
 }
