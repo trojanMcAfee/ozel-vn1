@@ -61,6 +61,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('ozBalanceAlice: ', ozBalanceAlice);
         console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
 
+        //The difference of totalSupply is +1
         assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() + 1);
 
         //This simulates the rETH rewards accrual.
@@ -146,7 +147,8 @@ contract MocksTests is MockStorage, TestMethods {
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-        assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() + 1);
+        //The difference of totalSupply is -1
+        assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() - 1);
 
         console.log('totalSupply: ', ozERC20.totalSupply());
         console.log('ozBalanceAlice: ', ozBalanceAlice);
@@ -162,9 +164,9 @@ contract MocksTests is MockStorage, TestMethods {
         _mock_rETH_ETH_unit_TWAP();
 
         console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
-        revert('here');
+        // revert('here');
 
-        _mock_rETH_ETH_historical(reth_eth_current);
+        // _mock_rETH_ETH_historical(reth_eth_current);
 
         assertTrue(OZ.rETH_ETH() > reth_eth_current);
 
@@ -174,8 +176,14 @@ contract MocksTests is MockStorage, TestMethods {
         uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
         uint ozBalanceBobPostMock = ozERC20.balanceOf(bob);
 
+        console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
+        console.log('ozBalanceBobPostMock: ', ozBalanceBobPostMock);
+        console.log('totalSupply: ', ozERC20.totalSupply());
+
         assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
+        console.log(2);
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
+        console.log(3);
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlicePostMock, 
@@ -190,7 +198,9 @@ contract MocksTests is MockStorage, TestMethods {
         //ACTION
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
+        console.log(5);
         ozERC20.redeem(redeemData, alice);
+        console.log(6);
         vm.stopPrank();
 
         console.log('');

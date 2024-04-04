@@ -85,12 +85,17 @@ contract RethPreAccrualTWAP {
         secondsPerLiquidityCumulativeX128s[0] = 2;
         tickCumulatives = new int56[](2);
 
+
+        //When Dir.DOWN was higher than Dir.UP using orignal values, the difference between all balances
+        //between all balances and the totalSupply() was 61 wei. Check this.
+        //Check also if I decrease the difference by lowering Dir.DOWN even more, if the difference on 
+        //totalSupply() increases from just 1.
         if (secondsAgos[0] == 1800) {
             tickCumulatives[0] = 27639974418;
             tickCumulatives[1] = 27641473818;
         } else if (secondsAgos[0] == 86400) {
-            tickCumulatives[0] = 27569162970;
-            tickCumulatives[1] = 27641473818;
+            tickCumulatives[0] = 24812246673; //27569162970(org) / 24812246673(10%)
+            tickCumulatives[1] = 24877326437; //27641473818(org) / 24877326437(10%)
         }
 
         return (tickCumulatives, secondsPerLiquidityCumulativeX128s);

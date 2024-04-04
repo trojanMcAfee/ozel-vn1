@@ -193,6 +193,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function totalSupply() public view returns(uint) {
+        if (totalShares() != 0) {
+        //     console.log('_subConvertToAssets3(totalShares(), Dir.UP): ', _subConvertToAssets3(totalShares(), Dir.UP));
+        //     console.log('_subConvertToAssets3(totalShares(), Dir.DOWN): ', _subConvertToAssets3(totalShares(), Dir.DOWN));
+        }
+
+
         return totalShares() == 0 ? 0 : 
             _subConvertToAssets3(totalShares(), Dir.UP).mulDivUp(totalAssets() * 1e12, _subConvertToAssets3(totalShares(), Dir.DOWN));
     }
