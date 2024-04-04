@@ -81,6 +81,8 @@ contract RethPreAccrualTWAP {
         int56[] memory tickCumulatives,
         uint160[] memory secondsPerLiquidityCumulativeX128s
     ) {
+        console.log('should log 1');
+
         secondsPerLiquidityCumulativeX128s = new uint160[](1);
         secondsPerLiquidityCumulativeX128s[0] = 2;
         tickCumulatives = new int56[](2);
@@ -104,7 +106,7 @@ contract RethAccruedTWAP {
         int56[] memory tickCumulatives,
         uint160[] memory secondsPerLiquidityCumulativeX128s
     ) {
-        console.log('should log');
+        console.log('should log 2');
         
         secondsPerLiquidityCumulativeX128s = new uint160[](1);
         secondsPerLiquidityCumulativeX128s[0] = 2;
