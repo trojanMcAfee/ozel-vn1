@@ -322,16 +322,12 @@ contract Setup is Test {
             mockRouter = new SwapRouterMock(address(ozDiamond));
             mockVault = new VaultMock(address(ozDiamond));
             mockTWAP = new RethPreAccrualTWAP();
-            console.log('RethPreAccrualTWAP: ', address(mockTWAP));
-
-            // mockRETHaccrual = new RethAccruedTWAP();
 
             ethUsdChainlink = address(mockETH);
             rEthEthChainlink = address(mockRETH);
             swapRouterUni = address(mockRouter);
             vaultBalancer = address(mockVault);
             vm.etch(rethWethUniPool, address(mockTWAP).code);
-            // rethWethUniPool = address(mockTWAP);
 
             deal(wethAddr, address(mockRouter), 1000 * 1e18);
             deal(usdcAddr, address(mockRouter), 100000 * 1e6);

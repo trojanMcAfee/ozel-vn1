@@ -150,10 +150,6 @@ contract ozOracle {
 
         (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
 
-        // console.log('reth-weth pool in getUniPrice: ', pool);
-        // console.log('tickCumulatives[0]: ', uint(int(tickCumulatives[0])));
-        // console.log('tickCumulatives[1]: ', uint(int(tickCumulatives[1])));
-
         int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
         int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
         

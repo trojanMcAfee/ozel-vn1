@@ -403,7 +403,6 @@ contract BaseMethods is Setup {
 
     function _mock_rETH_ETH_unit_TWAP() internal {
         RethAccruedTWAP mockRETHaccrual = new RethAccruedTWAP();
-        console.log('mockRETHaccrual2 in mock TWAP: ', address(mockRETHaccrual));
         vm.etch(rethWethUniPool, address(mockRETHaccrual).code);   
     }
 
