@@ -57,8 +57,9 @@ contract MocksTests is MockStorage, TestMethods {
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-        // console.log('ozBalanceAlice: ', ozBalanceAlice);
-        // console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('ozBalanceAlice: ', ozBalanceAlice);
+        console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
 
         assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() + 1);
 
@@ -104,7 +105,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('');
 
         //POST-CONDITIONS
-        console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
+        console.log('ozBalanceAlicePostRedeem - 0: ', ozERC20.balanceOf(alice));
         console.log('');
 
         console.log('balanceAliceTestTokenPostRedeem: ', IERC20Permit(testToken).balanceOf(alice));
