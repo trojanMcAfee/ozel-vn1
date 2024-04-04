@@ -111,10 +111,21 @@ contract RethAccruedTWAP {
     ) { 
         secondsPerLiquidityCumulativeX128s = new uint160[](1);
         secondsPerLiquidityCumulativeX128s[0] = 2;
-
         tickCumulatives = new int56[](2);
-        tickCumulatives[0] = 48369955231;
-        tickCumulatives[1] = 48372579181;
+
+        // tickCumulatives[0] = 48369955231;
+        // tickCumulatives[1] = 48372579181;
+
+        if (secondsAgos[0] == 1800) {
+            tickCumulatives[0] = 48369955231; //30403971859
+            tickCumulatives[1] = 48372579181; //30405621199
+        } else if (secondsAgos[0] == 86400) {
+            tickCumulatives[0] = 27639974418; //these are from pre-accrual
+            tickCumulatives[1] = 27641473818; 
+        }
+
+        //figuring out why totalSupply is off from total balances
+        //trying a next example with accurate accrual (6%)
 
         return (tickCumulatives, secondsPerLiquidityCumulativeX128s);
     }

@@ -42,11 +42,6 @@ contract ozOracle {
 
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
-        // (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
-        // return success ? price : _callFallbackOracle(s.rETH); 
-
-        //----------
-        // getUniPrice2(0, Dir.DOWN);
         return getUniPrice(0, Dir.UP);
     }
 
