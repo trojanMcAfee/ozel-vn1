@@ -21,6 +21,7 @@ import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {RethLinkFeedAccrued, RethAccruedTWAP} from "./unit/mocks/MockContracts.sol";
 import {MockOzOracle} from "./unit/mocks/MockOzOracle.sol";
+import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
 import "forge-std/console.sol";
 
@@ -409,7 +410,22 @@ contract BaseMethods is Setup {
 
     function _mock_rETH_ETH_unit_TWAP_preAccrual() internal {
         MockOzOracle mockOracle = new MockOzOracle();
-        vm.etch(address(oracle), address(mockOracle).code);
+        // vm.etch(address(oracle), address(mockOracle).code);
+
+        bytes4[] memory selectors = new bytes4[](1);
+        selectors[0] = bytes4(mockOracle.getUniPrice.selector); 
+
+        IDiamondCut.FacetCut memory cut = IDiamondCut.FacetCut(
+            address(mockOracle),
+            IDiamondCut.FacetCutAction.Replace,
+            selectors
+        );
+
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](1);
+        cuts[0] = cut;
+
+        vm.prank(owner);
+        OZ.diamondCut(cuts, address(0), new bytes(0));
     }
 
     

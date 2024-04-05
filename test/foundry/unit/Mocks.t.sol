@@ -163,18 +163,6 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('ozBalanceAlice: ', ozBalanceAlice);
         console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
 
-        // stdstore
-        //     .target(address(oracle))
-        //     .sig('dir_up()')
-        //     .checked_write(2);
-
-        uint dir_up = stdstore
-            .target(address(oracle))
-            .sig('dir_up()')
-            .read_uint();
-        
-        console.log('dir_up: ', dir_up);
-
         revert('hereee2');
 
         //This simulates the rETH rewards accrual.
