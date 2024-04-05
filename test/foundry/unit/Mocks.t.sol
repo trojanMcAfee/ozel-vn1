@@ -6,6 +6,7 @@ import {TestMethods} from "../TestMethods.sol";
 import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
 import {MockStorage} from "./MockStorage.sol";
+import {MockOzOracle} from "./mocks/MockOzOracle.sol";
 import {AmountsIn} from "../../../contracts/AppStorage.sol";
 import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
 
@@ -15,6 +16,8 @@ import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.
 
 // import {Oracle} from "../../../contracts/libraries/oracle/Oracle.sol";
 import {OracleLibrary} from "../../../contracts/libraries/oracle/OracleLibrary.sol";
+import {stdStorage, StdStorage} from "forge-std/Test.sol";              
+
 
 import "forge-std/console.sol";
 
@@ -23,6 +26,8 @@ import "forge-std/console.sol";
 contract MocksTests is MockStorage, TestMethods {
 
     using FixedPointMathLib for uint;
+    using stdStorage for StdStorage;
+
 
     
     function test_chainlink_feeds() public {
@@ -128,7 +133,11 @@ contract MocksTests is MockStorage, TestMethods {
     function test_redeem_rewards_mock_TWAP() public returns(uint, uint, uint) {
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);       
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+
+        //-------
+        _mock_rETH_ETH_unit_TWAP_preAccrual();
+        //-------  
 
         uint reth_eth_current = OZ.rETH_ETH();
         uint reth_usd_preAccrual = OZ.rETH_USD(); 
@@ -138,12 +147,12 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('reth_usd - pre accrual: ', reth_usd_preAccrual);
         console.log('');
 
-        uint decimals = 10 ** IERC20Permit(testToken).decimals();
+        // uint decimals = 10 ** IERC20Permit(testToken).decimals();
 
-        uint amountIn = (rawAmount / 3) * decimals;
+        // uint amountIn = (rawAmount / 3) * decimals;
 
-        _mintOzTokens(ozERC20, alice, testToken, amountIn);
-        _mintOzTokens(ozERC20, bob, testToken, amountIn);
+        _mintOzTokens(ozERC20, alice, testToken, (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals());
+        _mintOzTokens(ozERC20, bob, testToken, (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals());
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
@@ -153,6 +162,20 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('totalSupply: ', ozERC20.totalSupply());
         console.log('ozBalanceAlice: ', ozBalanceAlice);
         console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
+
+        // stdstore
+        //     .target(address(oracle))
+        //     .sig('dir_up()')
+        //     .checked_write(2);
+
+        uint dir_up = stdstore
+            .target(address(oracle))
+            .sig('dir_up()')
+            .read_uint();
+        
+        console.log('dir_up: ', dir_up);
+
+        revert('hereee2');
 
         //This simulates the rETH rewards accrual.
         console.log('');
@@ -185,13 +208,13 @@ contract MocksTests is MockStorage, TestMethods {
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
         console.log(3);
 
-        bytes memory redeemData = OZ.getRedeemData(
-            ozBalanceAlicePostMock, 
-            address(ozERC20),
-            OZ.getDefaultSlippage(),
-            alice,
-            alice
-        );
+        // bytes memory redeemData = OZ.getRedeemData(
+        //     ozBalanceAlicePostMock, 
+        //     address(ozERC20),
+        //     OZ.getDefaultSlippage(),
+        //     alice,
+        //     alice
+        // );
 
         uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
 
@@ -199,7 +222,13 @@ contract MocksTests is MockStorage, TestMethods {
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
         console.log(5);
-        ozERC20.redeem(redeemData, alice);
+        ozERC20.redeem(OZ.getRedeemData(
+            ozBalanceAlicePostMock, 
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            alice,
+            alice
+        ), alice);
         console.log(6);
         vm.stopPrank();
 
@@ -215,16 +244,16 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('balanceAliceTestTokenPreRedeem: ', balanceAliceTestTokenPreRedeem);
         console.log('');
         
-        uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
-        console.log('testToken gained after redeem: ', deltaBalanceTestToken);
+        // uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
+        console.log('testToken gained after redeem: ', IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem);
         
         assertTrue(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice) == ozERC20.totalSupply());
         assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
         assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
         assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
-        assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / 1e12, deltaBalanceTestToken, 1));
+        assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / 1e12, IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem, 1));
 
-        return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
+        return ((rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals(), reth_usd_preAccrual, IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem);
     }
 
 

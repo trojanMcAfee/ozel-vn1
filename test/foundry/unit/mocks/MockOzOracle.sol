@@ -3,18 +3,19 @@ pragma solidity 0.8.21;
 
 
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage, LastRewards, Dir, Pair} from "../AppStorage.sol";
-import {IPool} from "../interfaces/IBalancer.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
-import {Helpers} from "../../contracts/libraries/Helpers.sol";
-import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
-import {IUsingTellor} from "../interfaces/IUsingTellor.sol";
-import "../Errors.sol";
+import {AppStorage, LastRewards, Dir, Pair} from "../../../../contracts/AppStorage.sol";
+import {IPool} from "../../../../contracts/interfaces/IBalancer.sol";
+import {IERC20Permit} from "../../../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
+import {IRocketTokenRETH} from "../../../../contracts/interfaces/IRocketPool.sol";
+import {FixedPointMathLib} from "../../../../contracts/libraries/FixedPointMathLib.sol";
+import {Helpers} from "../../../../contracts/libraries/Helpers.sol";
+import {IERC20Permit} from "../../../../contracts/interfaces/IERC20Permit.sol";
+import {IUsingTellor} from "../../../../contracts/interfaces/IUsingTellor.sol";
+import "../../../../contracts/Errors.sol";
 
-import {OracleLibrary} from "../libraries/oracle/OracleLibrary.sol";
+
+import {OracleLibrary} from "../../../../contracts/libraries/oracle/OracleLibrary.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 
@@ -22,9 +23,12 @@ import "forge-std/console.sol";
 
 
 
-contract ozOracle {
+contract MockOzOracle {
 
     using FixedPointMathLib for uint;
+
+    uint constant public dir_up = 1086486906594931900;
+    uint constant public dir_down = 1085995250282916400;
 
     AppStorage private s;
 
@@ -47,7 +51,6 @@ contract ozOracle {
 
 
     function ETH_USD() public view returns(uint) {
-        // console.log('ethUsdChainlink in oracle: ', ethUsdChainlink);
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
         return success ? price : _callFallbackOracle(s.WETH);  
     }
@@ -91,33 +94,17 @@ contract ozOracle {
     }
 
 
-    function getUniPrice2(uint tokenPair_, Dir side_) public view returns(uint) {
-        uint price;
-        
-        (
-            uint80 roundId,
-            int answer,,
-            uint updatedAt,
-        ) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
-        price = uint(answer);
-
-        if (side_ == Dir.DOWN) {
-            (,int pastAnswer,,,) = AggregatorV3Interface(s.rEthEthChainlink).getRoundData(roundId - 1);
-            price = uint(pastAnswer);
-        }
-
-        return price;
-    }
-
-
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         _triagePair(tokenPair_);
         uint amountOut;
 
+        // uint constant public dir_up = 1086486906594931900;
+        // uint constant public dir_down = 1085995250282916400;
+
         if (side_ == Dir.UP) {
-            amountOut = 1086486906594931900;
+            amountOut = dir_up;
         } else if (side_ == Dir.DOWN) {
-            // amountOut =
+            amountOut = dir_down;
         }
 
     
