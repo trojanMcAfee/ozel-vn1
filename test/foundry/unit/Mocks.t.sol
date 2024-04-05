@@ -7,7 +7,7 @@ import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
 import {MockStorage} from "./MockStorage.sol";
 // import {MockOzOracle} from "./mocks/MockOzOracle.sol";
-import {AmountsIn} from "../../../contracts/AppStorage.sol";
+import {AmountsIn, Dir} from "../../../contracts/AppStorage.sol";
 import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
 
 // import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
@@ -136,7 +136,7 @@ contract MocksTests is MockStorage, TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
 
         //-------
-        _mock_rETH_ETH_unit_TWAP_preAccrual();
+        _mock_rETH_ETH_unit_TWAP(false);
         //-------  
 
         uint reth_eth_current = OZ.rETH_ETH();
@@ -163,7 +163,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('ozBalanceAlice: ', ozBalanceAlice);
         console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
 
-        revert('hereee2');
+        // revert('hereee2');
 
         //This simulates the rETH rewards accrual.
         console.log('');
@@ -172,7 +172,16 @@ contract MocksTests is MockStorage, TestMethods {
 
         // _mock_rETH_ETH_unit();
         console.log('');
-        _mock_rETH_ETH_unit_TWAP();
+        // _mock_rETH_ETH_unit_TWAP();
+        _mock_rETH_ETH_unit_TWAP(true);
+        // _mock_rETH_ETH_unit_TWAP2();
+
+        console.log('getUni - 1129...: ', OZ.getUniPrice(0, Dir.UP));
+        //the rETH-ETH from below is pulling the old price instead of the new one
+        //that gets correctly pulled from getUni() above.
+        //Mock OZ.rETH_ETH() directly instead
+
+        console.log('**********************');
 
         console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
         // revert('here');
@@ -196,13 +205,13 @@ contract MocksTests is MockStorage, TestMethods {
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
         console.log(3);
 
-        // bytes memory redeemData = OZ.getRedeemData(
-        //     ozBalanceAlicePostMock, 
-        //     address(ozERC20),
-        //     OZ.getDefaultSlippage(),
-        //     alice,
-        //     alice
-        // );
+        bytes memory redeemData = OZ.getRedeemData(
+            ozBalanceAlicePostMock, 
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            alice,
+            alice
+        );
 
         uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
 
@@ -210,13 +219,7 @@ contract MocksTests is MockStorage, TestMethods {
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
         console.log(5);
-        ozERC20.redeem(OZ.getRedeemData(
-            ozBalanceAlicePostMock, 
-            address(ozERC20),
-            OZ.getDefaultSlippage(),
-            alice,
-            alice
-        ), alice);
+        ozERC20.redeem(redeemData, alice);
         console.log(6);
         vm.stopPrank();
 

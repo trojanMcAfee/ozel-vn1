@@ -20,7 +20,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {RethLinkFeedAccrued, RethAccruedTWAP} from "./unit/mocks/MockContracts.sol";
-import {MockOzOraclePreAccrual} from "./unit/mocks/MockContracts.sol";
+import {MockOzOraclePreAccrual, MockOzOraclePostAccrual} from "./unit/mocks/MockContracts.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
 import "forge-std/console.sol";
@@ -408,9 +408,17 @@ contract BaseMethods is Setup {
         vm.etch(rethWethUniPool, address(mockRETHaccrual).code);   
     }
 
-    function _mock_rETH_ETH_unit_TWAP_preAccrual() internal {
+    /**
+    * true - pre accrual of ETH staking rewards
+    * false - post accrual of ETH staking rewards 
+    */
+    function _mock_rETH_ETH_unit_TWAP(bool type_) internal {
         MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
-        // vm.etch(address(oracle), address(mockOracle).code);
+        
+        if (type_) {
+            MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
+            vm.etch(address(mockOracle), address(mockOraclePost).code);
+        }
 
         bytes4[] memory selectors = new bytes4[](1);
         selectors[0] = bytes4(mockOracle.getUniPrice.selector); 
@@ -427,6 +435,26 @@ contract BaseMethods is Setup {
         vm.prank(owner);
         OZ.diamondCut(cuts, address(0), new bytes(0));
     }
+
+
+    // function _mock_rETH_ETH_unit_TWAP2() internal {
+    //     MockOzOraclePostAccrual mockOracle = new MockOzOraclePostAccrual();
+
+    //     bytes4[] memory selectors = new bytes4[](1);
+    //     selectors[0] = bytes4(mockOracle.getUniPrice.selector); 
+
+    //     IDiamondCut.FacetCut memory cut = IDiamondCut.FacetCut(
+    //         address(mockOracle),
+    //         IDiamondCut.FacetCutAction.Replace,
+    //         selectors
+    //     );
+
+    //     IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](1);
+    //     cuts[0] = cut;
+
+    //     vm.prank(owner);
+    //     OZ.diamondCut(cuts, address(0), new bytes(0));
+    // }
 
     
     function _mock_rETH_ETH() internal {
