@@ -20,7 +20,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {RethLinkFeedAccrued, RethAccruedTWAP} from "./unit/mocks/MockContracts.sol";
-import {MockOzOracle} from "./unit/mocks/MockOzOracle.sol";
+import {MockOzOraclePreAccrual} from "./unit/mocks/MockContracts.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
 import "forge-std/console.sol";
@@ -409,7 +409,7 @@ contract BaseMethods is Setup {
     }
 
     function _mock_rETH_ETH_unit_TWAP_preAccrual() internal {
-        MockOzOracle mockOracle = new MockOzOracle();
+        MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
         // vm.etch(address(oracle), address(mockOracle).code);
 
         bytes4[] memory selectors = new bytes4[](1);

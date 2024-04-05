@@ -7,6 +7,7 @@ import {IAsset} from "../../../../contracts/interfaces/IBalancer.sol";
 import {ozIDiamond} from "../../../../contracts/interfaces/ozIDiamond.sol";
 import {IERC20} from "@uniswap/v2-core/contracts/interfaces/IERC20.sol";
 import {FixedPointMathLib} from "../../../../contracts/libraries/FixedPointMathLib.sol";
+import {AppStorage, Dir, Pair} from "../../../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -265,4 +266,29 @@ contract VaultMock {
 
         return amountOut;
     }
+}
+
+
+contract MockOzOraclePreAccrual {
+
+    AppStorage private s;
+
+
+    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
+        uint amountOut;
+
+        if (side_ == Dir.UP) {
+            amountOut = 1086486906594931900;
+        } else if (side_ == Dir.DOWN) {
+            amountOut = 1085995250282916400;
+        }
+    
+        return amountOut;
+    }
+
+    function _triagePair(uint index_) private view returns(address, address, uint24) {
+        Pair memory p = s.tokenPairs[index_];
+        return (p.base, p.quote, p.fee);
+    }
+
 }
