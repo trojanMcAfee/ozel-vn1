@@ -117,10 +117,10 @@ contract RethAccruedTWAP {
         // tickCumulatives[1] = 48372579181;
 
         if (secondsAgos[0] == 1800) {
-            tickCumulatives[0] = 48369955231; //30403971859
-            tickCumulatives[1] = 48372579181; //30405621199
+            tickCumulatives[0] = 47911131656; //30403971859
+            tickCumulatives[1] = 47913730716; //30405621199
         } else if (secondsAgos[0] == 86400) {
-            tickCumulatives[0] = 27639974418; //these are from pre-accrual
+            tickCumulatives[0] = 27639974418; //these are from pre-accrual Dir.UP
             tickCumulatives[1] = 27641473818; 
         }
 
