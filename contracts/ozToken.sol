@@ -361,12 +361,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
-        console.log('');
-        console.log('*** Dir.UP ***');
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-        console.log('*** end Dir.UP ***');
-        console.log('');
-
         return preBalance == 0 ? 0 : preBalance.mulDivUp(_calculateScalingFactor2(account_), 1e18);
         /**
         * Normally, this would be mulDivDown, like in majority of protocols. 
@@ -383,12 +378,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _calculateScalingFactor2(address account_) private view returns(uint) {
-        console.log('');
-        console.log('*** Dir.DOWN ***');
-        subBalanceOf(account_, Dir.DOWN);
-        console.log('*** end Dir.DOWN ***');
-        console.log('');
-        
         return (_shares[account_] * 1e12).mulDivDown(1e18, subBalanceOf(account_, Dir.DOWN));
     }
 
@@ -411,8 +400,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         uint reth_eth = _OZ().getUniPrice(0, side_);
-        console.log('reth_eth: ', reth_eth);
-
         return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 

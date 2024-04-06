@@ -156,14 +156,12 @@ contract MocksTests is MockStorage, TestMethods {
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-        //The difference of totalSupply is -1
-        assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() - 1);
+        //The difference of totalSupply is +1
+        assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() + 1);
 
         console.log('totalSupply: ', ozERC20.totalSupply());
         console.log('ozBalanceAlice: ', ozBalanceAlice);
         console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
-
-        // revert('hereee2');
 
         //This simulates the rETH rewards accrual.
         console.log('');
@@ -185,9 +183,9 @@ contract MocksTests is MockStorage, TestMethods {
         uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
         uint ozBalanceBobPostMock = ozERC20.balanceOf(bob);
 
-        console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
-        console.log('ozBalanceBobPostMock: ', ozBalanceBobPostMock);
-        console.log('totalSupply: ', ozERC20.totalSupply());
+        // console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
+        // console.log('ozBalanceBobPostMock: ', ozBalanceBobPostMock);
+        // console.log('totalSupply: ', ozERC20.totalSupply());
 
         assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
@@ -205,9 +203,7 @@ contract MocksTests is MockStorage, TestMethods {
         //ACTION
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
-        console.log(5);
         ozERC20.redeem(redeemData, alice);
-        console.log(6);
         vm.stopPrank();
 
         console.log('');

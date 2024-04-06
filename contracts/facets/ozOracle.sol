@@ -42,7 +42,7 @@ contract ozOracle {
 
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
-        return getUniPrice(0, Dir.UP);
+        return this.getUniPrice(0, Dir.UP);
     }
 
 
