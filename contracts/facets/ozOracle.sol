@@ -43,7 +43,9 @@ contract ozOracle {
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
         console.log(1);
-        return getUniPrice(0, Dir.UP);
+
+        // return getUniPrice(0, Dir.UP);
+        return this.getUniPrice(0, Dir.UP);
     }
 
 
@@ -133,7 +135,7 @@ contract ozOracle {
      //It worth mentioning that this won't be a problem until trading on this pool considerably rises. 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         console.log(3);
-        
+
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);

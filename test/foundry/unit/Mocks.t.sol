@@ -177,14 +177,10 @@ contract MocksTests is MockStorage, TestMethods {
         // _mock_rETH_ETH_unit_TWAP2();
 
         console.log('getUni - 1129...: ', OZ.getUniPrice(0, Dir.UP));
-        //the rETH-ETH from below is pulling the old price instead of the new one
-        //that gets correctly pulled from getUni() above.
-        //Mock OZ.rETH_ETH() directly instead
 
         console.log('**********************');
 
         console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
-        // revert('here');
 
         // _mock_rETH_ETH_historical(reth_eth_current);
 
