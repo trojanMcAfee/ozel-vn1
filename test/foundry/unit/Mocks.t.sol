@@ -170,15 +170,8 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('^^^^^ ACCRUAL ^^^^^');
         console.log('');
 
-        // _mock_rETH_ETH_unit();
-        console.log('');
-        // _mock_rETH_ETH_unit_TWAP();
         _mock_rETH_ETH_unit_TWAP(true);
-        // _mock_rETH_ETH_unit_TWAP2();
-
-        console.log('getUni - 1129...: ', OZ.getUniPrice(0, Dir.UP));
-
-        console.log('**********************');
+        
 
         console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
 
@@ -197,9 +190,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('totalSupply: ', ozERC20.totalSupply());
 
         assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
-        console.log(2);
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
-        console.log(3);
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlicePostMock, 

@@ -20,7 +20,8 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {RethLinkFeedAccrued, RethAccruedTWAP} from "./unit/mocks/MockContracts.sol";
-import {MockOzOraclePreAccrual, MockOzOraclePostAccrual} from "./unit/mocks/MockContracts.sol";
+import {MockOzOraclePreAccrual} from "./unit/mocks/MockContracts.sol";
+import {MockOzOraclePostAccrual} from "./unit/mocks/MockOzOraclePostAccrual.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
 import "forge-std/console.sol";
@@ -419,6 +420,9 @@ contract BaseMethods is Setup {
             MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
             vm.etch(address(mockOracle), address(mockOraclePost).code);
         }
+
+        //here i need to replace the entire facet (meaning, remove all functions and re-add them
+        //under the new facet). Do that here. Situation that i'd have to do for all public, internal calls
 
         bytes4[] memory selectors = new bytes4[](1);
         selectors[0] = bytes4(mockOracle.getUniPrice.selector); 

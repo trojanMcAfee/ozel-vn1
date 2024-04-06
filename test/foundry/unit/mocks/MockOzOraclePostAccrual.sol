@@ -3,26 +3,22 @@ pragma solidity 0.8.21;
 
 
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage, LastRewards, Dir, Pair} from "../AppStorage.sol";
-import {IPool} from "../interfaces/IBalancer.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IRocketTokenRETH} from "../interfaces/IRocketPool.sol";
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
-import {Helpers} from "../../contracts/libraries/Helpers.sol";
-import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
-import {IUsingTellor} from "../interfaces/IUsingTellor.sol";
-import "../Errors.sol";
-
-import {OracleLibrary} from "../libraries/oracle/OracleLibrary.sol";
-import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
-import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
+import {AppStorage, LastRewards, Dir, Pair} from "../../../../contracts/AppStorage.sol";
+import {IPool} from "../../../../contracts/interfaces/IBalancer.sol";
+import {IERC20Permit} from "../../../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
+import {IRocketTokenRETH} from "../../../../contracts/interfaces/IRocketPool.sol";
+import {FixedPointMathLib} from "../../../../contracts/libraries/FixedPointMathLib.sol";
+import {Helpers} from "../../../../contracts/libraries/Helpers.sol";
+import {IERC20Permit} from "../../../../contracts/interfaces/IERC20Permit.sol";
+import {IUsingTellor} from "../../../../contracts/interfaces/IUsingTellor.sol";
+import "../../../../contracts/Errors.sol";
 
 import "forge-std/console.sol";
 
 
 
-contract ozOracle {
+contract MockOzOraclePostAccrual {
 
     using FixedPointMathLib for uint;
 
@@ -130,32 +126,15 @@ contract ozOracle {
      //getting timed out, since the mechanism needs 24 hrs historical price data. 
      //It worth mentioning that this won't be a problem until trading on this pool considerably rises. 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
-        console.log(3);
+        uint amountOut;
 
-        (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
-
-        address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);
-
-        uint32 secsAgo = side_ == Dir.UP ? 1800 : (86400);
-        //^ check the values I used for calculatin past rewards
-        //check for Dir.DOWN also
-
-        uint32[] memory secondsAgos = new uint32[](2);
-        secondsAgos[0] = secsAgo;
-        secondsAgos[1] = 0;
-
-        (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
-
-        int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
-        int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
-        
-        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
-        
-        uint amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, token0, token1
-        );
+        if (side_ == Dir.UP) {
+            amountOut = 1129946382858729176;
+        } else if (side_ == Dir.DOWN) {
+            amountOut = 1086486906594931900;
+        }
     
-        return amountOut * (token1 == s.WETH ? 1 : 1e12);
+        return amountOut;
     }
 
     //Tellor

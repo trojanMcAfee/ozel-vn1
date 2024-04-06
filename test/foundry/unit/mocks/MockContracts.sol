@@ -290,27 +290,26 @@ contract MockOzOraclePreAccrual {
     }
 }
 
-contract MockOzOraclePostAccrual {
-    AppStorage private s;
+// contract MockOzOraclePostAccrual {
+//     AppStorage private s;
 
-    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
-        console.log(2);
-        
-        uint amountOut;
+//     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
+//         uint amountOut;
 
-        if (side_ == Dir.UP) {
-            console.log('should log');
-            amountOut = 1129946382858729176;
-        } else if (side_ == Dir.DOWN) {
-            console.log('should not log');
-            amountOut = 1086486906594931900;
-        }
+//         if (side_ == Dir.UP) {
+//             amountOut = 1129946382858729176;
+//         } else if (side_ == Dir.DOWN) {
+//             amountOut = 1086486906594931900;
+//         }
     
-        return amountOut;
-    }
+//         return amountOut;
+//     }
 
-    function _triagePair(uint index_) private view returns(address, address, uint24) {
-        Pair memory p = s.tokenPairs[index_];
-        return (p.base, p.quote, p.fee);
-    }
-}
+//     function _triagePair(uint index_) private view returns(address, address, uint24) {
+//         Pair memory p = s.tokenPairs[index_];
+//         return (p.base, p.quote, p.fee);
+//     }
+// }
+
+
+
