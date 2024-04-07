@@ -409,15 +409,12 @@ contract BaseMethods is Setup {
     }
 
 
-    // _mock_rETH_ETH_unit_Chainlink() internal {
-    //     MockOzOracleLink mockOracle = new  MockOzOracleLink();
-    // }
 
     /**
     * true - pre accrual of ETH staking rewards
     * false - post accrual of ETH staking rewards 
     */
-    function _mock_rETH_ETH_unit_TWAP(Mock type_) internal {
+    function _mock_rETH_ETH_unit(Mock type_) internal {
         MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
         
         if (type_ == Mock.POSTACCRUAL) {
