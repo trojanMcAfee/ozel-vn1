@@ -461,7 +461,6 @@ contract MockOzOraclePostAccrual {
         revert OZError23(baseToken_);
     }
 
-
     function getOracleBackUp1() public view returns(bool, uint) { 
         bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd")));
 
