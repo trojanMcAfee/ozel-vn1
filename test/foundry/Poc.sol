@@ -8,6 +8,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
 import {HelpersLib} from "./HelpersLib.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {Dir} from "../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -223,9 +224,19 @@ contract Poc is TestMethods {
         console.log('^^^^^ MINTING ozUSDC ^^^^^');
         console.log('');
 
+        console.log('');
+        console.log('up - pre pt1: ', OZ.getUniPrice(0, Dir.UP));
+        console.log('down: ', OZ.getUniPrice(0, Dir.DOWN));
+        console.log('');
+
         _mock_rETH_ETH_pt1();
         uint rETH_ETH_preTest = OZ.rETH_ETH();
         console.log('* rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
+
+        console.log('');
+        console.log('up - post pt1: ', OZ.getUniPrice(0, Dir.UP));
+        console.log('down: ', OZ.getUniPrice(0, Dir.DOWN));
+        console.log('');
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
@@ -239,12 +250,17 @@ contract Poc is TestMethods {
         _accrueRewards(15);
         _mock_rETH_ETH_pt2();
 
+        console.log('');
+        console.log('up - post pt2: ', OZ.getUniPrice(0, Dir.UP));
+        console.log('down: ', OZ.getUniPrice(0, Dir.DOWN));
+        console.log('');
+
         uint rETH_ETH_postMock = OZ.rETH_ETH();
         console.log('************ Collect Admin Fee ************');
         console.log('ozUSDC balance - alice - post accrual: ', ozERC20.balanceOf(alice));
         console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
 
-        // revert('hereeee'); //<------------------------- revert here **************
+        revert('hereeee');
 
         console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
         
