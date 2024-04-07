@@ -41,7 +41,7 @@ contract MocksTests is MockStorage, TestMethods {
     //-----------
 
     function test_redeem_rewards_mock_chainlink() public returns(uint, uint, uint) {
-        _mock_rETH_ETH_unit(Mock.CHAINLINK);
+        _mock_rETH_ETH_unit(Mock.PREACCRUAL_LINK);
 
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
@@ -138,7 +138,7 @@ contract MocksTests is MockStorage, TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
 
         //-------
-        _mock_rETH_ETH_unit(Mock.PREACCRUAL);
+        _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI);
         //-------  
 
         uint reth_eth_current = OZ.rETH_ETH();
@@ -170,7 +170,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('^^^^^ ACCRUAL ^^^^^');
         console.log('');
 
-        _mock_rETH_ETH_unit(Mock.POSTACCRUAL);
+        _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
         
 
         console.log('reth_eth - post accrual: ', OZ.rETH_ETH());

@@ -397,19 +397,6 @@ contract BaseMethods is Setup {
         ); 
     }
 
-
-    // function _mock_rETH_ETH_unit() internal {
-    //     RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
-    //     vm.etch(rEthEthChainlink, address(mockRETHaccrual).code);   
-    // }
-
-    // function _mock_rETH_ETH_unit_TWAP() internal {
-    //     RethAccruedTWAP mockRETHaccrual = new RethAccruedTWAP();
-    //     vm.etch(rethWethUniPool, address(mockRETHaccrual).code);   
-    // }
-
-
-
     /**
     * true - pre accrual of ETH staking rewards
     * false - post accrual of ETH staking rewards 
@@ -421,10 +408,10 @@ contract BaseMethods is Setup {
         } else {
             MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
             
-            if (type_ == Mock.POSTACCRUAL) {
+            if (type_ == Mock.POSTACCRUAL_UNI) {
                 MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
                 vm.etch(address(mockOracle), address(mockOraclePost).code);
-            } else if (type_ == Mock.CHAINLINK) {
+            } else if (type_ == Mock.PREACCRUAL_LINK) {
                 MockOzOracleLink mockOracleLink = new  MockOzOracleLink();
                 vm.etch(address(mockOracle), address(mockOracleLink).code);
             }
