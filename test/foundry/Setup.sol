@@ -327,7 +327,7 @@ contract Setup is Test {
             rEthEthChainlink = address(mockRETH);
             swapRouterUni = address(mockRouter);
             vaultBalancer = address(mockVault);
-            vm.etch(rethWethUniPool, address(mockTWAP).code);
+            // vm.etch(rethWethUniPool, address(mockTWAP).code);
 
             deal(wethAddr, address(mockRouter), 1000 * 1e18);
             deal(usdcAddr, address(mockRouter), 100000 * 1e6);

@@ -305,6 +305,8 @@ contract MockOzOraclePreAccrual {
             amountOut = 1086486906594931900;
         } else if (side_ == Dir.DOWN) {
             amountOut = 1085995250282916400;
+        } else {
+            return tokenPair_;
         }
     
         return amountOut;
@@ -428,6 +430,8 @@ contract MockOzOraclePostAccrual {
             amountOut = 1129946382858729176;
         } else if (side_ == Dir.DOWN) {
             amountOut = 1086486906594931900;
+        } else {
+            return tokenPair_;
         }
     
         return amountOut;
@@ -546,11 +550,7 @@ contract MockOzOracleLink {
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         uint price;
         
-        (
-            uint80 roundId,
-            int answer,,
-            uint updatedAt,
-        ) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
+        (uint80 roundId, int answer,,,) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
         price = uint(answer);
 
         if (side_ == Dir.DOWN) {
@@ -558,7 +558,7 @@ contract MockOzOracleLink {
             price = uint(pastAnswer);
         }
 
-        return price;
+        return price > 0 ? price : tokenPair_;
     }
 
     //--------------

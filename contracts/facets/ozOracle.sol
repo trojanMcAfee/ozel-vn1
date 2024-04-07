@@ -91,25 +91,6 @@ contract ozOracle {
         return (p.base, p.quote, p.fee);
     }
 
-
-    function getUniPrice2(uint tokenPair_, Dir side_) public view returns(uint) {
-        uint price;
-        
-        (
-            uint80 roundId,
-            int answer,,
-            uint updatedAt,
-        ) = AggregatorV3Interface(s.rEthEthChainlink).latestRoundData();
-        price = uint(answer);
-
-        if (side_ == Dir.DOWN) {
-            (,int pastAnswer,,,) = AggregatorV3Interface(s.rEthEthChainlink).getRoundData(roundId - 1);
-            price = uint(pastAnswer);
-        }
-
-        return price;
-    }
-
     /**
      * 0 - rETH/WETH - 0.05%
      * 1 - rETH/WETH - 0.01%
