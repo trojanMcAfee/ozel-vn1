@@ -81,63 +81,6 @@ contract RethLinkFeedAccrued is MockStorage {
 }
 
 
-contract RethPreAccrualTWAP {
-
-    function observe(uint32[] calldata secondsAgos) external view returns(
-        int56[] memory tickCumulatives,
-        uint160[] memory secondsPerLiquidityCumulativeX128s
-    ) {
-        secondsPerLiquidityCumulativeX128s = new uint160[](1);
-        secondsPerLiquidityCumulativeX128s[0] = 2;
-        tickCumulatives = new int56[](2);
-
-
-        //When Dir.DOWN was higher than Dir.UP using orignal values, the difference between all balances
-        //between all balances and the totalSupply() was 61 wei. Check this.
-        //Check also if I decrease the difference by lowering Dir.DOWN even more, if the difference on 
-        //totalSupply() increases from just 1.
-        if (secondsAgos[0] == 1800) {
-            tickCumulatives[0] = 27639974418;
-            tickCumulatives[1] = 27641473818;
-        } else if (secondsAgos[0] == 86400) {
-            tickCumulatives[0] = 24812246673; //27569162970(org) / 24812246673(10%)
-            tickCumulatives[1] = 24877326437; //27641473818(org) / 24877326437(10%)
-        }
-
-        return (tickCumulatives, secondsPerLiquidityCumulativeX128s);
-    }
-}
-
-
-contract RethAccruedTWAP {
-
-    function observe(uint32[] calldata secondsAgos) external view returns(
-        int56[] memory tickCumulatives,
-        uint160[] memory secondsPerLiquidityCumulativeX128s
-    ) { 
-        secondsPerLiquidityCumulativeX128s = new uint160[](1);
-        secondsPerLiquidityCumulativeX128s[0] = 2;
-        tickCumulatives = new int56[](2);
-
-        // tickCumulatives[0] = 48369955231;
-        // tickCumulatives[1] = 48372579181;
-
-        if (secondsAgos[0] == 1800) {
-            tickCumulatives[0] = 47911131656; //30403971859
-            tickCumulatives[1] = 47913730716; //30405621199
-        } else if (secondsAgos[0] == 86400) {
-            tickCumulatives[0] = 27639974418; //these are from pre-accrual Dir.UP
-            tickCumulatives[1] = 27641473818; 
-        }
-
-        //figuring out why totalSupply is off from total balances
-        //trying a next example with accurate accrual (6%)
-
-        return (tickCumulatives, secondsPerLiquidityCumulativeX128s);
-    }
-}
-
-
 
 //Has current ETH-USD price
 contract EthLinkFeed is MockStorage {

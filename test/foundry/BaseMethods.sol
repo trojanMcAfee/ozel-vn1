@@ -19,7 +19,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {RethLinkFeedAccrued, RethAccruedTWAP} from "./unit/mocks/MockContracts.sol";
+import {RethLinkFeedAccrued} from "./unit/mocks/MockContracts.sol";
 import {MockOzOraclePreAccrual, MockOzOraclePostAccrual, MockOzOracleLink} from "./unit/mocks/MockContracts.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
