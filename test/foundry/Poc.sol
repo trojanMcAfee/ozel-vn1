@@ -86,7 +86,6 @@ contract Poc is TestMethods {
         vm.stopPrank();
 
         //POST-CONDITIONS
-        
         console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
         console.log('');
 
@@ -97,11 +96,11 @@ contract Poc is TestMethods {
         uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
         console.log('testToken gained after redeem: ', deltaBalanceTestToken);
         
-        // assertTrue(_fm(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice)) == _fm(ozERC20.totalSupply()));
-        // assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
-        // assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
-        // assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
-        // assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
+        assertTrue(_fm(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice)) == _fm(ozERC20.totalSupply()));
+        assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
+        assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
+        assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
+        assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
 
         return (amountIn, reth_usd_preAccrual);
     }
