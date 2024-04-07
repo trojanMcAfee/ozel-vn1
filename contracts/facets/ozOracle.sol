@@ -24,9 +24,9 @@ import "forge-std/console.sol";
 
 contract ozOracle {
 
-    using FixedPointMathLib for uint;
-
     AppStorage private s;
+
+    using FixedPointMathLib for uint;
 
     uint constant public TIMEOUT_LINK = 4 hours; //14400 secs - put this inside AppStorage
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
@@ -42,8 +42,10 @@ contract ozOracle {
 
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
-        return this.getUniPrice(0, Dir.UP);
+        return getUniPrice(0, Dir.UP);
     }
+
+    
 
 
     function ETH_USD() public view returns(uint) {
@@ -130,8 +132,6 @@ contract ozOracle {
      //getting timed out, since the mechanism needs 24 hrs historical price data. 
      //It worth mentioning that this won't be a problem until trading on this pool considerably rises. 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
-        console.log(3);
-
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);

@@ -421,9 +421,6 @@ contract BaseMethods is Setup {
             vm.etch(address(mockOracle), address(mockOraclePost).code);
         }
 
-        //here i need to replace the entire facet (meaning, remove all functions and re-add them
-        //under the new facet). Do that here. Situation that i'd have to do for all public, internal calls
-
         bytes4[] memory selectors = new bytes4[](1);
         selectors[0] = bytes4(mockOracle.getUniPrice.selector); 
 
