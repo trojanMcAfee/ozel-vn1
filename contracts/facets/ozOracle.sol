@@ -117,7 +117,7 @@ contract ozOracle {
 
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);
 
-        uint32 secsAgo = side_ == Dir.UP ? 1800 : (86400);
+        uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
         //^ check the values I used for calculatin past rewards
         //check for Dir.DOWN also
 
