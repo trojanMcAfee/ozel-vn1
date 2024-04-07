@@ -9,7 +9,7 @@ import {MockStorage} from "./MockStorage.sol";
 // import {MockOzOracle} from "./mocks/MockOzOracle.sol";
 import {AmountsIn, Dir} from "../../../contracts/AppStorage.sol";
 import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
-
+import {Mock} from "../AppStorageTests.sol";
 // import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 // import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 // import {Oracle} from "@uniswap/v3-core/contracts/libraries/Oracle.sol";
@@ -136,7 +136,7 @@ contract MocksTests is MockStorage, TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
 
         //-------
-        _mock_rETH_ETH_unit_TWAP(false);
+        _mock_rETH_ETH_unit_TWAP(Mock.PREACCRUAL);
         //-------  
 
         uint reth_eth_current = OZ.rETH_ETH();
@@ -168,7 +168,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('^^^^^ ACCRUAL ^^^^^');
         console.log('');
 
-        _mock_rETH_ETH_unit_TWAP(true);
+        _mock_rETH_ETH_unit_TWAP(Mock.POSTACCRUAL);
         
 
         console.log('reth_eth - post accrual: ', OZ.rETH_ETH());

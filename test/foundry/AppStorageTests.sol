@@ -5,6 +5,12 @@ pragma solidity 0.8.21;
 import {IVault} from "../../contracts/interfaces/IBalancer.sol";
 import {AmountsIn, AmountsOut} from "../../contracts/AppStorage.sol";
 
+enum Mock {
+    PREACCRUAL,
+    POSTACCRUAL,
+    CHAINLINK
+}
+
 
 enum Type {
     IN,

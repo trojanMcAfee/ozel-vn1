@@ -6,7 +6,7 @@ import {HelpersLib} from "./HelpersLib.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {IPool} from "../../contracts/interfaces/IBalancer.sol";
 import {Setup} from "./Setup.sol";
-import {Type, Dir} from "./AppStorageTests.sol";
+import {Type, Dir, Mock} from "./AppStorageTests.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {wozIToken} from "../../contracts/interfaces/wozIToken.sol";
 import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
@@ -20,8 +20,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {RethLinkFeedAccrued, RethAccruedTWAP} from "./unit/mocks/MockContracts.sol";
-import {MockOzOraclePreAccrual} from "./unit/mocks/MockContracts.sol";
-import {MockOzOraclePostAccrual} from "./unit/mocks/MockOzOraclePostAccrual.sol";
+import {MockOzOraclePreAccrual, MockOzOraclePostAccrual, MockOzOracleLink} from "./unit/mocks/MockContracts.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
 import "forge-std/console.sol";
@@ -409,16 +408,24 @@ contract BaseMethods is Setup {
         vm.etch(rethWethUniPool, address(mockRETHaccrual).code);   
     }
 
+
+    // _mock_rETH_ETH_unit_Chainlink() internal {
+    //     MockOzOracleLink mockOracle = new  MockOzOracleLink();
+    // }
+
     /**
     * true - pre accrual of ETH staking rewards
     * false - post accrual of ETH staking rewards 
     */
-    function _mock_rETH_ETH_unit_TWAP(bool type_) internal {
+    function _mock_rETH_ETH_unit_TWAP(Mock type_) internal {
         MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
         
-        if (type_) {
+        if (type_ == Mock.POSTACCRUAL) {
             MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
             vm.etch(address(mockOracle), address(mockOraclePost).code);
+        } else if (type_ == Mock.CHAINLINK) {
+            MockOzOracleLink mockOracleLink = new  MockOzOracleLink();
+            vm.etch(address(mockOracle), address(mockOracleLink).code);
         }
 
         bytes4[] memory selectors = new bytes4[](6);
