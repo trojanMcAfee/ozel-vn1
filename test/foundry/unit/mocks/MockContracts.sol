@@ -228,7 +228,7 @@ contract MockOzOraclePreAccrual {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    function rETH_ETH() public view returns(uint) {
+    function rETH_ETH() public pure returns(uint) {
         return getUniPrice(0, Dir.UP);
     }
 
@@ -241,7 +241,7 @@ contract MockOzOraclePreAccrual {
         return success ? price : _callFallbackOracle(s.WETH);  
     }
 
-    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
+    function getUniPrice(uint tokenPair_, Dir side_) public pure returns(uint) {
         uint amountOut;
 
         if (side_ == Dir.UP) {
@@ -353,7 +353,7 @@ contract MockOzOraclePostAccrual {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    function rETH_ETH() public view returns(uint) {
+    function rETH_ETH() public pure returns(uint) {
         return getUniPrice(0, Dir.UP);
     }
 
@@ -366,7 +366,7 @@ contract MockOzOraclePostAccrual {
         return success ? price : _callFallbackOracle(s.WETH);  
     }
 
-    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
+    function getUniPrice(uint tokenPair_, Dir side_) public pure returns(uint) {
         uint amountOut;
 
         if (side_ == Dir.UP) {

@@ -256,23 +256,5 @@ contract MocksTests is MockStorage, TestMethods {
         assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
     }
 
-
-    function test_z() public {
-        int56 tickCumulatives_0 = 48369955231; //27639974418 (original)
-        int56 tickCumulatives_1 = 48372579181; //27641473818 (original)
-        uint32 secsAgo = 1800;
-
-        int56 tickCumulativesDelta = tickCumulatives_1 - tickCumulatives_0;
-        int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
-
-        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
-
-        uint amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, rEthAddr, wethAddr
-        );
-
-        console.log('amountOut: ', amountOut);
-    }
-
 }
 
