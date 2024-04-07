@@ -398,15 +398,15 @@ contract BaseMethods is Setup {
     }
 
 
-    function _mock_rETH_ETH_unit() internal {
-        RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
-        vm.etch(rEthEthChainlink, address(mockRETHaccrual).code);   
-    }
+    // function _mock_rETH_ETH_unit() internal {
+    //     RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
+    //     vm.etch(rEthEthChainlink, address(mockRETHaccrual).code);   
+    // }
 
-    function _mock_rETH_ETH_unit_TWAP() internal {
-        RethAccruedTWAP mockRETHaccrual = new RethAccruedTWAP();
-        vm.etch(rethWethUniPool, address(mockRETHaccrual).code);   
-    }
+    // function _mock_rETH_ETH_unit_TWAP() internal {
+    //     RethAccruedTWAP mockRETHaccrual = new RethAccruedTWAP();
+    //     vm.etch(rethWethUniPool, address(mockRETHaccrual).code);   
+    // }
 
 
 
@@ -415,56 +415,41 @@ contract BaseMethods is Setup {
     * false - post accrual of ETH staking rewards 
     */
     function _mock_rETH_ETH_unit(Mock type_) internal {
-        MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
-        
-        if (type_ == Mock.POSTACCRUAL) {
-            MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
-            vm.etch(address(mockOracle), address(mockOraclePost).code);
-        } else if (type_ == Mock.CHAINLINK) {
-            MockOzOracleLink mockOracleLink = new  MockOzOracleLink();
-            vm.etch(address(mockOracle), address(mockOracleLink).code);
+        if (type_ == Mock.POSTACCRUAL_LINK) {
+            RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
+            vm.etch(rEthEthChainlink, address(mockRETHaccrual).code);
+        } else {
+            MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
+            
+            if (type_ == Mock.POSTACCRUAL) {
+                MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
+                vm.etch(address(mockOracle), address(mockOraclePost).code);
+            } else if (type_ == Mock.CHAINLINK) {
+                MockOzOracleLink mockOracleLink = new  MockOzOracleLink();
+                vm.etch(address(mockOracle), address(mockOracleLink).code);
+            }
+
+            bytes4[] memory selectors = new bytes4[](6);
+            selectors[0] = bytes4(mockOracle.rETH_ETH.selector); 
+            selectors[1] = bytes4(mockOracle.rETH_USD.selector); 
+            selectors[2] = bytes4(mockOracle.ETH_USD.selector); 
+            selectors[3] = bytes4(mockOracle.getUniPrice.selector); 
+            selectors[4] = bytes4(mockOracle.getOracleBackUp1.selector); 
+            selectors[5] = bytes4(mockOracle.getOracleBackUp2.selector); 
+
+            IDiamondCut.FacetCut memory cut = IDiamondCut.FacetCut(
+                address(mockOracle),
+                IDiamondCut.FacetCutAction.Replace,
+                selectors
+            );
+
+            IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](1);
+            cuts[0] = cut;
+
+            vm.prank(owner);
+            OZ.diamondCut(cuts, address(0), new bytes(0));
         }
-
-        bytes4[] memory selectors = new bytes4[](6);
-        selectors[0] = bytes4(mockOracle.rETH_ETH.selector); 
-        selectors[1] = bytes4(mockOracle.rETH_USD.selector); 
-        selectors[2] = bytes4(mockOracle.ETH_USD.selector); 
-        selectors[3] = bytes4(mockOracle.getUniPrice.selector); 
-        selectors[4] = bytes4(mockOracle.getOracleBackUp1.selector); 
-        selectors[5] = bytes4(mockOracle.getOracleBackUp2.selector); 
-
-        IDiamondCut.FacetCut memory cut = IDiamondCut.FacetCut(
-            address(mockOracle),
-            IDiamondCut.FacetCutAction.Replace,
-            selectors
-        );
-
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](1);
-        cuts[0] = cut;
-
-        vm.prank(owner);
-        OZ.diamondCut(cuts, address(0), new bytes(0));
     }
-
-
-    // function _mock_rETH_ETH_unit_TWAP2() internal {
-    //     MockOzOraclePostAccrual mockOracle = new MockOzOraclePostAccrual();
-
-    //     bytes4[] memory selectors = new bytes4[](1);
-    //     selectors[0] = bytes4(mockOracle.getUniPrice.selector); 
-
-    //     IDiamondCut.FacetCut memory cut = IDiamondCut.FacetCut(
-    //         address(mockOracle),
-    //         IDiamondCut.FacetCutAction.Replace,
-    //         selectors
-    //     );
-
-    //     IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](1);
-    //     cuts[0] = cut;
-
-    //     vm.prank(owner);
-    //     OZ.diamondCut(cuts, address(0), new bytes(0));
-    // }
 
     
     function _mock_rETH_ETH() internal {

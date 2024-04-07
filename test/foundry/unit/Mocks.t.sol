@@ -76,7 +76,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('^^^^^ ACCRUAL ^^^^^');
         console.log('');
 
-        _mock_rETH_ETH_unit();
+        _mock_rETH_ETH_unit(Mock.POSTACCRUAL_LINK);
 
         _mock_rETH_ETH_historical(reth_eth_current);
 

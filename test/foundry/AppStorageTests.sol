@@ -8,7 +8,8 @@ import {AmountsIn, AmountsOut} from "../../contracts/AppStorage.sol";
 enum Mock {
     PREACCRUAL,
     POSTACCRUAL,
-    CHAINLINK
+    CHAINLINK,
+    POSTACCRUAL_LINK
 }
 
 
