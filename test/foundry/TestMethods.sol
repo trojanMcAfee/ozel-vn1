@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import "../../contracts/facets/ozTokenFactory.sol";
-import {Setup} from "./Setup.sol";
+import {Setup, n} from "./Setup.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {IQueries, IPool, IAsset, IVault} from "../../contracts/interfaces/IBalancer.sol";
@@ -55,7 +55,7 @@ contract TestMethods is BaseMethods {
 
     modifier rollBlockAndState() {
         vm.rollFork(secondaryBlockNumber);
-        _runSetup();
+        _runSetup(n);
         vm.mockCall(
             IRocketStorage(rocketPoolStorage)
                 .getAddress(keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"))),

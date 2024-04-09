@@ -5,6 +5,19 @@ pragma solidity 0.8.21;
 import {IVault} from "../../contracts/interfaces/IBalancer.sol";
 import {AmountsIn, AmountsOut} from "../../contracts/AppStorage.sol";
 
+/**
+* PREACCRUAL - getUniPrice() using Uniswap's TWAP
+* POSTACCRUAL_UNI - TWAP price with accrued rewards
+* PREACCRUAL_LINK - getUniPrice() using Chailink feeds.
+* POSTACCRUAL_LINK - Chainlink price with acrrued rewards.
+*/
+enum Mock {
+    PREACCRUAL_UNI,
+    POSTACCRUAL_UNI,
+    PREACCRUAL_LINK,
+    POSTACCRUAL_LINK
+}
+
 
 enum Type {
     IN,

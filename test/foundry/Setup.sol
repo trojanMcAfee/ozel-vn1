@@ -42,11 +42,27 @@ import {OZLrewards} from "../../contracts/facets/OZLrewards.sol";
 import {VestingWallet} from "@openzeppelin/contracts/finance/VestingWallet.sol";
 import {OZLvesting} from "../../contracts/OZLvesting.sol";
 
-// import "forge-std/console.sol";
+import {
+    RethLinkFeed, 
+    EthLinkFeed,
+    SwapRouterMock,
+    VaultMock
+} from "./unit/mocks/MockContracts.sol";
 
+import "forge-std/console.sol";
+
+
+//****** */
+enum Network {
+    ARBITRUM,
+    ETHEREUM,
+    ETH_N_MOCKS
+}
+
+Network constant n = Network.ETHEREUM;
+//****** */
 
 contract Setup is Test {
-
 
     uint OWNER_PK = 123;
     uint ALICE_PK = 456;
@@ -57,11 +73,6 @@ contract Setup is Test {
     address internal alice;
     address internal bob;
     address internal charlie;
-   
-    enum Network {
-        ARBITRUM,
-        ETHEREUM
-    }
 
     enum Quantity {
         SMALL,
@@ -105,6 +116,11 @@ contract Setup is Test {
     address internal secondTestToken;
     address internal thirdTestToken;
 
+    //Mocks 
+    RethLinkFeed internal mockRETH;
+    EthLinkFeed internal mockETH;
+    SwapRouterMock internal mockRouter;
+    VaultMock internal mockVault;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -173,53 +189,35 @@ contract Setup is Test {
 
     //Variables used for simulating the rETH rewards acrrual using Uniswap v3's TWAP oracle
     bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
-    bytes32 newSlot0WithCardinality = 0x00010000960080000000034100000000000000010ae5499d268d75ff31b0bffd;
+    bytes32 newSlot0WithCardinality = 0x00010000960020000000034100000000000000010ae5499d268d75ff31b0bffd;
 
+    //use the getUniPrice mocks on the poc
    
 
     /** FUNCTIONS **/ 
     function setUp() public {
-        string memory network = _chooseNetwork(Network.ETHEREUM);
+        string memory network = _chooseNetwork(n);
+
         redStoneFork = vm.createSelectFork(vm.rpcUrl(network), redStoneBlock);
-        _runSetup();
+        _runSetup(n);
 
         mainFork = vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
-        _runSetup();
+        _runSetup(n);
+
+        console.log('*** NETWORK ***: ', network);
+        console.log('');
     }
 
     function _chooseNetwork(Network chain_) private returns(string memory network) {
-        if (chain_ == Network.ARBITRUM) {
-            usdtAddr = 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9;
-            usdcAddr = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
-            wethAddr = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
-            usdcAddrImpl = 0x0f4fb9474303d10905AB86aA8d5A65FE44b6E04A;
-            wethUsdPoolUni = 0xC6962004f452bE9203591991D15f6b388e09E8D0; //not used. Remove
-            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
-            ethUsdChainlink = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
-            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
-            rEthAddr = 0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8;
-            rEthWethPoolBalancer = 0xadE4A71BB62bEc25154CFc7e6ff49A513B491E81;
-            accessControlledOffchainAggregator = 0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7;
-            aeWETH = 0x8b194bEae1d3e0788A1a35173978001ACDFba668;
-            rEthEthChainlink = 0xD6aB2298946840262FcC278fF31516D39fF611eF;
-            rEthImpl = 0x3f770Ac673856F105b586bb393d122721265aD46;
-            feesCollectorBalancer = 0xce88686553686DA562CE7Cea497CE749DA109f9F;
-            fraxAddr = 0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F; //doesn't have a pool in Uniswap Arb, so it can only be used in L1.
-            daiAddr = 0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1;
-            rocketPoolStorage = address(0);
-            uniFactory = address(0);
-
-            network = "arbitrum";
-            mainBlockNumber = 136177703;
-        } else if (chain_ == Network.ETHEREUM) {
+        if (chain_ == Network.ETHEREUM) {
             usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
             usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
             wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
             usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
             wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
-            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; //same as arb
+            swapRouterUni = 0xE592427A0AEce92De3Edee1F18E0157C05861564; 
             ethUsdChainlink = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
-            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; //same as arb
+            vaultBalancer = 0xBA12222222228d8Ba445958a75a0704d566BF2C8; 
             rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
             rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
             accessControlledOffchainAggregator = address(0);
@@ -239,6 +237,33 @@ contract Setup is Test {
             rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
 
             network = "ethereum";
+            mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
+            secondaryBlockNumber = 18785221;
+            redStoneBlock = 19154743;
+        } else if (chain_ == Network.ETH_N_MOCKS) {
+            usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
+            usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+            wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+            usdcAddrImpl = 0xa2327a938Febf5FEC13baCFb16Ae10EcBc4cbDCF;
+            wethUsdPoolUni = 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640; 
+            rEthAddr = 0xae78736Cd615f374D3085123A210448E74Fc6393;
+            rEthWethPoolBalancer = 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276;
+            accessControlledOffchainAggregator = address(0);
+            aeWETH = address(0);
+            rEthImpl = address(0);
+            feesCollectorBalancer = address(0);
+            fraxAddr = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
+            daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+            rocketPoolStorage = 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46;
+            rocketDAOProtocolSettingsDeposit = 0xac2245BE4C2C1E9752499Bcd34861B761d62fC27;
+            uniFactory = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
+            tellorOracle = 0x8cFc184c877154a8F9ffE0fe75649dbe5e2DBEbf;
+            weETHETHredStone = 0x8751F736E94F6CD167e8C5B97E245680FbD9CC36;
+            weETHUSDredStone = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
+            protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
+            rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+
+            network = "ethereum-mocks";
             mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
             secondaryBlockNumber = 18785221;
             redStoneBlock = 19154743;
@@ -269,7 +294,7 @@ contract Setup is Test {
         return (baseAmount, amountBob, amountCharlie);
     }
 
-    function _runSetup() internal {
+    function _runSetup(Network n_) internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
         testToken = usdcAddr;
         secondTestToken = testToken == daiAddr ? usdcAddr : daiAddr;
@@ -286,6 +311,24 @@ contract Setup is Test {
         cutFacet = new DiamondCutFacet();
         ozDiamond = new Diamond(owner, address(cutFacet));
         initDiamond = new DiamondInit();
+
+        //Set up mocks
+        if (n_ == Network.ETH_N_MOCKS) {
+            mockRETH = new RethLinkFeed();
+            mockETH = new EthLinkFeed();
+            mockRouter = new SwapRouterMock(address(ozDiamond));
+            mockVault = new VaultMock(address(ozDiamond));
+
+            ethUsdChainlink = address(mockETH);
+            rEthEthChainlink = address(mockRETH);
+            swapRouterUni = address(mockRouter);
+            vaultBalancer = address(mockVault);
+
+            deal(wethAddr, address(mockRouter), 1000 * 1e18);
+            deal(usdcAddr, address(mockRouter), 100000 * 1e6);
+            deal(rEthAddr, address(mockVault), 1000 * 1e18);
+            deal(wethAddr, address(mockVault), 1000 * 1e18);
+        }
 
         //Deploys ozToken implementation contract for ozBeacon
         tokenOz = new ozToken();
@@ -593,5 +636,9 @@ contract Setup is Test {
         vm.label(address(teamVesting), 'TeamVestingWallet');
         vm.label(address(guildVesting), 'GuildVestingWallet');
         vm.label(rethWethUniPool, 'rethWethUniPool');
+        vm.label(address(mockRETH), 'mockRETH');
+        vm.label(address(mockETH), 'mockETH');
+        vm.label(address(mockRouter), 'mockRouter');
+        vm.label(address(mockVault), 'mockVault');
     }
 }

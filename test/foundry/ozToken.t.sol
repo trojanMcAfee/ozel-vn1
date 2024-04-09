@@ -13,6 +13,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import "../../contracts/Errors.sol";
 import {Dummy1} from "./Dummy1.sol";
 import {NewToken} from "../../contracts/AppStorage.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
@@ -24,6 +25,76 @@ import "forge-std/console.sol";
 contract ozERC20TokenTest is TestMethods {
 
     using SafeERC20 for IERC20;
+
+
+    // function _getUniPrice(uint tokenPair_, Dir side_) private view returns(uint) {
+    //     // (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
+
+    //     address token0 = rEthAddr;
+    //     address token1 = wethAddr;
+    //     address pool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
+
+    //     uint32 secsAgo = side_ == Dir.UP ? 1800 : (86400 * 2);
+
+    //     uint32[] memory secondsAgos = new uint32[](2);
+    //     secondsAgos[0] = secsAgo;
+    //     secondsAgos[1] = 0;
+
+    //     (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
+
+    //     int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
+    //     int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
+        
+    //     if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
+        
+    //     uint amountOut = OracleLibrary.getQuoteAtTick(
+    //         tick, 1 ether, token0, token1
+    //     );
+    
+    //     return amountOut * (token1 == wethAddr ? 1 : 1e12);
+    // }
+
+
+
+    // function test_oracle() public {
+        
+    //     uint oldestETHUSDC = OracleLibrary.getOldestObservationSecondsAgo(wethUsdPoolUni);
+    //     uint oldestrETHWETH = OracleLibrary.getOldestObservationSecondsAgo(rethWethUniPool);
+        
+    //     console.log('secsAgo oldest eth-usdc: ', oldestETHUSDC);
+    //     console.log('secsAgo oldest reth-eth: ', oldestrETHWETH);
+    //     console.log('block.timestamp: ', block.timestamp);
+    //     console.log('');
+
+    //     // (int24 tick,) = OracleLibrary.consult(rethWethUniPool, uint32(1800));
+    //     // uint256 amountOut = OracleLibrary.getQuoteAtTick(
+    //     //     tick, 1 ether, rEthAddr, wethAddr
+    //     // );
+    
+    //     // console.log('reth-eth in mock 2: ', amountOut * 1e12);
+    //     //------
+    //     console.log('block: ', block.number);
+
+    //     uint reth_up = OZ.getUniPrice(0, Dir.UP);
+    //     uint reth_down = OZ.getUniPrice(0, Dir.DOWN);
+
+    //     //simulate rETH accrual in the other test
+    //     //could do passing the down obs to the current obs
+    //     //read current and past obs from a current block for rETH
+
+    //     console.log('reth_up1: ', reth_up);
+    //     console.log('reth_down: ', reth_down);
+    //     //------
+
+    //     // uint eth_up = OZ.getUniPrice(2, Dir.UP);
+    //     // console.log('eth_up: ', eth_up);
+
+    //     // uint eth_down = OZ.getUniPrice(2, Dir.DOWN);
+    //     // console.log('eth_down: ', eth_down);
+
+
+    // }
+
 
 
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
@@ -179,6 +250,7 @@ contract ozERC20TokenTest is TestMethods {
 
         uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
         uint ozBalanceBobPre = ozERC20.balanceOf(bob);
+        console.log('ozBalanceAlicePre: ', ozBalanceAlicePre);
 
         _mock_ETH_USD(Dir.UP, 400);
         
@@ -195,6 +267,7 @@ contract ozERC20TokenTest is TestMethods {
 
         uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
         uint ozBalanceBobPostRewards = ozERC20.balanceOf(bob);
+        console.log('ozBalanceAlicePostRewards: ', ozBalanceAlicePostRewards);
 
         assertTrue(
             ozBalanceAlicePostRewards > ozBalanceAlicePostUp &&
@@ -213,34 +286,7 @@ contract ozERC20TokenTest is TestMethods {
     }
 
     //------------
-
-
-    function _getUniPrice(address token0_, address token1_, uint32 secs_) private view returns(uint) {
-        address pool = IUniswapV3Factory(uniFactory).getPool(token0_, token1_, uniPoolFee);
-        uint32 secondsAgo = secs_;
-        uint BASE = 1e12;
-
-        if (token1_ == wethAddr) BASE = 1;
-
-        uint32[] memory secondsAgos = new uint32[](2);
-        secondsAgos[0] = secondsAgo;
-        secondsAgos[1] = 0;
-
-        (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
-
-        int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
-        int24 tick = int24(tickCumulativesDelta / int32(secondsAgo));
-        
-        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secondsAgo) != 0)) tick--;
-        
-        uint amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, token0_, token1_
-        );
     
-        return amountOut * BASE;
-    }
-
-
 
     //Tests that the accrual and redemption of rewards happens without issues when there's more
     //than one user that's being accounted for (for internal proper internal accounting of varaibles)

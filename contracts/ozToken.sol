@@ -193,8 +193,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function totalSupply() public view returns(uint) {
+        if (totalShares() != 0) {
+        //     console.log('_subConvertToAssets3(totalShares(), Dir.UP): ', _subConvertToAssets3(totalShares(), Dir.UP));
+        //     console.log('_subConvertToAssets3(totalShares(), Dir.DOWN): ', _subConvertToAssets3(totalShares(), Dir.DOWN));
+        }
+
+
         return totalShares() == 0 ? 0 : 
-            _subConvertToAssets(totalShares(), Dir.UP).mulDivDown(totalAssets() * 1e12, _subConvertToAssets(totalShares(), Dir.DOWN));
+            _subConvertToAssets3(totalShares(), Dir.UP).mulDivUp(totalAssets() * 1e12, _subConvertToAssets3(totalShares(), Dir.DOWN));
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -226,7 +232,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         bytes memory data_, 
         address owner_
     ) external updateReward(owner_, _ozDiamond) returns(uint) { 
-        
+
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
 
@@ -247,11 +253,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
             return shares;
 
+            //put a mint even here
+
         } catch Error(string memory reason) {
             revert OZError22(reason);
         }
-
-        //put a mint even here
     }
     //-------------
 
@@ -264,7 +270,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _convertToSharesFromOzBalance(uint ozBalance_) private view returns(uint) {
-        return ozBalance_.mulDivDown(totalShares(), totalSupply());
+        return ozBalance_.mulDivUp(totalShares(), totalSupply());
     }
 
     function previewMint(uint assets_) public view returns(uint) {
@@ -329,7 +335,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     ) internal {
         if (from == address(0) || to == address(0)) revert OZError04(from, to);
 
-        // uint256 shares = convertToShares(amount) / _calculateScalingFactor(from);
         uint shares = _convertToSharesFromOzBalance(amount);
     
         uint256 fromShares = _shares[from];
@@ -357,7 +362,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-        return preBalance == 0 ? 0 : preBalance.mulDivDown(_calculateScalingFactor2(account_), 1e18);
+        return preBalance == 0 ? 0 : preBalance.mulDivUp(_calculateScalingFactor2(account_), 1e18);
+        /**
+        * Normally, this would be mulDivDown, like in majority of protocols. 
+        * I have to use mulDivUp to the ozBalance of all holders matches with totalSupply.
+        * Further test this to make sure it doesn't introduce an inflation risk (known inflation attacks,
+        * fuzz, more unit tests, etc.).
+        * I discovered with test_rewards_mock_accounting();
+        */
     }
 
 
@@ -375,6 +387,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function _OZ() private view returns(ozIDiamond) {
         return ozIDiamond(_ozDiamond);
+    }
+
+    //Same as _subConvertToAssets() but with mulDivUp instead of mulDivDown
+    //Used in Mocks.t.sol, in test_redeem_rewards_mock_chainlink() on the totalSupply check +1
+    //Further test if that +1 is an attack risk.
+    function _subConvertToAssets3(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
+        uint reth_eth = _OZ().getUniPrice(0, side_);
+        return shares_.mulDivUp(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
     }
 
 

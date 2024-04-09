@@ -24,9 +24,9 @@ import "forge-std/console.sol";
 
 contract ozOracle {
 
-    using FixedPointMathLib for uint;
-
     AppStorage private s;
+
+    using FixedPointMathLib for uint;
 
     uint constant public TIMEOUT_LINK = 4 hours; //14400 secs - put this inside AppStorage
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
@@ -42,9 +42,10 @@ contract ozOracle {
 
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
-        (bool success, uint price) = _useLinkInterface(s.rEthEthChainlink, true);
-        return success ? price : _callFallbackOracle(s.rETH); 
+        return getUniPrice(0, Dir.UP);
     }
+
+    
 
 
     function ETH_USD() public view returns(uint) {
@@ -90,13 +91,35 @@ contract ozOracle {
         return (p.base, p.quote, p.fee);
     }
 
-
+    /**
+     * 0 - rETH/WETH - 0.05%
+     * 1 - rETH/WETH - 0.01%
+     * 2 - WETH/USDC - 0.05%
+     */
+     //STATEMENT: An attacker could spam the observations array and leave the query time (secsAgo)
+     //used for DOWN obsolete, so as the rebasing calculation mechanism. 
+     //ACTION: Check how observations how are actually written into the array and the timeframe
+     //for getting written. 
+     //CONCLUSION: Observations are written whenever a swap crosses an initialized tick, but only once
+     //per tick per block. Once the Observations array is full, old observations get overwritten, so
+     //the flow of overrides depends on the amount of trading activity of the pool (among other variables
+     //like tick spacing). 
+     //Right now, the ETH/USDC pool's oldest observation is from 10 hrs ago, but this pool has a 24hrs
+     //volume of $365m. 
+     //In contract, the rETH/ETH pool's oldest observation is from 30 days ago, but the pool has a 24hrs
+     //volume of $22m. 
+     //The difference between cardinalities is 722 against 150, so a possible mitigation is to drastically 
+     //increase the Observations array with increaseObservationCardinalityNext() on the pool to avoid 
+     //getting timed out, since the mechanism needs 24 hrs historical price data. 
+     //It worth mentioning that this won't be a problem until trading on this pool considerably rises. 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);
 
         uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
+        //^ check the values I used for calculatin past rewards
+        //check for Dir.DOWN also
 
         uint32[] memory secondsAgos = new uint32[](2);
         secondsAgos[0] = secsAgo;
@@ -222,13 +245,13 @@ contract ozOracle {
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
         // console.log('');
-        // console.log('totalAssets: ', totalAssets); //same
+        // console.log('totalAssets: ', totalAssets); 
         // console.log('amountReth: ', amountReth);
 
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
         // console.log('assetsInETH: ', assetsInETH);
-        // console.log('rEthInETH: ', rEthInETH); //different
+        // console.log('rEthInETH: ', rEthInETH); 
         // console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
@@ -257,6 +280,7 @@ contract ozOracle {
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
+        console.log(3);
 
         // rEthInETH --- 10_000
         // assetsInETH ---- x
@@ -288,8 +312,10 @@ contract ozOracle {
         // console.log('currentRewards ^^');
 
         if (currentRewards <= 0) return false;
+        console.log(4);
 
         uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
+        console.log(5);
 
         emit OzRewards(block.number, ozelFeesInRETH, totalRewards, currentRewards);
 

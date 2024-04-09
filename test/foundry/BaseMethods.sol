@@ -6,7 +6,7 @@ import {HelpersLib} from "./HelpersLib.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {IPool} from "../../contracts/interfaces/IBalancer.sol";
 import {Setup} from "./Setup.sol";
-import {Type, Dir} from "./AppStorageTests.sol";
+import {Type, Dir, Mock} from "./AppStorageTests.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {wozIToken} from "../../contracts/interfaces/wozIToken.sol";
 import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
@@ -18,6 +18,10 @@ import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {RethLinkFeedAccrued} from "./unit/mocks/MockContracts.sol";
+import {MockOzOraclePreAccrual, MockOzOraclePostAccrual, MockOzOracleLink} from "./unit/mocks/MockContracts.sol";
+import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
 import "forge-std/console.sol";
 
@@ -94,8 +98,6 @@ contract BaseMethods is Setup {
         address token_, 
         uint amountIn_
     ) internal {
-        // if (token_ == usdcAddr) amountIn_ *= 1e12;
-
         uint pk;
 
         if (user_ == alice) {
@@ -385,8 +387,60 @@ contract BaseMethods is Setup {
         vm.store(rethWethUniPool, bytes32(0), originalSlot0);
     }
 
+    function _mock_rETH_ETH_historical(uint newPastAnswer_) internal {
+        (uint80 roundId,,,,) = AggregatorV3Interface(rEthEthChainlink).latestRoundData();
+
+        vm.mockCall( 
+            rEthEthChainlink,
+            abi.encodeWithSignature('getRoundData(uint80)', roundId - 1),
+            abi.encode(uint80(1), int(newPastAnswer_), uint(0), block.timestamp, uint80(0))
+        ); 
+    }
+
+    /**
+    * true - pre accrual of ETH staking rewards
+    * false - post accrual of ETH staking rewards 
+    */
+    function _mock_rETH_ETH_unit(Mock type_) internal {
+        if (type_ == Mock.POSTACCRUAL_LINK) {
+            RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
+            vm.etch(rEthEthChainlink, address(mockRETHaccrual).code);
+        } else {
+            MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
+            
+            if (type_ == Mock.POSTACCRUAL_UNI) {
+                MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
+                vm.etch(address(mockOracle), address(mockOraclePost).code);
+            } else if (type_ == Mock.PREACCRUAL_LINK) {
+                MockOzOracleLink mockOracleLink = new  MockOzOracleLink();
+                vm.etch(address(mockOracle), address(mockOracleLink).code);
+            }
+
+            bytes4[] memory selectors = new bytes4[](7);
+            selectors[0] = bytes4(mockOracle.rETH_ETH.selector); 
+            selectors[1] = bytes4(mockOracle.rETH_USD.selector); 
+            selectors[2] = bytes4(mockOracle.ETH_USD.selector); 
+            selectors[3] = bytes4(mockOracle.getUniPrice.selector); 
+            selectors[4] = bytes4(mockOracle.getOracleBackUp1.selector); 
+            selectors[5] = bytes4(mockOracle.getOracleBackUp2.selector); 
+            selectors[6] = bytes4(mockOracle.chargeOZLfee.selector); 
+
+            IDiamondCut.FacetCut memory cut = IDiamondCut.FacetCut(
+                address(mockOracle),
+                IDiamondCut.FacetCutAction.Replace,
+                selectors
+            );
+
+            IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](1);
+            cuts[0] = cut;
+
+            vm.prank(owner);
+            OZ.diamondCut(cuts, address(0), new bytes(0));
+        }
+    }
+
     
-    function _mock_rETH_ETH() internal {
+    function _mock_rETH_ETH() internal { //might not be used anymore
         uint bpsIncrease = 400; //92 - 400
         uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
 
@@ -396,6 +450,7 @@ contract BaseMethods is Setup {
             abi.encode(uint80(1), int(rETHETHmock), uint(0), block.timestamp, uint80(0))
         ); 
     }
+
 
     //Put this together with ^^^^
     function _mock_rETH_ETH(Dir direction_, uint bps_) internal {
@@ -513,7 +568,7 @@ contract BaseMethods is Setup {
         uint baseAmount_, 
         uint variableAmount_, 
         uint bps_
-    ) internal pure returns(bool) {
+    ) internal view returns(bool) {
         uint delta = stdMath.abs(int(variableAmount_) - int(baseAmount_));
         return bps_ > delta.mulDivDown(10_000, baseAmount_);
     }

@@ -33,6 +33,10 @@ contract ozLoupe is DiamondLoupeFacet {
     function totalUnderlying(Asset type_) public view returns(uint total) {
         total = IERC20Permit(s.rETH).balanceOf(address(this));
         if (type_ == Asset.USD) total = (total * ozIDiamond(s.ozDiamond).rETH_USD()) / 1 ether;  
+
+        //Put a check for Asset.UNDERLYING
+        //Check if an attack could break the system by dusting ozDiamond with rETH,
+        //if it could break the calculations of balances, ozTokens, etc
     }
 
 
