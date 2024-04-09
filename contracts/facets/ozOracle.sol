@@ -342,11 +342,6 @@ contract ozOracle {
      * @return (uint, uint) - assets_ valued in ETH / all protocol's rETH valued in ETH
      */
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
-        console.log('');
-        console.log('*** in _calculateValuesInETH ***');
-        console.log('ETH_USD: ', ETH_USD());
-        console.log('rETH_ETH: ', rETH_ETH());
-        
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
 
@@ -354,16 +349,8 @@ contract ozOracle {
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {
-        // console.log(11);
         uint adminFee = uint(s.adminFee).mulDivDown(grossFees_, 10_000); 
-        // console.log('');  
-        // console.log('s.adminFeeRecipient: ', s.adminFeeRecipient);
-        // console.log('adminFee: ', adminFee);
-
-        // console.log('pre: ', IERC20Permit(s.rETH).balanceOf(s.adminFeeRecipient));
         IERC20Permit(s.rETH).transfer(s.adminFeeRecipient, adminFee);
-        // console.log('post: ', IERC20Permit(s.rETH).balanceOf(s.adminFeeRecipient));
-        // console.log('');
 
         return grossFees_ - adminFee;
     }

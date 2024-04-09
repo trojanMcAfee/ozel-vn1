@@ -242,10 +242,10 @@ contract Poc is TestMethods {
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
-        uint ozBalanceOwner = ozERC20.balanceOf(alice);
+        // uint ozBalanceOwner = ozERC20.balanceOf(alice);
         uint usdcBalanceOwnerPostMint = IERC20Permit(testToken).balanceOf(alice);
 
-        console.log('ozUSDC balance - alice: ', ozBalanceOwner);
+        console.log('ozUSDC balance - alice - pre accrual: ', ozERC20.balanceOf(alice));
         console.log('USDC balance - alice - post ozUSDC mint: ', usdcBalanceOwnerPostMint);
         console.log('');
 
@@ -260,7 +260,8 @@ contract Poc is TestMethods {
 
         uint rETH_ETH_postMock = OZ.rETH_ETH();
         console.log('************ Collect Admin Fee ************');
-        console.log('ozUSDC balance - alice - post accrual: ', ozERC20.balanceOf(alice));
+        uint ozBalanceOwner = ozERC20.balanceOf(alice);
+        console.log('ozUSDC balance - alice - post accrual: ', ozBalanceOwner);
         console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
 
         console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
@@ -300,6 +301,12 @@ contract Poc is TestMethods {
 
     function _ozTokenPart(uint ozBalanceOwner, ozIToken ozERC20, uint usdcBalanceOwnerPostOZLredeem) private {
         console.log('************ Redeem ozUSDC for USDC ************');
+
+        console.log('ozUSDC balance - alice - pre redeem: ', ozERC20.balanceOf(alice));
+        console.log('USDC balance - alice - pre redeem: ', IERC20Permit(testToken).balanceOf(alice));
+        console.log('');
+        console.log('oz bal redeeming: ', ozBalanceOwner);
+
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceOwner,
             address(ozERC20),
