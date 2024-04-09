@@ -263,11 +263,9 @@ contract Poc is TestMethods {
         console.log('ozUSDC balance - alice - post accrual: ', ozERC20.balanceOf(alice));
         console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
 
-        revert('hereeee');
-
         console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
         
-        OZ.chargeOZLfee();
+        assertTrue(OZ.chargeOZLfee());
         console.log('');
         console.log('^^^^^ COLLECTING FEE ^^^^^');
         console.log('');

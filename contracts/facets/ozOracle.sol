@@ -233,6 +233,7 @@ contract ozOracle {
 
 
     function chargeOZLfee() external returns(bool) { 
+        console.log(1);
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this)); 
 
         uint totalAssets;
@@ -243,15 +244,16 @@ contract ozOracle {
         }
 
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
+        console.log(2);
 
         // console.log('');
-        // console.log('totalAssets: ', totalAssets); //same
-        // console.log('amountReth: ', amountReth);
+        console.log('totalAssets: ', totalAssets); 
+        console.log('amountReth: ', amountReth);
 
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
-        // console.log('assetsInETH: ', assetsInETH);
-        // console.log('rEthInETH: ', rEthInETH); //different
+        console.log('assetsInETH: ', assetsInETH);
+        console.log('rEthInETH: ', rEthInETH); 
         // console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
@@ -280,6 +282,7 @@ contract ozOracle {
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
+        console.log(3);
 
         // rEthInETH --- 10_000
         // assetsInETH ---- x
@@ -311,8 +314,10 @@ contract ozOracle {
         // console.log('currentRewards ^^');
 
         if (currentRewards <= 0) return false;
+        console.log(4);
 
         uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
+        console.log(5);
 
         emit OzRewards(block.number, ozelFeesInRETH, totalRewards, currentRewards);
 
@@ -339,6 +344,11 @@ contract ozOracle {
      * @return (uint, uint) - assets_ valued in ETH / all protocol's rETH valued in ETH
      */
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
+        console.log('');
+        console.log('*** in _calculateValuesInETH ***');
+        console.log('ETH_USD: ', ETH_USD());
+        console.log('rETH_ETH: ', rETH_ETH());
+        
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
 
@@ -346,8 +356,16 @@ contract ozOracle {
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {
+        // console.log(11);
         uint adminFee = uint(s.adminFee).mulDivDown(grossFees_, 10_000); 
+        // console.log('');  
+        // console.log('s.adminFeeRecipient: ', s.adminFeeRecipient);
+        // console.log('adminFee: ', adminFee);
+
+        // console.log('pre: ', IERC20Permit(s.rETH).balanceOf(s.adminFeeRecipient));
         IERC20Permit(s.rETH).transfer(s.adminFeeRecipient, adminFee);
+        // console.log('post: ', IERC20Permit(s.rETH).balanceOf(s.adminFeeRecipient));
+        // console.log('');
 
         return grossFees_ - adminFee;
     }
