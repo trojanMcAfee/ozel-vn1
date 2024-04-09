@@ -29,7 +29,6 @@ contract MocksTests is MockStorage, TestMethods {
     using stdStorage for StdStorage;
 
 
-    
     function test_chainlink_feeds() public {
         uint mockPriceRETH = OZ.rETH_ETH();
         assertTrue(mockPriceRETH == rETHPreAccrual);
