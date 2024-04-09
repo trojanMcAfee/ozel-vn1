@@ -263,7 +263,7 @@ contract ozEngine is Modifiers {
         });
 
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
-        amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
+        amountOut = _executeSwap(singleSwap, funds, 0, block.timestamp);
     }
 
 
