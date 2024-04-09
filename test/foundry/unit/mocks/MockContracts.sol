@@ -327,7 +327,7 @@ contract MockOzOraclePreAccrual {
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
         if (currentRewards <= 0) return false;
-        uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
+        _getFeeAndForward(totalRewards, currentRewards);      
 
         return true;
     }
@@ -500,7 +500,7 @@ contract MockOzOraclePostAccrual {
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
         if (currentRewards <= 0) return false;
-        uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
+        _getFeeAndForward(totalRewards, currentRewards);      
 
         return true;
     }

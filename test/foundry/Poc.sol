@@ -20,136 +20,12 @@ contract Poc is TestMethods {
     using FixedPointMathLib for uint;
 
 
-    //It uses Chainlink in getUniPrice instead of TWAP
-    function test_redeem_rewards_chainlink() public returns(uint, uint) {
-        //PRE-CONDITIONS
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
-
-        _getResetVarsAndChangeSlip();        
-        
-        uint pastAnswer = 1085995250282916400;
-        _mock_rETH_ETH_historical(pastAnswer);
-
-        uint reth_eth_current = OZ.rETH_ETH();
-        uint reth_usd_preAccrual = OZ.rETH_USD(); 
-
-        console.log('');
-        console.log('reth_eth - pre accrual: ', reth_eth_current);
-        console.log('reth_usd - pre accrual: ', reth_usd_preAccrual);
-        console.log('');
-
-        uint decimals = 10 ** IERC20Permit(testToken).decimals();
-
-        uint amountIn = (rawAmount / 3) * decimals;
-        console.log('amountIn testToken: ', amountIn);
-
-        _mintOzTokens(ozERC20, alice, testToken, amountIn);
-        _mintOzTokens(ozERC20, bob, testToken, amountIn);
-
-        uint ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlice: ', ozBalanceAlice);
-
-        assertTrue(_fm(ozERC20.balanceOf(bob) + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
-
-        //This simulates the rETH rewards accrual.
-        console.log('');
-        console.log('^^^^^ ACCRUAL ^^^^^');
-        console.log('');
-
-        _mock_rETH_ETH();
-        _mock_rETH_ETH_historical(reth_eth_current);
-
-        assertTrue(OZ.rETH_ETH() > reth_eth_current);
-
-        console.log('');
-        console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
-        console.log('reth_usd - post accrual: ', OZ.rETH_USD());
-        console.log('');
-
-        uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
-        assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
-
-        bytes memory redeemData = OZ.getRedeemData(
-            ozBalanceAlicePostMock, 
-            address(ozERC20),
-            OZ.getDefaultSlippage(),
-            alice,
-            alice
-        );
-
-        uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
-
-        //ACTION
-        vm.startPrank(alice);
-        ozERC20.approve(address(ozDiamond), type(uint).max);
-        ozERC20.redeem(redeemData, alice);
-        vm.stopPrank();
-
-        //POST-CONDITIONS
-        console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
-        console.log('');
-
-        console.log('balanceAliceTestTokenPostRedeem: ', IERC20Permit(testToken).balanceOf(alice));
-        console.log('balanceAliceTestTokenPreRedeem: ', balanceAliceTestTokenPreRedeem);
-        console.log('');
-        
-        uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
-        console.log('testToken gained after redeem: ', deltaBalanceTestToken);
-        
-        assertTrue(_fm(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice)) == _fm(ozERC20.totalSupply()));
-        assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
-        assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
-        assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
-        assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
-
-        return (amountIn, reth_usd_preAccrual);
-    }
-
-
-    /**
-    * Delta between testToken that alice got and testToken
-    * that she should've gotten: 4.019111305361308 %
-    *
-    * Delta between rETH mocks prev/post accrual: 3.846153846153859 %
-    *
-    * Unaccounted delta: 0.1729574592074492 % (slippage?? rounding?)
-    * When dealing BIG, unaccounted delta is: 0.1188423674962027 % (slippage! - confirm)
-    *
-    * Confirmed. WETH out in balancer swap is 0.01964522011528811 instead of 0.02043102891989964,
-    * due to balancer pool not using th mock rETH feed.
-    */
-    function test_rewards_accounting() public {
-        (uint testTokenAmountIn, uint reth_usd_preAccrual) = test_redeem_rewards_chainlink();
-        console.log('');
-        console.log('-------------------------');
-        console.log('');
-
-
-        uint eth_usd = OZ.ETH_USD();
-        console.log('eth_usd: ', eth_usd);
-
-        uint reth_preAccrual = (testTokenAmountIn * 1e12).mulDivDown(1e18, reth_usd_preAccrual);
-        console.log('reth_preAccrual: ', reth_preAccrual);
-
-        uint reth_usd_postAccrual = OZ.rETH_USD();
-        uint testToken_alledged_rewards = reth_preAccrual.mulDivDown(reth_usd_postAccrual, 1e18);
-        console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
-
-
-    }
-
-
-
-
-
-
-    //--------------------
-
-    //For running this, gotta change getUniPrice from Chainlink to TWAP
     function test_poc() public {
         //Pre-conditions
+        if (testToken == daiAddr) testToken = usdcAddr;
+
+        console.log('');
+
         uint rETH_ETH_preTest = OZ.rETH_ETH();
         (ozIToken ozERC20, uint ozBalanceOwner) = _OZLpart();
 
@@ -195,20 +71,12 @@ contract Poc is TestMethods {
         console.log('OZL/USD rate - post OZL redeemption: ', OZL.getExchangeRate());
         console.log('');
 
-        //-------
         _ozTokenPart(ozBalanceOwner, ozERC20, usdcBalanceOwnerPostOZLredeem);
     }
 
 
     function _OZLpart() private returns(ozIToken, uint) { 
         //Pre-conditions
-        // _mock_rETH_ETH_pt1();
-        // uint rETH_ETH_preTest = OZ.rETH_ETH();
-
-        console.log('');
-        // console.log('* rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
-        console.log('');
-
         console.log('************ Create and Mint ozUSDC ************');
 
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
@@ -218,6 +86,7 @@ contract Poc is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
         console.log('USDC balance - alice: ', amountIn);
+        assertTrue(amountIn == rawAmount * 10 ** IERC20Permit(testToken).decimals());
         _changeSlippage(uint16(9900));
 
         _startCampaign();
@@ -225,46 +94,38 @@ contract Poc is TestMethods {
         console.log('^^^^^ MINTING ozUSDC ^^^^^');
         console.log('');
 
-        // console.log('');
-        // console.log('up - pre pt1: ', OZ.getUniPrice(0, Dir.UP));
-        // console.log('down: ', OZ.getUniPrice(0, Dir.DOWN));
-        // console.log('');
-
-        // _mock_rETH_ETH_pt1();
         _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI);
         uint rETH_ETH_preTest = OZ.rETH_ETH();
         console.log('* rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
 
-        // console.log('');
-        // console.log('up - post pt1: ', OZ.getUniPrice(0, Dir.UP));
-        // console.log('down: ', OZ.getUniPrice(0, Dir.DOWN));
-        // console.log('');
-
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
-        // uint ozBalanceOwner = ozERC20.balanceOf(alice);
         uint usdcBalanceOwnerPostMint = IERC20Permit(testToken).balanceOf(alice);
+        uint ozBalancePreAccrual = ozERC20.balanceOf(alice);
 
-        console.log('ozUSDC balance - alice - pre accrual: ', ozERC20.balanceOf(alice));
+        assertTrue(_checkPercentageDiff(amountIn * 1e12, ozBalancePreAccrual, 5));
+
+        console.log('ozUSDC balance - alice - pre accrual: ', ozBalancePreAccrual);
         console.log('USDC balance - alice - post ozUSDC mint: ', usdcBalanceOwnerPostMint);
+        assertTrue(usdcBalanceOwnerPostMint == 0);
         console.log('');
 
         _accrueRewards(15);
-        // _mock_rETH_ETH_pt2();
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
 
-        // console.log('');
-        // console.log('up - post pt2: ', OZ.getUniPrice(0, Dir.UP));
-        // console.log('down: ', OZ.getUniPrice(0, Dir.DOWN));
-        // console.log('');
-
         uint rETH_ETH_postMock = OZ.rETH_ETH();
+
         console.log('************ Collect Admin Fee ************');
+
         uint ozBalanceOwner = ozERC20.balanceOf(alice);
         console.log('ozUSDC balance - alice - post accrual: ', ozBalanceOwner);
+        assertTrue(ozBalanceOwner > ozBalancePreAccrual);
+
         console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
+        assertTrue(rETH_ETH_postMock > rETH_ETH_preTest);
 
         console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
+        assertTrue(IERC20Permit(rEthAddr).balanceOf(owner) == 0);
         
         assertTrue(OZ.chargeOZLfee());
         console.log('');
@@ -272,14 +133,15 @@ contract Poc is TestMethods {
         console.log('');
 
         console.log('rETH balance - admin - post fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
-
-        // revert('hereeee');
+        assertTrue(IERC20Permit(rEthAddr).balanceOf(owner) > 0);
 
         console.log('');
         console.log('************ Claim OZL ************');
+
         IOZL OZL = IOZL(address(ozlProxy));
         uint ozlBalancePre = OZL.balanceOf(alice);
         console.log('OZL balance - alice - pre claim: ', ozlBalancePre);
+        assertTrue(ozlBalancePre == 0);
 
         vm.prank(alice);
         OZ.claimReward();
@@ -290,8 +152,10 @@ contract Poc is TestMethods {
         //Post-condtions
         uint ozlBalancePost = OZL.balanceOf(alice);
         console.log('OZL balance - alice - post claim: ', ozlBalancePost);
+        assertTrue(ozlBalancePost > ozlBalancePre);
         
         console.log('OZL/USD rate: ', OZL.getExchangeRate());
+        assertTrue(OZL.getExchangeRate() > 1);
         console.log('');
 
         return (ozERC20, ozBalanceOwner);
@@ -304,8 +168,6 @@ contract Poc is TestMethods {
 
         console.log('ozUSDC balance - alice - pre redeem: ', ozERC20.balanceOf(alice));
         console.log('USDC balance - alice - pre redeem: ', IERC20Permit(testToken).balanceOf(alice));
-        console.log('');
-        console.log('oz bal redeeming: ', ozBalanceOwner);
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceOwner,
@@ -328,6 +190,7 @@ contract Poc is TestMethods {
         uint usdcBalanceOwnerPostRedeem = IERC20Permit(testToken).balanceOf(alice);
         
         console.log('ozUSDC balance - alice - post redeem: ', ozBalanceOwnerPostRedeem);
+        assertTrue(ozBalanceOwnerPostRedeem == 0);
         console.log('USDC balance - alice - post redeem: ', usdcBalanceOwnerPostRedeem);
         
         uint delta = usdcBalanceOwnerPostRedeem - usdcBalanceOwnerPostOZLredeem;
