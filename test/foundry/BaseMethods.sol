@@ -416,13 +416,14 @@ contract BaseMethods is Setup {
                 vm.etch(address(mockOracle), address(mockOracleLink).code);
             }
 
-            bytes4[] memory selectors = new bytes4[](6);
+            bytes4[] memory selectors = new bytes4[](7);
             selectors[0] = bytes4(mockOracle.rETH_ETH.selector); 
             selectors[1] = bytes4(mockOracle.rETH_USD.selector); 
             selectors[2] = bytes4(mockOracle.ETH_USD.selector); 
             selectors[3] = bytes4(mockOracle.getUniPrice.selector); 
             selectors[4] = bytes4(mockOracle.getOracleBackUp1.selector); 
             selectors[5] = bytes4(mockOracle.getOracleBackUp2.selector); 
+            selectors[6] = bytes4(mockOracle.chargeOZLfee.selector); 
 
             IDiamondCut.FacetCut memory cut = IDiamondCut.FacetCut(
                 address(mockOracle),

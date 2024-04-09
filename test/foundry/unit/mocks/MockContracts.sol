@@ -13,6 +13,8 @@ import {IRocketTokenRETH} from "../../../../contracts/interfaces/IRocketPool.sol
 import "../../../../contracts/Errors.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {IUsingTellor} from "../../../../contracts/interfaces/IUsingTellor.sol";
+import {IERC20Permit} from "../../../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
 
 import "forge-std/console.sol";
 
@@ -308,6 +310,54 @@ contract MockOzOraclePreAccrual {
         }
     }
 
+    function chargeOZLfee() external returns(bool) { 
+        uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this)); 
+        uint totalAssets;
+
+        for (uint i=0; i < s.ozTokenRegistry.length; i++) {
+            totalAssets += ozIToken(s.ozTokenRegistry[i].ozToken).totalAssets();
+        }
+
+        if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
+
+        (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
+        int totalRewards = int(rEthInETH) - int(assetsInETH); 
+
+        if (totalRewards <= 0) return false;
+        int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
+
+        if (currentRewards <= 0) return false;
+        uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
+
+        return true;
+    }
+
+    function _getAdminFee(uint grossFees_) private returns(uint) {
+        uint adminFee = uint(s.adminFee).mulDivDown(grossFees_, 10_000); 
+        IERC20Permit(s.rETH).transfer(s.adminFeeRecipient, adminFee);
+
+        return grossFees_ - adminFee;
+    }
+
+
+    function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
+        uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
+        uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
+
+        return (assetsInETH, valueInETH);
+    }
+
+    function _getFeeAndForward(int totalRewards_, int currentRewards_) private returns(uint) {
+        uint ozelFeesInETH = uint(s.protocolFee).mulDivDown(uint(currentRewards_), 10_000);
+        s.rewards.prevTotalRewards = uint(totalRewards_);
+
+        uint grossOzelFeesInRETH = (ozelFeesInETH * 1 ether) / rETH_ETH();
+        uint netOzelFees = _getAdminFee(grossOzelFeesInRETH);
+        IERC20Permit(s.rETH).transfer(s.ozlProxy, netOzelFees);
+        
+        return netOzelFees;
+    }
+
 
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
         uint timeout = TIMEOUT_LINK;
@@ -430,6 +480,55 @@ contract MockOzOraclePostAccrual {
         } else {
             return (false, 0);
         }
+    }
+
+
+    function chargeOZLfee() external returns(bool) { 
+        uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this)); 
+        uint totalAssets;
+
+        for (uint i=0; i < s.ozTokenRegistry.length; i++) {
+            totalAssets += ozIToken(s.ozTokenRegistry[i].ozToken).totalAssets();
+        }
+
+        if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
+
+        (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
+        int totalRewards = int(rEthInETH) - int(assetsInETH); 
+
+        if (totalRewards <= 0) return false;
+        int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
+
+        if (currentRewards <= 0) return false;
+        uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
+
+        return true;
+    }
+
+    function _getAdminFee(uint grossFees_) private returns(uint) {
+        uint adminFee = uint(s.adminFee).mulDivDown(grossFees_, 10_000); 
+        IERC20Permit(s.rETH).transfer(s.adminFeeRecipient, adminFee);
+
+        return grossFees_ - adminFee;
+    }
+
+    function _getFeeAndForward(int totalRewards_, int currentRewards_) private returns(uint) {
+        uint ozelFeesInETH = uint(s.protocolFee).mulDivDown(uint(currentRewards_), 10_000);
+        s.rewards.prevTotalRewards = uint(totalRewards_);
+
+        uint grossOzelFeesInRETH = (ozelFeesInETH * 1 ether) / rETH_ETH();
+        uint netOzelFees = _getAdminFee(grossOzelFeesInRETH);
+        IERC20Permit(s.rETH).transfer(s.ozlProxy, netOzelFees);
+        
+        return netOzelFees;
+    }
+
+
+    function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
+        uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
+        uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
+
+        return (assetsInETH, valueInETH);
     }
 
 

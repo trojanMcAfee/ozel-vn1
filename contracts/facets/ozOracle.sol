@@ -233,7 +233,6 @@ contract ozOracle {
 
 
     function chargeOZLfee() external returns(bool) { 
-        console.log(1);
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this)); 
 
         uint totalAssets;
@@ -244,16 +243,15 @@ contract ozOracle {
         }
 
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
-        console.log(2);
 
         // console.log('');
-        console.log('totalAssets: ', totalAssets); 
-        console.log('amountReth: ', amountReth);
+        // console.log('totalAssets: ', totalAssets); 
+        // console.log('amountReth: ', amountReth);
 
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
-        console.log('assetsInETH: ', assetsInETH);
-        console.log('rEthInETH: ', rEthInETH); 
+        // console.log('assetsInETH: ', assetsInETH);
+        // console.log('rEthInETH: ', rEthInETH); 
         // console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));

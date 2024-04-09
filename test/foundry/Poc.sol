@@ -272,7 +272,7 @@ contract Poc is TestMethods {
 
         console.log('rETH balance - admin - post fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
 
-        revert('hereeee');
+        // revert('hereeee');
 
         console.log('');
         console.log('************ Claim OZL ************');
