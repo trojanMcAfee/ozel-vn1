@@ -17,7 +17,6 @@ import {Mock} from "../AppStorageTests.sol";
 // import {Oracle} from "../../../contracts/libraries/oracle/Oracle.sol";
 import {OracleLibrary} from "../../../contracts/libraries/oracle/OracleLibrary.sol";
 import {stdStorage, StdStorage} from "forge-std/Test.sol";    
-import {n, Network} from "../Setup.sol";   
 import {Test} from "forge-std/Test.sol";       
 
 
@@ -29,12 +28,6 @@ contract MocksTests is MockStorage, TestMethods {
 
     using FixedPointMathLib for uint;
     using stdStorage for StdStorage;
-
-
-    function _skip() private returns(bool) {
-        if (n == Network.ETHEREUM) return true;
-        return false;
-    }
 
 
     function test_chainlink_feeds() public {

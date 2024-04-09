@@ -588,6 +588,12 @@ contract Setup is Test {
         );
     }
 
+
+    function _skip() internal pure returns(bool) {
+        if (n == Network.ETHEREUM) return true;
+        return false;
+    }
+
     function _setLabels() private {
         vm.label(address(factory), "ozTokenFactory");
         vm.label(address(initDiamond), "DiamondInit");
