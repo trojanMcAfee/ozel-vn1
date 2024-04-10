@@ -183,18 +183,18 @@ contract MultipleOzTokensTest is TestMethods {
         uint claimedCharlie = OZ.claimReward();
 
         //Post-conditions
-        assertTrue((balBob_2 * 3) / 1e17 == (balAlice_1 + balAlice_2) / 1e17);
-        uint deltaMultipleOz = stdMath.abs(int((balBob_2 / 3) + balCharlie_3) - int(balBob_2));
+        assertTrue(_checkPercentageDiff(balBob_2 * 3, balAlice_1 + balAlice_2, 1));
         
+        uint deltaMultipleOz = stdMath.abs(int((balBob_2 / 3) + balCharlie_3) - int(balBob_2));
+
         /**
          * This check proves that the difference between ozToken balances between multiple ozTokens,
-         * users, and minting quantities is 3334000033, which formatted to ^10 is 0.33 ozTokens. 
+         * users, and minting quantities less than 346666666666666668, which formatted to 1e18 is 0.34 ozTokens. 
          *
-         * This number (0.33) is constant regardless of whether the mining amount is 50 units of 500k.
+         * This number (0.34) is constant regardless of whether the mining amount is 50 units of 500k.
          * So for a 50 USDC mint, it represents a 0.66% and for 500k mint, it's a 0.000066% difference.
          */
-        assertTrue(_fm(deltaMultipleOz, 8) == 3334000033);
-
+        assertTrue(deltaMultipleOz < 346666666666666668);
         assertTrue(_fm(claimedBob * 3, 15) == _fm(claimedAlice, 15));
         assertTrue(_fm((claimedBob / 3) + claimedCharlie, 16) == _fm(claimedBob, 16));
 

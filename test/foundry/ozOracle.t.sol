@@ -36,6 +36,8 @@ contract ozOracleTest is TestMethods {
         uint protocolRate = IRocketTokenRETH(rEthAddr).getExchangeRate();
 
         //Post-condition
+        console.log('rate: ', rate);
+        console.log('protocolRate: ', protocolRate);
         assertTrue(rate == protocolRate);
     }
 
