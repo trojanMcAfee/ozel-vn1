@@ -488,7 +488,7 @@ contract BaseMethods is Setup {
 
     function _accrueRewards(uint secs_) internal {
         vm.warp(block.timestamp + secs_);
-        _mock_rETH_ETH();
+        _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
     }
 
     //Change where this is used in tests for getUnitPrice from ozOracle.sol

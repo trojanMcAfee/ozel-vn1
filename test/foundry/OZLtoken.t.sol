@@ -9,7 +9,7 @@ import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
 import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {Type} from "./AppStorageTests.sol";
+import {Type, Mock} from "./AppStorageTests.sol";
 import {IRocketTokenRETH} from "../../contracts/interfaces/IRocketPool.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
@@ -550,7 +550,7 @@ contract OZLtokenTest is TestMethods {
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
-        _mock_rETH_ETH();
+        _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
 
         //Charges fee
         bool wasCharged = OZ.chargeOZLfee();

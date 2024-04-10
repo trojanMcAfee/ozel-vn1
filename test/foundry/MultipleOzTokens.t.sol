@@ -60,7 +60,7 @@ contract MultipleOzTokensTest is TestMethods {
 
     
     //Tests that the OZL reward of one user is properly claimed with two ozTokens
-    function test_claim_OZL_two_ozTokens() public {
+    function test_two_ozTokens_claim_OZL() public {
         //Pre-conditions
         test_createAndMint_two_ozTokens_oneUser();
 

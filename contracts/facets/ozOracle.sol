@@ -280,7 +280,7 @@ contract ozOracle {
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
-        console.log(3);
+        console.log(31);
 
         // rEthInETH --- 10_000
         // assetsInETH ---- x
@@ -343,9 +343,9 @@ contract ozOracle {
      */
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
-        uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
+        uint rEthInETH = (amountReth_ * rETH_ETH()) / 1 ether;
 
-        return (assetsInETH, valueInETH);
+        return (assetsInETH, rEthInETH);
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {

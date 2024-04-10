@@ -415,7 +415,6 @@ contract TestMethods is BaseMethods {
         (,uint rawAmountBob, uint rawAmountCharlie) = _dealUnderlying(Quantity.SMALL, false);
         uint amountToRedeem = 3;
 
-        // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
         assertTrue(amountIn == 100 * 10 ** IERC20Permit(testToken).decimals());
 
@@ -425,7 +424,6 @@ contract TestMethods is BaseMethods {
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, rawAmountCharlie);
 
         uint ozAmountIn = amountToRedeem * 1e18;
-        // testToken = address(ozERC20);
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, address(ozERC20), Type.OUT);
 
         //Action
@@ -435,8 +433,6 @@ contract TestMethods is BaseMethods {
         vm.stopPrank();
 
         //Post-conditions
-        console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
-        console.log('ozERC20.balanceOf(bob): ', ozERC20.balanceOf(bob));
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - ozERC20.balanceOf(bob)).mulDivDown(10000, balanceOzBobPostMint);
         //the OZError35() check happens here ^
     
