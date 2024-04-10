@@ -179,18 +179,21 @@ contract ozERC20TokenTest is TestMethods {
         //Actions
         bool success = dummy1.mintOz(testToken, amountIn); 
         assertTrue(success);
+        vm.stopPrank();
+
+        assertTrue(_checkPercentageDiff(rawAmount * 1e18, ozERC20.balanceOf(alice), 5));
 
         uint secs = 15;
         _accrueRewards(secs);
 
+        vm.prank(alice);
         uint claimed = OZ.claimReward();
-        vm.stopPrank();
 
         //Post-conditions
-        vm.clearMockedCalls();
-        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        // vm.clearMockedCalls();
+        // uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-        assertTrue(_checkPercentageDiff(rawAmount * 1e18, ozBalanceAlice, 5));
+        // assertTrue(_checkPercentageDiff(rawAmount * 1e18, ozBalanceAlice, 5));
         assertTrue(_fm3(_getRewardRate() * secs) == _fm3(claimed));
 
         return (dummy1, ozERC20);
