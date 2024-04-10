@@ -31,15 +31,13 @@ contract MocksTests is MockStorage, TestMethods {
 
 
     function test_chainlink_feeds() public {
-        if (!_skip()) {
-            uint mockPriceRETH = OZ.rETH_ETH();
-            assertTrue(mockPriceRETH == rETHPreAccrual);
+        if (_skip()) return;
 
-            uint mockPriceETH = OZ.ETH_USD();
-            assertTrue(mockPriceETH == currentPriceETH);
-        } else {
-            assertTrue(true);
-        }
+        uint mockPriceRETH = OZ.rETH_ETH();
+        assertTrue(mockPriceRETH == rETHPreAccrual);
+
+        uint mockPriceETH = OZ.ETH_USD();
+        assertTrue(mockPriceETH == currentPriceETH);
     }
 
     //-----------
@@ -139,124 +137,119 @@ contract MocksTests is MockStorage, TestMethods {
     // }
 
     function test_redeem_rewards_mock_TWAP() public returns(uint, uint, uint) {
-        if (!_skip()) {
-            //PRE-CONDITIONS
-            (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-            (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        if (_skip()) return (0, 0, 0);
 
-            _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI);
+        //PRE-CONDITIONS
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
 
-            uint reth_eth_current = OZ.rETH_ETH();
-            uint reth_usd_preAccrual = OZ.rETH_USD(); 
+        _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI);
 
-            console.log('');
-            console.log('reth_eth - pre accrual: ', reth_eth_current);
-            console.log('reth_usd - pre accrual: ', reth_usd_preAccrual);
-            console.log('');
+        uint reth_eth_current = OZ.rETH_ETH();
+        uint reth_usd_preAccrual = OZ.rETH_USD(); 
 
-            uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+        console.log('');
+        console.log('reth_eth - pre accrual: ', reth_eth_current);
+        console.log('reth_usd - pre accrual: ', reth_usd_preAccrual);
+        console.log('');
 
-            _mintOzTokens(ozERC20, alice, testToken, amountIn);
-            _mintOzTokens(ozERC20, bob, testToken, amountIn);
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
 
-            uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+        _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
-            //The difference of totalSupply is +1
-            assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() + 1);
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-            console.log('totalSupply: ', ozERC20.totalSupply());
-            console.log('ozBalanceAlice: ', ozBalanceAlice);
-            console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
+        //The difference of totalSupply is +1
+        assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply() + 1);
 
-            //This simulates the rETH rewards accrual.
-            console.log('');
-            console.log('^^^^^ ACCRUAL ^^^^^');
-            console.log('');
+        console.log('totalSupply: ', ozERC20.totalSupply());
+        console.log('ozBalanceAlice: ', ozBalanceAlice);
+        console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
 
-            _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
+        //This simulates the rETH rewards accrual.
+        console.log('');
+        console.log('^^^^^ ACCRUAL ^^^^^');
+        console.log('');
 
-            assertTrue(OZ.rETH_ETH() > reth_eth_current);
+        _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
 
-            console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
-            console.log('reth_usd - post accrual: ', OZ.rETH_USD());
-            console.log('');
+        assertTrue(OZ.rETH_ETH() > reth_eth_current);
 
-            uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
-            uint ozBalanceBobPostMock = ozERC20.balanceOf(bob);
+        console.log('reth_eth - post accrual: ', OZ.rETH_ETH());
+        console.log('reth_usd - post accrual: ', OZ.rETH_USD());
+        console.log('');
 
-            assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
-            assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
+        uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPostMock = ozERC20.balanceOf(bob);
 
-            bytes memory redeemData = OZ.getRedeemData(
-                ozBalanceAlicePostMock, 
-                address(ozERC20),
-                OZ.getDefaultSlippage(),
-                alice,
-                alice
-            );
+        assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
+        assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
 
-            uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
+        bytes memory redeemData = OZ.getRedeemData(
+            ozBalanceAlicePostMock, 
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            alice,
+            alice
+        );
 
-            //ACTION
-            vm.startPrank(alice);
-            ozERC20.approve(address(ozDiamond), type(uint).max);
-            ozERC20.redeem(redeemData, alice);
-            vm.stopPrank();
+        uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
 
-            console.log('');
-            console.log('^^^^^ REDEEM ^^^^^');
-            console.log('');
+        //ACTION
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), type(uint).max);
+        ozERC20.redeem(redeemData, alice);
+        vm.stopPrank();
 
-            //POST-CONDITIONS
-            console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
-            console.log('');
+        console.log('');
+        console.log('^^^^^ REDEEM ^^^^^');
+        console.log('');
 
-            console.log('balanceAliceTestTokenPostRedeem: ', IERC20Permit(testToken).balanceOf(alice));
-            console.log('balanceAliceTestTokenPreRedeem: ', balanceAliceTestTokenPreRedeem);
-            console.log('');
-            
-            uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
-            console.log('testToken gained after redeem: ', deltaBalanceTestToken);
-            
-            assertTrue(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice) == ozERC20.totalSupply());
-            assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
-            assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
-            assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
-            assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / 1e12, deltaBalanceTestToken, 1));
+        //POST-CONDITIONS
+        console.log('ozBalanceAlicePostRedeem: ', ozERC20.balanceOf(alice));
+        console.log('');
 
-            return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
-        } else {
-            assertTrue(true);
-            return (0,0,0);
-        }
+        console.log('balanceAliceTestTokenPostRedeem: ', IERC20Permit(testToken).balanceOf(alice));
+        console.log('balanceAliceTestTokenPreRedeem: ', balanceAliceTestTokenPreRedeem);
+        console.log('');
+        
+        uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
+        console.log('testToken gained after redeem: ', deltaBalanceTestToken);
+        
+        assertTrue(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice) == ozERC20.totalSupply());
+        assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
+        assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
+        assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
+        assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / 1e12, deltaBalanceTestToken, 1));
+
+        return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
     }
 
 
     function test_rewards_mock_accounting() public {
-        if (!_skip()) {
-            (uint testTokenAmountIn, uint reth_usd_preAccrual, uint deltaBalanceTestToken) = 
-                test_redeem_rewards_mock_TWAP();
-            console.log('');
-            console.log('-------------------------');
-            console.log('');
+        if (_skip()) return;
 
-            uint eth_usd = OZ.ETH_USD();
-            uint reth_usd = OZ.rETH_USD();
+        (uint testTokenAmountIn, uint reth_usd_preAccrual, uint deltaBalanceTestToken) = 
+            test_redeem_rewards_mock_TWAP();
+        console.log('');
+        console.log('-------------------------');
+        console.log('');
 
-            console.log('eth_usd: ', eth_usd);
-            console.log('reth_usd: ', reth_usd);
+        uint eth_usd = OZ.ETH_USD();
+        uint reth_usd = OZ.rETH_USD();
 
-            uint reth_preAccrual = (testTokenAmountIn * 1e12).mulDivDown(1e18, reth_usd_preAccrual);
-            console.log('reth_preAccrual: ', reth_preAccrual);
+        console.log('eth_usd: ', eth_usd);
+        console.log('reth_usd: ', reth_usd);
 
-            uint reth_usd_postAccrual = OZ.rETH_USD();
-            uint testToken_alledged_rewards = reth_preAccrual.mulDivDown(reth_usd_postAccrual, 1e18);
-            console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
+        uint reth_preAccrual = (testTokenAmountIn * 1e12).mulDivDown(1e18, reth_usd_preAccrual);
+        console.log('reth_preAccrual: ', reth_preAccrual);
 
-            assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
-        } else {
-            assertTrue(true);
-        }
+        uint reth_usd_postAccrual = OZ.rETH_USD();
+        uint testToken_alledged_rewards = reth_preAccrual.mulDivDown(reth_usd_postAccrual, 1e18);
+        console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
+
+        assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
     }
 
 }
