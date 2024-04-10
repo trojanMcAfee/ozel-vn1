@@ -238,7 +238,7 @@ contract MockOzOraclePreAccrual {
         return (rETH_ETH() * ETH_USD()) / 1 ether;
     }
 
-    function ETH_USD() public view returns(uint) {
+    function ETH_USD() public view returns(uint) { //error here *********
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
         return success ? price : _callFallbackOracle(s.WETH);  
     }
@@ -496,10 +496,16 @@ contract MockOzOraclePostAccrual {
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
+        console.log('rEthInETH: ', rEthInETH);
+        console.log('assetsInETH: ', assetsInETH);
+
+        console.log(21);
         if (totalRewards <= 0) return false;
+        console.log(22);
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
         if (currentRewards <= 0) return false;
+        console.log(23);
         _getFeeAndForward(totalRewards, currentRewards);      
 
         return true;
@@ -525,6 +531,13 @@ contract MockOzOraclePostAccrual {
 
 
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
+        console.log('');
+        console.log('assets_ * 1e12: ', assets_ * 1e12);
+        console.log('amountReth_: ', amountReth_);
+        console.log('ETH_USD(): ', ETH_USD());
+        console.log('rETH_ETH(): ', rETH_ETH());
+        console.log('');
+        
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
 

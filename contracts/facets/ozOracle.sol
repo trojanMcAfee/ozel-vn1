@@ -246,10 +246,12 @@ contract ozOracle {
         // console.log('totalAssets: ', totalAssets); 
         // console.log('amountReth: ', amountReth);
 
+        console.log(11);
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
+        console.log(12);
 
-        // console.log('assetsInETH: ', assetsInETH);
-        // console.log('rEthInETH: ', rEthInETH); 
+        console.log('assetsInETH: ', assetsInETH);
+        console.log('rEthInETH: ', rEthInETH); 
         // console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
@@ -273,12 +275,13 @@ contract ozOracle {
          */
 
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
+        console.log(13);
 
         // console.log('totalRewards **************: ', uint(totalRewards));
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
-        console.log(31);
+        console.log(14);
 
         // rEthInETH --- 10_000
         // assetsInETH ---- x
