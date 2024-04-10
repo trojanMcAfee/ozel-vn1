@@ -26,8 +26,11 @@ contract ozOracleTest is TestMethods {
         );
     }
 
-
+    //change this to be a test for getUniPrice(1, Dir.UP) after having modified
+    // __callFallbackOracle() to use that as backup for rETH
     function test_medium_callFallbackOracle_rETHETH() public {
+        if (_skip()) return;
+        
         //Pre-condition
         _mock_false_chainlink_feed(rEthEthChainlink);
 
@@ -36,8 +39,6 @@ contract ozOracleTest is TestMethods {
         uint protocolRate = IRocketTokenRETH(rEthAddr).getExchangeRate();
 
         //Post-condition
-        console.log('rate: ', rate);
-        console.log('protocolRate: ', protocolRate);
         assertTrue(rate == protocolRate);
     }
 

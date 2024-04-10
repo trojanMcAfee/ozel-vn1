@@ -45,8 +45,6 @@ contract ozOracle {
         return getUniPrice(0, Dir.UP);
     }
 
-    
-
 
     function ETH_USD() public view returns(uint) {
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
@@ -176,7 +174,7 @@ contract ozOracle {
             } else {
                 return uniPrice;
             }
-        } else if (baseToken_ == s.rETH) {
+        } else if (baseToken_ == s.rETH) { //remove this and use rETH 1 as backup
             uint uniPrice05 = getUniPrice(0, Dir.UP);
             uint uniPrice01 = getUniPrice(1, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
