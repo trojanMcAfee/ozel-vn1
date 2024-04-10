@@ -295,7 +295,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         (AmountsOut memory amts,) = abi.decode(data_, (AmountsOut, address));
         uint ozAmountIn = amts.ozAmountIn;
 
-        if (ozAmountIn < 2 * 1e18) revert OZError35(ozAmountIn); //<-- check if after optimizations, this check is required (_redeeming_multipleBigBalances_bigMints_smallRedeem)
+        if (ozAmountIn < 3 * 1e18) revert OZError35(ozAmountIn); //<-- check if after optimizations, this check is required (_redeeming_multipleBigBalances_bigMints_smallRedeem)
 
         uint256 accountShares = sharesOf(owner_);
         uint shares = subConvertToShares(ozAmountIn, owner_);

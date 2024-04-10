@@ -413,7 +413,7 @@ contract TestMethods is BaseMethods {
      */
     function _redeeming_multipleBigBalances_bigMints_smallRedeem() internal {
         (,uint rawAmountBob, uint rawAmountCharlie) = _dealUnderlying(Quantity.SMALL, false);
-        uint amountToRedeem = 2;
+        uint amountToRedeem = 3;
 
         // uint decimalsUnderlying = 10 ** IERC20Permit(testToken).decimals();
         uint amountIn = IERC20Permit(testToken).balanceOf(alice);
@@ -435,7 +435,10 @@ contract TestMethods is BaseMethods {
         vm.stopPrank();
 
         //Post-conditions
+        console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
+        console.log('ozERC20.balanceOf(bob): ', ozERC20.balanceOf(bob));
         uint basisPointsDifferenceBobMEV = (balanceOzBobPostMint - ozERC20.balanceOf(bob)).mulDivDown(10000, balanceOzBobPostMint);
+        //the OZError35() check happens here ^
     
         //If diffBalanceCharlieMintRedeem is negative, it means that it wouldn't be profitable to extract MEV from this tx.
         int diffBalanceCharlieMintRedeem = int(balanceOzCharliePostMint) - int(ozERC20.balanceOf(charlie)); 
