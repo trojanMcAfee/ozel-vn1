@@ -190,10 +190,6 @@ contract ozERC20TokenTest is TestMethods {
         uint claimed = OZ.claimReward();
 
         //Post-conditions
-        // vm.clearMockedCalls();
-        // uint ozBalanceAlice = ozERC20.balanceOf(alice);
-
-        // assertTrue(_checkPercentageDiff(rawAmount * 1e18, ozBalanceAlice, 5));
         assertTrue(_fm3(_getRewardRate() * secs) == _fm3(claimed));
 
         return (dummy1, ozERC20);
