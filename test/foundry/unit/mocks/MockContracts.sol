@@ -505,16 +505,13 @@ contract MockOzOraclePostAccrual {
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
-        console.log('rEthInETH: ', rEthInETH);
-        console.log('assetsInETH: ', assetsInETH);
+        // console.log('rEthInETH: ', rEthInETH);
+        // console.log('assetsInETH: ', assetsInETH);
 
-        console.log(21);
         if (totalRewards <= 0) return false;
-        console.log(22);
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
         if (currentRewards <= 0) return false;
-        console.log(23);
         _getFeeAndForward(totalRewards, currentRewards);      
 
         return true;
@@ -541,10 +538,10 @@ contract MockOzOraclePostAccrual {
 
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         console.log('');
-        console.log('assets_ * 1e12: ', assets_ * 1e12);
-        console.log('amountReth_: ', amountReth_);
+        // console.log('assets_ * 1e12: ', assets_ * 1e12);
+        // console.log('amountReth_: ', amountReth_);
         console.log('ETH_USD(): ', ETH_USD());
-        console.log('rETH_ETH(): ', rETH_ETH());
+        // console.log('rETH_ETH(): ', rETH_ETH());
         console.log('');
         
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
@@ -567,16 +564,16 @@ contract MockOzOraclePostAccrual {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
-        console.log('');
-        console.log('*** start _userLink ***');
-        console.log('answer: ', uint(answer));
-        console.log('roundId: ', roundId);
-        console.log('_exemptRed(priceFeed_): ', _exemptRed(priceFeed_));
+        // console.log('');
+        // console.log('*** start _userLink ***');
+        // console.log('answer: ', uint(answer));
+        // console.log('roundId: ', roundId);
+        // console.log('_exemptRed(priceFeed_): ', _exemptRed(priceFeed_));
         console.log('updatedAt: ', updatedAt);
         console.log('block.timestamp: ', block.timestamp);
-        console.log('timeout: ', timeout);
-        console.log('*** end _userLink ***');
-        console.log('');
+        // console.log('timeout: ', timeout);
+        // console.log('*** end _userLink ***');
+        // console.log('');
         
 
         if (

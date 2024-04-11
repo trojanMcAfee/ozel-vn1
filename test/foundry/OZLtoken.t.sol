@@ -644,7 +644,14 @@ contract OZLtokenTest is TestMethods {
         assertTrue(communityAmount == pendingOZLallocPre);
         console.log(3);
 
+        console.log('');
+        console.log('^^^^ start chargeOZLfee ^^^^');
+
         bool wasCharged = OZ.chargeOZLfee();
+
+        console.log('^^^^ end chargeOZLfee ^^^^');
+        console.log('');
+
         assertTrue(wasCharged);
         console.log(4);
 
