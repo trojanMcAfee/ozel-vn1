@@ -540,7 +540,7 @@ contract MockOzOraclePostAccrual {
         console.log('');
         // console.log('assets_ * 1e12: ', assets_ * 1e12);
         // console.log('amountReth_: ', amountReth_);
-        console.log('ETH_USD(): ', ETH_USD());
+        // console.log('ETH_USD(): ', ETH_USD());
         // console.log('rETH_ETH(): ', rETH_ETH());
         console.log('');
         
