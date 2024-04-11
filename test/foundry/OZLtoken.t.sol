@@ -66,9 +66,13 @@ contract OZLtokenTest is TestMethods {
         assertTrue(oldOzTokenBalance > 0);
 
         uint secs = 10 + campaignDuration; 
+        console.log('block pre ^^^^^: ', block.timestamp);
         vm.warp(block.timestamp + secs);
+        console.log('block post ^^^^^: ', block.timestamp);
 
         int durationLeft = _getDurationLeft();
+        // console.logInt(durationLeft);
+        // console.log('durationLeft ^^^^');
         assertTrue(durationLeft < 0);
 
         // _mock_rETH_ETH();
