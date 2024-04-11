@@ -576,6 +576,7 @@ contract MockOzOraclePostAccrual {
             updatedAt <= block.timestamp &&
             block.timestamp - updatedAt <= timeout
         ) {
+            console.log('here');
             return (true, uint(answer) * BASE); 
         } else {
             return (false, 0); 
