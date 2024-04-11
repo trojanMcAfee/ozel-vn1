@@ -564,16 +564,17 @@ contract MockOzOraclePostAccrual {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
-        // console.log('');
-        // console.log('*** start _userLink ***');
-        // console.log('answer: ', uint(answer));
-        // console.log('roundId: ', roundId);
-        // console.log('_exemptRed(priceFeed_): ', _exemptRed(priceFeed_));
+        console.log('');
+        console.log('*** start _userLink ***');
+        console.log('priceFeed_: ', priceFeed_);
+        console.log('answer: ', uint(answer));
+        console.log('roundId: ', roundId);
+        console.log('_exemptRed(priceFeed_): ', _exemptRed(priceFeed_));
         console.log('updatedAt: ', updatedAt);
         console.log('block.timestamp: ', block.timestamp);
-        // console.log('timeout: ', timeout);
-        // console.log('*** end _userLink ***');
-        // console.log('');
+        console.log('timeout: ', timeout);
+        console.log('*** end _userLink ***');
+        console.log('');
         
 
         if (
@@ -586,6 +587,7 @@ contract MockOzOraclePostAccrual {
             console.log('here');
             return (true, uint(answer) * BASE); 
         } else {
+            console.log('there');
             return (false, 0); 
         }
     }
