@@ -567,7 +567,17 @@ contract MockOzOraclePostAccrual {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
+        console.log('');
+        console.log('*** start _userLink ***');
         console.log('answer: ', uint(answer));
+        console.log('roundId: ', roundId);
+        console.log('_exemptRed(priceFeed_): ', _exemptRed(priceFeed_));
+        console.log('updatedAt: ', updatedAt);
+        console.log('block.timestamp: ', block.timestamp);
+        console.log('timeout: ', timeout);
+        console.log('*** end _userLink ***');
+        console.log('');
+        
 
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
