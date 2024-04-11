@@ -78,8 +78,12 @@ contract OZLtokenTest is TestMethods {
         // _mock_rETH_ETH();
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
 
+        // console.log('block ^^^^^: ', block.timestamp);
+
         IOZL OZL = IOZL(address(ozlProxy));
         (uint ozlBalanceAlice, uint claimedReward) = _checkChargeFeeClaimOZL(OZL);
+
+        // console.log('block ^^^^^: ', block.timestamp);
 
         /**
          * Actions 1
@@ -99,8 +103,12 @@ contract OZLtokenTest is TestMethods {
         );
         vm.stopPrank();
 
+        // console.log('block ^^^^^: ', block.timestamp);
+
         (uint oldRecicledSupply, uint oldRewardRate) = 
             _checkSupplyAndRate(pendingAllocPreRedeem, OZL, ozlBalanceAlice);
+
+        // console.log('block ^^^^^: ', block.timestamp);
 
         /**
          * Actions 2
@@ -110,10 +118,16 @@ contract OZLtokenTest is TestMethods {
 
         OZ.startNewReciclingCampaign(oneYear); 
 
+        // console.log('block ^^^^^: ', block.timestamp);
+
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         vm.clearMockedCalls();
 
+        // console.log('block ^^^^^: ', block.timestamp);
+
         _mock_rETH_ETH_pt2();
+
+        // console.log('block ^^^^^: ', block.timestamp);
 
         uint newOzTokenBalance = ozERC20.balanceOf(alice);
         uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
@@ -128,6 +142,8 @@ contract OZLtokenTest is TestMethods {
         uint earned = OZ.earned(alice);
         assertTrue(claimedReward / 1e9 == earned / 1e9);
         console.log(6);
+
+        // console.log('block ^^^^^: ', block.timestamp);
 
         /**
          * Post-conditions
