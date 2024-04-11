@@ -238,7 +238,7 @@ contract MockOzOraclePreAccrual {
         return (rETH_ETH() * ETH_USD()) / 1 ether;
     }
 
-    function ETH_USD() public view returns(uint) { //error here *********
+    function ETH_USD() public view returns(uint) { 
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
         return success ? price : _callFallbackOracle(s.WETH);  
     }
@@ -413,7 +413,16 @@ contract MockOzOraclePostAccrual {
 
     function ETH_USD() public view returns(uint) {
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        return success ? price : _callFallbackOracle(s.WETH);  
+        
+        console.log('');
+        console.log('*** start of ETH_USD ***');
+        console.log('success in eth-usd - true: ', success);
+        console.log('price: ', price);
+        uint x = success ? price : _callFallbackOracle(s.WETH);  
+        console.log('*** end of ETH_USD ***');
+        console.log('');
+        
+        return x;
     }
 
     function getUniPrice(uint tokenPair_, Dir side_) public pure returns(uint) {
@@ -557,6 +566,8 @@ contract MockOzOraclePostAccrual {
             int answer,,
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
+
+        console.log('answer: ', uint(answer));
 
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
