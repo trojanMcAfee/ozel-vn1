@@ -33,6 +33,8 @@ contract ozOracleTest is TestMethods {
         
         //Pre-condition
         _mock_false_chainlink_feed(rEthEthChainlink);
+        //this ^ doesn't actually fail because rETH-ETH is no longer Chainlink, but 
+        //TWAP. Make it fail for when getUniPrice deviates 1% from a reference (link feed)
 
         //Actions
         uint rate = OZ.rETH_ETH();

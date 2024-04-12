@@ -527,9 +527,6 @@ contract MockOzOraclePostAccrual {
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);        
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
-        // console.log('rEthInETH: ', rEthInETH);
-        // console.log('assetsInETH: ', assetsInETH);
-
         if (totalRewards <= 0) return false;
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
