@@ -56,8 +56,6 @@ contract OZLtokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
 
-        // _mock_rETH_ETH_pt1();
-
         _startCampaign();
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
@@ -75,10 +73,9 @@ contract OZLtokenTest is TestMethods {
         // console.log('durationLeft ^^^^');
         assertTrue(durationLeft < 0);
 
-        // _mock_rETH_ETH();
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
-
-        // console.log('block ^^^^^: ', block.timestamp);
+        
+        uint oldOzTokenBalancePostAccrual = ozERC20.balanceOf(alice);
 
         IOZL OZL = IOZL(address(ozlProxy));
         (uint ozlBalanceAlice, uint claimedReward) = _checkChargeFeeClaimOZL(OZL);
@@ -123,18 +120,10 @@ contract OZLtokenTest is TestMethods {
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         vm.clearMockedCalls();
 
-        // console.log('block ^^^^^: ', block.timestamp);
-
-        _mock_rETH_ETH_pt2();
-
-        // console.log('block ^^^^^: ', block.timestamp);
-
-        uint newOzTokenBalance = ozERC20.balanceOf(alice);
-        uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
-
-        //Difference between balances (old and new) is less than 0.32% (slippage between orders)
-        assertTrue(diff < 32);  
-        console.log(5);
+        uint newOzTokenBalance = ozERC20.balanceOf(alice); 
+        
+        //Difference between balances (oldAccrued and new) is less than 1 bps (slippage between orders)
+        assertTrue(_checkPercentageDiff(newOzTokenBalance, oldOzTokenBalancePostAccrual * 2, 1));
 
         vm.warp(block.timestamp + secs);
 

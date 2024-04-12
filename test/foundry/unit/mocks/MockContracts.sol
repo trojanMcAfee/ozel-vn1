@@ -16,6 +16,10 @@ import {IUsingTellor} from "../../../../contracts/interfaces/IUsingTellor.sol";
 import {IERC20Permit} from "../../../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
 
+import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
+import {OracleLibrary} from "../../../../contracts/libraries/oracle/OracleLibrary.sol";
+
 import "forge-std/console.sol";
 
 
@@ -403,7 +407,7 @@ contract MockOzOraclePostAccrual {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    function rETH_ETH() public pure returns(uint) {
+    function rETH_ETH() public view returns(uint) {
         return getUniPrice(0, Dir.UP);
     }
 
@@ -413,27 +417,45 @@ contract MockOzOraclePostAccrual {
 
     function ETH_USD() public view returns(uint) {
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        
-        console.log('');
-        console.log('*** start of ETH_USD ***');
-        console.log('success in eth-usd - true: ', success);
-        console.log('price: ', price);
-        uint x = success ? price : _callFallbackOracle(s.WETH);  
-        console.log('*** end of ETH_USD ***');
-        console.log('');
-        
-        return x;
+        return success ? price : _callFallbackOracle(s.WETH);
     }
 
-    function getUniPrice(uint tokenPair_, Dir side_) public pure returns(uint) {
-        uint amountOut;
+    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
+        uint amountOut; 
 
-        if (side_ == Dir.UP) {
-            amountOut = 1129946382858729176;
-        } else if (side_ == Dir.DOWN) {
-            amountOut = 1086486906594931900;
+        if (tokenPair_ != 2) {
+            if (side_ == Dir.UP) {
+                amountOut = 1129946382858729176;
+            } else if (side_ == Dir.DOWN) {
+                amountOut = 1086486906594931900;
+            } else {
+                return tokenPair_;
+            }
         } else {
-            return tokenPair_;
+            (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
+
+            address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);
+
+            uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
+            //^ check the values I used for calculatin past rewards
+            //check for Dir.DOWN also
+
+            uint32[] memory secondsAgos = new uint32[](2);
+            secondsAgos[0] = secsAgo;
+            secondsAgos[1] = 0;
+
+            (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
+
+            int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
+            int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
+            
+            if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
+            
+            amountOut = OracleLibrary.getQuoteAtTick(
+                tick, 1 ether, token0, token1
+            );
+        
+            return amountOut * (token1 == s.WETH ? 1 : 1e12);
         }
     
         return amountOut;
@@ -502,7 +524,7 @@ contract MockOzOraclePostAccrual {
 
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
-        (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
+        (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);        
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
         // console.log('rEthInETH: ', rEthInETH);

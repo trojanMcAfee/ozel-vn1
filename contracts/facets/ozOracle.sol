@@ -48,7 +48,7 @@ contract ozOracle {
 
     function ETH_USD() public view returns(uint) {
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        return success ? price : _callFallbackOracle(s.WETH);  
+        return success ? price : _callFallbackOracle(s.WETH); 
     }
 
     function rETH_USD() public view returns(uint) {
@@ -345,6 +345,7 @@ contract ozOracle {
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint rEthInETH = (amountReth_ * rETH_ETH()) / 1 ether;
+        console.log('rETH_ETH(): ', rETH_ETH());
 
         return (assetsInETH, rEthInETH);
     }
