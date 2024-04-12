@@ -7,6 +7,7 @@ import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {FixedPointMathLib} from "./FixedPointMathLib.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
+import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 
 enum TotalType {
     ASSETS,
@@ -190,6 +191,20 @@ library Helpers {
         } else {
             return num3;
         }
+    }
+
+    function getMedium(uint num1, uint num2) internal pure returns(uint) {
+        return (num1 + num2) / 2;
+    }
+
+
+    function checkDeviation( 
+        uint mainAmount_, 
+        uint referenceAmount_, 
+        uint16 bps_
+    ) internal pure returns(bool) {
+        uint delta = stdMath.abs(int(referenceAmount_) - int(mainAmount_));
+        return uint(bps_) > delta.mulDivDown(10_000, mainAmount_);
     }
 
   

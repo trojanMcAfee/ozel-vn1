@@ -113,6 +113,8 @@ contract DiamondInit {
         s.tokenPairs[0] = Pair(s.rETH, s.WETH, s.uniFee);
         s.tokenPairs[1] = Pair(s.rETH, s.WETH, s.uniFee01);
         s.tokenPairs[2] = Pair(s.WETH, s.USDC, s.uniFee);  //<--- put these in Setup.sol
+
+        s.deviation = 100; //<---- put this in Setup.sol
     }
 
 

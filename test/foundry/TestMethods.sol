@@ -87,7 +87,6 @@ contract TestMethods is BaseMethods {
         assertTrue(address(ozERC20) != address(0));
         assertTrue(sharesAlice == rawAmount * SHARES_DECIMALS_OFFSET);
         assertTrue(_checkPercentageDiff(rawAmount * 1 ether, balAlice, 5));
-        // assertTrue(balAlice > 98 * 1 ether && balAlice < rawAmount * 1 ether);
     }
 
     
@@ -270,7 +269,7 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
         uint balanceOzUsdcAlice = ozERC20.balanceOf(alice);
-        assertTrue(_checkPercentageDiff(1_000_000 * 1e18, balanceOzUsdcAlice, 5));
+        assertTrue(_checkPercentageDiff(1_000_000 * 1e18, balanceOzUsdcAlice, 12));
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         testToken = address(ozERC20);

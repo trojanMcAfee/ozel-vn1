@@ -8,6 +8,7 @@ import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol"
 import {IUsingTellor} from "../../contracts/interfaces/IUsingTellor.sol";
 import {IRocketTokenRETH} from "../../contracts/interfaces/IRocketPool.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {Dir} from "../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -73,8 +74,26 @@ contract ozOracleTest is TestMethods {
         assertTrue(ethPrice == _getUniPrice());
     }
 
-    //To test if Tellor and RedStone prices are properly fetched, I need to create mocks,
-    //and play with the functions so that the medium value returned is Tellor or RedStone.
+    
+    //Tests that when the deviation check in rETH-ETH fails, _callFallbackOracle() is
+    //called an a price for rETH-ETH is given without interruptions.
+
+    //add the changes to all mocks and forge test again
+    function test_failed_deviation() public {
+        //Pre-conditions
+        vm.selectFork(redStoneFork);
+        _mock_false_chainlink_feed(ethUsdChainlink);
+
+        //Action
+        _redeeming_bigBalance_bigMint_bigRedeem();
+
+        //Post-conditions
+        uint uni01Reth = OZ.getUniPrice(1, Dir.UP);
+        uint protocolReth = IRocketTokenRETH(rEthAddr).getExchangeRate();
+        uint backupReth = OZ.rETH_ETH();
+
+        assertTrue(backupReth == (uni01Reth + protocolReth) / 2);
+    }
 
 
 

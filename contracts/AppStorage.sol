@@ -70,6 +70,9 @@ struct AppStorage {
 
     mapping(uint index => Pair pair) tokenPairs;
 
+    //Used in checkDeviation() / ozOracle
+    uint16 deviation;
+
 }
 
 

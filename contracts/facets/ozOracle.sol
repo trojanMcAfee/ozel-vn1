@@ -27,6 +27,7 @@ contract ozOracle {
     AppStorage private s;
 
     using FixedPointMathLib for uint;
+    using Helpers for uint;
 
     uint constant public TIMEOUT_LINK = 4 hours; //14400 secs - put this inside AppStorage
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
@@ -42,7 +43,14 @@ contract ozOracle {
 
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
-        return getUniPrice(0, Dir.UP);
+        (bool success, uint refPrice) = _useLinkInterface(s.ethUsdChainlink, true);
+        uint mainPrice = getUniPrice(0, Dir.UP);
+
+        if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
+            return mainPrice;
+        } else {
+            return _callFallbackOracle(s.rETH);
+        }
     }
 
 
@@ -170,16 +178,15 @@ contract ozOracle {
             (bool success2, uint redPrice) = getOracleBackUp2();
 
             if (success && success2) {
-                return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
+                return uniPrice.getMedium(tellorPrice, redPrice);
             } else {
                 return uniPrice;
             }
-        } else if (baseToken_ == s.rETH) { //remove this and use rETH 1 as backup
-            uint uniPrice05 = getUniPrice(0, Dir.UP);
+        } else if (baseToken_ == s.rETH) { 
             uint uniPrice01 = getUniPrice(1, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 
-            return Helpers.getMedium(uniPrice05, uniPrice01, protocolPrice);
+            return uniPrice01.getMedium(protocolPrice);
         }
         revert OZError23(baseToken_);
     }
