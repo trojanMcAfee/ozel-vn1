@@ -43,7 +43,7 @@ contract ozOracle {
 
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
-        (bool success, uint refPrice) = _useLinkInterface(s.ethUsdChainlink, true);
+        (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP);
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {

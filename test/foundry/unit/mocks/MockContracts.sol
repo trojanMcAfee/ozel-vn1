@@ -235,7 +235,7 @@ contract MockOzOraclePreAccrual {
     uint constant public TIMEOUT_LINK = 4 hours;
 
     function rETH_ETH() public view returns(uint) {
-        (bool success, uint refPrice) = _useLinkInterface(s.ethUsdChainlink, true);
+        (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP);
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
@@ -414,7 +414,7 @@ contract MockOzOraclePostAccrual {
     uint constant public TIMEOUT_LINK = 4 hours;
 
     function rETH_ETH() public view returns(uint) {
-        (bool success, uint refPrice) = _useLinkInterface(s.ethUsdChainlink, true);
+        (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP);
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
@@ -620,7 +620,7 @@ contract MockOzOracleLink {
     uint constant public TIMEOUT_LINK = 4 hours;
 
     function rETH_ETH() public view returns(uint) {
-        (bool success, uint refPrice) = _useLinkInterface(s.ethUsdChainlink, true);
+        (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP);
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
