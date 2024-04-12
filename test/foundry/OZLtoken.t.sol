@@ -57,6 +57,7 @@ contract OZLtokenTest is TestMethods {
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
 
         // _mock_rETH_ETH_pt1();
+        console.log('reth-eth pre: ', OZ.rETH_ETH());
 
         _startCampaign();
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
@@ -73,6 +74,12 @@ contract OZLtokenTest is TestMethods {
 
         // _mock_rETH_ETH();
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
+        console.log('reth-eth post: ', OZ.rETH_ETH());
+
+        //-----
+        uint oldOzTokenBalancePostAccrual = ozERC20.balanceOf(alice);
+        console.log('oldOzTokenBalancePostAccrual: ', oldOzTokenBalancePostAccrual);
+        //-----
 
         IOZL OZL = IOZL(address(ozlProxy));
         (uint ozlBalanceAlice, uint claimedReward) = _checkChargeFeeClaimOZL(OZL);
@@ -111,14 +118,17 @@ contract OZLtokenTest is TestMethods {
 
         // _mock_rETH_ETH_pt2();
 
-        uint newOzTokenBalance = ozERC20.balanceOf(alice);
-        console.log('newOzTokenBalance: ', newOzTokenBalance);
-        console.log('oldOzTokenBalance: ', oldOzTokenBalance);
-        uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
+        uint newOzTokenBalance = ozERC20.balanceOf(alice); 
+        // console.log('newOzTokenBalance: ', newOzTokenBalance);
+        // console.log('oldOzTokenBalance: ', oldOzTokenBalance);
+        // uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
+        //Difference between balances (oldAccrued and new) is less than 1 bps (slippage between orders)
+        assertTrue(_checkPercentageDiff(newOzTokenBalance, oldOzTokenBalancePostAccrual * 2, 1));
+        // console.log('true: ', x);
 
         //Difference between balances (old and new) is less than 0.32% (slippage between orders)
-        console.log('diff: ', diff);
-        assertTrue(diff < 32);  
+        // console.log('diff: ', diff);
+        // assertTrue(diff < 32);  
 
         vm.warp(block.timestamp + secs);
 
