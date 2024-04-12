@@ -438,7 +438,7 @@ contract MockOzOraclePostAccrual {
 
         if (tokenPair_ != 2) {
             if (side_ == Dir.UP) {
-                amountOut = 1129946382858729176;
+                amountOut = 1139946382858729176;
             } else if (side_ == Dir.DOWN) {
                 amountOut = 1086486906594931900;
             } else {
@@ -568,13 +568,6 @@ contract MockOzOraclePostAccrual {
 
 
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
-        console.log('');
-        // console.log('assets_ * 1e12: ', assets_ * 1e12);
-        // console.log('amountReth_: ', amountReth_);
-        // console.log('ETH_USD(): ', ETH_USD());
-        // console.log('rETH_ETH(): ', rETH_ETH());
-        console.log('');
-        
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
 
@@ -595,19 +588,6 @@ contract MockOzOraclePostAccrual {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
-        console.log('');
-        console.log('*** start _userLink ***');
-        console.log('priceFeed_: ', priceFeed_);
-        console.log('answer: ', uint(answer));
-        console.log('roundId: ', roundId);
-        console.log('_exemptRed(priceFeed_): ', _exemptRed(priceFeed_));
-        console.log('updatedAt: ', updatedAt);
-        console.log('block.timestamp: ', block.timestamp);
-        console.log('timeout: ', timeout);
-        console.log('*** end _userLink ***');
-        console.log('');
-        
-
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
             answer > 0 && 
@@ -615,10 +595,8 @@ contract MockOzOraclePostAccrual {
             updatedAt <= block.timestamp &&
             block.timestamp - updatedAt <= timeout
         ) {
-            console.log('here');
             return (true, uint(answer) * BASE); 
         } else {
-            console.log('there');
             return (false, 0); 
         }
     }
