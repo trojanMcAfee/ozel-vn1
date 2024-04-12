@@ -56,7 +56,7 @@ contract OZLtokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
 
-        _mock_rETH_ETH_pt1();
+        // _mock_rETH_ETH_pt1();
 
         _startCampaign();
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
@@ -71,7 +71,8 @@ contract OZLtokenTest is TestMethods {
         int durationLeft = _getDurationLeft();
         assertTrue(durationLeft < 0);
 
-        _mock_rETH_ETH();
+        // _mock_rETH_ETH();
+        _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
 
         IOZL OZL = IOZL(address(ozlProxy));
         (uint ozlBalanceAlice, uint claimedReward) = _checkChargeFeeClaimOZL(OZL);
@@ -620,8 +621,15 @@ contract OZLtokenTest is TestMethods {
         uint pendingOZLallocPre = _getPendingAllocation();
         assertTrue(communityAmount == pendingOZLallocPre);
 
+        console.log('');
+        console.log('^^^ start chargeOZLfee ^^^ ');
+
         bool wasCharged = OZ.chargeOZLfee();
+        console.log('wasCharged ********: ', wasCharged);
         assertTrue(wasCharged);
+
+        console.log('^^^ end chargeOZLfee ^^^ ');
+        console.log('');
 
         uint circulatingSupply = _getCirculatingSupply();
         assertTrue(circulatingSupply == 0);
