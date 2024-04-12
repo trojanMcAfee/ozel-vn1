@@ -275,7 +275,7 @@ contract OZLtokenTest is TestMethods {
         assertTrue(rEthBalancePre == 0);
         
         uint rEthToRedeem = (ozlBalanceAlice * OZL.getExchangeRate(QuoteAsset.rETH)) / 1 ether;
-        _changeSlippage(uint16(5)); //0.05%
+        _changeSlippage(uint16(5)); 
         uint minAmountOutReth = HelpersLib.calculateMinAmountOut(rEthToRedeem, OZ.getDefaultSlippage());
 
         uint[] memory minAmountsOut = new uint[](1);
@@ -299,7 +299,7 @@ contract OZLtokenTest is TestMethods {
         uint ratePostRedeem = OZL.getExchangeRate();
 
         //Divides by 1e5 due to slippage
-        assertTrue(ratePreRedeem / 1e5 == ratePostRedeem / 1e5);
+        assertTrue(_fm(ratePreRedeem, 6) == _fm(ratePostRedeem, 6));
 
         //Post-condition
         uint rEthBalancePost = IERC20Permit(rEthAddr).balanceOf(alice);
