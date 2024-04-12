@@ -417,9 +417,6 @@ contract MockOzOraclePostAccrual {
 
     function ETH_USD() public view returns(uint) {
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        console.log('success: ', success);
-        uint x = success ? price : _callFallbackOracle(s.WETH);
-        console.log('price: ', x);
         return success ? price : _callFallbackOracle(s.WETH);
     }
 
@@ -478,10 +475,8 @@ contract MockOzOraclePostAccrual {
             (bool success2, uint redPrice) = getOracleBackUp2();
 
             if (success && success2) {
-                console.log('here: ', Helpers.getMedium(uniPrice, tellorPrice, redPrice));
                 return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
             } else {
-                console.log('there: ', uniPrice);
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
@@ -529,13 +524,7 @@ contract MockOzOraclePostAccrual {
 
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
-        (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
-        
-        console.log('');
-        console.log('assetsInETH: ', assetsInETH);
-        console.log('rEthInETH: ', rEthInETH); 
-        console.log('');
-        
+        (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);        
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
         if (totalRewards <= 0) return false;

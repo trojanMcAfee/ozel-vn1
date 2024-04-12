@@ -109,12 +109,15 @@ contract OZLtokenTest is TestMethods {
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         vm.clearMockedCalls();
 
-        _mock_rETH_ETH_pt2();
+        // _mock_rETH_ETH_pt2();
 
         uint newOzTokenBalance = ozERC20.balanceOf(alice);
+        console.log('newOzTokenBalance: ', newOzTokenBalance);
+        console.log('oldOzTokenBalance: ', oldOzTokenBalance);
         uint diff = ((newOzTokenBalance - (oldOzTokenBalance * 2)) * 10_000) / (oldOzTokenBalance * 2);
 
         //Difference between balances (old and new) is less than 0.32% (slippage between orders)
+        console.log('diff: ', diff);
         assertTrue(diff < 32);  
 
         vm.warp(block.timestamp + secs);
@@ -621,15 +624,8 @@ contract OZLtokenTest is TestMethods {
         uint pendingOZLallocPre = _getPendingAllocation();
         assertTrue(communityAmount == pendingOZLallocPre);
 
-        console.log('');
-        console.log('^^^ start chargeOZLfee ^^^ ');
-
         bool wasCharged = OZ.chargeOZLfee();
-        console.log('wasCharged ********: ', wasCharged);
         assertTrue(wasCharged);
-
-        console.log('^^^ end chargeOZLfee ^^^ ');
-        console.log('');
 
         uint circulatingSupply = _getCirculatingSupply();
         assertTrue(circulatingSupply == 0);

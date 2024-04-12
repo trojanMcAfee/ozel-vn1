@@ -48,10 +48,7 @@ contract ozOracle {
 
     function ETH_USD() public view returns(uint) {
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        console.log('success: ', success);
-        uint x = success ? price : _callFallbackOracle(s.WETH);
-        console.log('price: ', x);
-        return x; 
+        return success ? price : _callFallbackOracle(s.WETH); 
     }
 
     function rETH_USD() public view returns(uint) {
@@ -245,15 +242,15 @@ contract ozOracle {
 
         if (block.number <= s.rewards.lastBlock) revert OZError14(block.number);
 
-        console.log('');
+        // console.log('');
         // console.log('totalAssets: ', totalAssets); 
         // console.log('amountReth: ', amountReth);
 
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
 
-        console.log('assetsInETH: ', assetsInETH);
-        console.log('rEthInETH: ', rEthInETH); 
-        console.log('');
+        // console.log('assetsInETH: ', assetsInETH);
+        // console.log('rEthInETH: ', rEthInETH); 
+        // console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
         
