@@ -234,8 +234,15 @@ contract MockOzOraclePreAccrual {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    function rETH_ETH() public pure returns(uint) {
-        return getUniPrice(0, Dir.UP);
+    function rETH_ETH() public view returns(uint) {
+        (bool success, uint refPrice) = _useLinkInterface(s.ethUsdChainlink, true);
+        uint mainPrice = getUniPrice(0, Dir.UP);
+
+        if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
+            return mainPrice;
+        } else {
+            return _callFallbackOracle(s.rETH);
+        }
     }
 
     function rETH_USD() public view returns(uint) {
@@ -280,11 +287,10 @@ contract MockOzOraclePreAccrual {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
-            uint uniPrice05 = getUniPrice(0, Dir.UP);
             uint uniPrice01 = getUniPrice(1, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 
-            return Helpers.getMedium(uniPrice05, uniPrice01, protocolPrice);
+            return uniPrice01.getMedium(protocolPrice);
         }
         revert OZError23(baseToken_);
     }
@@ -408,7 +414,14 @@ contract MockOzOraclePostAccrual {
     uint constant public TIMEOUT_LINK = 4 hours;
 
     function rETH_ETH() public view returns(uint) {
-        return getUniPrice(0, Dir.UP);
+        (bool success, uint refPrice) = _useLinkInterface(s.ethUsdChainlink, true);
+        uint mainPrice = getUniPrice(0, Dir.UP);
+
+        if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
+            return mainPrice;
+        } else {
+            return _callFallbackOracle(s.rETH);
+        }
     }
 
     function rETH_USD() public view returns(uint) {
@@ -480,11 +493,10 @@ contract MockOzOraclePostAccrual {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
-            uint uniPrice05 = getUniPrice(0, Dir.UP);
             uint uniPrice01 = getUniPrice(1, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 
-            return Helpers.getMedium(uniPrice05, uniPrice01, protocolPrice);
+            return uniPrice01.getMedium(protocolPrice);
         }
         revert OZError23(baseToken_);
     }
@@ -630,7 +642,14 @@ contract MockOzOracleLink {
     uint constant public TIMEOUT_LINK = 4 hours;
 
     function rETH_ETH() public view returns(uint) {
-        return getUniPrice(0, Dir.UP);
+        (bool success, uint refPrice) = _useLinkInterface(s.ethUsdChainlink, true);
+        uint mainPrice = getUniPrice(0, Dir.UP);
+
+        if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
+            return mainPrice;
+        } else {
+            return _callFallbackOracle(s.rETH);
+        }
     }
 
     function rETH_USD() public view returns(uint) {
@@ -675,11 +694,10 @@ contract MockOzOracleLink {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) {
-            uint uniPrice05 = getUniPrice(0, Dir.UP);
             uint uniPrice01 = getUniPrice(1, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 
-            return Helpers.getMedium(uniPrice05, uniPrice01, protocolPrice);
+            return uniPrice01.getMedium(protocolPrice);
         }
         revert OZError23(baseToken_);
     }
