@@ -193,12 +193,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function totalSupply() public view returns(uint) {
-        if (totalShares() != 0) {
-        //     console.log('_subConvertToAssets3(totalShares(), Dir.UP): ', _subConvertToAssets3(totalShares(), Dir.UP));
-        //     console.log('_subConvertToAssets3(totalShares(), Dir.DOWN): ', _subConvertToAssets3(totalShares(), Dir.DOWN));
-        }
-
-
         return totalShares() == 0 ? 0 : 
             _subConvertToAssets3(totalShares(), Dir.UP).mulDivUp(totalAssets() * 1e12, _subConvertToAssets3(totalShares(), Dir.DOWN));
     }
@@ -390,7 +384,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     //Same as _subConvertToAssets() but with mulDivUp instead of mulDivDown
-    //Used in Mocks.t.sol, in test_redeem_rewards_mock_chainlink() on the totalSupply check +1
+    //Used in Mocks.t.sol, in test_redeem_rewards_mock_chainlink() on the totalSupply check +1, and the other +1 in that test
     //Further test if that +1 is an attack risk.
     function _subConvertToAssets3(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         uint reth_eth = _OZ().getUniPrice(0, side_);
