@@ -137,11 +137,14 @@ contract SwapRouterMock is MockStorage {
         ExactInputSingleParams calldata params
     ) external payable returns (uint) {
         uint amountOut;
+        uint decimals = params.tokenIn == USDC ? 1e12 : 1; 
 
-        if (params.tokenIn == USDC) amountOut = (params.amountIn * 1e12).mulDivDown(1e18, OZ.ETH_USD());
+        if (params.tokenIn == USDC || params.tokenIn == DAI) {
+            amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
+        }
     
         if (params.tokenIn == WETH) {
-            amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / 1e12;   
+            amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / decimals;   
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
             return amountOut;
         }

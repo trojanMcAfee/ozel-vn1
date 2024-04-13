@@ -136,6 +136,7 @@ contract ozEngine is Modifiers {
             minAmountsOut,
             Action.OZ_OUT
         );
+        console.log('amountOut - _checkPauseAndSwap: ', amountOut);
 
         //swap WETH to underlying
         amountOut = _swapUni(
@@ -192,6 +193,7 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
+            // console.log('amountOut - _swapBalancer: ', amountOut);
         }
 
         if (type_ == Action.OZL_IN) {
