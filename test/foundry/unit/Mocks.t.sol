@@ -29,20 +29,6 @@ contract MocksTests is MockStorage, TestMethods {
     using FixedPointMathLib for uint;
     using stdStorage for StdStorage;
 
-    
-    //consider removing this tests and the CL mocks for rETH since they're not used
-    function test_chainlink_feeds() public { 
-        if (_skip()) return;
-
-        uint mockPriceRETH = OZ.rETH_ETH();
-        console.log('mockPriceRETH: ', mockPriceRETH);
-        assertTrue(mockPriceRETH == rETHPreAccrual);
-
-        uint mockPriceETH = OZ.ETH_USD();
-        console.log('mockPriceETH: ', mockPriceETH);
-        assertTrue(mockPriceETH == currentPriceETH);
-    }
-
 
     function test_redeem_rewards_mock_TWAP() public returns(uint, uint, uint) {
         if (_skip()) return (0, 0, 0);
@@ -92,7 +78,11 @@ contract MocksTests is MockStorage, TestMethods {
         uint ozBalanceBobPostMock = ozERC20.balanceOf(bob);
 
         assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
+        console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
+        console.log('ozBalanceBobPostMock: ', ozBalanceBobPostMock);
+        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
+        console.log(2);
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlicePostMock, 
@@ -124,11 +114,19 @@ contract MocksTests is MockStorage, TestMethods {
         
         uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
         console.log('testToken gained after redeem: ', deltaBalanceTestToken);
+
+        console.log('ozERC20.balanceOf(bob): ', ozERC20.balanceOf(bob));
+        console.log('ozERC20.balanceOf(alice): ', ozERC20.balanceOf(alice));
+        console.log('ozERC20.totalSupply(): ', ozERC20.totalSupply());
         
         assertTrue(ozERC20.balanceOf(bob) + ozERC20.balanceOf(alice) == ozERC20.totalSupply());
+        console.log(3);
         assertTrue(ozBalanceAlicePostMock > ozERC20.balanceOf(alice));
+        console.log(4);
         assertTrue(ozERC20.balanceOf(alice) == 0 || ozERC20.balanceOf(alice) < 0.0000011 * 1e18);
+        console.log(5);
         assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
+        console.log(6);
         assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / 1e12, deltaBalanceTestToken, 1));
 
         return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
