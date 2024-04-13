@@ -413,15 +413,14 @@ contract MockOzOraclePostAccrual {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    function rETH_ETH() public view returns(uint) {
-        (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
-        uint mainPrice = getUniPrice(0, Dir.UP);
 
-        if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
-            return mainPrice;
-        } else {
-            return _callFallbackOracle(s.rETH);
-        }
+    /**
+    * Removed the rest of the function and just kep the call to the oracle because
+    * the backup oracle is not needed for the tests with these mocks, and this way
+    * it simplifies the setup of the tests where this is used.
+    */
+    function rETH_ETH() public view returns(uint) {
+        return getUniPrice(0, Dir.UP);
     }
 
     function rETH_USD() public view returns(uint) {
