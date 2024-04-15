@@ -239,12 +239,10 @@ contract ozOracle {
         // console.log('totalAssets: ', totalAssets); 
         // console.log('amountReth: ', amountReth);
 
-        console.log(11);
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);
-        console.log(12);
 
-        console.log('assetsInETH: ', assetsInETH);
-        console.log('rEthInETH: ', rEthInETH); 
+        // console.log('assetsInETH: ', assetsInETH);
+        // console.log('rEthInETH: ', rEthInETH); 
         // console.log('');
         // console.log('----');
         // console.log('amountReth total: ', IERC20Permit(s.rETH).balanceOf(address(this)));
@@ -268,13 +266,11 @@ contract ozOracle {
          */
 
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
-        console.log(13);
 
         // console.log('totalRewards **************: ', uint(totalRewards));
         // console.log('totalRewards ^^');
 
         if (totalRewards <= 0) return false;
-        console.log(14);
 
         // rEthInETH --- 10_000
         // assetsInETH ---- x
@@ -286,12 +282,6 @@ contract ozOracle {
         // address underlying = ozIToken(s.ozTokenRegistry[0].ozToken).asset();
         // address USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
         // address DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-
-        // if (underlying == USDC) {
-
-        // } else if (underlying == DAI) {
-
-        // }
 
         //------
 
@@ -306,10 +296,8 @@ contract ozOracle {
         // console.log('currentRewards ^^');
 
         if (currentRewards <= 0) return false;
-        console.log(4);
 
         uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
-        console.log(5);
 
         emit OzRewards(block.number, ozelFeesInRETH, totalRewards, currentRewards);
 
@@ -338,7 +326,6 @@ contract ozOracle {
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint rEthInETH = (amountReth_ * rETH_ETH()) / 1 ether;
-        console.log('rETH_ETH(): ', rETH_ETH());
 
         return (assetsInETH, rEthInETH);
     }
@@ -349,4 +336,6 @@ contract ozOracle {
 
         return grossFees_ - adminFee;
     }
+
+
 }
