@@ -117,7 +117,7 @@ contract MocksTests is MockStorage, TestMethods {
         assertTrue(balanceAliceTestTokenPreRedeem < IERC20Permit(testToken).balanceOf(alice));
     
         uint formatter = testToken == usdcAddr ? 1e12 : 1;
-        assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / 1, deltaBalanceTestToken, 1));
+        assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / formatter, deltaBalanceTestToken, 1));
 
         return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
     }
