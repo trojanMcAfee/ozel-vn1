@@ -14,6 +14,7 @@ import {AmountsIn, AmountsOut} from "../../contracts/AppStorage.sol";
 enum Mock {
     PREACCRUAL_UNI,
     POSTACCRUAL_UNI,
+    POSTACCRUAL_UNI_HIGHER,
     PREACCRUAL_LINK,
     POSTACCRUAL_LINK
 }

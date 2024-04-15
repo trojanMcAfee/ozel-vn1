@@ -518,7 +518,18 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-    function test_chargeOZLfee_distributeFees() public { 
+    function test_APR_calculation() public {
+        ozIToken ozERC20 = test_chargeOZLfee_distributeFees();
+
+        _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI_HIGHER);
+
+        console.log('oz bal alice - post accrual 2: ', ozERC20.balanceOf(alice));
+
+
+    }
+
+
+    function test_chargeOZLfee_distributeFees() public returns(ozIToken) { 
         /**
          * Pre-conditions
          */
@@ -544,8 +555,13 @@ contract OZLtokenTest is TestMethods {
         //BOB
         amountIn = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
+        _resetPoolBalances(oldSlot0data, oldSharedCash, cashSlot);
+
+        console.log('oz bal alice - pre accruals: ', ozERC20.balanceOf(alice));
 
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
+
+        console.log('oz bal alice - post accrual 1: ', ozERC20.balanceOf(alice));
 
         //Charges fee
         bool wasCharged = OZ.chargeOZLfee();
@@ -568,6 +584,8 @@ contract OZLtokenTest is TestMethods {
         assertTrue(ownerBalance > 0);
 
         vm.clearMockedCalls();
+
+        return ozERC20;
     }  
 
 

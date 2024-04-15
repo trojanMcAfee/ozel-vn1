@@ -20,7 +20,12 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {RethLinkFeedAccrued} from "./unit/mocks/MockContracts.sol";
-import {MockOzOraclePreAccrual, MockOzOraclePostAccrual, MockOzOracleLink} from "./unit/mocks/MockContracts.sol";
+import {
+    MockOzOraclePreAccrual,
+    MockOzOraclePostAccrual,
+    MockOzOracleLink,
+    MockOzOraclePostAccrualHigher
+} from "./unit/mocks/MockContracts.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
 import "forge-std/console.sol";
@@ -414,6 +419,9 @@ contract BaseMethods is Setup {
             } else if (type_ == Mock.PREACCRUAL_LINK) {
                 MockOzOracleLink mockOracleLink = new  MockOzOracleLink();
                 vm.etch(address(mockOracle), address(mockOracleLink).code);
+            } else if (type_ == Mock.POSTACCRUAL_UNI_HIGHER) {
+                MockOzOraclePostAccrualHigher mockOraclePostHigher = new MockOzOraclePostAccrualHigher();
+                vm.etch(address(mockOracle), address(mockOraclePostHigher).code);
             }
 
             bytes4[] memory selectors = new bytes4[](7);
