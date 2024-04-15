@@ -525,6 +525,19 @@ contract OZLtokenTest is TestMethods {
 
         console.log('oz bal alice - post accrual 2: ', ozERC20.balanceOf(alice));
 
+        console.log('');
+        console.log('^^^^ BEGIN of NEW chargeOZLfee ^^^^');
+        console.log('');
+
+        //increase timestamp
+        uint oneMonth = 2592000;
+        vm.warp(block.timestamp + oneMonth);
+
+        bool wasCharged = OZ.chargeOZLfee();
+        assertTrue(wasCharged);
+
+        console.log('bal post 2: ', IERC20Permit(rEthAddr).balanceOf(address(ozlProxy)));
+
 
     }
 
@@ -562,12 +575,15 @@ contract OZLtokenTest is TestMethods {
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
 
         console.log('oz bal alice - post accrual 1: ', ozERC20.balanceOf(alice));
+        console.log('bal pre: ', IERC20Permit(rEthAddr).balanceOf(address(ozlProxy)));
 
         //Charges fee
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
         uint ozlRethBalance = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
+
+        console.log('bal post 1: ', ozlRethBalance);
 
         /**
          * Post-conditions

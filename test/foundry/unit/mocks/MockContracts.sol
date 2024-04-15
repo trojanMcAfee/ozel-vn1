@@ -788,7 +788,7 @@ contract MockOzOraclePostAccrualHigher {
         uint deltaStamp = block.timestamp - s.lastRewardStamp;
         uint oneYear = 31540000;
 
-        uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
+        uint currentRewardsUSD = (currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether)) / 1e12;
 
         console.log('');
         console.log('currentRewardsUSD: ', currentRewardsUSD);
