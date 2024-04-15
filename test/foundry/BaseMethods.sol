@@ -577,4 +577,14 @@ contract BaseMethods is Setup {
         return base_ - delta_.mulDivDown(base_, (10_000 / 100) * 1e18);
     }
 
+
+    //Makes a designated Chainlink feed fail the checks in the contract.
+    function _mock_false_chainlink_feed(address feed_) internal {
+        vm.mockCall(
+            feed_,
+            abi.encodeWithSignature('latestRoundData()'),
+            abi.encode(uint80(0), int(0), uint(0), uint(0), uint80(0))
+        );
+    }
+
 }

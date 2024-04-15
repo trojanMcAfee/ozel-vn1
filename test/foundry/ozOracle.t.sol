@@ -18,15 +18,6 @@ import "forge-std/console.sol";
 contract ozOracleTest is TestMethods {
 
 
-    //Makes a designated Chainlink feed fail the checks in the contract.
-    function _mock_false_chainlink_feed(address feed_) internal {
-        vm.mockCall(
-            feed_,
-            abi.encodeWithSignature('latestRoundData()'),
-            abi.encode(uint80(0), int(0), uint(0), uint(0), uint80(0))
-        );
-    }
-
     //change this to be a test for getUniPrice(1, Dir.UP) after having modified
     // __callFallbackOracle() to use that as backup for rETH
     function test_medium_callFallbackOracle_rETHETH() public {
@@ -75,11 +66,11 @@ contract ozOracleTest is TestMethods {
     }
 
     
-    //Tests that when the deviation check in rETH-ETH fails, _callFallbackOracle() is
-    //called an a price for rETH-ETH is given without interruptions.
-
-    //add the changes to all mocks and forge test again
-    function test_failed_deviation() public {
+    /**
+    * Tests that when the deviation check in rETH-ETH fails due to success being false,
+    * _callFallbackOracle() is called an a price for rETH-ETH is given without interruptions.
+    */
+    function test_failed_false_deviation() public {
         //Pre-conditions
         vm.selectFork(redStoneFork);
         _mock_false_chainlink_feed(ethUsdChainlink);
@@ -93,6 +84,24 @@ contract ozOracleTest is TestMethods {
         uint backupReth = OZ.rETH_ETH();
 
         assertTrue(backupReth == (uni01Reth + protocolReth) / 2);
+    }
+
+    /**
+    * Tests the deviation check works and calls _callFallbackOracle when the TWAP and 
+    * Chainlink prices are off by more than 1%.
+    */
+    function test_failed_offprice_deviation() public {
+        //Pre-condition + Action
+        _mock_false_chainlink_feed(rEthEthChainlink);
+
+        //Post-conditions
+        uint uni01Reth = OZ.getUniPrice(1, Dir.UP);
+        uint protocolReth = IRocketTokenRETH(rEthAddr).getExchangeRate();
+        uint backupReth = OZ.rETH_ETH();
+
+        assertTrue(backupReth == (uni01Reth + protocolReth) / 2);
+
+
     }
 
 
