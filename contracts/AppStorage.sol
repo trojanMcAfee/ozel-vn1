@@ -73,6 +73,11 @@ struct AppStorage {
     //Used in checkDeviation() / ozOracle
     uint16 deviation;
 
+    //Timestampt of last successfull reward applied by chargeOZLfee()
+    //Var used for calculating APR
+    uint lastRewardStamp;
+    uint apr;
+
 }
 
 

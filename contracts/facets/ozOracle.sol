@@ -299,6 +299,11 @@ contract ozOracle {
 
         uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
 
+        //---------
+        // s.lastRewardStamp = block.timestamp;
+        _setAPR(currentRewards, totalAssets);
+        //---------
+
         emit OzRewards(block.number, ozelFeesInRETH, totalRewards, currentRewards);
 
         return true;
@@ -335,6 +340,21 @@ contract ozOracle {
         IERC20Permit(s.rETH).transfer(s.adminFeeRecipient, adminFee);
 
         return grossFees_ - adminFee;
+    }
+
+
+    function _setAPR(uint currentRewardsETH_, uint totalAssets_) private {
+        uint deltaStamp = block.timestamp - s.lastRewardStamp;
+        uint oneYear = 31540000;
+
+        // 1 eth ---- eth-usd
+        // currRewar --- x
+
+        uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
+        s.apr = (currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100;
+        s.lastRewardStamp = block.timestamp;
+
+        console.log('APR *****: ', s.apr);
     }
 
 
