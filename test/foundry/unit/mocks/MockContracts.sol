@@ -546,9 +546,33 @@ contract MockOzOraclePostAccrual {
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
         if (currentRewards <= 0) return false;
-        _getFeeAndForward(totalRewards, currentRewards);      
+        _getFeeAndForward(totalRewards, currentRewards);     
+
+        //---------
+        _setAPR(uint(currentRewards), totalAssets);
+        //--------- 
 
         return true;
+    }
+
+    function _setAPR(uint currentRewardsETH_, uint totalAssets_) private {
+        uint deltaStamp = block.timestamp - s.lastRewardStamp;
+        uint oneYear = 31540000;
+
+        uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
+
+        console.log('');
+        console.log('currentRewardsUSD: ', currentRewardsUSD);
+        console.log('totalAssets_: ', totalAssets_);
+        console.log('deltaStamp: ', deltaStamp);
+        console.log('block.timestamp: ', block.timestamp);
+        console.log('s.lastRewardStamp: ', s.lastRewardStamp);
+        console.log('');
+
+        s.apr = (currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100;
+        s.lastRewardStamp = block.timestamp;
+
+        console.log('APR *****: ', s.apr);
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {

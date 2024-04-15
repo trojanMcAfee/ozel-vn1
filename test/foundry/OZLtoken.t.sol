@@ -64,13 +64,9 @@ contract OZLtokenTest is TestMethods {
         assertTrue(oldOzTokenBalance > 0);
 
         uint secs = 10 + campaignDuration; 
-        console.log('block pre ^^^^^: ', block.timestamp);
         vm.warp(block.timestamp + secs);
-        console.log('block post ^^^^^: ', block.timestamp);
 
         int durationLeft = _getDurationLeft();
-        // console.logInt(durationLeft);
-        // console.log('durationLeft ^^^^');
         assertTrue(durationLeft < 0);
 
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
@@ -79,8 +75,6 @@ contract OZLtokenTest is TestMethods {
 
         IOZL OZL = IOZL(address(ozlProxy));
         (uint ozlBalanceAlice, uint claimedReward) = _checkChargeFeeClaimOZL(OZL);
-
-        // console.log('block ^^^^^: ', block.timestamp);
 
         /**
          * Actions 1
@@ -100,12 +94,8 @@ contract OZLtokenTest is TestMethods {
         );
         vm.stopPrank();
 
-        // console.log('block ^^^^^: ', block.timestamp);
-
         (uint oldRecicledSupply, uint oldRewardRate) = 
             _checkSupplyAndRate(pendingAllocPreRedeem, OZL, ozlBalanceAlice);
-
-        // console.log('block ^^^^^: ', block.timestamp);
 
         /**
          * Actions 2
@@ -114,8 +104,6 @@ contract OZLtokenTest is TestMethods {
         vm.prank(owner);
 
         OZ.startNewReciclingCampaign(oneYear); 
-
-        // console.log('block ^^^^^: ', block.timestamp);
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         vm.clearMockedCalls();
@@ -130,9 +118,6 @@ contract OZLtokenTest is TestMethods {
         //Difference between earned rewards is less than 0.03% (slippage)
         uint earned = OZ.earned(alice);
         assertTrue(claimedReward / 1e9 == earned / 1e9);
-        console.log(6);
-
-        // console.log('block ^^^^^: ', block.timestamp);
 
         /**
          * Post-conditions
@@ -263,7 +248,6 @@ contract OZLtokenTest is TestMethods {
     }
 
 
-
     function test_exchange_rate_equilibrium() public {
         //Pre-conditions
         test_claim_OZL();
@@ -307,7 +291,6 @@ contract OZLtokenTest is TestMethods {
         assertTrue(rEthBalancePost > 0);
         assertTrue(amountOut == rEthBalancePost);
     }  
-
 
 
     function test_redeem_in_rETH() public {
