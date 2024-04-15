@@ -136,8 +136,6 @@ contract ozEngine is Modifiers {
             minAmountsOut,
             Action.OZ_OUT
         );
-        console.log('amountOut - _checkPauseAndSwap: ', amountOut);
-        
 
         //swap WETH to underlying
         amountOut = _swapUni(

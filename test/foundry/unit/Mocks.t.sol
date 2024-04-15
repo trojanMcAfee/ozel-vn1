@@ -138,14 +138,19 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('eth_usd: ', eth_usd);
         console.log('reth_usd: ', reth_usd);
 
-        uint reth_preAccrual = (testTokenAmountIn * 1e12).mulDivDown(1e18, reth_usd_preAccrual);
+        uint formatter = testToken == USDC ? 1e12 : 1;
+        uint reth_preAccrual = (testTokenAmountIn * formatter).mulDivDown(1e18, reth_usd_preAccrual);
         console.log('reth_preAccrual: ', reth_preAccrual);
 
         uint reth_usd_postAccrual = OZ.rETH_USD();
         uint testToken_alledged_rewards = reth_preAccrual.mulDivDown(reth_usd_postAccrual, 1e18);
         console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
 
-        assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
+        if (testToken == usdcAddr) {
+            assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
+        } else {
+            assertTrue(_fm(deltaBalanceTestToken, 4) == _fm(testToken_alledged_rewards, 4));
+        }
     }
 
 }
