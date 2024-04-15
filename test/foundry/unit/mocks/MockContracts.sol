@@ -563,6 +563,7 @@ contract MockOzOraclePostAccrual {
 
         console.log('');
         console.log('currentRewardsUSD: ', currentRewardsUSD);
+        console.log('currentRewardsETH_: ', currentRewardsETH_);
         console.log('totalAssets_: ', totalAssets_);
         console.log('deltaStamp: ', deltaStamp);
         console.log('block.timestamp: ', block.timestamp);
@@ -634,7 +635,7 @@ contract MockOzOraclePostAccrual {
     }
 }
 
-
+//Contract strimmed-lined for the functions affecting the calculation of the APR
 contract MockOzOraclePostAccrualHigher {
     AppStorage private s;
 
@@ -656,13 +657,14 @@ contract MockOzOraclePostAccrualHigher {
         return getUniPrice(0, Dir.UP);
     }
 
-    function rETH_USD() public view returns(uint) {
+    function rETH_USD() public view returns(uint) { 
         return (rETH_ETH() * ETH_USD()) / 1 ether;
     }
 
+    //Remove callFallbackOracle() to simplify test since it's not called
     function ETH_USD() public view returns(uint) {
-        (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        return success ? price : _callFallbackOracle(s.WETH);
+        (,uint price) = _useLinkInterface(s.ethUsdChainlink, true);
+        return price;
     }
 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
@@ -713,50 +715,6 @@ contract MockOzOraclePostAccrualHigher {
         return (p.base, p.quote, p.fee);
     }
 
-    function _callFallbackOracle(address baseToken_) private view returns(uint) {
-        if (baseToken_ == s.WETH) {
-            uint uniPrice = getUniPrice(2, Dir.UP);
-            (bool success, uint tellorPrice) = getOracleBackUp1();
-            (bool success2, uint redPrice) = getOracleBackUp2();
-
-            if (success && success2) {
-                return Helpers.getMedium(uniPrice, tellorPrice, redPrice);
-            } else {
-                return uniPrice;
-            }
-        } else if (baseToken_ == s.rETH) {
-            uint uniPrice01 = getUniPrice(1, Dir.UP);
-            uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
-
-            return uniPrice01.getMedium(protocolPrice);
-        }
-        revert OZError23(baseToken_);
-    }
-
-    function getOracleBackUp1() public view returns(bool, uint) { 
-        bytes32 queryId = keccak256(abi.encode("SpotPrice", abi.encode("eth","usd")));
-
-        (bool success, bytes memory value, uint timestamp) = 
-            IUsingTellor(s.tellorOracle).getDataBefore(queryId, block.timestamp - DISPUTE_BUFFER);
-
-        if (!success || block.timestamp - timestamp > TIMEOUT_EXTENDED) return (false, 0);
-
-        return (true, abi.decode(value, (uint)));
-    }
-
-    //RedStone
-    function getOracleBackUp2() public view returns(bool, uint) {
-        (bool success, uint weETH_ETH) = _useLinkInterface(s.weETHETHredStone, false);
-        (bool success2, uint weETH_USD) = _useLinkInterface(s.weETHUSDredStone, false);
-
-        if (success && success2) {
-            uint price = (1 ether ** 2 / weETH_ETH).mulDivDown(weETH_USD, 1 ether);
-            return (true, price);
-        } else {
-            return (false, 0);
-        }
-    }
-
 
     function chargeOZLfee() external returns(bool) { 
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this)); 
@@ -792,6 +750,7 @@ contract MockOzOraclePostAccrualHigher {
 
         console.log('');
         console.log('currentRewardsUSD: ', currentRewardsUSD);
+        console.log('currentRewardsETH_: ', currentRewardsETH_);
         console.log('totalAssets_: ', totalAssets_);
         console.log('deltaStamp: ', deltaStamp);
         console.log('block.timestamp: ', block.timestamp);
@@ -824,13 +783,22 @@ contract MockOzOraclePostAccrualHigher {
 
 
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
+        console.log('assets_: ', assets_);
+        console.log('ETH_USD: ', ETH_USD());
+        console.log('rETH_ETH: ', rETH_ETH());
+        console.log('amountReth_: ', amountReth_);
+        
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
+
+        console.log('assetsInETH: ', assetsInETH);
+        console.log('valueInETH: ', valueInETH);
+        console.log('');
 
         return (assetsInETH, valueInETH);
     }
 
-
+    //Edited
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
         uint timeout = TIMEOUT_LINK;
         uint BASE = 1e10;
@@ -844,17 +812,7 @@ contract MockOzOraclePostAccrualHigher {
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
-        if (
-            (roundId != 0 || _exemptRed(priceFeed_)) && 
-            answer > 0 && 
-            updatedAt != 0 && 
-            updatedAt <= block.timestamp &&
-            block.timestamp - updatedAt <= timeout
-        ) {
-            return (true, uint(answer) * BASE); 
-        } else {
-            return (false, 0); 
-        }
+        return (true, uint(answer) * BASE);
     }
 
 

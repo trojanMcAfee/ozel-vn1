@@ -519,12 +519,26 @@ contract OZLtokenTest is TestMethods {
 
 
     function test_APR_calculation() public {
+        // vm.selectFork(redStoneFork);
         ozIToken ozERC20 = test_chargeOZLfee_distributeFees();
 
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI_HIGHER);
 
         console.log('oz bal alice - post accrual 2: ', ozERC20.balanceOf(alice));
 
+        console.log('');
+        console.log('^^^^ BEGIN of NEW chargeOZLfee ^^^^');
+        console.log('');
+
+        //increase timestamp
+        uint oneMonth = 2592000;
+        vm.warp(block.timestamp + oneMonth);
+        // skip(oneMonth);
+
+        bool wasCharged = OZ.chargeOZLfee();
+        assertTrue(wasCharged);
+
+        console.log('bal post 2: ', IERC20Permit(rEthAddr).balanceOf(address(ozlProxy)));
 
     }
 
@@ -533,13 +547,14 @@ contract OZLtokenTest is TestMethods {
         /**
          * Pre-conditions
          */
-        bytes32 oldSlot0data = vm.load(
-            IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
-            bytes32(0)
-        );
-        (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+        // bytes32 oldSlot0data = vm.load(
+        //     IUniswapV3Factory(uniFactory).getPool(wethAddr, testToken, uniPoolFee), 
+        //     bytes32(0)
+        // );
+        // (bytes32 oldSharedCash, bytes32 cashSlot) = _getSharedCashBalancer();
+        (bytes32 oldSlot0data, bytes32 oldSharedCash, bytes32 cashSlot) = _getResetVarsAndChangeSlip();
 
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
 
         /**
          * Actions
