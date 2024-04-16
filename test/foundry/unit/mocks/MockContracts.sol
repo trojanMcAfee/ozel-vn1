@@ -737,6 +737,13 @@ contract MockOzOraclePostAccrualHigher {
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);        
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
+        console.log('');
+        console.log('rEthInETH: ', rEthInETH);
+        console.log('assetsInETH: ', assetsInETH);
+        console.log('totalRewards: ', uint(totalRewards));
+        console.log('s.rewards.prevTotalRewards: ', s.rewards.prevTotalRewards);
+        console.log('');
+
         if (totalRewards <= 0) return false;
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
@@ -755,6 +762,16 @@ contract MockOzOraclePostAccrualHigher {
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
         s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
+
+        console.log('');
+        console.log('currentRewardsUSD: ', currentRewardsUSD);
+        console.log('currentRewardsETH_: ', currentRewardsETH_);
+        console.log('totalAssets_: ', totalAssets_);
+        console.log('deltaStamp: ', deltaStamp);
+        console.log('block.timestamp: ', block.timestamp);
+        console.log('s.lastRewardStamp: ', s.lastRewardStamp);
+        console.log('s.apr: ', s.apr);
+        console.log('');
 
         emit APRcalculated(
             s.apr,
@@ -788,6 +805,8 @@ contract MockOzOraclePostAccrualHigher {
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint rEthInETH = (amountReth_ * rETH_ETH()) / 1 ether;
+
+        console.log('rEthInETH ****: ', rEthInETH);
 
         return (assetsInETH, rEthInETH);
     }
