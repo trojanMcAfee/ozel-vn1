@@ -169,7 +169,6 @@ contract VaultMock {
 
     using FixedPointMathLib for *;
 
-
     ozIDiamond immutable OZ;
 
     enum SwapKind { GIVEN_IN, GIVEN_OUT }
@@ -561,19 +560,8 @@ contract MockOzOraclePostAccrual {
 
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
-        console.log('');
-        console.log('currentRewardsUSD: ', currentRewardsUSD);
-        console.log('currentRewardsETH_: ', currentRewardsETH_);
-        console.log('totalAssets_: ', totalAssets_);
-        console.log('deltaStamp: ', deltaStamp);
-        console.log('block.timestamp: ', block.timestamp);
-        console.log('s.lastRewardStamp: ', s.lastRewardStamp);
-        console.log('');
-
         s.apr = (currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100;
         s.lastRewardStamp = block.timestamp;
-
-        console.log('APR *****: ', s.apr);
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {
@@ -757,7 +745,7 @@ contract MockOzOraclePostAccrualHigher {
         console.log('s.lastRewardStamp: ', s.lastRewardStamp);
         console.log('');
 
-        s.apr = (currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100;
+        s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
         s.lastRewardStamp = block.timestamp;
 
         console.log('APR *****: ', s.apr);
@@ -789,13 +777,13 @@ contract MockOzOraclePostAccrualHigher {
         console.log('amountReth_: ', amountReth_);
         
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
-        uint valueInETH = (amountReth_ * rETH_ETH()) / 1 ether;
+        uint rEthInETH = (amountReth_ * rETH_ETH()) / 1 ether;
 
         console.log('assetsInETH: ', assetsInETH);
-        console.log('valueInETH: ', valueInETH);
+        console.log('rEthInETH: ', rEthInETH);
         console.log('');
 
-        return (assetsInETH, valueInETH);
+        return (assetsInETH, rEthInETH);
     }
 
     //Edited
