@@ -634,7 +634,13 @@ contract MockOzOraclePostAccrualHigher {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    event APRcalculated(uint indexed apr, uint indexed blockStamp);
+    // event APRcalculated(uint indexed apr, uint indexed lastStamp, uint indexed currentStamp);
+    event APRcalculated(
+        uint indexed apr,
+        uint currentRewardsUSD,
+        uint totalAssets,
+        uint deltaStamp
+    );
 
 
     /**
@@ -748,9 +754,16 @@ contract MockOzOraclePostAccrualHigher {
 
         s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
 
+        // emit APRcalculated(s.apr, s.lastRewardStamp, block.timestamp);
+        emit APRcalculated(
+            s.apr,
+            currentRewardsUSD,
+            totalAssets_,
+            deltaStamp
+        );
+
         s.lastRewardStamp = block.timestamp;
 
-        emit APRcalculated(s.apr, s.lastRewardStamp);
 
         console.log('APR *****: ', s.apr);
     }

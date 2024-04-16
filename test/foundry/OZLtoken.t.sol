@@ -26,6 +26,13 @@ contract OZLtokenTest is TestMethods {
 
     using FixedPointMathLib for uint;
 
+    event APRcalculated(
+        uint indexed apr,
+        uint currentRewardsUSD,
+        uint totalAssets,
+        uint deltaStamp
+    );
+
 
     function test_chargeOZLfee_noFeesToDistribute() public {
         //Pre-condtion
@@ -532,13 +539,27 @@ contract OZLtokenTest is TestMethods {
 
         //increase timestamp
         uint oneMonth = 2592000;
-        vm.warp(block.timestamp + oneMonth);
-        // skip(oneMonth);
+        // vm.warp(block.timestamp + oneMonth);
+        skip(oneMonth);
+
+        uint emittedAPR = 2620384012800000000;
+        uint currentRewardsUSD = 3275480016830982818384;
+        uint totalAssets = 1500000000000;
+        uint deltaStamp = 2592000;
+        uint oneYearSecs = 31540000;
+
+        vm.expectEmit(true, false, false, true);
+        emit APRcalculated(emittedAPR, currentRewardsUSD, totalAssets, deltaStamp);
 
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
 
+        uint calculatedAPR = ((currentRewardsUSD / totalAssets) * (oneYearSecs / deltaStamp) * 100) * 1e6;
+        assertTrue(calculatedAPR == emittedAPR);
+
         console.log('bal post 2: ', IERC20Permit(rEthAddr).balanceOf(address(ozlProxy)));
+
+
 
     }
 
