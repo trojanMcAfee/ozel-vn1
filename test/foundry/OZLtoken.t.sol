@@ -607,7 +607,6 @@ contract OZLtokenTest is TestMethods {
 
 
 
-
     //---------
 
     //** this function represents the notes in chargeOZLfee() (will fail) */

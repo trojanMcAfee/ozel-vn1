@@ -191,8 +191,6 @@ contract Setup is Test {
     bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
     bytes32 newSlot0WithCardinality = 0x00010000960020000000034100000000000000010ae5499d268d75ff31b0bffd;
 
-    //use the getUniPrice mocks on the poc
-   
 
     /** FUNCTIONS **/ 
     function setUp() public {
@@ -457,7 +455,7 @@ contract Setup is Test {
         } else if (id_ == 6) {
             length = 10;
         } else if (id_ == 0) {
-            length = 17;
+            length = 18;
         } else if (id_ == 11) { //remove if not used
             length = 1;
         } else if (id_ == 8) {
@@ -484,6 +482,7 @@ contract Setup is Test {
             selectors[14] = loupe.getAdminFee.selector;
             selectors[15] = loupe.getEnabledSwitch.selector;
             selectors[16] = loupe.getPausedContracts.selector;
+            selectors[17] = loupe.getAPR.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;

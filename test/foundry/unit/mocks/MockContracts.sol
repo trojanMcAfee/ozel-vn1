@@ -630,10 +630,11 @@ contract MockOzOraclePostAccrualHigher {
     using Helpers for *;
     using FixedPointMathLib for *;
     
-
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
+
+    event APRcalculated(uint indexed apr, uint indexed blockStamp);
 
 
     /**
@@ -746,7 +747,10 @@ contract MockOzOraclePostAccrualHigher {
         console.log('');
 
         s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
+
         s.lastRewardStamp = block.timestamp;
+
+        emit APRcalculated(s.apr, s.lastRewardStamp);
 
         console.log('APR *****: ', s.apr);
     }

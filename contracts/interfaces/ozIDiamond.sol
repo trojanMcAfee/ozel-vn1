@@ -149,4 +149,6 @@ interface ozIDiamond {
     function getUniPrice(uint tokenPair_, Dir side_) external view returns(uint);
     function getOracleBackUp1() external view returns(bool, uint);
     function getOracleBackUp2() external view returns(bool, uint);
+
+    function getAPR() external view returns(uint);
 }
