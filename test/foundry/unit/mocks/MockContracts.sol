@@ -416,6 +416,13 @@ contract MockOzOraclePostAccrual {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
+    event APRcalculated(
+        uint indexed apr,
+        uint currentRewardsUSD,
+        uint totalAssets,
+        uint deltaStamp
+    );
+
 
     /**
     * Removed the rest of the function and just kep the call to the oracle because
@@ -547,9 +554,7 @@ contract MockOzOraclePostAccrual {
         if (currentRewards <= 0) return false;
         _getFeeAndForward(totalRewards, currentRewards);     
 
-        //---------
         _setAPR(uint(currentRewards), totalAssets);
-        //--------- 
 
         return true;
     }
@@ -560,7 +565,15 @@ contract MockOzOraclePostAccrual {
 
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
-        s.apr = (currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100;
+        s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
+
+        emit APRcalculated(
+            s.apr,
+            currentRewardsUSD,
+            totalAssets_,
+            deltaStamp
+        );
+
         s.lastRewardStamp = block.timestamp;
     }
 

@@ -33,12 +33,18 @@ contract ozOracle {
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     
-
     event OzRewards(
         uint blockNumber, 
         uint ozelFeesInRETH, 
         int totalRewards, 
         int currentRewards
+    );
+
+    event APRcalculated(
+        uint indexed apr,
+        uint currentRewardsUSD,
+        uint totalAssets,
+        uint deltaStamp
     );
 
     //change this impl to getUniPrice(rETH)
@@ -299,9 +305,7 @@ contract ozOracle {
 
         uint ozelFeesInRETH = _getFeeAndForward(totalRewards, currentRewards);      
 
-        //---------
         _setAPR(uint(currentRewards), totalAssets);
-        //---------
 
         emit OzRewards(block.number, ozelFeesInRETH, totalRewards, currentRewards);
 
@@ -348,18 +352,16 @@ contract ozOracle {
 
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
-        console.log('');
-        console.log('currentRewardsUSD: ', currentRewardsUSD);
-        console.log('totalAssets_: ', totalAssets_);
-        console.log('deltaStamp: ', deltaStamp);
-        console.log('block.timestamp: ', block.timestamp);
-        console.log('s.lastRewardStamp: ', s.lastRewardStamp);
-        console.log('');
+        s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
 
-        s.apr = (currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100;
+        emit APRcalculated(
+            s.apr,
+            currentRewardsUSD,
+            totalAssets_,
+            deltaStamp
+        );
+
         s.lastRewardStamp = block.timestamp;
-
-        console.log('APR *****: ', s.apr);
     }
 
 
