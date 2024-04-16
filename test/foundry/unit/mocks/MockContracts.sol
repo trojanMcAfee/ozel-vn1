@@ -634,7 +634,7 @@ contract MockOzOraclePostAccrualHigher {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    // event APRcalculated(uint indexed apr, uint indexed lastStamp, uint indexed currentStamp);
+
     event APRcalculated(
         uint indexed apr,
         uint currentRewardsUSD,
@@ -730,9 +730,7 @@ contract MockOzOraclePostAccrualHigher {
         if (currentRewards <= 0) return false;
         _getFeeAndForward(totalRewards, currentRewards);     
 
-        //---------
         _setAPR(uint(currentRewards), totalAssets);
-        //--------- 
 
         return true;
     }
@@ -743,18 +741,8 @@ contract MockOzOraclePostAccrualHigher {
 
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
-        console.log('');
-        console.log('currentRewardsUSD: ', currentRewardsUSD);
-        console.log('currentRewardsETH_: ', currentRewardsETH_);
-        console.log('totalAssets_: ', totalAssets_);
-        console.log('deltaStamp: ', deltaStamp);
-        console.log('block.timestamp: ', block.timestamp);
-        console.log('s.lastRewardStamp: ', s.lastRewardStamp);
-        console.log('');
-
         s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
 
-        // emit APRcalculated(s.apr, s.lastRewardStamp, block.timestamp);
         emit APRcalculated(
             s.apr,
             currentRewardsUSD,
@@ -763,9 +751,6 @@ contract MockOzOraclePostAccrualHigher {
         );
 
         s.lastRewardStamp = block.timestamp;
-
-
-        console.log('APR *****: ', s.apr);
     }
 
     function _getAdminFee(uint grossFees_) private returns(uint) {
@@ -788,17 +773,8 @@ contract MockOzOraclePostAccrualHigher {
 
 
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
-        console.log('assets_: ', assets_);
-        console.log('ETH_USD: ', ETH_USD());
-        console.log('rETH_ETH: ', rETH_ETH());
-        console.log('amountReth_: ', amountReth_);
-        
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint rEthInETH = (amountReth_ * rETH_ETH()) / 1 ether;
-
-        console.log('assetsInETH: ', assetsInETH);
-        console.log('rEthInETH: ', rEthInETH);
-        console.log('');
 
         return (assetsInETH, rEthInETH);
     }
@@ -811,11 +787,7 @@ contract MockOzOraclePostAccrualHigher {
         if (!isLink_) timeout = TIMEOUT_EXTENDED;
         if (priceFeed_ == s.rEthEthChainlink) BASE = 1;
 
-        (
-            uint80 roundId,
-            int answer,,
-            uint updatedAt,
-        ) = AggregatorV3Interface(priceFeed_).latestRoundData();
+        (,int answer,,,) = AggregatorV3Interface(priceFeed_).latestRoundData();
 
         return (true, uint(answer) * BASE);
     }
