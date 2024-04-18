@@ -559,6 +559,7 @@ contract OZLtokenTest is TestMethods {
         * Post-conditions
         */
         uint gottenAPR = OZ.getAPR();
+        console.log('gottenAPR: ', gottenAPR);
         uint calculatedAPR = ((currentRewardsUSD / totalAssets) * (oneYearSecs / deltaStamp) * 100) * 1e6;
         
         assertTrue(calculatedAPR == emittedAPR);

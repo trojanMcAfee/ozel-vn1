@@ -417,7 +417,8 @@ contract MockOzOraclePostAccrual {
     uint constant public TIMEOUT_LINK = 4 hours;
 
     event APRcalculated(
-        uint indexed apr,
+        uint indexed currAPR,
+        uint indexed prevAPR,
         uint currentRewardsUSD,
         uint totalAssets,
         uint deltaStamp
@@ -560,15 +561,17 @@ contract MockOzOraclePostAccrual {
     }
 
     function _setAPR(uint currentRewardsETH_, uint totalAssets_) private {
+        s.prevAPR = s.currAPR;
         uint deltaStamp = block.timestamp - s.lastRewardStamp;
         uint oneYear = 31540000;
 
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
-        s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
+        s.currAPR = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
 
         emit APRcalculated(
-            s.apr,
+            s.currAPR,
+            s.prevAPR,
             currentRewardsUSD,
             totalAssets_,
             deltaStamp
@@ -649,7 +652,8 @@ contract MockOzOraclePostAccrualHigher {
 
 
     event APRcalculated(
-        uint indexed apr,
+        uint indexed currAPR,
+        uint indexed prevAPR,
         uint currentRewardsUSD,
         uint totalAssets,
         uint deltaStamp
@@ -756,12 +760,13 @@ contract MockOzOraclePostAccrualHigher {
     }
 
     function _setAPR(uint currentRewardsETH_, uint totalAssets_) private {
+        s.prevAPR = s.currAPR;
         uint deltaStamp = block.timestamp - s.lastRewardStamp;
         uint oneYear = 31540000;
 
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
-        s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
+        s.currAPR = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
 
         console.log('');
         console.log('currentRewardsUSD: ', currentRewardsUSD);
@@ -770,11 +775,13 @@ contract MockOzOraclePostAccrualHigher {
         console.log('deltaStamp: ', deltaStamp);
         console.log('block.timestamp: ', block.timestamp);
         console.log('s.lastRewardStamp: ', s.lastRewardStamp);
-        console.log('s.apr: ', s.apr);
+        console.log('s.currAPR: ', s.currAPR);
+        console.log('s.prevAPR: ', s.prevAPR);
         console.log('');
 
         emit APRcalculated(
-            s.apr,
+            s.currAPR,
+            s.prevAPR,
             currentRewardsUSD,
             totalAssets_,
             deltaStamp

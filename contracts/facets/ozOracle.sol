@@ -41,7 +41,8 @@ contract ozOracle {
     );
 
     event APRcalculated(
-        uint indexed apr,
+        uint indexed currAPR,
+        uint indexed prevAPR,
         uint currentRewardsUSD,
         uint totalAssets,
         uint deltaStamp
@@ -347,15 +348,17 @@ contract ozOracle {
 
 
     function _setAPR(uint currentRewardsETH_, uint totalAssets_) private {
+        s.prevAPR = s.currAPR;
         uint deltaStamp = block.timestamp - s.lastRewardStamp;
         uint oneYear = 31540000;
 
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
-        s.apr = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
+        s.currAPR = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
 
         emit APRcalculated(
-            s.apr,
+            s.currAPR,
+            s.prevAPR,
             currentRewardsUSD,
             totalAssets_,
             deltaStamp

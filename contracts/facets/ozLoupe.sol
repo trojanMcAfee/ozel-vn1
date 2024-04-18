@@ -167,7 +167,7 @@ contract ozLoupe is DiamondLoupeFacet {
 
 
     function getAPR() external view returns(uint) {
-        return s.apr;
+        return (s.prevAPR + s.currAPR) / 2;
     }
    
 }
