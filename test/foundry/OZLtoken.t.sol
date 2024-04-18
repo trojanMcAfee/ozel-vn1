@@ -27,7 +27,8 @@ contract OZLtokenTest is TestMethods {
     using FixedPointMathLib for uint;
 
     event APRcalculated(
-        uint indexed apr,
+        uint indexed currAPR,
+        uint indexed prevAPR,
         uint currentRewardsUSD,
         uint totalAssets,
         uint deltaStamp
@@ -543,14 +544,22 @@ contract OZLtokenTest is TestMethods {
         /**
         * Action
         */
-        uint emittedAPR = 2620384012800000000;
-        uint currentRewardsUSD = 3275480016830982818384;
+        uint currAPR;
+        uint currentRewardsUSD;
         uint totalAssets = 1500000000000;
         uint deltaStamp = 2592000;
         uint oneYearSecs = 31540000;
 
-        vm.expectEmit(true, false, false, true);
-        emit APRcalculated(emittedAPR, currentRewardsUSD, totalAssets, deltaStamp);
+        if (testToken == daiAddr) {
+            currAPR = 5728017626400000000;
+            currentRewardsUSD = 7160022033157910402099;
+        } else {
+            currAPR = 2620384012800000000;
+            currentRewardsUSD = 3275480016830982818384;
+        }
+
+        vm.expectEmit(true, true, false, true);
+        emit APRcalculated(currAPR, 0, currentRewardsUSD, totalAssets, deltaStamp);
 
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
@@ -560,10 +569,13 @@ contract OZLtokenTest is TestMethods {
         */
         uint gottenAPR = OZ.getAPR();
         console.log('gottenAPR: ', gottenAPR);
-        uint calculatedAPR = ((currentRewardsUSD / totalAssets) * (oneYearSecs / deltaStamp) * 100) * 1e6;
+        uint calculatedAPR = (((currentRewardsUSD / totalAssets) * (oneYearSecs / deltaStamp) * 100) * 1e6) / 2;
         
-        assertTrue(calculatedAPR == emittedAPR);
-        assertTrue(gottenAPR == emittedAPR);
+        console.log('calculatedAPR: ', calculatedAPR);
+        assertTrue(calculatedAPR == gottenAPR);
+        console.log(2);
+        assertTrue(gottenAPR * 2 == currAPR);
+        console.log(3);
 
         uint secondOZLfeeCharge = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
         assertTrue(secondOZLfeeCharge > ozlRethBalance);
