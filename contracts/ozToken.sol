@@ -194,7 +194,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function totalSupply() public view returns(uint) {
         return totalShares() == 0 ? 0 : 
-            _subConvertToAssets3(totalShares(), Dir.UP).mulDivUp(totalAssets() * 1e12, _subConvertToAssets3(totalShares(), Dir.DOWN));
+            ((_subConvertToAssets3(totalShares(), Dir.UP) * 1e18).mulDivUp((totalAssets() * 1e12) * 1e18, _subConvertToAssets3(totalShares(), Dir.DOWN) * 1e18)) / 1e18;
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -206,7 +206,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        return convertToAssets(sharesOf(account_), account_);
+        return convertToAssets(sharesOf(account_), account_) / 1e18;
     }
 
     function subBalanceOf(address account_, Dir side_) public view returns(uint) {
@@ -356,13 +356,16 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-        return preBalance == 0 ? 0 : preBalance.mulDivUp(_calculateScalingFactor2(account_), 1e18);
+        return preBalance == 0 ? 0 : (preBalance * 1e18).mulDivUp((_calculateScalingFactor2(account_) * 1e18), 1e36);
+        // preBalance.mulDivUp(_calculateScalingFactor2(account_), 1e18)
+ 
+        // if (preBalance != 0) console.log('padding in _convertToAssets ^^^^^^: ', (preBalance * 1e18).mulDivUp((_calculateScalingFactor2(account_) * 1e18), 1e36));
         /**
         * Normally, this would be mulDivDown, like in majority of protocols. 
         * I have to use mulDivUp to the ozBalance of all holders matches with totalSupply.
         * Further test this to make sure it doesn't introduce an inflation risk (known inflation attacks,
         * fuzz, more unit tests, etc.).
-        * I discovered with test_rewards_mock_accounting();
+        * I discovered this with test_rewards_mock_accounting();
         */
     }
 
