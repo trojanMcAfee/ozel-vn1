@@ -650,7 +650,6 @@ contract MockOzOraclePostAccrualHigher {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-
     event APRcalculated(
         uint indexed currAPR,
         uint indexed prevAPR,
@@ -658,7 +657,6 @@ contract MockOzOraclePostAccrualHigher {
         uint totalAssets,
         uint deltaStamp
     );
-
 
     /**
     * Removed the rest of the function and just kep the call to the oracle because
@@ -741,13 +739,6 @@ contract MockOzOraclePostAccrualHigher {
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);        
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
-        console.log('');
-        console.log('rEthInETH: ', rEthInETH);
-        console.log('assetsInETH: ', assetsInETH);
-        console.log('totalRewards: ', uint(totalRewards));
-        console.log('s.rewards.prevTotalRewards: ', s.rewards.prevTotalRewards);
-        console.log('');
-
         if (totalRewards <= 0) return false;
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
@@ -767,17 +758,6 @@ contract MockOzOraclePostAccrualHigher {
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
         s.currAPR = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
-
-        console.log('');
-        console.log('currentRewardsUSD: ', currentRewardsUSD);
-        console.log('currentRewardsETH_: ', currentRewardsETH_);
-        console.log('totalAssets_: ', totalAssets_);
-        console.log('deltaStamp: ', deltaStamp);
-        console.log('block.timestamp: ', block.timestamp);
-        console.log('s.lastRewardStamp: ', s.lastRewardStamp);
-        console.log('s.currAPR: ', s.currAPR);
-        console.log('s.prevAPR: ', s.prevAPR);
-        console.log('');
 
         emit APRcalculated(
             s.currAPR,
@@ -812,8 +792,6 @@ contract MockOzOraclePostAccrualHigher {
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint rEthInETH = (amountReth_ * rETH_ETH()) / 1 ether;
-
-        console.log('rEthInETH ****: ', rEthInETH);
 
         return (assetsInETH, rEthInETH);
     }

@@ -165,7 +165,10 @@ contract ozLoupe is DiamondLoupeFacet {
         return total; 
     }
 
-
+    /**
+    * Gets the average of the last two APR calculations for a more accurate
+    * representation. 
+    */
     function getAPR() external view returns(uint) {
         return (s.prevAPR + s.currAPR) / 2;
     }

@@ -568,14 +568,10 @@ contract OZLtokenTest is TestMethods {
         * Post-conditions
         */
         uint gottenAPR = OZ.getAPR();
-        console.log('gottenAPR: ', gottenAPR);
         uint calculatedAPR = (((currentRewardsUSD / totalAssets) * (oneYearSecs / deltaStamp) * 100) * 1e6) / 2;
         
-        console.log('calculatedAPR: ', calculatedAPR);
         assertTrue(calculatedAPR == gottenAPR);
-        console.log(2);
         assertTrue(gottenAPR * 2 == currAPR);
-        console.log(3);
 
         uint secondOZLfeeCharge = IERC20Permit(rEthAddr).balanceOf(address(ozlProxy));
         assertTrue(secondOZLfeeCharge > ozlRethBalance);
