@@ -194,7 +194,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function totalSupply() public view returns(uint) {
         return totalShares() == 0 ? 0 : 
-            ((_subConvertToAssets3(totalShares(), Dir.UP) * 1e18).mulDivUp((totalAssets() * 1e12) * 1e18, _subConvertToAssets3(totalShares(), Dir.DOWN) * 1e18)) / 1e18;
+            ((_subConvertToAssets3(totalShares(), Dir.UP) * 1e18).mulDivUp((totalAssets() * 1e12) * 1e18, _subConvertToAssets3(totalShares(), Dir.DOWN) * 1e18)) / (1e18);
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -206,7 +206,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        return convertToAssets(sharesOf(account_), account_).divUp(1e18);
+        return convertToAssets(sharesOf(account_), account_) / (1e18);
     }
 
     function subBalanceOf(address account_, Dir side_) public view returns(uint) {
@@ -357,9 +357,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
         return preBalance == 0 ? 0 : (preBalance * 1e18).mulDivUp((_calculateScalingFactor2(account_) * 1e18), 1e36);
-        // preBalance.mulDivUp(_calculateScalingFactor2(account_), 1e18)
+        //^ doesn't change anything if i use mulDivDown or Up
  
-        // if (preBalance != 0) console.log('padding in _convertToAssets ^^^^^^: ', (preBalance * 1e18).mulDivUp((_calculateScalingFactor2(account_) * 1e18), 1e36));
         /**
         * Normally, this would be mulDivDown, like in majority of protocols. 
         * I have to use mulDivUp to the ozBalance of all holders matches with totalSupply.
@@ -375,7 +374,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _calculateScalingFactor2(address account_) private view returns(uint) {
-        return (_shares[account_] * 1e12).mulDivDown(1e18, subBalanceOf(account_, Dir.DOWN));
+        return (((_shares[account_] * 1e12) * 1e18).mulDivDown(1e36, subBalanceOf(account_, Dir.DOWN) * 1e18)) / 1e18;
     }
 
     function _rETH_ETH() private view returns(uint) { 
@@ -390,14 +389,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //Used in Mocks.t.sol, in test_redeem_rewards_mock_chainlink() on the totalSupply check +1, and the other +1 in that test
     //Further test if that +1 is an attack risk.
     function _subConvertToAssets3(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
-        uint reth_eth = _OZ().getUniPrice(0, side_);
-        return shares_.mulDivUp(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
+        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e18;
+        return ((shares_ * 1e18).mulDivUp(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e18)).divUp(1e18);
     }
 
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
-        uint reth_eth = _OZ().getUniPrice(0, side_);
-        return shares_.mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares());
+        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e18;
+        return ((shares_ * 1e18).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e18)) / 1e18;
     }
 
     function _subConvertToAssets2(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
