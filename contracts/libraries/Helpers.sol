@@ -207,5 +207,8 @@ library Helpers {
         return uint(bps_) > delta.mulDivDown(10_000, mainAmount_);
     }
 
+    function divUp(uint x_, uint y_) internal pure returns(uint) {
+        return x_ / y_ + (x_ % y_ == 0 ? 0 : 1);
+    }
   
 }

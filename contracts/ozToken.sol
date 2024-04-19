@@ -206,7 +206,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        return convertToAssets(sharesOf(account_), account_) / 1e18;
+        return convertToAssets(sharesOf(account_), account_).divUp(1e18);
     }
 
     function subBalanceOf(address account_, Dir side_) public view returns(uint) {
