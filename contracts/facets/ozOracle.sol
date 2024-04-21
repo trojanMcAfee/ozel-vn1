@@ -149,7 +149,7 @@ contract ozOracle {
             tick, 1 ether, token0, token1
         );
 
-        console.log('amountOut *******: ', amountOut);
+        // console.log('amountOut *******: ', amountOut);
     
         return amountOut * (token1 == s.WETH ? 1 : 1e12);
     }
