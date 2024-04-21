@@ -163,5 +163,12 @@ contract MocksTests is MockStorage, TestMethods {
         }
     }
 
+
+    function test_x() public {
+        uint reth_eth = OZ.getUniPrice(0, Dir.UP);
+        console.log('reth_eth: ', reth_eth);
+
+    }
+
 }
 
