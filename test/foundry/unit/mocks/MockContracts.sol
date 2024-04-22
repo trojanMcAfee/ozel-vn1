@@ -268,9 +268,9 @@ contract MockOzOraclePreAccrual {
         uint amountOut;
 
         if (side_ == Dir.UP) {
-            amountOut = 10864869065949319007;
+            amountOut = 108648690659493190076;
         } else if (side_ == Dir.DOWN) {
-            amountOut = 10859952502829164007;
+            amountOut = 108599525028291640076;
         } else {
             return tokenPair_;
         }
@@ -440,9 +440,9 @@ contract MockOzOraclePreAccrualNoDeviation {
         uint amountOut;
 
         if (side_ == Dir.UP) {
-            amountOut = 10864869065949319007;
+            amountOut = 108648690659493190076;
         } else if (side_ == Dir.DOWN) {
-            amountOut = 10859952502829164007;
+            amountOut = 108599525028291640076;
         } else {
             return tokenPair_;
         }
@@ -629,7 +629,7 @@ contract MockOzOraclePostAccrual {
             if (side_ == Dir.UP) {
                 amountOut = 11399463828587291767;
             } else if (side_ == Dir.DOWN) {
-                amountOut = 10864869065949319007;
+                amountOut = 108648690659493190076;
             } else {
                 return tokenPair_;
             }
@@ -863,7 +863,7 @@ contract MockOzOraclePostAccrualHigher {
             if (side_ == Dir.UP) {
                 amountOut = 11499463828587291767;
             } else if (side_ == Dir.DOWN) {
-                amountOut = 10864869065949319007;
+                amountOut = 108648690659493190076;
             } else {
                 return tokenPair_;
             }

@@ -413,8 +413,18 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //Used in Mocks.t.sol, in test_redeem_rewards_mock_chainlink() on the totalSupply check +1, and the other +1 in that test
     //Further test if that +1 is an attack risk.
     function _subConvertToAssets3(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
-        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e19;
-        return ((shares_ * 1e19).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e19)); // / (1e18)
+        // console.log('_OZ().getUniPrice(0, side_): ', _OZ().getUniPrice(0, side_));
+        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e20;
+        uint x = ((shares_ * 1e20).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e20));
+
+        // console.log('shares_: ', shares_ * 1e20);
+        // console.log('reth_eth: ', reth_eth);
+        // console.log('totalShares(): ', totalShares() * 1e20);
+
+        console.log('x: ', x);
+        revert('hereee');
+
+        return x; // / (1e18)
     }
 
 
