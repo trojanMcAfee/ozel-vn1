@@ -209,7 +209,7 @@ contract VaultMock {
         if (singleSwap.amount == 19673291323457014) 
         { 
             uint wethIn = 19673291323457014;
-            amountOut =  wethIn.mulDivDown(1 ether, OZ.rETH_ETH());
+            amountOut =  wethIn.mulDivDown(1e19, OZ.rETH_ETH());
 
             console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH()); 
             console.log('amountOut ^^^^^: ', amountOut);
