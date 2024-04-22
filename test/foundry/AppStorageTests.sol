@@ -6,13 +6,15 @@ import {IVault} from "../../contracts/interfaces/IBalancer.sol";
 import {AmountsIn, AmountsOut} from "../../contracts/AppStorage.sol";
 
 /**
-* PREACCRUAL - getUniPrice() using Uniswap's TWAP
+* PREACCRUAL_UNI - getUniPrice() using Uniswap's TWAP
+* PREACCRUAL_UNI_NO_DEVIATION - as PREACCRUAL_UNI but without the deviation check on rETH
 * POSTACCRUAL_UNI - TWAP price with accrued rewards
 * PREACCRUAL_LINK - getUniPrice() using Chailink feeds.
 * POSTACCRUAL_LINK - Chainlink price with acrrued rewards.
 */
 enum Mock {
     PREACCRUAL_UNI,
+    PREACCRUAL_UNI_NO_DEVIATION,
     POSTACCRUAL_UNI,
     POSTACCRUAL_UNI_HIGHER,
     PREACCRUAL_LINK,

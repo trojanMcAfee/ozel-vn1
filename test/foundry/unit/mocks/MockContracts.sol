@@ -437,7 +437,6 @@ contract MockOzOraclePreAccrualNoDeviation {
     }
 
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
-        // console.log(1);
         uint amountOut;
 
         if (side_ == Dir.UP) {

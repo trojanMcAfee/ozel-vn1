@@ -34,12 +34,10 @@ contract MocksTests is MockStorage, TestMethods {
         if (_skip()) return (0, 0, 0);
 
         //PRE-CONDITIONS
-        // MockOzOraclePreAccrualNoDeviation mockOraclePreNoDeviation
-
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
 
-        _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI);
+        _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI_NO_DEVIATION);
 
         uint reth_eth_current = OZ.rETH_ETH();
         uint reth_usd_preAccrual = OZ.rETH_USD(); 

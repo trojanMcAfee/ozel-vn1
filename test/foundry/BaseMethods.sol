@@ -24,7 +24,8 @@ import {
     MockOzOraclePreAccrual,
     MockOzOraclePostAccrual,
     MockOzOracleLink,
-    MockOzOraclePostAccrualHigher
+    MockOzOraclePostAccrualHigher,
+    MockOzOraclePreAccrualNoDeviation
 } from "./unit/mocks/MockContracts.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 
@@ -413,7 +414,10 @@ contract BaseMethods is Setup {
         } else {
             MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
             
-            if (type_ == Mock.POSTACCRUAL_UNI) {
+            if (type_ == Mock.PREACCRUAL_UNI_NO_DEVIATION) {
+                MockOzOraclePreAccrualNoDeviation mockOraclePreNoDeviation = new MockOzOraclePreAccrualNoDeviation();
+                vm.etch(address(mockOracle), address(mockOraclePreNoDeviation).code);
+            } else if (type_ == Mock.POSTACCRUAL_UNI) {
                 MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
                 vm.etch(address(mockOracle), address(mockOraclePost).code);
             } else if (type_ == Mock.PREACCRUAL_LINK) {
