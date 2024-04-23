@@ -209,7 +209,7 @@ contract VaultMock {
         if (singleSwap.amount == 19673291323457014) 
         { 
             uint wethIn = 19673291323457014;
-            amountOut =  wethIn.mulDivDown(1e19, OZ.rETH_ETH());
+            amountOut =  wethIn.mulDivDown(1e27, OZ.rETH_ETH());
 
             console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH()); 
             console.log('amountOut ^^^^^: ', amountOut);
@@ -268,9 +268,9 @@ contract MockOzOraclePreAccrual {
         uint amountOut;
 
         if (side_ == Dir.UP) {
-            amountOut = 108648690659493190076;
+            amountOut = 1086486906594931900766884076;
         } else if (side_ == Dir.DOWN) {
-            amountOut = 108599525028291640076;
+            amountOut = 1085995250282916400766884076;
         } else {
             return tokenPair_;
         }
@@ -440,9 +440,9 @@ contract MockOzOraclePreAccrualNoDeviation {
         uint amountOut;
 
         if (side_ == Dir.UP) {
-            amountOut = 108648690659493190076;
+            amountOut = 1086486906594931900766884076;
         } else if (side_ == Dir.DOWN) {
-            amountOut = 108599525028291640076;
+            amountOut = 1085995250282916400766884076;
         } else {
             return tokenPair_;
         }
@@ -627,9 +627,9 @@ contract MockOzOraclePostAccrual {
 
         if (tokenPair_ != 2) {
             if (side_ == Dir.UP) {
-                amountOut = 11399463828587291767;
+                amountOut = 113994638285872917676884076;
             } else if (side_ == Dir.DOWN) {
-                amountOut = 108648690659493190076;
+                amountOut = 1086486906594931900766884076;
             } else {
                 return tokenPair_;
             }
@@ -861,9 +861,9 @@ contract MockOzOraclePostAccrualHigher {
 
         if (tokenPair_ != 2) {
             if (side_ == Dir.UP) {
-                amountOut = 11499463828587291767;
+                amountOut = 114994638285872917676884076;
             } else if (side_ == Dir.DOWN) {
-                amountOut = 108648690659493190076;
+                amountOut = 1086486906594931900766884076;
             } else {
                 return tokenPair_;
             }

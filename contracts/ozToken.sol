@@ -209,31 +209,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint z;
 
         if (totalShares() != 0) {
-            // x = _subConvertToAssets3(totalShares(), Dir.UP);
-            // console.log('left: ', x);
-
-            // y = totalAssets() * 1e12 * 1e20; 
-            // // y = totalAssets() * 1e14;
-            // console.log('right 1: ', y);
-
-            // z = _subConvertToAssets3(totalShares(), Dir.DOWN);
-            // console.log('right 2: ', z);
-
-            // // console.log('is: ', x.mulDivDown(y, z) / 1e20);
-
-            // (uint r0, uint r1) = x.mul256x256(y);
-            // uint result = r0.div512x256(r1, x);
-            // console.log('is2: ', result);
-
-            //--------
-
             uint256 a = _subConvertToAssets3(totalShares(), Dir.UP);
-            uint256 b = totalAssets() * 1e12 * 1e20;
+            uint256 b = totalAssets() * 1e12 * 1e27;
             uint256 c = _subConvertToAssets3(totalShares(), Dir.DOWN);
 
             (uint r0, uint r1) = a.mul256x256(b);
             uint result = r0.div512x256(r1, c);
-            console.log('resulttt: ', result);
+            console.log('resultt: ', result);
 
             revert('hereee2');
         }
@@ -445,8 +427,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //Further test if that +1 is an attack risk.
     function _subConvertToAssets3(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         // console.log('_OZ().getUniPrice(0, side_): ', _OZ().getUniPrice(0, side_));
-        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e20;
-        uint x = ((shares_ * 1e20).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e20));
+        console.log(1);
+        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
+        console.log(2);
+        uint x = ((shares_ * 1e27).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27));
+        console.log(3);
 
         // console.log('shares_: ', shares_ * 1e20);
         // console.log('reth_eth: ', reth_eth);
