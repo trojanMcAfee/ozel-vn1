@@ -22,6 +22,7 @@ import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/
 import {AmountsIn, Dir} from "./AppStorage.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {Helpers, TotalType} from "./libraries/Helpers.sol";
+import {Uint512} from "./libraries/Uint512.sol";
 import {Modifiers} from "./Modifiers.sol";
 import "./Errors.sol";
 
@@ -49,6 +50,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     using FixedPointMathLib for uint;
     using Helpers for uint;
     using Helpers for bytes32;
+    using Uint512 for uint;
 
     address private _ozDiamond;
     address private _underlying;
@@ -207,17 +209,32 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint z;
 
         if (totalShares() != 0) {
-            x = _subConvertToAssets3(totalShares(), Dir.UP);
-            console.log('left: ', x);
+            // x = _subConvertToAssets3(totalShares(), Dir.UP);
+            // console.log('left: ', x);
 
-            y = totalAssets() * 1e12 * 1e20; 
-            // y = totalAssets() * 1e14;
-            console.log('right 1: ', y);
+            // y = totalAssets() * 1e12 * 1e20; 
+            // // y = totalAssets() * 1e14;
+            // console.log('right 1: ', y);
 
-            z = _subConvertToAssets3(totalShares(), Dir.DOWN);
-            console.log('right 2: ', z);
+            // z = _subConvertToAssets3(totalShares(), Dir.DOWN);
+            // console.log('right 2: ', z);
 
-            console.log('is: ', x.mulDivDown(y, z) / 1e20);
+            // // console.log('is: ', x.mulDivDown(y, z) / 1e20);
+
+            // (uint r0, uint r1) = x.mul256x256(y);
+            // uint result = r0.div512x256(r1, x);
+            // console.log('is2: ', result);
+
+            //--------
+
+            uint256 a = _subConvertToAssets3(totalShares(), Dir.UP);
+            uint256 b = totalAssets() * 1e12 * 1e20;
+            uint256 c = _subConvertToAssets3(totalShares(), Dir.DOWN);
+
+            (uint r0, uint r1) = a.mul256x256(b);
+            uint result = r0.div512x256(r1, c);
+            console.log('resulttt: ', result);
+
             revert('hereee2');
         }
 

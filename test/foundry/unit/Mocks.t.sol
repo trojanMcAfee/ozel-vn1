@@ -163,14 +163,6 @@ contract MocksTests is MockStorage, TestMethods {
         }
     }
 
-    function mul512(uint a, uint b) public pure returns(uint r0, uint r1) {
-        assembly {
-            let mm := mulmod(a, b, not(0))
-            r0 := mul(a, b)
-            r1 := sub(sub(mm, r0), lt(mm, r0))
-        }
-    }
-
 
     function test_x() public {
         // uint reth_eth = OZ.getUniPrice(0, Dir.UP);
@@ -180,10 +172,6 @@ contract MocksTests is MockStorage, TestMethods {
         uint256 a = 10864869065949319007600000000000000000000;
         uint256 b = 3300000000000000000000000000000000000000;
         uint256 c = 10859952502829164007600000000000000000000;
-
-        // (uint r1, uint r2) = mul512(a, b);
-        // console.log('r1: ', r1);
-        // console.log('r2: ', r2);
 
         (uint r0, uint r1) = a.mul256x256(b);
         uint result = r0.div512x256(r1, c);
