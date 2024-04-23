@@ -202,14 +202,28 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             // console.log('_subConvertToAssets3(totalShares(), Dir.DOWN) * 1e18 - right side 2: ', _subConvertToAssets3(totalShares(), Dir.DOWN) * 1e18);
         }
 
+        uint x;
+        uint y;
+        uint z;
+
         if (totalShares() != 0) {
-            // console.log('left: ', _subConvertToAssets3(totalShares(), Dir.UP));
-            // console.log('right 1: ', totalAssets() * 1e12 * 1e18);
-            // console.log('right 2: ', _subConvertToAssets3(totalShares(), Dir.DOWN));
+            x = _subConvertToAssets3(totalShares(), Dir.UP);
+            console.log('left: ', x);
+
+            y = totalAssets() * 1e12 * 1e20; 
+            // y = totalAssets() * 1e14;
+            console.log('right 1: ', y);
+
+            z = _subConvertToAssets3(totalShares(), Dir.DOWN);
+            console.log('right 2: ', z);
+
+            console.log('is: ', x.mulDivDown(y, z) / 1e20);
+            revert('hereee2');
         }
 
         return totalShares() == 0 ? 0 : 
-            ((_subConvertToAssets3(totalShares(), Dir.UP)).mulDivDown((totalAssets() * 1e12) * 1e19, _subConvertToAssets3(totalShares(), Dir.DOWN))) / (1e19);
+            ((_subConvertToAssets3(totalShares(), Dir.UP)).mulDivDown((totalAssets() * 1e12) * 1e20, _subConvertToAssets3(totalShares(), Dir.DOWN))) / 1e20;
+            // ((_subConvertToAssets3(totalShares(), Dir.UP)).mulDivDown((totalAssets() * 1e12) * 1e19, _subConvertToAssets3(totalShares(), Dir.DOWN))) / (1e19);
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -421,8 +435,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('reth_eth: ', reth_eth);
         // console.log('totalShares(): ', totalShares() * 1e20);
 
-        console.log('x: ', x);
-        revert('hereee');
+        // console.log('x: ', x);
 
         return x; // / (1e18)
     }
