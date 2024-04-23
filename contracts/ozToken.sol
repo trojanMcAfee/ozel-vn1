@@ -20,8 +20,10 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/uti
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 
 import {AmountsIn, Dir} from "./AppStorage.sol";
+import {FixedPointMath512Lib} from "./libraries/FixedPointMath512Lib.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {Helpers, TotalType} from "./libraries/Helpers.sol";
+import {Uint512} from "./libraries/Uint512.sol";
 import {Uint512} from "./libraries/Uint512.sol";
 import {Modifiers} from "./Modifiers.sol";
 import "./Errors.sol";
@@ -48,6 +50,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     using FixedPointMathLib for uint;
+    using FixedPointMath512Lib for uint;
     using Helpers for uint;
     using Helpers for bytes32;
     using Uint512 for uint;
@@ -430,7 +433,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log(1);
         uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
         console.log(2);
-        uint x = ((shares_ * 1e27).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27));
+        uint x = ((shares_ * 1e27).mulDivDown512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27));
+        // uint x = ((shares_ * 1e27).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27));
         console.log(3);
 
         // console.log('shares_: ', shares_ * 1e20);
