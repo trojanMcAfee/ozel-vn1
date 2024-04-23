@@ -18,7 +18,7 @@ import {Mock} from "../AppStorageTests.sol";
 import {OracleLibrary} from "../../../contracts/libraries/oracle/OracleLibrary.sol";
 import {stdStorage, StdStorage} from "forge-std/Test.sol";    
 import {Test} from "forge-std/Test.sol";       
-
+import {Uint512} from "../../../contracts/libraries/Uint512.sol";
 
 import "forge-std/console.sol";
 
@@ -28,6 +28,7 @@ contract MocksTests is MockStorage, TestMethods {
 
     using FixedPointMathLib for uint;
     using stdStorage for StdStorage;
+    using Uint512 for uint;
 
 
     function test_redeem_rewards_mock_TWAP() public returns(uint, uint, uint) {
@@ -178,10 +179,15 @@ contract MocksTests is MockStorage, TestMethods {
         //-----------------------
         uint256 a = 10864869065949319007600000000000000000000;
         uint256 b = 3300000000000000000000000000000000000000;
+        uint256 c = 10859952502829164007600000000000000000000;
 
-        (uint r1, uint r2) = mul512(a, b);
-        console.log('r1: ', r1);
-        console.log('r2: ', r2);
+        // (uint r1, uint r2) = mul512(a, b);
+        // console.log('r1: ', r1);
+        // console.log('r2: ', r2);
+
+        (uint r0, uint r1) = a.mul256x256(b);
+        uint result = r0.div512x256(r1, c);
+        console.log('result: ', result);
     }
 
 }
