@@ -62,6 +62,8 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('ozBalanceAlice: ', ozBalanceAlice);
         console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
 
+        revert('here4');
+
         //This simulates the rETH rewards accrual.
         console.log('');
         console.log('^^^^^ ACCRUAL ^^^^^');
