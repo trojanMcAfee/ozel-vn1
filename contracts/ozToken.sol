@@ -396,6 +396,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
+        console.log('preBalance: ', preBalance); //<---- check why this is 0, with terminal
+        revert('here5');
+
         return preBalance == 0 ? 0 : (preBalance * 1e19).mulDivDown((_calculateScalingFactor2(account_) * 1e19), 1e38);
         //^ doesn't change anything if i use mulDivDown or Up
  
@@ -445,8 +448,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
-        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e19;
-        return ((shares_ * 1e19).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e19)) / 1e19;
+        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
+        uint x = (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27);
+        return x;
     }
 
     function _subConvertToAssets2(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
