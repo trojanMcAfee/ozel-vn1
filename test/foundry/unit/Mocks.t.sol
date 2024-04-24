@@ -62,8 +62,6 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('ozBalanceAlice: ', ozBalanceAlice);
         console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
 
-        revert('here4');
-
         //This simulates the rETH rewards accrual.
         console.log('');
         console.log('^^^^^ ACCRUAL ^^^^^');
@@ -86,6 +84,8 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('totalSupply: ', ozERC20.totalSupply());
         console.log('');
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
+
+        revert('here5');
 
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlicePostMock, 

@@ -627,7 +627,7 @@ contract MockOzOraclePostAccrual {
 
         if (tokenPair_ != 2) {
             if (side_ == Dir.UP) {
-                amountOut = 113994638285872917676884076;
+                amountOut = 1139946382858729176766884076;
             } else if (side_ == Dir.DOWN) {
                 amountOut = 1086486906594931900766884076;
             } else {
