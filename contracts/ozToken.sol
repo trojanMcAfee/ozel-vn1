@@ -239,6 +239,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function balanceOf(address account_) public view returns(uint) {
         // console.log(' |');
         // console.log('  --- balanceOf() non-padded: ', convertToAssets(sharesOf(account_), account_));
+        
+        // console.log('sharesOf(account_): ', sharesOf(account_));    
+        // console.log('account: ', account_);
+
         return convertToAssets(sharesOf(account_), account_) / (1e19);
     }
 
@@ -277,6 +281,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _shares[receiver] += shares;
                 _assets[receiver] += assets;
             }
+
+            console.log('shares: ', shares);
+            console.log('_shares[receiver] ****: ', _shares[receiver]);
 
             return shares;
 
@@ -396,8 +403,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-        console.log('preBalance: ', preBalance); //<---- check why this is 0, with terminal
-        revert('here5');
+
+        if (preBalance != 0) {
+            console.log('preBalance: ', preBalance);
+            revert('here5');
+        }
 
         return preBalance == 0 ? 0 : (preBalance * 1e19).mulDivDown((_calculateScalingFactor2(account_) * 1e19), 1e38);
         //^ doesn't change anything if i use mulDivDown or Up
@@ -450,6 +460,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
         uint x = (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27);
+
+        console.log('');
+        console.log('reth_eth: ', reth_eth);
+        console.log('shares_ * 1e27: ', shares_ * 1e27);
+        console.log('totalShares() * 1e27: ', totalShares() * 1e27);
+        console.log('is - preBalance: ', x);
+        console.log('');
+
         return x;
     }
 
