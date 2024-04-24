@@ -89,11 +89,16 @@ contract ozLoupe is DiamondLoupeFacet {
     ) public view returns(AmountsOut memory) {
         ozIToken ozERC20 = ozIToken(ozToken_);
 
+        uint x = ozERC20.subConvertToShares(ozAmountIn_, owner_);
+        console.log('subConvertToShares(ozAmountIn_, owner_): ', x);
+
         uint amountInReth = ozERC20.convertToUnderlying(
-            ozERC20.subConvertToShares(ozAmountIn_, owner_)
+            x
         );
 
         console.log('amountInReth *****: ', amountInReth);
+
+        revert('here6');
 
         ozIDiamond OZ = ozIDiamond(address(this));
         uint minAmountOutWeth = amountInReth.calculateMinAmountOut(Helpers.rETH_ETH(OZ), slippage_);

@@ -19,6 +19,7 @@ import {OracleLibrary} from "../../../contracts/libraries/oracle/OracleLibrary.s
 import {stdStorage, StdStorage} from "forge-std/Test.sol";    
 import {Test} from "forge-std/Test.sol";       
 import {Uint512} from "../../../contracts/libraries/Uint512.sol";
+import {Helpers} from "../../../contracts/libraries/Helpers.sol";
 
 import "forge-std/console.sol";
 
@@ -29,6 +30,8 @@ contract MocksTests is MockStorage, TestMethods {
     using FixedPointMathLib for uint;
     using stdStorage for StdStorage;
     using Uint512 for uint;
+    
+    using Helpers for uint;
 
 
     function test_redeem_rewards_mock_TWAP() public returns(uint, uint, uint) {
@@ -85,8 +88,6 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('');
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
 
-        revert('here5');
-
         bytes memory redeemData = OZ.getRedeemData(
             ozBalanceAlicePostMock, 
             address(ozERC20),
@@ -100,7 +101,9 @@ contract MocksTests is MockStorage, TestMethods {
         //ACTION
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
+        console.log(1);
         ozERC20.redeem(redeemData, alice);
+        console.log(2);
         vm.stopPrank();
 
         console.log('');
@@ -171,13 +174,26 @@ contract MocksTests is MockStorage, TestMethods {
         // console.log('reth_eth: ', reth_eth);
 
         //-----------------------
-        uint256 a = 10864869065949319007600000000000000000000;
-        uint256 b = 3300000000000000000000000000000000000000;
-        uint256 c = 10859952502829164007600000000000000000000;
+        // uint256 a = 10864869065949319007600000000000000000000;
+        // uint256 b = 3300000000000000000000000000000000000000;
+        // uint256 c = 10859952502829164007600000000000000000000;
 
-        (uint r0, uint r1) = a.mul256x256(b);
-        uint result = r0.div512x256(r1, c);
-        console.log('result: ', result);
+        // (uint r0, uint r1) = a.mul256x256(b);
+        // uint result = r0.div512x256(r1, c);
+        // console.log('result: ', result);
+        //--------------
+
+        uint assets = uint(34623731225840747135) * 1e27;
+        uint totalShares = uint(66000000) * 1e27;
+        uint reth_eth = 1139946382858729176766884076;
+        // uint left = (assets * totalShares) / reth_eth;
+
+        (uint r0, uint r1) = assets.mul256x256(totalShares);
+        uint result = r0.div512x256(r1, reth_eth);
+        uint scaling = uint(60746245168149427193981952783264292889100095062);
+        uint r = result.divUp(scaling);
+
+        console.log('result: ', r);
     }
 
 }
