@@ -243,7 +243,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         // console.log('sharesOf(account_): ', sharesOf(account_));    
         // console.log('account: ', account_);
 
-        return convertToAssets(sharesOf(account_), account_) / (1e19);
+        return convertToAssets(sharesOf(account_), account_) / 1e27;
     }
 
     function subBalanceOf(address account_, Dir side_) public view returns(uint) {
@@ -281,9 +281,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _shares[receiver] += shares;
                 _assets[receiver] += assets;
             }
-
-            console.log('shares: ', shares);
-            console.log('_shares[receiver] ****: ', _shares[receiver]);
 
             return shares;
 
@@ -405,11 +402,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
 
         if (preBalance != 0) {
-            console.log('preBalance: ', preBalance);
-            revert('here5');
+            // console.log('preBalance: ', preBalance);
+            // console.log('_calculateScalingFactor2(account_): ', _calculateScalingFactor2(account_));
+            // console.log('is: ', preBalance.mulDiv512((_calculateScalingFactor2(account_)), 1e54));
+            // revert('here5');
         }
 
-        return preBalance == 0 ? 0 : (preBalance * 1e19).mulDivDown((_calculateScalingFactor2(account_) * 1e19), 1e38);
+        return preBalance == 0 ? 0 : preBalance.mulDiv512((_calculateScalingFactor2(account_)), 1e54);
         //^ doesn't change anything if i use mulDivDown or Up
  
         /**
@@ -427,7 +426,17 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _calculateScalingFactor2(address account_) private view returns(uint) {
-        return (((_shares[account_] * 1e12) * 1e19).mulDivDown(1e38, subBalanceOf(account_, Dir.DOWN) * 1e19)) / 1e19;
+
+        // console.log('');
+        // console.log('^^^^ start _calculateScalingFactor2 ^^^^');
+        // console.log('_shares[account_] * 1e12 * 1e27: ', _shares[account_] * 1e12 * 1e27);
+        // console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
+        // console.log('is2: ', (_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, subBalanceOf(account_, Dir.DOWN)));
+        // console.log('^^^^ end _calculateScalingFactor2 ^^^^');
+        // console.log('');
+
+        return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, subBalanceOf(account_, Dir.DOWN)));
+        // return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, subBalanceOf(account_, Dir.DOWN) * 1e27));
     }
 
     function _rETH_ETH() private view returns(uint) { 
@@ -461,12 +470,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
         uint x = (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27);
 
-        console.log('');
-        console.log('reth_eth: ', reth_eth);
-        console.log('shares_ * 1e27: ', shares_ * 1e27);
-        console.log('totalShares() * 1e27: ', totalShares() * 1e27);
-        console.log('is - preBalance: ', x);
-        console.log('');
+        // console.log('');
+        // console.log('reth_eth: ', reth_eth);
+        // console.log('shares_ * 1e27: ', shares_ * 1e27);
+        // console.log('totalShares() * 1e27: ', totalShares() * 1e27);
+        // console.log('is - preBalance: ', x);
+        // console.log('');
 
         return x;
     }
