@@ -179,15 +179,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //-----------
 
-    function subConvertToShares(uint assets_, address account_) public view returns(uint) { 
-        uint reth_eth = _OZ().getUniPrice(0, Dir.UP);
-        return (assets_ * 1e27).mulDiv512(totalShares() * 1e27, reth_eth).divUp(_calculateScalingFactor(account_)); 
-    }
-
-    function convertToShares(uint assets_) public view returns(uint) { 
-        return assets_.mulDivUp(totalShares(), _rETH_ETH());
-    }
-
     function totalAssets() public view returns(uint) {
         return _assetsAndShares.extract(TotalType.ASSETS);
     }
@@ -359,6 +350,15 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
         return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, _subConvertToAssets(sharesOf(account_), Dir.DOWN)));
+    }
+
+    function subConvertToShares(uint assets_, address account_) public view returns(uint) { 
+        uint reth_eth = _OZ().getUniPrice(0, Dir.UP);
+        return (assets_ * 1e27).mulDiv512(totalShares() * 1e27, reth_eth).divUp(_calculateScalingFactor(account_)); 
+    }
+
+    function convertToShares(uint assets_) public view returns(uint) { 
+        return assets_.mulDivUp(totalShares(), _rETH_ETH());
     }
 
     function _rETH_ETH() private view returns(uint) { 
