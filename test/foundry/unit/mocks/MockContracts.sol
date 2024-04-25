@@ -19,6 +19,7 @@ import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {OracleLibrary} from "../../../../contracts/libraries/oracle/OracleLibrary.sol";
+import {FixedPointMath512Lib} from "../../../../contracts/libraries/FixedPointMath512Lib.sol";
 
 import "forge-std/console.sol";
 
@@ -168,6 +169,7 @@ contract SwapRouterMock is MockStorage {
 contract VaultMock {
 
     using FixedPointMathLib for *;
+    using FixedPointMath512Lib for *;
 
     ozIDiamond immutable OZ;
 
@@ -223,7 +225,7 @@ contract VaultMock {
 
             console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH());
 
-            amountOut = rETHin.mulDivDown(OZ.rETH_ETH(), 1e18);
+            amountOut = (rETHin * 1e27).mulDiv512(OZ.rETH_ETH(), 1e54);
             console.log(3);
             console.log('amountOut: ', amountOut);
         }
