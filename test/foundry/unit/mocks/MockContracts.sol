@@ -212,22 +212,12 @@ contract VaultMock {
         { 
             uint wethIn = 19673291323457014;
             amountOut =  wethIn.mulDivDown(1e27, OZ.rETH_ETH());
-
-            console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH()); 
-            console.log('amountOut ^^^^^: ', amountOut);
-            console.log('');
         } 
 
-        console.log('singleSwap.amount ******: ', singleSwap.amount);
         if (singleSwap.amount == 18107251181805252) { 
-            console.log('should not log');
             uint rETHin = 18107251181805252;
 
-            console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH());
-
             amountOut = (rETHin * 1e27).mulDiv512(OZ.rETH_ETH(), 1e54);
-            console.log(3);
-            console.log('amountOut: ', amountOut);
         }
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
@@ -270,8 +260,7 @@ contract MockOzOraclePreAccrual {
         return success ? price : _callFallbackOracle(s.WETH);  
     }
 
-    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
-        // console.log(1);
+    function getUniPrice(uint tokenPair_, Dir side_) public pure returns(uint) {
         uint amountOut;
 
         if (side_ == Dir.UP) {
@@ -430,7 +419,7 @@ contract MockOzOraclePreAccrualNoDeviation {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    function rETH_ETH() public view returns(uint) {
+    function rETH_ETH() public pure returns(uint) {
         return getUniPrice(0, Dir.UP);
     }
 
@@ -443,7 +432,7 @@ contract MockOzOraclePreAccrualNoDeviation {
         return success ? price : _callFallbackOracle(s.WETH);  
     }
 
-    function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
+    function getUniPrice(uint tokenPair_, Dir side_) public pure returns(uint) {
         uint amountOut;
 
         if (side_ == Dir.UP) {

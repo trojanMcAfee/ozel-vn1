@@ -181,14 +181,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
         uint reth_eth = _OZ().getUniPrice(0, Dir.UP);
-
-        // console.log('');
-        // console.log('reth_eth: ', reth_eth);
-        // console.log('assets_: ', assets_);
-        // console.log('totalShares: ', totalShares());
-        // console.log('_calculateScalingFactor2: ', _calculateScalingFactor2(account_));
-        // console.log('');
-
         return (assets_ * 1e27).mulDiv512(totalShares() * 1e27, reth_eth).divUp(_calculateScalingFactor2(account_)); 
     }
 
@@ -206,34 +198,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function totalSupply() public view returns(uint) {
-        if (totalShares() != 0) {
-            // console.log(' |');
-            // console.log('  --- totalSupply non-padded: ', ((_subConvertToAssets3(totalShares(), Dir.UP)).mulDivDown((totalAssets() * 1e12) * 1e18, _subConvertToAssets3(totalShares(), Dir.DOWN))));
-            // console.log(' |');
-            // console.log('  --- left side: ', ((_subConvertToAssets3(totalShares(), Dir.UP) * 1e18)));
-            // console.log('totalAssets() * 1e12) * 1e18 - right side 1: ', (totalAssets() * 1e12) * 1e18);
-            // console.log('_subConvertToAssets3(totalShares(), Dir.DOWN) * 1e18 - right side 2: ', _subConvertToAssets3(totalShares(), Dir.DOWN) * 1e18);
-        }
-
-        uint x;
-        uint y;
-        uint z;
-
-        if (totalShares() != 0) {
-            // uint256 a = _subConvertToAssets3(totalShares(), Dir.UP);
-            // uint256 b = totalAssets() * 1e12 * 1e27;
-            // uint256 c = _subConvertToAssets3(totalShares(), Dir.DOWN);
-
-            // uint x = a.mulDiv512(b, c);
-            // console.log('resultt: ', x);
-            // console.log('non-padded: ', x / 1e27);
-
-            // revert('hereee2');
-        }
-
         return totalShares() == 0 ? 0 : 
             _subConvertToAssets3(totalShares(), Dir.UP).mulDiv512(totalAssets() * 1e12 * 1e27, _subConvertToAssets3(totalShares(), Dir.DOWN)) / 1e27;
-            // ((_subConvertToAssets3(totalShares(), Dir.UP)).mulDivDown((totalAssets() * 1e12) * 1e19, _subConvertToAssets3(totalShares(), Dir.DOWN))) / (1e19);
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -245,12 +211,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        // console.log(' |');
-        // console.log('  --- balanceOf() non-padded: ', convertToAssets(sharesOf(account_), account_));
-        
-        // console.log('sharesOf(account_): ', sharesOf(account_));    
-        // console.log('account: ', account_);
-
         return convertToAssets(sharesOf(account_), account_) / 1e27;
     }
 
@@ -322,13 +282,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function convertToUnderlying(uint shares_) external view returns(uint) {
-        // console.log('');
-        // console.log('shares_: ', shares_);
-        // console.log('under: ', ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING));
-        // console.log('totalShares - right: ', totalShares());
-        // console.log('is - left: ', shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING));
-        // console.log('');
-
         return (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
     }
 
@@ -408,24 +361,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-
-        if (preBalance != 0) {
-            // console.log('preBalance: ', preBalance);
-            // console.log('_calculateScalingFactor2(account_): ', _calculateScalingFactor2(account_));
-            // console.log('is: ', preBalance.mulDiv512((_calculateScalingFactor2(account_)), 1e54));
-            // revert('here5');
-        }
-
         return preBalance == 0 ? 0 : preBalance.mulDiv512((_calculateScalingFactor2(account_)), 1e54);
-        //^ doesn't change anything if i use mulDivDown or Up
- 
-        /**
-        * Normally, this would be mulDivDown, like in majority of protocols. 
-        * I have to use mulDivUp to the ozBalance of all holders matches with totalSupply.
-        * Further test this to make sure it doesn't introduce an inflation risk (known inflation attacks,
-        * fuzz, more unit tests, etc.).
-        * I discovered this with test_rewards_mock_accounting();
-        */
     }
 
 
@@ -434,17 +370,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _calculateScalingFactor2(address account_) private view returns(uint) {
-
-        // console.log('');
-        // console.log('^^^^ start _calculateScalingFactor2 ^^^^');
-        // console.log('_shares[account_] * 1e12 * 1e27: ', _shares[account_] * 1e12 * 1e27);
-        // console.log('subBalanceOf(account_, Dir.DOWN): ', subBalanceOf(account_, Dir.DOWN));
-        // console.log('is2: ', (_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, subBalanceOf(account_, Dir.DOWN)));
-        // console.log('^^^^ end _calculateScalingFactor2 ^^^^');
-        // console.log('');
-
         return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, subBalanceOf(account_, Dir.DOWN)));
-        // return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, subBalanceOf(account_, Dir.DOWN) * 1e27));
     }
 
     function _rETH_ETH() private view returns(uint) { 
@@ -459,33 +385,14 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //Used in Mocks.t.sol, in test_redeem_rewards_mock_chainlink() on the totalSupply check +1, and the other +1 in that test
     //Further test if that +1 is an attack risk.
     function _subConvertToAssets3(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
-        // console.log('_OZ().getUniPrice(0, side_): ', _OZ().getUniPrice(0, side_));
         uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
-        uint x = ((shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27));
-        // uint x = ((shares_ * 1e27).mulDivDown(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27));
-
-        // console.log('shares_: ', shares_ * 1e20);
-        // console.log('reth_eth: ', reth_eth);
-        // console.log('totalShares(): ', totalShares() * 1e20);
-
-        // console.log('x: ', x);
-
-        return x; // / (1e18)
+        return (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27); 
     }
 
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
-        uint x = (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27);
-
-        // console.log('');
-        // console.log('reth_eth: ', reth_eth);
-        // console.log('shares_ * 1e27: ', shares_ * 1e27);
-        // console.log('totalShares() * 1e27: ', totalShares() * 1e27);
-        // console.log('is - preBalance: ', x);
-        // console.log('');
-
-        return x;
+        return (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27);
     }
 
     function _subConvertToAssets2(uint256 shares_, Dir side_) private view returns (uint256 assets) { 

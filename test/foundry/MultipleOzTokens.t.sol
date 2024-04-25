@@ -168,11 +168,9 @@ contract MultipleOzTokensTest is TestMethods {
             uint recicledSupplyPre,
         ) = OZ.getRewardsData();
 
-        console.log(1);
         assertTrue(circulatingSupplyPre == 0);
         assertTrue(pendingAllocationPre == communityAmount);
         assertTrue(recicledSupplyPre == 0);
-        console.log(2);
 
         //Actions
         vm.prank(alice);

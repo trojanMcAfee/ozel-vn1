@@ -672,7 +672,6 @@ contract OZLtokenTest is TestMethods {
 
         uint pendingOZLallocPre = _getPendingAllocation();
         assertTrue(communityAmount == pendingOZLallocPre);
-        console.log(3);
 
         console.log('');
         console.log('^^^^ start chargeOZLfee ^^^^');
