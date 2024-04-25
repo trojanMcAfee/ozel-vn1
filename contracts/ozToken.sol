@@ -400,24 +400,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return shares_.mulDivDown(reth_eth, totalSupply() == 0 ? reth_eth : totalSupply());
     }
 
-    //this is public instead of private. Check
-    //**** NOT USED ****/
-    // function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
-    //     return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
-    // }
-
-
-    // function convertToAssets(uint256 shares, address account_) public view returns (uint256 assets) {
-    //     return _convertToAssets(shares, account_);
-    // }
-
-    // function convertToShares(uint256 assets) public view returns (uint256 shares) {
-    //     return _convertToShares(assets);
-    // }
-
-    // function subConvertToShares(uint256 assets, address account_) public view returns (uint256 shares) {
-    //     return _subConvertToShares(assets, account_);
-    // }
 
     //Thoroughly test this function that assets and shares (with extract() from Helpers.sol)
     //are properly extracting and setting up assets/shares where they're supposed to be.
