@@ -5,6 +5,8 @@ import {Uint512} from "./Uint512.sol";
 
 type UintRay is uint;
 
+UintRay constant RAY = UintRay.wrap(1e27);
+
 library FixedPointMath512Lib {
 
     using Uint512 for uint;
