@@ -6,6 +6,21 @@ import {Uint512} from "./Uint512.sol";
 type UintRay is uint;
 
 UintRay constant RAY = UintRay.wrap(1e27);
+UintRay constant ZERO = UintRay.wrap(0);
+UintRay constant TWO = UintRay.wrap(2);
+
+using {equal as ==} for UintRay global;
+using {power as ^} for UintRay global;
+
+function equal(UintRay a, UintRay b) pure returns(bool) {
+    return UintRay.unwrap(a) == UintRay.unwrap(b);
+}
+
+function power(UintRay a, UintRay b) pure returns(UintRay) {
+    return UintRay.wrap(UintRay.unwrap(a) ** UintRay.unwrap(b));
+}
+
+
 
 library FixedPointMath512Lib {
 

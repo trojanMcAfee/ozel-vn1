@@ -20,7 +20,7 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/uti
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 
 import {AmountsIn, Dir} from "./AppStorage.sol";
-import {FixedPointMath512Lib, UintRay} from "./libraries/FixedPointMath512Lib.sol";
+import {FixedPointMath512Lib, UintRay, RAY, ZERO, TWO} from "./libraries/FixedPointMath512Lib.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {Helpers, TotalType} from "./libraries/Helpers.sol";
 import {Uint512} from "./libraries/Uint512.sol";
@@ -354,12 +354,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function convertToAssets(uint shares_, address account_) public view returns (UintRay) {   
         UintRay preBalance = _subConvertToAssets(shares_, Dir.UP);
-        return UintRay.unwrap(preBalance) == 0 ? UintRay.wrap(0) : preBalance.mulDiv512(_calculateScalingFactor(account_), UintRay.wrap(1e54));
-        //use UDO here after ^
+        return preBalance == ZERO ? ZERO : preBalance.mulDiv512(_calculateScalingFactor(account_), RAY ^ TWO);
     }
 
     function _calculateScalingFactor(address account_) private view returns(UintRay) {
-        return ((_shares[account_] * 1e12).ray()).mulDiv512(UintRay.wrap(1e54), _subConvertToAssets(sharesOf(account_), Dir.DOWN));
+        return ((_shares[account_] * 1e12).ray()).mulDiv512(RAY ^ TWO, _subConvertToAssets(sharesOf(account_), Dir.DOWN));
     }
 
     function subConvertToShares(uint assets_, address account_) public view returns(uint) { 

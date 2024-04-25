@@ -19,7 +19,7 @@ import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {OracleLibrary} from "../../../../contracts/libraries/oracle/OracleLibrary.sol";
-import {FixedPointMath512Lib, UintRay, RAY} from "../../../../contracts/libraries/FixedPointMath512Lib.sol";
+import {FixedPointMath512Lib, UintRay, RAY, TWO} from "../../../../contracts/libraries/FixedPointMath512Lib.sol";
 
 import "forge-std/console.sol";
 
@@ -216,7 +216,7 @@ contract VaultMock {
 
         if (singleSwap.amount == 18107251181805252) { 
             uint rETHin = 18107251181805252;
-            amountOut = ((rETHin.ray()).mulDiv512(OZ.rETH_ETH().ray(), UintRay.wrap(1e54))).unray();
+            amountOut = ((rETHin.ray()).mulDiv512(OZ.rETH_ETH().ray(), RAY ^ TWO)).unray();
         }
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
