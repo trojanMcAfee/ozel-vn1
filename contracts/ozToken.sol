@@ -20,10 +20,9 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/uti
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 
 import {AmountsIn, Dir} from "./AppStorage.sol";
-import {FixedPointMath512Lib} from "./libraries/FixedPointMath512Lib.sol";
+import {FixedPointMath512Lib, UintRay} from "./libraries/FixedPointMath512Lib.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {Helpers, TotalType} from "./libraries/Helpers.sol";
-import {Uint512} from "./libraries/Uint512.sol";
 import {Uint512} from "./libraries/Uint512.sol";
 import {Modifiers} from "./Modifiers.sol";
 import "./Errors.sol";
@@ -35,7 +34,7 @@ import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Po
 
 import "forge-std/console.sol";
 
-type Float is uint;
+
 
 /**
  * Like in Lido's stETH, the Transfer event is only emitted in _transfer, and not in rebases
@@ -50,10 +49,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     using FixedPointMathLib for uint;
+    using FixedPointMath512Lib for UintRay;
     using FixedPointMath512Lib for uint;
     using Helpers for uint;
     using Helpers for bytes32;
-    using Uint512 for uint;
+    // using Uint512 for uint;
 
     address private _ozDiamond;
     address private _underlying;
@@ -197,7 +197,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function totalSupply() public view returns(uint) {
         return totalShares() == 0 ? 0 : 
-            _subConvertToAssets(totalShares(), Dir.UP).mulDiv512(totalAssets() * 1e12 * 1e27, _subConvertToAssets(totalShares(), Dir.DOWN)) / 1e27;
+            _subConvertToAssets(totalShares(), Dir.UP)
+                .mulDiv512((totalAssets() * 1e12).ray(), _subConvertToAssets(totalShares(), Dir.DOWN))
+                .unray();
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -209,7 +211,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        return convertToAssets(sharesOf(account_), account_) / 1e27;
+        return convertToAssets(sharesOf(account_), account_).unray();
     }
 
     //test if owner_ being passed to updateReward() affects the owner_ getting the rewards
@@ -267,7 +269,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function previewRedeem(uint shares_) public view returns(uint) {
-        return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
+        // return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
+
+        //fix this ^
     }
 
 
@@ -348,27 +352,30 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     //change all the unit256 to uint ***
-    function convertToAssets(uint shares_, address account_) public view returns (uint) {   
-        uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-        return preBalance == 0 ? 0 : preBalance.mulDiv512((_calculateScalingFactor(account_)), 1e54);
+    function convertToAssets(uint shares_, address account_) public view returns (UintRay) {   
+        UintRay preBalance = _subConvertToAssets(shares_, Dir.UP);
+        return UintRay.unwrap(preBalance) == 0 ? UintRay.wrap(0) : preBalance.mulDiv512(_calculateScalingFactor(account_), UintRay.wrap(1e54));
+        //use UDO here after ^
     }
 
-    function _calculateScalingFactor(address account_) private view returns(uint) {
-        return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, _subConvertToAssets(sharesOf(account_), Dir.DOWN)));
+    function _calculateScalingFactor(address account_) private view returns(UintRay) {
+        return ((_shares[account_] * 1e12).ray()).mulDiv512(UintRay.wrap(1e54), _subConvertToAssets(sharesOf(account_), Dir.DOWN));
     }
 
     function subConvertToShares(uint assets_, address account_) public view returns(uint) { 
-        uint reth_eth = _OZ().getUniPrice(0, Dir.UP);
-        return (assets_ * 1e27).mulDiv512(totalShares() * 1e27, reth_eth).divUp(_calculateScalingFactor(account_)); 
+        UintRay reth_eth = UintRay.wrap(_OZ().getUniPrice(0, Dir.UP));
+        return (assets_.ray())
+            .mulDiv512(totalShares().ray(), reth_eth)
+            .divUp(_calculateScalingFactor(account_)); 
     }
 
     function convertToShares(uint assets_) public view returns(uint) { 
         return assets_.mulDivUp(totalShares(), _rETH_ETH());
     }
 
-    function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
-        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
-        return (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27);
+    function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (UintRay) {   
+        UintRay reth_eth = _OZ().getUniPrice(0, side_).ray();
+        return (shares_.ray()).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares().ray());
     }
 
 
