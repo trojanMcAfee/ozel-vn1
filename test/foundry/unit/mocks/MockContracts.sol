@@ -220,7 +220,12 @@ contract VaultMock {
         if (singleSwap.amount == 18107251181805252) { 
             console.log('should not log');
             uint rETHin = 18107251181805252;
+
+            console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH());
+
             amountOut = rETHin.mulDivDown(OZ.rETH_ETH(), 1e18);
+            console.log(3);
+            console.log('amountOut: ', amountOut);
         }
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);

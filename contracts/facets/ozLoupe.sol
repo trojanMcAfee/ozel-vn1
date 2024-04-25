@@ -98,8 +98,6 @@ contract ozLoupe is DiamondLoupeFacet {
 
         console.log('amountInReth *****: ', amountInReth);
 
-        revert('here6');
-
         ozIDiamond OZ = ozIDiamond(address(this));
         uint minAmountOutWeth = amountInReth.calculateMinAmountOut(Helpers.rETH_ETH(OZ), slippage_);
         uint minAmountOutAsset = minAmountOutWeth.calculateMinAmountOut(OZ.ETH_USD(), slippage_);
