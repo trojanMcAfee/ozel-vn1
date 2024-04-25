@@ -35,7 +35,7 @@ import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Po
 
 import "forge-std/console.sol";
 
-
+type Float is uint;
 
 /**
  * Like in Lido's stETH, the Transfer event is only emitted in _transfer, and not in rebases
@@ -178,6 +178,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     //-----------
+    function _rETH_ETH() private view returns(uint) { 
+        return Helpers.rETH_ETH(_OZ());
+    }
+
+    function _OZ() private view returns(ozIDiamond) {
+        return ozIDiamond(_ozDiamond);
+    }
 
     function totalAssets() public view returns(uint) {
         return _assetsAndShares.extract(TotalType.ASSETS);
@@ -339,14 +346,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     // function transferShares() external {} <--- https://docs.lido.fi/guides/lido-tokens-integration-guide#transfer-shares-function-for-steth
 
-    //remove the _functions if not needed
 
     //change all the unit256 to uint ***
     function convertToAssets(uint shares_, address account_) public view returns (uint) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
         return preBalance == 0 ? 0 : preBalance.mulDiv512((_calculateScalingFactor(account_)), 1e54);
     }
-
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
         return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, _subConvertToAssets(sharesOf(account_), Dir.DOWN)));
@@ -360,15 +365,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function convertToShares(uint assets_) public view returns(uint) { 
         return assets_.mulDivUp(totalShares(), _rETH_ETH());
     }
-
-    function _rETH_ETH() private view returns(uint) { 
-        return Helpers.rETH_ETH(_OZ());
-    }
-
-    function _OZ() private view returns(ozIDiamond) {
-        return ozIDiamond(_ozDiamond);
-    }
-
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
