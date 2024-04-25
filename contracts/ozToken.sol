@@ -181,7 +181,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function subConvertToShares(uint assets_, address account_) public view returns(uint) { 
         uint reth_eth = _OZ().getUniPrice(0, Dir.UP);
-        return (assets_ * 1e27).mulDiv512(totalShares() * 1e27, reth_eth).divUp(_calculateScalingFactor2(account_)); 
+        return (assets_ * 1e27).mulDiv512(totalShares() * 1e27, reth_eth).divUp(_calculateScalingFactor(account_)); 
     }
 
     function convertToShares(uint assets_) public view returns(uint) { 
@@ -199,7 +199,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function totalSupply() public view returns(uint) {
         return totalShares() == 0 ? 0 : 
-            _subConvertToAssets3(totalShares(), Dir.UP).mulDiv512(totalAssets() * 1e12 * 1e27, _subConvertToAssets3(totalShares(), Dir.DOWN)) / 1e27;
+            _subConvertToAssets(totalShares(), Dir.UP).mulDiv512(totalAssets() * 1e12 * 1e27, _subConvertToAssets(totalShares(), Dir.DOWN)) / 1e27;
     }
 
     function sharesOf(address account_) public view returns(uint) {
@@ -212,14 +212,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function balanceOf(address account_) public view returns(uint) {
         return convertToAssets(sharesOf(account_), account_) / 1e27;
-    }
-
-    function subBalanceOf(address account_, Dir side_) public view returns(uint) {
-        return _subConvertToAssets(sharesOf(account_), side_);
-    }
-
-    function subBalanceOf2(address account_, Dir side_) public view returns(uint) {
-        return _subConvertToAssets2(sharesOf(account_), side_);
     }
 
     //test if owner_ being passed to updateReward() affects the owner_ getting the rewards
@@ -361,16 +353,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function convertToAssets(uint shares_, address account_) public view returns (uint) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
-        return preBalance == 0 ? 0 : preBalance.mulDiv512((_calculateScalingFactor2(account_)), 1e54);
+        return preBalance == 0 ? 0 : preBalance.mulDiv512((_calculateScalingFactor(account_)), 1e54);
     }
 
 
     function _calculateScalingFactor(address account_) private view returns(uint) {
-        return _shares[account_].mulDivDown(1e19, subBalanceOf2(account_, Dir.DOWN));
-    }
-
-    function _calculateScalingFactor2(address account_) private view returns(uint) {
-        return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, subBalanceOf(account_, Dir.DOWN)));
+        return ((_shares[account_] * 1e12 * 1e27).mulDiv512(1e54, _subConvertToAssets(sharesOf(account_), Dir.DOWN)));
     }
 
     function _rETH_ETH() private view returns(uint) { 
@@ -381,23 +369,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return ozIDiamond(_ozDiamond);
     }
 
-    //Same as _subConvertToAssets() but with mulDivUp instead of mulDivDown
-    //Used in Mocks.t.sol, in test_redeem_rewards_mock_chainlink() on the totalSupply check +1, and the other +1 in that test
-    //Further test if that +1 is an attack risk.
-    function _subConvertToAssets3(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
-        uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
-        return (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27); 
-    }
-
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (uint256 assets) {   
         uint reth_eth = _OZ().getUniPrice(0, side_) * 1e27;
         return (shares_ * 1e27).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares() * 1e27);
-    }
-
-    function _subConvertToAssets2(uint256 shares_, Dir side_) private view returns (uint256 assets) { 
-        uint reth_eth = _OZ().getUniPrice(0, side_);
-        return shares_.mulDivDown(reth_eth, totalSupply() == 0 ? reth_eth : totalSupply());
     }
 
 
