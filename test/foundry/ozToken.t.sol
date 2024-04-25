@@ -27,76 +27,6 @@ contract ozERC20TokenTest is TestMethods {
     using SafeERC20 for IERC20;
 
 
-    // function _getUniPrice(uint tokenPair_, Dir side_) private view returns(uint) {
-    //     // (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
-
-    //     address token0 = rEthAddr;
-    //     address token1 = wethAddr;
-    //     address pool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-
-    //     uint32 secsAgo = side_ == Dir.UP ? 1800 : (86400 * 2);
-
-    //     uint32[] memory secondsAgos = new uint32[](2);
-    //     secondsAgos[0] = secsAgo;
-    //     secondsAgos[1] = 0;
-
-    //     (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
-
-    //     int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
-    //     int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
-        
-    //     if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
-        
-    //     uint amountOut = OracleLibrary.getQuoteAtTick(
-    //         tick, 1 ether, token0, token1
-    //     );
-    
-    //     return amountOut * (token1 == wethAddr ? 1 : 1e12);
-    // }
-
-
-
-    // function test_oracle() public {
-        
-    //     uint oldestETHUSDC = OracleLibrary.getOldestObservationSecondsAgo(wethUsdPoolUni);
-    //     uint oldestrETHWETH = OracleLibrary.getOldestObservationSecondsAgo(rethWethUniPool);
-        
-    //     console.log('secsAgo oldest eth-usdc: ', oldestETHUSDC);
-    //     console.log('secsAgo oldest reth-eth: ', oldestrETHWETH);
-    //     console.log('block.timestamp: ', block.timestamp);
-    //     console.log('');
-
-    //     // (int24 tick,) = OracleLibrary.consult(rethWethUniPool, uint32(1800));
-    //     // uint256 amountOut = OracleLibrary.getQuoteAtTick(
-    //     //     tick, 1 ether, rEthAddr, wethAddr
-    //     // );
-    
-    //     // console.log('reth-eth in mock 2: ', amountOut * 1e12);
-    //     //------
-    //     console.log('block: ', block.number);
-
-    //     uint reth_up = OZ.getUniPrice(0, Dir.UP);
-    //     uint reth_down = OZ.getUniPrice(0, Dir.DOWN);
-
-    //     //simulate rETH accrual in the other test
-    //     //could do passing the down obs to the current obs
-    //     //read current and past obs from a current block for rETH
-
-    //     console.log('reth_up1: ', reth_up);
-    //     console.log('reth_down: ', reth_down);
-    //     //------
-
-    //     // uint eth_up = OZ.getUniPrice(2, Dir.UP);
-    //     // console.log('eth_up: ', eth_up);
-
-    //     // uint eth_down = OZ.getUniPrice(2, Dir.DOWN);
-    //     // console.log('eth_down: ', eth_down);
-
-
-    // }
-
-
-
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
     function test_mint_catch_internal_errors() public {
         //Pre-conditions  
@@ -412,10 +342,5 @@ contract ozERC20TokenTest is TestMethods {
         //Difference between balances of 0.00007325169679990087%
         assertTrue(_fm2(ozTotalSupplyPreRedeem) == _fm2(ozERC20.totalSupply() + (ozBalAlicePre / 3) + (ozBalBobPre / 5)));
     }
-
-
-    //make all tests pass
-    //clean up ozToken.sol
-    //fix funcs in ozLoupe.sol
 
 }

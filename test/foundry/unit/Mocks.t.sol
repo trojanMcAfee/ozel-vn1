@@ -34,7 +34,7 @@ contract MocksTests is MockStorage, TestMethods {
     using Helpers for uint;
 
 
-    function test_redeem_rewards_mock_TWAP() public returns(uint, uint, uint) {
+    function test_redeem_TWAP_rewards_mock() public returns(uint, uint, uint) {
         if (_skip()) return (0, 0, 0);
 
         //PRE-CONDITIONS
