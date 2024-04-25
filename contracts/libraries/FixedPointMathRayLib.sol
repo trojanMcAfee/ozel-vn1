@@ -22,7 +22,7 @@ function power(UintRay a, UintRay b) pure returns(UintRay) {
 
 
 
-library FixedPointMath512Lib {
+library FixedPointMathRayLib {
 
     using Uint512 for uint;
 

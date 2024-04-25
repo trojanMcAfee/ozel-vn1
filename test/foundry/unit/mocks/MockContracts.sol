@@ -19,7 +19,7 @@ import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {OracleLibrary} from "../../../../contracts/libraries/oracle/OracleLibrary.sol";
-import {FixedPointMath512Lib, UintRay, RAY, TWO} from "../../../../contracts/libraries/FixedPointMath512Lib.sol";
+import {FixedPointMathRayLib, UintRay, RAY, TWO} from "../../../../contracts/libraries/FixedPointMathRayLib.sol";
 
 import "forge-std/console.sol";
 
@@ -169,7 +169,7 @@ contract SwapRouterMock is MockStorage {
 contract VaultMock {
 
     using FixedPointMathLib for *;
-    using FixedPointMath512Lib for *;
+    using FixedPointMathRayLib for *;
 
     ozIDiamond immutable OZ;
 

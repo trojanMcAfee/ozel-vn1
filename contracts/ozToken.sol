@@ -20,7 +20,7 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/uti
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/utils/cryptography/ECDSAUpgradeable.sol";
 
 import {AmountsIn, Dir} from "./AppStorage.sol";
-import {FixedPointMath512Lib, UintRay, RAY, ZERO, TWO} from "./libraries/FixedPointMath512Lib.sol";
+import {FixedPointMathRayLib, UintRay, RAY, ZERO, TWO} from "./libraries/FixedPointMathRayLib.sol";
 import {FixedPointMathLib} from "./libraries/FixedPointMathLib.sol";
 import {Helpers, TotalType} from "./libraries/Helpers.sol";
 import {Uint512} from "./libraries/Uint512.sol";
@@ -49,8 +49,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     using FixedPointMathLib for uint;
-    using FixedPointMath512Lib for UintRay;
-    using FixedPointMath512Lib for uint;
+    using FixedPointMathRayLib for UintRay;
+    using FixedPointMathRayLib for uint;
     using Helpers for uint;
     using Helpers for bytes32;
     // using Uint512 for uint;
