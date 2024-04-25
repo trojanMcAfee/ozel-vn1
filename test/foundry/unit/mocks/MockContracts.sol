@@ -211,12 +211,14 @@ contract VaultMock {
         if (singleSwap.amount == 19673291323457014) 
         { 
             uint wethIn = 19673291323457014;
-            amountOut =  wethIn.mulDivDown(1e27, OZ.rETH_ETH());
+            amountOut =  wethIn.mulDivDown(1e18, OZ.rETH_ETH());
         } 
 
         if (singleSwap.amount == 18107251181805252) { 
             uint rETHin = 18107251181805252;
-            amountOut = ((rETHin.ray()).mulDivRay(OZ.rETH_ETH().ray(), RAY ^ TWO)).unray();
+            amountOut = ((rETHin.ray())
+                .mulDivRay(OZ.getUniPrice(0, Dir.UP).ray(), RAY ^ TWO))
+                .unray();
         }
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
@@ -244,7 +246,7 @@ contract MockOzOraclePreAccrual {
         uint mainPrice = getUniPrice(0, Dir.UP);
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
-            return mainPrice;
+            return mainPrice / 1e9;
         } else {
             return _callFallbackOracle(s.rETH);
         }
@@ -419,7 +421,7 @@ contract MockOzOraclePreAccrualNoDeviation {
     uint constant public TIMEOUT_LINK = 4 hours;
 
     function rETH_ETH() public pure returns(uint) {
-        return getUniPrice(0, Dir.UP);
+        return getUniPrice(0, Dir.UP) / 1e9;
     }
 
     function rETH_USD() public view returns(uint) {
@@ -605,7 +607,7 @@ contract MockOzOraclePostAccrual {
     * it simplifies the setup of the tests where this is used.
     */
     function rETH_ETH() public view returns(uint) {
-        return getUniPrice(0, Dir.UP);
+        return getUniPrice(0, Dir.UP) / 1e9;
     }
 
     function rETH_USD() public view returns(uint) {
@@ -838,7 +840,7 @@ contract MockOzOraclePostAccrualHigher {
     * it simplifies the setup of the tests where this is used.
     */
     function rETH_ETH() public view returns(uint) {
-        return getUniPrice(0, Dir.UP);
+        return getUniPrice(0, Dir.UP) / 1e9;
     }
 
     function rETH_USD() public view returns(uint) { 
@@ -1006,7 +1008,7 @@ contract MockOzOracleLink {
         uint mainPrice = getUniPrice(0, Dir.UP);
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
-            return mainPrice;
+            return mainPrice / 1e9;
         } else {
             return _callFallbackOracle(s.rETH);
         }

@@ -178,9 +178,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     //-----------
-    function _rETH_ETH() private view returns(uint) { 
-        return Helpers.rETH_ETH(_OZ());
-    }
+    // function _rETH_ETH() private view returns(uint) { 
+    //     return Helpers.rETH_ETH(_OZ());
+    // }
 
     function _OZ() private view returns(ozIDiamond) {
         return ozIDiamond(_ozDiamond);
@@ -369,7 +369,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function convertToShares(uint assets_) public view returns(uint) { 
-        return assets_.mulDivUp(totalShares(), _rETH_ETH());
+        return assets_.mulDivUp(totalShares(), _OZ().getUniPrice(0, Dir.UP));
     }
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (UintRay) {   

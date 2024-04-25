@@ -54,7 +54,7 @@ contract ozOracle {
         uint mainPrice = getUniPrice(0, Dir.UP);
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
-            return mainPrice;
+            return mainPrice / 1e9;
         } else {
             return _callFallbackOracle(s.rETH);
         }
