@@ -179,12 +179,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //-----------
 
-    function _subConvertToShares(uint assets_, address account_) private view returns(uint) { 
+    function subConvertToShares(uint assets_, address account_) public view returns(uint) { 
         uint reth_eth = _OZ().getUniPrice(0, Dir.UP);
         return (assets_ * 1e27).mulDiv512(totalShares() * 1e27, reth_eth).divUp(_calculateScalingFactor2(account_)); 
     }
 
-    function _convertToShares(uint assets_) private view returns(uint) { 
+    function convertToShares(uint assets_) public view returns(uint) { 
         return assets_.mulDivUp(totalShares(), _rETH_ETH());
     }
 
@@ -277,7 +277,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function previewRedeem(uint shares_) public view returns(uint) {
-        return _convertToAssetsFromUnderlying(shares_);
+        return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
     }
 
 
@@ -351,7 +351,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function previewWithdraw(uint256 assets) public view returns (uint256) {
-        return _convertToShares(assets); 
+        return convertToShares(assets); 
     }
 
     // function transferShares() external {} <--- https://docs.lido.fi/guides/lido-tokens-integration-guide#transfer-shares-function-for-steth
@@ -359,7 +359,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //remove the _functions if not needed
 
     //change all the unit256 to uint ***
-    function _convertToAssets(uint256 shares_, address account_) private view returns (uint256 assets) {   
+    function convertToAssets(uint shares_, address account_) public view returns (uint) {   
         uint preBalance = _subConvertToAssets(shares_, Dir.UP);
         return preBalance == 0 ? 0 : preBalance.mulDiv512((_calculateScalingFactor2(account_)), 1e54);
     }
@@ -402,22 +402,22 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     //this is public instead of private. Check
     //**** NOT USED ****/
-    function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
-        return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
-    }
+    // function _convertToAssetsFromUnderlying(uint shares_) public view returns(uint) { 
+    //     return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
+    // }
 
 
-    function convertToAssets(uint256 shares, address account_) public view returns (uint256 assets) {
-        return _convertToAssets(shares, account_);
-    }
+    // function convertToAssets(uint256 shares, address account_) public view returns (uint256 assets) {
+    //     return _convertToAssets(shares, account_);
+    // }
 
-    function convertToShares(uint256 assets) public view returns (uint256 shares) {
-        return _convertToShares(assets);
-    }
+    // function convertToShares(uint256 assets) public view returns (uint256 shares) {
+    //     return _convertToShares(assets);
+    // }
 
-    function subConvertToShares(uint256 assets, address account_) public view returns (uint256 shares) {
-        return _subConvertToShares(assets, account_);
-    }
+    // function subConvertToShares(uint256 assets, address account_) public view returns (uint256 shares) {
+    //     return _subConvertToShares(assets, account_);
+    // }
 
     //Thoroughly test this function that assets and shares (with extract() from Helpers.sol)
     //are properly extracting and setting up assets/shares where they're supposed to be.

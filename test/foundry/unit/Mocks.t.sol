@@ -140,7 +140,7 @@ contract MocksTests is MockStorage, TestMethods {
         if (_skip()) return;
 
         (uint testTokenAmountIn, uint reth_usd_preAccrual, uint deltaBalanceTestToken) = 
-            test_redeem_rewards_mock_TWAP();
+            test_redeem_TWAP_rewards_mock();
         console.log('');
         console.log('-------------------------');
         console.log('');
