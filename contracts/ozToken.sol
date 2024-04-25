@@ -198,7 +198,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function totalSupply() public view returns(uint) {
         return totalShares() == 0 ? 0 : 
             _subConvertToAssets(totalShares(), Dir.UP)
-                .mulDiv512((totalAssets() * 1e12).ray(), _subConvertToAssets(totalShares(), Dir.DOWN))
+                .mulDivRay((totalAssets() * 1e12).ray(), _subConvertToAssets(totalShares(), Dir.DOWN))
                 .unray();
     }
 
@@ -354,18 +354,18 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function convertToAssets(uint shares_, address account_) public view returns (UintRay) {   
         UintRay preBalance = _subConvertToAssets(shares_, Dir.UP);
-        return preBalance == ZERO ? ZERO : preBalance.mulDiv512(_calculateScalingFactor(account_), RAY ^ TWO);
+        return preBalance == ZERO ? ZERO : preBalance.mulDivRay(_calculateScalingFactor(account_), RAY ^ TWO);
     }
 
     function _calculateScalingFactor(address account_) private view returns(UintRay) {
-        return ((_shares[account_] * 1e12).ray()).mulDiv512(RAY ^ TWO, _subConvertToAssets(sharesOf(account_), Dir.DOWN));
+        return ((_shares[account_] * 1e12).ray()).mulDivRay(RAY ^ TWO, _subConvertToAssets(sharesOf(account_), Dir.DOWN));
     }
 
     function subConvertToShares(uint assets_, address account_) public view returns(uint) { 
         UintRay reth_eth = UintRay.wrap(_OZ().getUniPrice(0, Dir.UP));
         return (assets_.ray())
-            .mulDiv512(totalShares().ray(), reth_eth)
-            .divUp(_calculateScalingFactor(account_)); 
+            .mulDivRay(totalShares().ray(), reth_eth)
+            .divUpRay(_calculateScalingFactor(account_)); 
     }
 
     function convertToShares(uint assets_) public view returns(uint) { 
@@ -374,7 +374,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (UintRay) {   
         UintRay reth_eth = _OZ().getUniPrice(0, side_).ray();
-        return (shares_.ray()).mulDiv512(reth_eth, totalShares() == 0 ? reth_eth : totalShares().ray());
+        return (shares_.ray()).mulDivRay(reth_eth, totalShares() == 0 ? reth_eth : totalShares().ray());
     }
 
 

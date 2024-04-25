@@ -20,6 +20,7 @@ import {stdStorage, StdStorage} from "forge-std/Test.sol";
 import {Test} from "forge-std/Test.sol";       
 import {Uint512} from "../../../contracts/libraries/Uint512.sol";
 import {Helpers} from "../../../contracts/libraries/Helpers.sol";
+import {HelpersLib} from "../HelpersLib.sol";
 
 import "forge-std/console.sol";
 
@@ -31,6 +32,7 @@ contract MocksTests is MockStorage, TestMethods {
     using stdStorage for StdStorage;
     using Uint512 for uint;
     using Helpers for uint;
+    using HelpersLib for uint;
 
 
     function test_redeem_TWAP_rewards_mock() public returns(uint, uint, uint) {

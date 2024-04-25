@@ -216,7 +216,7 @@ contract VaultMock {
 
         if (singleSwap.amount == 18107251181805252) { 
             uint rETHin = 18107251181805252;
-            amountOut = ((rETHin.ray()).mulDiv512(OZ.rETH_ETH().ray(), RAY ^ TWO)).unray();
+            amountOut = ((rETHin.ray()).mulDivRay(OZ.rETH_ETH().ray(), RAY ^ TWO)).unray();
         }
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);

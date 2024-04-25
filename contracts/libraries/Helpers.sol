@@ -206,9 +206,5 @@ library Helpers {
         uint delta = stdMath.abs(int(referenceAmount_) - int(mainAmount_));
         return uint(bps_) > delta.mulDivDown(10_000, mainAmount_);
     }
-
-    function divUp(uint x_, uint y_) internal pure returns(uint) {
-        return x_ / y_ + (x_ % y_ == 0 ? 0 : 1);
-    }
   
 }

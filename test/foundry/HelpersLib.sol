@@ -137,16 +137,9 @@ library HelpersLib {
             minAmountsOut[i] = calculateMinAmountOut(amounts_[i], slippages_[i]);
         }
     }
-  
 
-
-
-
-
-
-  
-    
- 
-
+    function divUp(uint x_, uint y_) internal pure returns(uint) {
+        return x_ / y_ + (x_ % y_ == 0 ? 0 : 1);
+    }
 
 }

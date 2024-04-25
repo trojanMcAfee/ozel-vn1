@@ -26,7 +26,7 @@ library FixedPointMathRayLib {
 
     using Uint512 for uint;
 
-    function mulDiv512(UintRay a, UintRay b, UintRay c) internal pure returns(UintRay) {
+    function mulDivRay(UintRay a, UintRay b, UintRay c) internal pure returns(UintRay) {
         uint aa = UintRay.unwrap(a);
         uint bb = UintRay.unwrap(b);
         uint cc = UintRay.unwrap(c);
@@ -43,7 +43,7 @@ library FixedPointMathRayLib {
         return UintRay.unwrap(num) / 1e27;
     }
 
-    function divUp(UintRay x, UintRay y) internal pure returns(uint) {
+    function divUpRay(UintRay x, UintRay y) internal pure returns(uint) {
         uint xx = UintRay.unwrap(x);
         uint yy = UintRay.unwrap(y);
 
