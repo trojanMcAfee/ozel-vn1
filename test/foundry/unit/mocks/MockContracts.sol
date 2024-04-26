@@ -916,6 +916,8 @@ contract MockOzOraclePostAccrualHigher {
 
 
     function chargeOZLfee() external returns(bool) { 
+        console.log(40);
+
         uint amountReth = IERC20Permit(s.rETH).balanceOf(address(this)); 
         uint totalAssets;
 
@@ -928,23 +930,34 @@ contract MockOzOraclePostAccrualHigher {
         (uint assetsInETH, uint rEthInETH) = _calculateValuesInETH(totalAssets, amountReth);        
         int totalRewards = int(rEthInETH) - int(assetsInETH); 
 
+        console.log(401);
+        console.logInt(totalRewards);
+        console.log('totalRewards ^^^');
+        console.log('rEthInETH: ', rEthInETH);
+        console.log('assetsInETH: ', assetsInETH);
         if (totalRewards <= 0) return false;
+        console.log(402);
         int currentRewards = totalRewards - int(s.rewards.prevTotalRewards);
 
         if (currentRewards <= 0) return false;
+        console.log(403);
         _getFeeAndForward(totalRewards, currentRewards);     
 
+        console.log(41);
         _setAPR(uint(currentRewards), totalAssets);
 
         return true;
     }
 
     function _setAPR(uint currentRewardsETH_, uint totalAssets_) private {
+        console.log(42);
         s.prevAPR = s.currAPR;
         uint deltaStamp = block.timestamp - s.lastRewardStamp;
         uint oneYear = 31540000;
 
+        console.log(43);
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
+        console.log(44);
 
         s.currAPR = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
 
