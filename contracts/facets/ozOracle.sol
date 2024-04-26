@@ -350,7 +350,6 @@ contract ozOracle {
 
 
     function _setAPR(uint currentRewardsETH_, uint totalAssets_) private {
-        console.log(2);
         s.prevAPR = s.currAPR;
         uint deltaStamp = block.timestamp - s.lastRewardStamp;
         uint oneYear = 31540000;

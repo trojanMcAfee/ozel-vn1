@@ -746,15 +746,17 @@ contract MockOzOraclePostAccrual {
 
         s.currAPR = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
 
+        console.log('');
+        console.log('**** in mockPostAccrual ***');
         console.log('s.lastRewardStamp: ', s.lastRewardStamp);
         console.log('currentRewardsETH_: ', currentRewardsETH_);
         console.log('ETH_USD(): ', ETH_USD());
-        console.log('');
         console.log('s.currAPR: ', s.currAPR);
         console.log('s.prevAPR: ', s.prevAPR);
         console.log('currentRewardsUSD: ', currentRewardsUSD);
         console.log('totalAssets_: ', totalAssets_);
         console.log('deltaStamp: ', deltaStamp);
+        console.log('');
 
         emit APRcalculated(
             s.currAPR,
@@ -945,6 +947,18 @@ contract MockOzOraclePostAccrualHigher {
         uint currentRewardsUSD = currentRewardsETH_.mulDivDown(ETH_USD(), 1 ether);
 
         s.currAPR = ((currentRewardsUSD / totalAssets_) * (oneYear / deltaStamp) * 100) * 1e6;
+
+        console.log('');
+        console.log('**** in mockPostAccrualHIGHER ***');
+        console.log('s.lastRewardStamp: ', s.lastRewardStamp);
+        console.log('currentRewardsETH_: ', currentRewardsETH_);
+        console.log('ETH_USD(): ', ETH_USD());
+        console.log('s.currAPR: ', s.currAPR);
+        console.log('s.prevAPR: ', s.prevAPR);
+        console.log('currentRewardsUSD: ', currentRewardsUSD);
+        console.log('totalAssets_: ', totalAssets_);
+        console.log('deltaStamp: ', deltaStamp);
+        console.log('');
 
         emit APRcalculated(
             s.currAPR,
