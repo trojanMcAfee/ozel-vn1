@@ -560,6 +560,7 @@ contract OZLtokenTest is TestMethods {
 
         vm.expectEmit(true, true, false, true);
         emit APRcalculated(currAPR, 0, currentRewardsUSD, totalAssets, deltaStamp);
+        console.log(4);
 
         bool wasCharged = OZ.chargeOZLfee();
         assertTrue(wasCharged);
@@ -569,6 +570,7 @@ contract OZLtokenTest is TestMethods {
         */
         uint gottenAPR = OZ.getAPR();
         uint calculatedAPR = (((currentRewardsUSD / totalAssets) * (oneYearSecs / deltaStamp) * 100) * 1e6) / 2;
+        console.log('calculatedAPR: ', calculatedAPR);
         
         assertTrue(calculatedAPR == gottenAPR);
         assertTrue(gottenAPR * 2 == currAPR);

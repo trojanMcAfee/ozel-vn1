@@ -161,11 +161,6 @@ contract MocksTests is MockStorage, TestMethods {
         console.log("testToken balance that should've gained: ", testToken_alledged_rewards);
 
         if (testToken == usdcAddr) {
-            // console.log('');
-            // console.log('deltaBalanceTestToken: ', deltaBalanceTestToken);
-            // console.log('testToken_alledged_rewards: ', testToken_alledged_rewards);
-            // console.log('testToken_alledged_rewards.divUp(1e12): ', testToken_alledged_rewards.divUp(1e12));
-            // console.log('');
             assertTrue(deltaBalanceTestToken == testToken_alledged_rewards / 1e12);
         } else {
             assertTrue(_fm(deltaBalanceTestToken, 4) == _fm(testToken_alledged_rewards, 4));
