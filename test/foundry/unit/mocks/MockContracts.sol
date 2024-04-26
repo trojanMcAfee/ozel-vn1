@@ -871,7 +871,7 @@ contract MockOzOraclePostAccrualHigher {
 
         if (tokenPair_ != 2) {
             if (side_ == Dir.UP) {
-                amountOut = 114994638285872917676884076;
+                amountOut = 1149946382858729176766884076;
             } else if (side_ == Dir.DOWN) {
                 amountOut = 1086486906594931900766884076;
             } else {
@@ -1006,6 +1006,11 @@ contract MockOzOraclePostAccrualHigher {
     function _calculateValuesInETH(uint assets_, uint amountReth_) private view returns(uint, uint) {
         uint assetsInETH = ((assets_ * 1e12) * 1 ether) / ETH_USD();
         uint rEthInETH = (amountReth_ * rETH_ETH()) / 1 ether;
+
+        console.log('');
+        console.log('amountReth_: ', amountReth_);
+        console.log('rETH_ETH(): ', rETH_ETH());
+        console.log('');
 
         return (assetsInETH, rEthInETH);
     }
