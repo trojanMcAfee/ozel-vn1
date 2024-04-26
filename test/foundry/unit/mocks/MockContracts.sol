@@ -731,7 +731,7 @@ contract MockOzOraclePostAccrual {
         if (currentRewards <= 0) return false;
         _getFeeAndForward(totalRewards, currentRewards);     
 
-        // _setAPR(uint(currentRewards), totalAssets);
+        _setAPR(uint(currentRewards), totalAssets);
 
         return true;
     }
