@@ -533,12 +533,9 @@ contract OZLtokenTest is TestMethods {
         /**
         * Pre-conditions
         */
-        console.log(11);
         uint ozlRethBalance = test_chargeOZLfee_distributeFees();
-        console.log(12);
 
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI_HIGHER);
-        console.log(13);
 
         //increase timestamp
         uint oneMonth = 2592000;
@@ -563,19 +560,15 @@ contract OZLtokenTest is TestMethods {
 
         vm.expectEmit(true, true, false, true);
         emit APRcalculated(currAPR, 0, currentRewardsUSD, totalAssets, deltaStamp);
-        console.log(14);
 
         bool wasCharged = OZ.chargeOZLfee();
-        console.log('wasCharged: ', wasCharged);
         assertTrue(wasCharged);
-        console.log(15);
 
         /**
         * Post-conditions
         */
         uint gottenAPR = OZ.getAPR();
         uint calculatedAPR = (((currentRewardsUSD / totalAssets) * (oneYearSecs / deltaStamp) * 100) * 1e6) / 2;
-        console.log('calculatedAPR: ', calculatedAPR);
         
         assertTrue(calculatedAPR == gottenAPR);
         assertTrue(gottenAPR * 2 == currAPR);
