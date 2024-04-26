@@ -178,10 +178,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     //-----------
-    // function _rETH_ETH() private view returns(uint) { 
-    //     return Helpers.rETH_ETH(_OZ());
-    // }
-
     function _OZ() private view returns(ozIDiamond) {
         return ozIDiamond(_ozDiamond);
     }
