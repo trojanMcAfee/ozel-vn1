@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import { LibDiamond } from "../libraries/LibDiamond.sol";
+import {LibDiamond} from "../libraries/LibDiamond.sol";
 import "../Errors.sol";
+import {Modifiers} from "../Modifiers.sol";
+
 // import { IERC173 } from "../interfaces/IERC173.sol";
 
 // contract OwnershipFacet is IERC173 {
@@ -16,24 +18,28 @@ import "../Errors.sol";
 //     }
 // }
 
-contract OwnershipFacet {
-    // function transferOwnershipDiamond(address _newOwner) external {
-    //     LibDiamond.enforceIsContractOwner();
-        // LibDiamond.setContractOwner(_newOwner);
-    // }
+contract OwnershipFacet is Modifiers {
 
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
+
+    function ownerDiamond() public view returns (address) {
+        return LibDiamond.contractOwner();
+    }
+
+    function pendingOwner() public view returns(address) {
+        return s.pendingOwner;
+    }
 
     function transferOwnershipDiamond(address newOwner_) external onlyOwner {
         s.pendingOwner = newOwner_;
         emit OwnershipTransferStarted(ownerDiamond(), newOwner_);
     }
 
-    function acceptOwnership() external virtual {
+    function acceptOwnership() external {
         if (pendingOwner() != msg.sender) revert OZError36(msg.sender);
-        _transferOwnership(sender);
+        _transferOwnership(msg.sender);
     }
 
     function _transferOwnership(address newOwner_) internal {
@@ -42,17 +48,8 @@ contract OwnershipFacet {
         emit OwnershipTransferred(ownerDiamond(), newOwner_);
     }
 
-    function renounceOwnership() public onlyOwner {
+    function renounceOwnership() external onlyOwner {
         _transferOwnership(address(0));
-    }
-
-
-    function ownerDiamond() external view returns (address) {
-        return LibDiamond.contractOwner();
-    }
-
-    function pendingOwner() external view returns(address) {
-        return s.pendingOwner;
     }
 
 }

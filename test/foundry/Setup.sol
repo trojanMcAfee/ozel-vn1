@@ -433,7 +433,7 @@ contract Setup is Test {
         uint id_
     ) private view returns(IDiamondCut.FacetCut memory cut) {
         uint length;
-        if (id_ == 1 || id_ == 7) {
+        if (id_ == 7) {
             length = 2;
         } else if (id_ == 2 || id_ == 4) {
             length = 1;
@@ -453,6 +453,8 @@ contract Setup is Test {
             length = 1;
         } else if (id_ == 8) {
             length = 9;
+        } else if (id_ == 1) {
+            length = 5;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -479,6 +481,9 @@ contract Setup is Test {
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
+            selectors[2] = ownership.pendingOwner.selector;
+            selectors[3] = ownership.acceptOwnership.selector;
+            selectors[4] = ownership.renounceOwnership.selector;
         } else if (id_ == 3) {
             selectors[0] = factory.createOzToken.selector;
             selectors[1] = factory.getOzTokenRegistry.selector;

@@ -149,4 +149,9 @@ interface ozIDiamond {
     function getOracleBackUp2() external view returns(bool, uint);
 
     function getAPR() external view returns(uint);
+
+    function transferOwnershipDiamond(address newOwner_) external;
+    function acceptOwnership() external;
+    function renounceOwnership() external;
+    function pendingOwner() external view returns(address);
 }
