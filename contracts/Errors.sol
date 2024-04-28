@@ -60,6 +60,7 @@ error OZError25(address implementation); //_setBeacon / ozERC1967Upgrade.sol - b
 error OZError26(address newBeacon); //_setBeacon / ozERC1967Upgrade.sol - new beacon is not a contract
 error OZError33(address caller); // multiple ozCut.sol funcs / Modifiers.sol / not owner
 error OZError34(uint amount); //allocate / OZL.sol - amount greater than pending to allocate
+error OZError36(address wrongOwner); //acceptOwnership / OwnershipFacet.sol - sender is not pending owner
 
 //Oracle errors
 error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_
