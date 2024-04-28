@@ -243,7 +243,7 @@ contract MockOzOraclePreAccrual {
 
     
     //Remove complexity of this formula to make the test easier to run
-    function rETH_ETH() public view returns(uint) {
+    function rETH_ETH() public pure returns(uint) {
         return getUniPrice(0, Dir.UP) / 1e9;
     }
 

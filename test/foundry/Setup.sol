@@ -59,7 +59,7 @@ enum Network {
     ETH_N_MOCKS
 }
 
-Network constant n = Network.ETHEREUM;
+Network constant n = Network.ETH_N_MOCKS;
 //****** */
 
 contract Setup is Test {
@@ -295,7 +295,7 @@ contract Setup is Test {
 
     function _runSetup(Network n_) internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
-        testToken = usdcAddr;
+        testToken = daiAddr;
         secondTestToken = testToken == daiAddr ? usdcAddr : daiAddr;
         thirdTestToken = usdtAddr;
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
