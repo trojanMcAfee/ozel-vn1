@@ -12,9 +12,7 @@ import {ozEngine} from "../../contracts/facets/ozEngine.sol";
 import "../../contracts/facets/DiamondCutFacet.sol";
 import "../../contracts/facets/DiamondLoupeFacet.sol";
 import "../../contracts/facets/OwnershipFacet.sol";
-import "../../contracts/facets/MirrorExchange.sol";
 import {ozTokenFactory} from "../../contracts/facets/ozTokenFactory.sol";
-import "../../contracts/facets/Pools.sol";
 import "../../contracts/Diamond.sol";
 import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
 import {ozOracle} from "../../contracts/facets/ozOracle.sol"; 
@@ -59,7 +57,7 @@ enum Network {
     ETH_N_MOCKS
 }
 
-Network constant n = Network.ETH_N_MOCKS;
+Network constant n = Network.ETHEREUM;
 //****** */
 
 contract Setup is Test {
@@ -135,8 +133,6 @@ contract Setup is Test {
 
     //Ozel custom facets
     ozTokenFactory internal factory; 
-    MirrorExchange internal mirrorEx;  
-    Pools internal pools;
     ozEngine internal engine;
     ozOracle internal oracle;
     ozLoupe internal loupe;
@@ -337,9 +333,7 @@ contract Setup is Test {
         //Deploys facets
         loupe = new ozLoupe();
         ownership = new OwnershipFacet();
-        mirrorEx = new MirrorExchange();
         factory = new ozTokenFactory();
-        pools = new Pools();
         engine = new ozEngine();
         oracle = new ozOracle();
 
@@ -355,18 +349,16 @@ contract Setup is Test {
         _initOZLtokenPt1();
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](11);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](9);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
-        cuts[2] = _createCut(address(mirrorEx), 2);
-        cuts[3] = _createCut(address(factory), 3);
-        cuts[4] = _createCut(address(pools), 4);
-        cuts[5] = _createCut(address(engine), 5);
-        cuts[6] = _createCut(address(oracle), 6);
-        cuts[7] = _createCut(address(beacon), 7);
-        cuts[8] = _createCut(address(cutOz), 8);
-        cuts[9] = _createCut(address(ozlAdmin), 9);
-        cuts[10] = _createCut(address(rewardsContract), 10);
+        cuts[2] = _createCut(address(factory), 3);
+        cuts[3] = _createCut(address(engine), 5);
+        cuts[4] = _createCut(address(oracle), 6);
+        cuts[5] = _createCut(address(beacon), 7);
+        cuts[6] = _createCut(address(cutOz), 8);
+        cuts[7] = _createCut(address(ozlAdmin), 9);
+        cuts[8] = _createCut(address(rewardsContract), 10);
 
         //Create init vars
         Tokens memory tokens = Tokens({
@@ -487,14 +479,10 @@ contract Setup is Test {
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
-        } else if (id_ == 2) { //MirrorEx
-            selectors[0] = 0xe9e05c42;
         } else if (id_ == 3) {
             selectors[0] = factory.createOzToken.selector;
             selectors[1] = factory.getOzTokenRegistry.selector;
             selectors[2] = factory.isInRegistry.selector;
-        } else if (id_ == 4) { //Pools
-            selectors[0] = 0xe9e05c43;
         } else if (id_ == 5) {
             selectors[0] = engine.useUnderlying.selector;
             selectors[1] = engine.useOzTokens.selector;
@@ -609,8 +597,6 @@ contract Setup is Test {
         vm.label(address(cutFacet), "DiamondCutFacet");
         vm.label(address(loupe), "ozLoupe");
         vm.label(address(ownership), "OwnershipFacet");
-        vm.label(address(mirrorEx), "MirrorExchange");
-        vm.label(address(pools), "Pools");
         vm.label(swapRouterUni, "SwapRouterUniswap");
         vm.label(ethUsdChainlink, "ETHUSDfeedChainlink");
         vm.label(wethAddr, "WETH");
