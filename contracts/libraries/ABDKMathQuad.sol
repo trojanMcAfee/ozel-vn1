@@ -5,6 +5,8 @@
  */
 pragma solidity ^0.8.0;
 
+
+
 /**
  * Smart contract library of mathematical functions operating with IEEE 754
  * quadruple-precision binary floating-point numbers (quadruple precision

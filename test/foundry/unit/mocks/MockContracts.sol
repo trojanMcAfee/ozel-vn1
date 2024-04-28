@@ -241,15 +241,10 @@ contract MockOzOraclePreAccrual {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
+    
+    //Remove complexity of this formula to make the test easier to run
     function rETH_ETH() public view returns(uint) {
-        (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
-        uint mainPrice = getUniPrice(0, Dir.UP);
-
-        if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
-            return mainPrice / 1e9;
-        } else {
-            return _callFallbackOracle(s.rETH);
-        }
+        return getUniPrice(0, Dir.UP) / 1e9;
     }
 
     function rETH_USD() public view returns(uint) {

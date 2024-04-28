@@ -122,6 +122,10 @@ contract Poc is TestMethods {
         assertTrue(ozBalanceOwner > ozBalancePreAccrual);
 
         console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
+        console.log('');
+        console.log('rETH_ETH_postMock: ', rETH_ETH_postMock);
+        console.log('rETH_ETH_preTest: ', rETH_ETH_preTest); //<-------
+        console.log('');
         assertTrue(rETH_ETH_postMock > rETH_ETH_preTest);
 
         console.log('rETH balance - admin - pre fee charge: ', IERC20Permit(rEthAddr).balanceOf(owner));
