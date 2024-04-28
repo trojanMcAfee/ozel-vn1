@@ -55,7 +55,6 @@ contract ozLoupe is DiamondLoupeFacet {
 
     function quoteAmountsIn(
         uint amountIn_,
-        address underlying_, //<--- remove this (not used)
         uint16 slippage_
     ) public view returns(AmountsIn memory) { 
 
@@ -119,12 +118,11 @@ contract ozLoupe is DiamondLoupeFacet {
    
     function getMintData(
         uint amountIn_,
-        address underlying_,
         uint16 slippage_,
         address receiver_
     ) external view returns(bytes memory) {
         return abi.encode(
-            quoteAmountsIn(amountIn_, underlying_, slippage_), 
+            quoteAmountsIn(amountIn_, slippage_), 
             receiver_
         );
     }

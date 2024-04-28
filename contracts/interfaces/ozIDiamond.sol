@@ -103,13 +103,11 @@ interface ozIDiamond {
 
     function quoteAmountsIn(
         uint amountIn_,
-        address underlying_,
         uint16 slippage_
     ) external view returns(AmountsIn memory);
 
     function getMintData(
         uint amountIn_,
-        address underlying_,
         uint16 slippage_,
         address receiver_
     ) external view returns(bytes memory);

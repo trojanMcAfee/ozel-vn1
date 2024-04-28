@@ -182,7 +182,7 @@ contract BaseMethods is Setup {
 
         } else if (reqType_ == Type.IN) { 
             uint[] memory minAmountsOut = OZ.quoteAmountsIn(
-                amountIn_, testToken, OZ.getDefaultSlippage()
+                amountIn_, OZ.getDefaultSlippage()
             ).minAmountsOut;
 
             bytes32 permitHash = 

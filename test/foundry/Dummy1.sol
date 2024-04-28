@@ -23,10 +23,9 @@ contract Dummy1 {
         OZ = ozIDiamond(oz_);
     }
 
-    function mintOz(address underlying_, uint amountIn_) external returns(bool) {
+    function mintOz(uint amountIn_) external returns(bool) {
         bytes memory mintData = OZ.getMintData(
             amountIn_,
-            underlying_,
             OZ.getDefaultSlippage(),
             msg.sender
         );

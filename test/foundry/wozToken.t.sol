@@ -150,7 +150,6 @@ contract wozTokenTest is TestMethods {
 
         bytes memory data = OZ.getMintData(
             amountIn, 
-            testToken, 
             OZ.getDefaultSlippage(), 
             alice
         );
@@ -177,7 +176,6 @@ contract wozTokenTest is TestMethods {
 
         bytes memory data = OZ.getMintData(
             amountIn, 
-            testToken, 
             OZ.getDefaultSlippage(), 
             alice
         );

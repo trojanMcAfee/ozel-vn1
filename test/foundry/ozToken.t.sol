@@ -107,7 +107,7 @@ contract ozERC20TokenTest is TestMethods {
         IERC20(testToken).approve(address(OZ), amountIn);
 
         //Actions
-        bool success = dummy1.mintOz(testToken, amountIn); 
+        bool success = dummy1.mintOz(amountIn); 
         assertTrue(success);
         vm.stopPrank();
 
@@ -139,7 +139,7 @@ contract ozERC20TokenTest is TestMethods {
         vm.startPrank(alice);
         IERC20(testToken).approve(address(OZ), amountIn);
 
-        bool success = dummy1.mintOz(testToken, amountIn); 
+        bool success = dummy1.mintOz(amountIn); 
         assertTrue(success);
         
         uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
