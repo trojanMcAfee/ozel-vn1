@@ -26,7 +26,7 @@ import "forge-std/console.sol";
 
 
 
-contract MocksTests is MockStorage, TestMethods {
+contract MocksTests2 is MockStorage, TestMethods {
 
     using FixedPointMathLib for uint;
     using stdStorage for StdStorage;
@@ -35,12 +35,14 @@ contract MocksTests is MockStorage, TestMethods {
     using HelpersLib for uint;
 
 
-    function test_redeem_TWAP_rewards_mock() public returns(uint, uint, uint) {
+    function test_redeem_TWAP_rewards_mock2() public returns(uint, uint, uint) {
         if (_skip()) return (0, 0, 0);
 
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+
+        console.log('init USDC balance - alice: ', IERC20Permit(testToken).balanceOf(alice));
 
         _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI_NO_DEVIATION);
 
@@ -53,6 +55,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('');
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+        console.log('USDC in to convert into ozUSDC: ', amountIn);
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
@@ -136,11 +139,11 @@ contract MocksTests is MockStorage, TestMethods {
     }
 
 
-    function test_rewards_mock_accounting() public {
+    function test_rewards_mock_accounting2() public {
         if (_skip()) return;
 
         (uint testTokenAmountIn, uint reth_usd_preAccrual, uint deltaBalanceTestToken) = 
-            test_redeem_TWAP_rewards_mock();
+            test_redeem_TWAP_rewards_mock2();
         console.log('');
         console.log('-------------------------');
         console.log('');

@@ -97,6 +97,7 @@ contract Poc is TestMethods {
         _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI);
         uint rETH_ETH_preTest = OZ.rETH_ETH();
         console.log('* rETH-ETH - pre staking rewards accrual: ', rETH_ETH_preTest);
+        console.log('rETH-USD: ', OZ.rETH_USD());
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn); 
 
@@ -122,9 +123,10 @@ contract Poc is TestMethods {
         assertTrue(ozBalanceOwner > ozBalancePreAccrual);
 
         console.log('* rETH-ETH post staking rewards accrual: ', rETH_ETH_postMock);
+        console.log('rETH-USD: ', OZ.rETH_USD());
         console.log('');
         console.log('rETH_ETH_postMock: ', rETH_ETH_postMock);
-        console.log('rETH_ETH_preTest: ', rETH_ETH_preTest); //<-------
+        console.log('rETH_ETH_preTest: ', rETH_ETH_preTest); 
         console.log('');
         assertTrue(rETH_ETH_postMock > rETH_ETH_preTest);
 
