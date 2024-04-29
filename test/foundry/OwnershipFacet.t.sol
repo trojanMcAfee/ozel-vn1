@@ -71,7 +71,7 @@ contract OwnershipFacetTest is TestMethods {
         _changeAndCheckImplementations(newImplementations, index);
     }
 
-    function test_change_woz_implementation_only() public { //not working ***
+    function test_change_woz_implementation_only() public { 
         uint index = 1;
         address[] memory newImplementations = new address[](2);
         wozToken newWozImpl = new wozToken();
@@ -90,6 +90,25 @@ contract OwnershipFacetTest is TestMethods {
         _changeAndCheckImplementations(newImplementations, 2);
     }
 
+    function test_fail_change_implementations_addressZero() public {
+        address[] memory newImplementations = new address[](2);
+        newImplementations[0] = address(0);
+        newImplementations[1] = address(0);
+
+        address[] memory implementations = OZ.getOzImplementations();
+
+        for (uint i=0; i < implementations.length; i++) {
+            assertTrue(implementations[i] != newImplementations[i]);
+        }
+        
+        vm.startPrank(owner);
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError32.selector)
+        );
+        OZ.changeOzTokenImplementations(newImplementations);
+    }
+
+    //----------
 
     function _changeAndCheckImplementations(address[] memory newImplementations_, uint index_) internal {
         address[] memory implementations = OZ.getOzImplementations();
