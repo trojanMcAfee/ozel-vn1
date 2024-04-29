@@ -4,6 +4,7 @@
 pragma solidity 0.8.21;
 
 import {LibDiamond} from "../libraries/LibDiamond.sol";
+import {Helpers} from "../libraries/Helpers.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 import {AppStorage} from "../AppStorage.sol";
 import "../Errors.sol";
@@ -22,27 +23,31 @@ contract ozBeacon {
 
     AppStorage private s;
 
+    using Helpers for address[];
+
     /**
      * @dev Emitted when the implementation returned by the beacon is changed.
      */
     event Upgraded(address[] indexed implementations);
 
     /**
-     * @dev Returns the current implementation address.
+     * @dev Returns the current implementations:
+     * index 0 - ozTokenProxy.
+     * index 1 - wozTokenProxy.
      */
     function getOzImplementations() public view returns (address[] memory) {
         return s.ozImplementations;
     }
 
     /**
-     * @dev Upgrades the beacon to a new implementation.
+     * @dev Upgrades the beacon to new implementations.
      *
      * Emits an {Upgraded} event.
      *
      * Requirements:
      *
      * - msg.sender must be the owner of the contract.
-     * - `newImplementation` must be a contract.
+     * - `newImplementations` must be a contracts.
      */
     function upgradeToBeacons(address[] memory newImplementations_) public {
         LibDiamond.enforceIsContractOwner();
@@ -58,13 +63,23 @@ contract ozBeacon {
      * - `newImplementation` must be a contract.
      */
     function _setImplementations(address[] memory newImplementations_) private {
-        uint length = newImplementations_.length;
+        // uint length = newImplementations_.length;
 
         //put here a check to see when it's upgrading one implementation only instead
         // of both in an array
-        for (uint i=0; i < length; i++) {
-            if (!Address.isContract(newImplementations_[i])) revert OZError24();
-            s.ozImplementations.push(newImplementations_[i]);
-        }
+        //this is just pushing a new implementation into the array instead of changing the old one
+        //for the new impl. Fix that taking into account the indexes. 
+        // for (uint i=0; i < length; i++) {
+            // if (!Address.isContract(newImplementations_[i])) revert OZError24();
+            // s.ozImplementations.push(newImplementations_[i]);
+
+            if (newImplementations_[0] == address(0) && newImplementations_[1] == address(0)) revert OZError24();
+            if (newImplementations_[0] != address(0) && newImplementations_[1] == address(0)) s.ozImplementations.replace(0, newImplementations_[0]);
+            if (newImplementations_[0] == address(0) && newImplementations_[1] != address(0)) s.ozImplementations.replace(1, newImplementations_[1]);
+            if (newImplementations_[0] != address(0) && newImplementations_[1] != address(0)) {
+                s.ozImplementations[0] = newImplementations_[0];
+                s.ozImplementations[1] = newImplementations_[1];
+            }
+        // }
     }
 }

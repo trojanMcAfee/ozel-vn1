@@ -61,6 +61,10 @@ struct AppStorage {
     address weETHETHredStone;
     address weETHUSDredStone;
 
+    /**
+    * 0 - ozTokenProxy
+    * 1 - wozTokenProxy
+    */
     address[] ozImplementations;
 
     BitMaps.BitMap pauseMap; //Do a Pause package for these ones

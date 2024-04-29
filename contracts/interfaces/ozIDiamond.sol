@@ -155,4 +155,7 @@ interface ozIDiamond {
     function renounceOwnership() external;
     function pendingOwner() external view returns(address);
     function ownerDiamond() external view returns (address);
+    function changeOzTokenImplementations(address[] memory newImplementations_) external;
+    
+    function getOzImplementations() external view returns (address[] memory);
 }

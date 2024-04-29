@@ -4,6 +4,9 @@ pragma solidity ^0.8.0;
 import {LibDiamond} from "../libraries/LibDiamond.sol";
 import "../Errors.sol";
 import {Modifiers} from "../Modifiers.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
+
+import "forge-std/console.sol";
 
 // import { IERC173 } from "../interfaces/IERC173.sol";
 
@@ -50,6 +53,12 @@ contract OwnershipFacet is Modifiers {
 
     function renounceOwnership() external onlyOwner {
         _transferOwnership(address(0));
+    }
+
+    //Changes the implementations for ozTokens and/or wozTokens
+    function changeOzTokenImplementations(address[] memory newImplementations_) external onlyOwner {
+        bytes memory data = abi.encodeWithSignature('upgradeToBeacons(address[])', newImplementations_);
+        Address.functionDelegateCall(address(this), data);
     }
 
 }
