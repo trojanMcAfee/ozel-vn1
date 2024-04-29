@@ -19,15 +19,31 @@ contract OwnershipFacetTest is TestMethods {
     }
 
     function test_change_ownership_2step() public {
+        //Pre-conditions
         vm.prank(owner);
         OZ.transferOwnershipDiamond(alice);
 
         assertTrue(OZ.pendingOwner() == alice);
 
+        //Action
         vm.prank(alice);
         OZ.acceptOwnership();
 
+        //Post-condition
         assertTrue(OZ.ownerDiamond() == alice);
+    }
+
+    function test_fail_change_ownership_missing_1step() public {
+        //Pre-condition
+        assertTrue(OZ.ownerDiamond() == owner);
+
+        //Action
+        vm.prank(owner);
+        OZ.transferOwnershipDiamond(alice);
+
+        //Post-conditions
+        assertTrue(OZ.ownerDiamond() == owner);
+        assertTrue(OZ.pendingOwner() == alice);
     }
 
 }
