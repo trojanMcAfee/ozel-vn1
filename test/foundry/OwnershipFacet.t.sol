@@ -63,21 +63,21 @@ contract OwnershipFacetTest is TestMethods {
     }
 
     function test_change_oz_implementation_only() public {
+        uint index = 0;
         address[] memory newImplementations = new address[](2);
         ozToken newOzImpl = new ozToken();
-        newImplementations[0] = address(newOzImpl);
+        newImplementations[index] = address(newOzImpl);
 
-        console.log('newOzImpl: ', address(newOzImpl));
-
-        _changeAndCheckImplementations(newImplementations);
+        _changeAndCheckImplementations(newImplementations, index);
     }
 
     function test_change_woz_implementation_only() public { //not working ***
+        uint index = 1;
         address[] memory newImplementations = new address[](2);
         wozToken newWozImpl = new wozToken();
-        newImplementations[1] = address(newWozImpl);
+        newImplementations[index] = address(newWozImpl);
 
-        _changeAndCheckImplementations(newImplementations);
+        _changeAndCheckImplementations(newImplementations, index);
     }
 
     function test_change_oz_woz_implementations() public {
@@ -87,35 +87,30 @@ contract OwnershipFacetTest is TestMethods {
         newImplementations[0] = address(newOzImpl);
         newImplementations[1] = address(newWozImpl);
 
-        _changeAndCheckImplementations(newImplementations);
+        _changeAndCheckImplementations(newImplementations, 2);
     }
 
 
-    function _changeAndCheckImplementations(address[] memory newImplementations_) internal {
+    function _changeAndCheckImplementations(address[] memory newImplementations_, uint index_) internal {
         address[] memory implementations = OZ.getOzImplementations();
 
-        console.log('');
-        console.log('*** old impl ***');
-
         for (uint i=0; i < implementations.length; i++) {
-            console.log('implementations ', i, ': ', implementations[i]);
             assertTrue(implementations[i] != newImplementations_[i]);
         }
-
-        console.log('');
-        console.log('*** new impl ***');
         
         vm.prank(owner);
         OZ.changeOzTokenImplementations(newImplementations_);
 
         implementations = OZ.getOzImplementations();
-        assertTrue(implementations.length == 2);
-        // console.log('l: ', implementations.length);
 
-        // for (uint i=0; i < implementations.length; i++) {
-            // console.log('implementations ', i, ': ', implementations[i]);
-            assertTrue(implementations[0] == newImplementations_[0]);
-        // }
+        if (index_ != 2) {
+            assertTrue(implementations.length == 2);
+            assertTrue(implementations[index_] == newImplementations_[index_]);
+        } else {
+            for (uint i=0; i < implementations.length; i++) {
+                assertTrue(implementations[i] == newImplementations_[i]);
+            }
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {FixedPointMathLib} from "./FixedPointMathLib.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
+import "../Errors.sol";
 
 enum TotalType {
     ASSETS,
@@ -50,8 +51,6 @@ library Helpers {
     }
 
     function replace(address[] storage arr, uint index, address newElement) internal {
-        // arr[index] = arr[arr.length - 1];
-        // arr.pop();
         index == 0 ? arr[0] = newElement : arr[1] = newElement;
     }
 
@@ -212,5 +211,14 @@ library Helpers {
         uint delta = stdMath.abs(int(referenceAmount_) - int(mainAmount_));
         return uint(bps_) > delta.mulDivDown(10_000, mainAmount_);
     }
+
+    
+    function checkForContracts(address[] memory addresses_) internal view {
+        for (uint i=0; i < addresses_.length; i++) {
+            address addr = addresses_[i];
+            if (addr == address(0)) continue;
+            if (!Address.isContract(addr)) revert OZError24();
+        }
+    } 
   
 }

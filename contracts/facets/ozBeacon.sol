@@ -63,29 +63,19 @@ contract ozBeacon {
      * - `newImplementation` must be a contract.
      */
     function _setImplementations(address[] memory newImplementations_) private {
-        // uint length = newImplementations_.length;
+        if (newImplementations_[0] == address(0) && newImplementations_[1] == address(0)) revert OZError32();
 
-        //put here a check to see when it's upgrading one implementation only instead
-        // of both in an array
-        //this is just pushing a new implementation into the array instead of changing the old one
-        //for the new impl. Fix that taking into account the indexes. 
-        // for (uint i=0; i < length; i++) {
-            // if (!Address.isContract(newImplementations_[i])) revert OZError24();
-            // s.ozImplementations.push(newImplementations_[i]);
+        newImplementations_.checkForContracts();
 
-            if (newImplementations_[0] == address(0) && newImplementations_[1] == address(0)) revert OZError24();
-
-            if (newImplementations_[0] != address(0) && newImplementations_[1] == address(0)) {
-                console.log('length pre: ', s.ozImplementations.length);
-                s.ozImplementations.replace(0, newImplementations_[0]);
-                console.log('length post: ', s.ozImplementations.length);
-            }
-
-            if (newImplementations_[0] == address(0) && newImplementations_[1] != address(0)) s.ozImplementations.replace(1, newImplementations_[1]);
-            if (newImplementations_[0] != address(0) && newImplementations_[1] != address(0)) {
-                s.ozImplementations[0] = newImplementations_[0];
-                s.ozImplementations[1] = newImplementations_[1];
-            }
-        // }
+        if (newImplementations_[0] != address(0) && newImplementations_[1] != address(0)) {
+            s.ozImplementations[0] = newImplementations_[0];
+            s.ozImplementations[1] = newImplementations_[1];
+        } else {
+            newImplementations_[0] != address(0) ? 
+                s.ozImplementations.replace(0, newImplementations_[0]) : 
+                s.ozImplementations.replace(1, newImplementations_[1]);
+        }
     }
+
+    
 }
