@@ -10,7 +10,6 @@ import {wozToken} from "../../contracts/wozToken.sol";
 import "forge-std/console.sol";
 
 
-
 contract OwnershipFacetTest is TestMethods {
 
     function test_fail_noOwner_cant_transfer_ownership() public {

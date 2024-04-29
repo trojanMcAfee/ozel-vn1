@@ -29,7 +29,7 @@ contract OZLadmin is ProxyAdmin {
     }
 
     function changeOZLadmin(address newAdmin_) external {
-        LibDiamond.enforceIsContractOwner();
+        LibDiamond.enforceIsContractOwner(); //add onlyOnwer modifier here and the others
         _changeProxyAdmin(ITransparentUpgradeableProxy(s.ozlProxy), newAdmin_);
     }
 

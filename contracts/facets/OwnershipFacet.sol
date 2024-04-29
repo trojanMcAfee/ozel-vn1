@@ -11,16 +11,9 @@ import "forge-std/console.sol";
 // import { IERC173 } from "../interfaces/IERC173.sol";
 
 // contract OwnershipFacet is IERC173 {
-//     function transferOwnership(address _newOwner) external override {
-//         LibDiamond.enforceIsContractOwner();
-//         LibDiamond.setContractOwner(_newOwner);
-//     }
 
-//     function owner() external override view returns (address owner_) {
-//         owner_ = LibDiamond.contractOwner();
-//     }
-// }
 
+//All owner/admin ownership transfer methods are here except for OZLadmin
 contract OwnershipFacet is Modifiers {
 
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
@@ -60,5 +53,7 @@ contract OwnershipFacet is Modifiers {
         bytes memory data = abi.encodeWithSignature('upgradeToBeacons(address[])', newImplementations_);
         Address.functionDelegateCall(address(this), data);
     }
+
+    function transferAllOwnerships() {} //finish this and put a 2step on changeOZLadmin() ^
 
 }
