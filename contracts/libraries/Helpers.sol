@@ -50,8 +50,8 @@ library Helpers {
     }
 
     function replace(address[] storage arr, uint index, address newElement) internal {
-        arr[index] = arr[arr.length - 1];
-        arr.pop();
+        // arr[index] = arr[arr.length - 1];
+        // arr.pop();
         index == 0 ? arr[0] = newElement : arr[1] = newElement;
     }
 

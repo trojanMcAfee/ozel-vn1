@@ -74,7 +74,13 @@ contract ozBeacon {
             // s.ozImplementations.push(newImplementations_[i]);
 
             if (newImplementations_[0] == address(0) && newImplementations_[1] == address(0)) revert OZError24();
-            if (newImplementations_[0] != address(0) && newImplementations_[1] == address(0)) s.ozImplementations.replace(0, newImplementations_[0]);
+
+            if (newImplementations_[0] != address(0) && newImplementations_[1] == address(0)) {
+                console.log('length pre: ', s.ozImplementations.length);
+                s.ozImplementations.replace(0, newImplementations_[0]);
+                console.log('length post: ', s.ozImplementations.length);
+            }
+
             if (newImplementations_[0] == address(0) && newImplementations_[1] != address(0)) s.ozImplementations.replace(1, newImplementations_[1]);
             if (newImplementations_[0] != address(0) && newImplementations_[1] != address(0)) {
                 s.ozImplementations[0] = newImplementations_[0];

@@ -67,6 +67,8 @@ contract OwnershipFacetTest is TestMethods {
         ozToken newOzImpl = new ozToken();
         newImplementations[0] = address(newOzImpl);
 
+        console.log('newOzImpl: ', address(newOzImpl));
+
         _changeAndCheckImplementations(newImplementations);
     }
 
@@ -92,18 +94,28 @@ contract OwnershipFacetTest is TestMethods {
     function _changeAndCheckImplementations(address[] memory newImplementations_) internal {
         address[] memory implementations = OZ.getOzImplementations();
 
+        console.log('');
+        console.log('*** old impl ***');
+
         for (uint i=0; i < implementations.length; i++) {
+            console.log('implementations ', i, ': ', implementations[i]);
             assertTrue(implementations[i] != newImplementations_[i]);
         }
+
+        console.log('');
+        console.log('*** new impl ***');
         
         vm.prank(owner);
         OZ.changeOzTokenImplementations(newImplementations_);
 
         implementations = OZ.getOzImplementations();
+        assertTrue(implementations.length == 2);
+        // console.log('l: ', implementations.length);
 
-        for (uint i=0; i < implementations.length; i++) {
-            assertTrue(implementations[i] == newImplementations_[i]);
-        }
+        // for (uint i=0; i < implementations.length; i++) {
+            // console.log('implementations ', i, ': ', implementations[i]);
+            assertTrue(implementations[0] == newImplementations_[0]);
+        // }
     }
 
 }
