@@ -108,6 +108,25 @@ contract OwnershipFacetTest is TestMethods {
         OZ.changeOzTokenImplementations(newImplementations);
     }
 
+    function test_fail_change_ozImpl_not_contract() public {
+        address[] memory newImplementations = new address[](2);
+        newImplementations[0] = address(1);
+        newImplementations[1] = address(0);
+
+        address[] memory implementations = OZ.getOzImplementations();
+
+        for (uint i=0; i < implementations.length; i++) {
+            assertTrue(implementations[i] != newImplementations[i]);
+        }
+        
+        vm.startPrank(owner);
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError24.selector)
+        );
+        OZ.changeOzTokenImplementations(newImplementations);
+    }
+
+
     //----------
 
     function _changeAndCheckImplementations(address[] memory newImplementations_, uint index_) internal {
