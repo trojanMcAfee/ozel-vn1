@@ -62,6 +62,22 @@ contract OwnershipFacetTest is TestMethods {
         assertTrue(OZ.ownerDiamond() == address(0));
     }
 
+    function test_change_oz_implementation_only() public {
+        address[] memory newImplementations = new address[](2);
+        ozToken newOzImpl = new ozToken();
+        newImplementations[0] = address(newOzImpl);
+
+        _changeAndCheckImplementations(newImplementations);
+    }
+
+    function test_change_woz_implementation_only() public { //not working ***
+        address[] memory newImplementations = new address[](2);
+        wozToken newWozImpl = new wozToken();
+        newImplementations[1] = address(newWozImpl);
+
+        _changeAndCheckImplementations(newImplementations);
+    }
+
     function test_change_oz_woz_implementations() public {
         address[] memory newImplementations = new address[](2);
         ozToken newOzImpl = new ozToken();
@@ -69,19 +85,24 @@ contract OwnershipFacetTest is TestMethods {
         newImplementations[0] = address(newOzImpl);
         newImplementations[1] = address(newWozImpl);
 
+        _changeAndCheckImplementations(newImplementations);
+    }
+
+
+    function _changeAndCheckImplementations(address[] memory newImplementations_) internal {
         address[] memory implementations = OZ.getOzImplementations();
 
         for (uint i=0; i < implementations.length; i++) {
-            assertTrue(implementations[i] != newImplementations[i]);
+            assertTrue(implementations[i] != newImplementations_[i]);
         }
         
         vm.prank(owner);
-        OZ.changeOzTokenImplementations(newImplementations);
+        OZ.changeOzTokenImplementations(newImplementations_);
 
         implementations = OZ.getOzImplementations();
 
         for (uint i=0; i < implementations.length; i++) {
-            assertTrue(implementations[i] == newImplementations[i]);
+            assertTrue(implementations[i] == newImplementations_[i]);
         }
     }
 
