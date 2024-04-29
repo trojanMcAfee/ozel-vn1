@@ -154,4 +154,5 @@ interface ozIDiamond {
     function acceptOwnership() external;
     function renounceOwnership() external;
     function pendingOwner() external view returns(address);
+    function ownerDiamond() external view returns (address);
 }

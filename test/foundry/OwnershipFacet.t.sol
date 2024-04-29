@@ -18,4 +18,16 @@ contract OwnershipFacetTest is TestMethods {
         OZ.transferOwnershipDiamond(alice);
     }
 
+    function test_change_ownership_2step() public {
+        vm.prank(owner);
+        OZ.transferOwnershipDiamond(alice);
+
+        assertTrue(OZ.pendingOwner() == alice);
+
+        vm.prank(alice);
+        OZ.acceptOwnership();
+
+        assertTrue(OZ.ownerDiamond() == alice);
+    }
+
 }
