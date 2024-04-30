@@ -20,7 +20,7 @@ contract OwnershipFacet is Modifiers {
 
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
+    event OZLownershipTransferStarted(address indexed previousOwner, address indexed newOwner);
 
     function ownerDiamond() public view returns (address) {
         return LibDiamond.contractOwner();
@@ -36,9 +36,21 @@ contract OwnershipFacet is Modifiers {
         return s.pendingOwnerOZL;
     }
 
-    // function transferOwnershipOZL(address newOwner_) external onlyOwnerOZL {
+    function transferOwnershipOZL(address newOwner_) external onlyOwnerOZL {
+        s.pendingOwnerOZL = newOwner_;
+        emit OZLownershipTransferStarted(ownerOZL(), newOwner_);
+    }
 
-    // }
+    function acceptOwnershipOZL() external {
+        if (pendingOwnerOZL() != msg.sender) revert OZError36(msg.sender);
+
+        delete s.pendingOwnerDiamond;
+        address oldOwner = ownerOZL();
+        bytes memory data = abi.encodeWithSignature('changeOZLadmin(address)', msg.sender);
+        address(this).functionDelegateCall(data);
+
+        emit OwnershipTransferred(oldOwner, msg.sender);
+    }
 
     function pendingOwnerDiamond() public view returns(address) {
         return s.pendingOwnerDiamond;
@@ -49,15 +61,16 @@ contract OwnershipFacet is Modifiers {
         emit OwnershipTransferStarted(ownerDiamond(), newOwner_);
     }
 
-    function acceptOwnership() external {
+    function acceptOwnershipDiamond() external {
         if (pendingOwnerDiamond() != msg.sender) revert OZError36(msg.sender);
         _transferOwnership(msg.sender);
     }
 
     function _transferOwnership(address newOwner_) internal {
         delete s.pendingOwnerDiamond;
-        LibDiamond.setContractOwner(newOwner_);
-        emit OwnershipTransferred(ownerDiamond(), newOwner_);
+        address oldOwner = ownerDiamond();
+        LibDiamond.setContractOwner(newOwner_); 
+        emit OwnershipTransferred(oldOwner, newOwner_);
     }
 
     function renounceOwnership() external onlyOwner {

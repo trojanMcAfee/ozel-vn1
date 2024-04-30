@@ -7,13 +7,16 @@ import {ProxyAdmin} from "../ProxyAdmin.sol";
 import {LibDiamond} from "../libraries/LibDiamond.sol";
 import {AppStorage} from "../AppStorage.sol";
 import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import {Modifiers} from "../Modifiers.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 import "forge-std/console.sol";
 
 //contract that acts as admin of the OZL token
-contract OZLadmin is ProxyAdmin {
+contract OZLadmin is Modifiers, ProxyAdmin {
 
-    AppStorage private s;
+    //put events here like in OwnershipFacet
+    using Address for address;
 
 
     function getOZL() external view returns(address) {
@@ -28,13 +31,18 @@ contract OZLadmin is ProxyAdmin {
         return _getProxyAdmin(ITransparentUpgradeableProxy(s.ozlProxy));
     }
 
-    function changeOZLadmin(address newAdmin_) external {
-        LibDiamond.enforceIsContractOwner(); //add onlyOnwer modifier here and the others
+    function changeOZLadmin(address newAdmin_) external onlyPendingOZL {
         _changeProxyAdmin(ITransparentUpgradeableProxy(s.ozlProxy), newAdmin_);
+        // bytes memory data = abi.encodeWithSignature(
+        //     '_changeProxyAdmin(address,address)', 
+        //     ITransparentUpgradeableProxy(s.ozlProxy), 
+        //     newAdmin_
+        // );
+        // this.functionDelegateCall(data);
     }
 
     function changeOZLlogic(address newLogic_) external {
-        LibDiamond.enforceIsContractOwner();
+        LibDiamond.enforceIsContractOwner(); //add onlyOnwer modifier here and the others
         _upgrade(ITransparentUpgradeableProxy(s.ozlProxy), newLogic_);
     }
 

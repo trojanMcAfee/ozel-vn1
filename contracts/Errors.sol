@@ -58,9 +58,9 @@ error OZError22(string reason); // mint/redeem - useUnderlying/userOzTokens - ca
 error OZError24(); // _setImplementation - selected implementation is not a contract
 error OZError25(address implementation); //_setBeacon / ozERC1967Upgrade.sol - beacon implementation is not a contract
 error OZError26(address newBeacon); //_setBeacon / ozERC1967Upgrade.sol - new beacon is not a contract
-error OZError33(address caller); // multiple ozCut.sol funcs / Modifiers.sol / not owner
+error OZError33(address caller); // multiple ozCut.sol funcs / Modifiers.sol / not owner or pending owner
 error OZError34(uint amount); //allocate / OZL.sol - amount greater than pending to allocate
-error OZError36(address wrongOwner); //acceptOwnership / OwnershipFacet.sol - sender is not pending owner
+error OZError36(address wrongOwner); //acceptOwnershipDiamond & acceptOwnershipOZL / OwnershipFacet.sol - sender is not pending owner
 
 //Oracle errors
 error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_

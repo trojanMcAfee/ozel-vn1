@@ -30,7 +30,7 @@ contract OwnershipFacetTest is TestMethods {
 
         //Action
         vm.prank(alice);
-        OZ.acceptOwnership();
+        OZ.acceptOwnershipDiamond();
 
         //Post-condition
         assertTrue(OZ.ownerDiamond() == alice);
@@ -169,8 +169,31 @@ contract OwnershipFacetTest is TestMethods {
     }
 
     function test_get_OZLadmin() public {
-    assertTrue(OZ.ownerOZL() == OZ.getOZLadmin());
+        assertTrue(OZ.ownerOZL() == OZ.getOZLadmin());
     }
+
+    function test_transfer_OZLadmin() public {
+        //Pre-condition
+        assertTrue(OZ.ownerOZL() != alice);
+
+        //Actions
+        vm.prank(owner);
+        // console.log('owner: ', owner);
+        OZ.transferOwnershipOZL(alice);
+
+        vm.prank(alice);
+        OZ.acceptOwnershipOZL();
+
+        //Post-conditions
+        assertTrue(OZ.ownerOZL() == alice);
+    }
+
+    function test_x() public {
+        console.log('getOZLadmin: ', OZ.getOZLadmin());
+        console.log('address(ozlAdmin): ', address(ozlAdmin));
+    }
+
+
 
 
 

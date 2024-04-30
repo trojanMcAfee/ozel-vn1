@@ -26,6 +26,10 @@ contract OZLproxy is TransparentUpgradeableProxy {
         return _getAdmin();
     }
 
+    function changeAdmin(address newAdmin_) external {
+        console.log('sender: ', msg.sender); //<--- this is diamond so far. Is it risky??
+    }
+
     function _fallback() internal override {
         OZ.isPaused(address(this));
         super._fallback();

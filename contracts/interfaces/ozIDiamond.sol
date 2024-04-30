@@ -151,7 +151,7 @@ interface ozIDiamond {
     function getAPR() external view returns(uint);
 
     function transferOwnershipDiamond(address newOwner_) external;
-    function acceptOwnership() external;
+    function acceptOwnershipDiamond() external;
     function renounceOwnership() external;
     function pendingOwnerDiamond() external view returns(address);
     function ownerDiamond() external view returns (address);
@@ -162,4 +162,8 @@ interface ozIDiamond {
     function ownerOZL() external view returns(address);
     function pendingOwnerOZL() external view returns(address);
     function getOZLadmin() external view returns(address);
+    function changeOZLadmin(address newAdmin_) external;
+
+    function transferOwnershipOZL(address newOwner_) external;
+    function acceptOwnershipOZL() external;
 }
