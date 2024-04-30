@@ -21,7 +21,11 @@ contract OZLproxy is TransparentUpgradeableProxy {
         OZ = ozIDiamond(ozDiamond_);
     }
 
-    
+
+    function admin() external view returns(address) {
+        return _getAdmin();
+    }
+
     function _fallback() internal override {
         OZ.isPaused(address(this));
         super._fallback();
