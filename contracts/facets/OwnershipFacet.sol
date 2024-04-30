@@ -16,6 +16,8 @@ import "forge-std/console.sol";
 //All owner/admin ownership transfer methods are here except for OZLadmin
 contract OwnershipFacet is Modifiers {
 
+    using Address for address;
+
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
@@ -24,22 +26,36 @@ contract OwnershipFacet is Modifiers {
         return LibDiamond.contractOwner();
     }
 
-    function pendingOwner() public view returns(address) {
-        return s.pendingOwner;
+    function ownerOZL() public view returns(address) {
+        bytes memory data = abi.encodeWithSignature('getOZLadmin()');
+        data = address(this).functionStaticCall(data);
+        return abi.decode(data, (address));
+    }
+
+    function pendingOwnerOZL() public view returns(address) {
+        return s.pendingOwnerOZL;
+    }
+
+    // function transferOwnershipOZL(address newOwner_) external onlyOwnerOZL {
+
+    // }
+
+    function pendingOwnerDiamond() public view returns(address) {
+        return s.pendingOwnerDiamond;
     }
 
     function transferOwnershipDiamond(address newOwner_) external onlyOwner {
-        s.pendingOwner = newOwner_;
+        s.pendingOwnerDiamond = newOwner_;
         emit OwnershipTransferStarted(ownerDiamond(), newOwner_);
     }
 
     function acceptOwnership() external {
-        if (pendingOwner() != msg.sender) revert OZError36(msg.sender);
+        if (pendingOwnerDiamond() != msg.sender) revert OZError36(msg.sender);
         _transferOwnership(msg.sender);
     }
 
     function _transferOwnership(address newOwner_) internal {
-        delete s.pendingOwner;
+        delete s.pendingOwnerDiamond;
         LibDiamond.setContractOwner(newOwner_);
         emit OwnershipTransferred(ownerDiamond(), newOwner_);
     }
@@ -51,9 +67,9 @@ contract OwnershipFacet is Modifiers {
     //Changes the implementations for ozTokens and/or wozTokens
     function changeOzTokenImplementations(address[] memory newImplementations_) external onlyOwner {
         bytes memory data = abi.encodeWithSignature('upgradeToBeacons(address[])', newImplementations_);
-        Address.functionDelegateCall(address(this), data);
+        address(this).functionDelegateCall(data);
     }
 
-    function transferAllOwnerships() {} //finish this and put a 2step on changeOZLadmin() ^
+    // function transferAllOwnerships() {} //finish this and put a 2step on changeOZLadmin() ^
 
 }

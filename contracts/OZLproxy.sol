@@ -5,6 +5,8 @@ pragma solidity 0.8.21;
 import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
 
+import "forge-std/console.sol";
+
 
 contract OZLproxy is TransparentUpgradeableProxy {
 

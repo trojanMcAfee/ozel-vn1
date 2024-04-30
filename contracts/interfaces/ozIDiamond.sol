@@ -153,9 +153,13 @@ interface ozIDiamond {
     function transferOwnershipDiamond(address newOwner_) external;
     function acceptOwnership() external;
     function renounceOwnership() external;
-    function pendingOwner() external view returns(address);
+    function pendingOwnerDiamond() external view returns(address);
     function ownerDiamond() external view returns (address);
     function changeOzTokenImplementations(address[] memory newImplementations_) external;
     
     function getOzImplementations() external view returns (address[] memory);
+    
+    function ownerOZL() external view returns(address);
+    function pendingOwnerOZL() external view returns(address);
+    function getOZLadmin() external view returns(address);
 }

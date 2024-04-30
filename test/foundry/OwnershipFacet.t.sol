@@ -26,7 +26,7 @@ contract OwnershipFacetTest is TestMethods {
         vm.prank(owner);
         OZ.transferOwnershipDiamond(alice);
 
-        assertTrue(OZ.pendingOwner() == alice);
+        assertTrue(OZ.pendingOwnerDiamond() == alice);
 
         //Action
         vm.prank(alice);
@@ -46,7 +46,7 @@ contract OwnershipFacetTest is TestMethods {
 
         //Post-conditions
         assertTrue(OZ.ownerDiamond() == owner);
-        assertTrue(OZ.pendingOwner() == alice);
+        assertTrue(OZ.pendingOwnerDiamond() == alice);
     }
 
     function test_renounce_ownership() public {
@@ -167,5 +167,11 @@ contract OwnershipFacetTest is TestMethods {
             }
         }
     }
+
+    function test_get_OZLadmin() public {
+    assertTrue(OZ.ownerOZL() == OZ.getOZLadmin());
+    }
+
+
 
 }

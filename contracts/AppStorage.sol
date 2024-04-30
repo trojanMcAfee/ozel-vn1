@@ -83,7 +83,8 @@ struct AppStorage {
     uint currAPR;
     uint prevAPR;
 
-    address pendingOwner;
+    address pendingOwnerDiamond;
+    address pendingOwnerOZL;
 }
 
 

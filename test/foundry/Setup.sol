@@ -454,7 +454,7 @@ contract Setup is Test {
         } else if (id_ == 8) {
             length = 9;
         } else if (id_ == 1) {
-            length = 6;
+            length = 8;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -481,10 +481,12 @@ contract Setup is Test {
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;
-            selectors[2] = ownership.pendingOwner.selector;
+            selectors[2] = ownership.pendingOwnerDiamond.selector;
             selectors[3] = ownership.acceptOwnership.selector;
             selectors[4] = ownership.renounceOwnership.selector;
             selectors[5] = ownership.changeOzTokenImplementations.selector;
+            selectors[6] = ownership.ownerOZL.selector;
+            selectors[7] = ownership.pendingOwnerOZL.selector;
         } else if (id_ == 3) {
             selectors[0] = factory.createOzToken.selector;
             selectors[1] = factory.getOzTokenRegistry.selector;
