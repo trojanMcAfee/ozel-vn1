@@ -59,6 +59,7 @@ contract MocksTests is MockStorage, TestMethods {
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
+        //The difference of totalSupply is +1
         assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply());
 
         console.log('totalSupply: ', ozERC20.totalSupply());
@@ -118,8 +119,6 @@ contract MocksTests is MockStorage, TestMethods {
         
         uint deltaBalanceTestToken = IERC20Permit(testToken).balanceOf(alice) - balanceAliceTestTokenPreRedeem;
         console.log('testToken gained after redeem: ', deltaBalanceTestToken);
-
-        _holdingCalculations(amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
         
         console.log('');
         console.log('ozERC20.balanceOf(bob): ', ozERC20.balanceOf(bob));
@@ -135,21 +134,6 @@ contract MocksTests is MockStorage, TestMethods {
         assertTrue(_checkPercentageDiff(ozBalanceAlicePostMock / formatter, deltaBalanceTestToken, 1));
 
         return (amountIn, reth_usd_preAccrual, deltaBalanceTestToken);
-    }
-
-
-    function _holdingCalculations(uint amountIn_, uint reth_usd_preAccrual_, uint deltaBalanceTestToken_) private {
-        console.log('');
-        console.log('**** Profits by just holding rETH ****');
-        
-        uint initRETH = (amountIn_ * 1e12 * 1e18) / reth_usd_preAccrual_;
-        console.log('how much rETH you would have bought with amountIn USDC: ', initRETH);
-        uint newUSDCbalanceHolder = ( (initRETH * OZ.rETH_USD()) / 1e18) / 1e12;
-        console.log('the value in USDC of that rETH post-accrual: ', newUSDCbalanceHolder);
-        console.log('is that value the same as the USDC gained after redeeming ozUSDC? ', deltaBalanceTestToken_ == newUSDCbalanceHolder);
-        assertTrue(deltaBalanceTestToken_ == newUSDCbalanceHolder);
-
-        console.log('**** end of holding calculations ****');
     }
 
 
