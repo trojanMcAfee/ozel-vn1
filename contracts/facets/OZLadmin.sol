@@ -24,15 +24,18 @@ contract OZLadmin is ProxyAdmin {
         return _getProxyImplementation(ITransparentUpgradeableProxy(s.ozlProxy));
     }
 
+    //Returns itself (aka OZLadmin.sol) instead of ozDiamond
     function getOZLadmin() external view returns(address) {
         return _getProxyAdmin(ITransparentUpgradeableProxy(s.ozlProxy));
     }
 
+    //Changes itself (aka OZLadmin.sol / aka this implementation), not ozDiamond
     function changeOZLadmin(address newAdmin_) external {
         LibDiamond.enforceIsContractOwner();
         _changeProxyAdmin(ITransparentUpgradeableProxy(s.ozlProxy), newAdmin_);
     }
 
+    //Changes the OZL implementation, which lives outside ozDiamond
     function changeOZLlogic(address newLogic_) external {
         LibDiamond.enforceIsContractOwner();
         _upgrade(ITransparentUpgradeableProxy(s.ozlProxy), newLogic_);
