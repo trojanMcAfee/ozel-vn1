@@ -3,9 +3,9 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../base/TestMethods.sol";
-import {ozToken} from "../../contracts/ozToken.sol";
-import {wozToken} from "../../contracts/wozToken.sol";
-import "../../contracts/Errors.sol";
+import {ozToken} from "../../../contracts/ozToken.sol";
+import {wozToken} from "../../../contracts/wozToken.sol";
+import "../../../contracts/Errors.sol";
 
 
 import "forge-std/console.sol";

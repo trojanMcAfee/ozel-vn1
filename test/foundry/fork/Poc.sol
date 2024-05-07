@@ -3,11 +3,11 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../base/TestMethods.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+import {IOZL, QuoteAsset} from "../../../contracts/interfaces/IOZL.sol";
 import {HelpersLib} from "../utils/HelpersLib.sol";
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
 import {Mock} from "../base/AppStorageTests.sol";
 
 import "forge-std/console.sol";

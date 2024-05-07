@@ -2,7 +2,7 @@
 pragma solidity 0.8.21;
 
 
-import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
+import {IERC20Permit} from "../../../../contracts/interfaces/IERC20Permit.sol";
 import {TestMethods} from "../TestMethods.sol";
 
 

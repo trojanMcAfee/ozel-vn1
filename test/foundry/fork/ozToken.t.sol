@@ -3,14 +3,14 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../base/TestMethods.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {HelpersLib} from "../utils/HelpersLib.sol";
 import {Type, Dir} from "../base/AppStorageTests.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {AmountsIn} from "../../contracts/AppStorage.sol";
+import {AmountsIn} from "../../../contracts/AppStorage.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "../../contracts/Errors.sol";
+import "../../../contracts/Errors.sol";
 import {Dummy1} from "../mocks/Dummy1.sol";
 
 import "forge-std/console.sol";

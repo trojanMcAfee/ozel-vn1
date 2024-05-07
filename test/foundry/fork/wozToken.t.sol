@@ -3,9 +3,9 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../base/TestMethods.sol";
-import {wozIToken} from "../../contracts/interfaces/wozIToken.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {wozIToken} from "../../../contracts/interfaces/wozIToken.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {HelpersLib} from "../utils/HelpersLib.sol";
 

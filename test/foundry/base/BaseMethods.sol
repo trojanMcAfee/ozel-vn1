@@ -3,21 +3,21 @@ pragma solidity 0.8.21;
 
 
 import {HelpersLib} from "../utils/HelpersLib.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {IPool} from "../../contracts/interfaces/IBalancer.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
+import {IPool} from "../../../contracts/interfaces/IBalancer.sol";
 import {Setup} from "./Setup.sol";
 import {Type, Dir, Mock} from "./AppStorageTests.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {wozIToken} from "../../contracts/interfaces/wozIToken.sol";
-import {IOZL, QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
-import {OracleLibrary} from "../../contracts/libraries/oracle/OracleLibrary.sol";
-import {AmountsIn, NewToken} from "../../contracts/AppStorage.sol";
-import {IRocketStorage, DAOdepositSettings} from "../../contracts/interfaces/IRocketPool.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+import {wozIToken} from "../../../contracts/interfaces/wozIToken.sol";
+import {IOZL, QuoteAsset} from "../../../contracts/interfaces/IOZL.sol";
+import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
+import {OracleLibrary} from "../../../contracts/libraries/oracle/OracleLibrary.sol";
+import {AmountsIn, NewToken} from "../../../contracts/AppStorage.sol";
+import {IRocketStorage, DAOdepositSettings} from "../../../contracts/interfaces/IRocketPool.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
+import {stdMath} from "../../../lib/forge-std/src/StdMath.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {RethLinkFeedAccrued} from "../mocks/MockContracts.sol";
 import {
@@ -27,7 +27,7 @@ import {
     MockOzOraclePostAccrualHigher,
     MockOzOraclePreAccrualNoDeviation
 } from "../mocks/MockContracts.sol";
-import {IDiamondCut} from "../../contracts/interfaces/IDiamondCut.sol";
+import {IDiamondCut} from "../../../contracts/interfaces/IDiamondCut.sol";
 
 import "forge-std/console.sol";
 

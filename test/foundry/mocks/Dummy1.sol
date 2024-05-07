@@ -2,8 +2,8 @@
 pragma solidity 0.8.21;
 
 
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {ozIDiamond} from "../../contracts/interfaces/ozIDiamond.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+import {ozIDiamond} from "../../../contracts/interfaces/ozIDiamond.sol";
 
 
 //Contract used to simulate minting/redeeming on behalf of an ozToken holder.

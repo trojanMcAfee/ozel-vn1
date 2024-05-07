@@ -2,10 +2,10 @@
 pragma solidity 0.8.21;
 
 
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {TestMethods} from "../base/TestMethods.sol";
-import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
+import {stdMath} from "../../../lib/forge-std/src/StdMath.sol";
 
 
 contract MultipleOzTokensTest is TestMethods {

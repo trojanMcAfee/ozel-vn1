@@ -3,7 +3,7 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../TestMethods.sol";
-import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
+import {FixedPointMathLib} from "../../../../contracts/libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 

@@ -3,9 +3,9 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../base/TestMethods.sol";
-import {IOZL} from "../../contracts/interfaces/IOZL.sol";
-import {IOZLvesting} from "../../contracts/interfaces/IOZLvesting.sol";
-import {OZLvesting} from "../../contracts/OZLvesting.sol";
+import {IOZL} from "../../../contracts/interfaces/IOZL.sol";
+import {IOZLvesting} from "../../../contracts/interfaces/IOZLvesting.sol";
+import {OZLvesting} from "../../../contracts/OZLvesting.sol";
 
 import "forge-std/console.sol";
 

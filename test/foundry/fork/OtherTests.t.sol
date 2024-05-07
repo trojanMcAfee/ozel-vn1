@@ -2,14 +2,14 @@
 pragma solidity 0.8.21;
 
 
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {TestMethods} from "../base/TestMethods.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
 import {Type} from "../base/AppStorageTests.sol";
 import {HelpersLib} from "../utils/HelpersLib.sol";
-import {AmountsIn} from "../../contracts/AppStorage.sol";
-import {OZError21} from "../../contracts/Errors.sol";
-import {Asset} from "../../contracts/AppStorage.sol";
+import {AmountsIn} from "../../../contracts/AppStorage.sol";
+import {OZError21} from "../../../contracts/Errors.sol";
+import {Asset} from "../../../contracts/AppStorage.sol";
 
 
 

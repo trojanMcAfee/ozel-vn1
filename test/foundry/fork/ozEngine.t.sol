@@ -2,10 +2,10 @@
 pragma solidity 0.8.21;
 
 
-import {AmountsIn} from "../../contracts/AppStorage.sol";
+import {AmountsIn} from "../../../contracts/AppStorage.sol";
 import {Setup} from "../base/Setup.sol";
-import {ozIDiamond} from "../../contracts/interfaces/ozIDiamond.sol";
-import {OZError13} from "../../contracts/Errors.sol";
+import {ozIDiamond} from "../../../contracts/interfaces/ozIDiamond.sol";
+import {OZError13} from "../../../contracts/Errors.sol";
 
 
 contract ozEngineTest is Setup {

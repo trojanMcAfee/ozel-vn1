@@ -2,10 +2,10 @@
 pragma solidity 0.8.21;
 
 
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {Helpers} from "../../contracts/libraries/Helpers.sol";
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {Helpers} from "../../../contracts/libraries/Helpers.sol";
+import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
 
 import "forge-std/console.sol";
 

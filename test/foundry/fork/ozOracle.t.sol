@@ -3,8 +3,8 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../base/TestMethods.sol";
-import {IRocketTokenRETH} from "../../contracts/interfaces/IRocketPool.sol";
-import {Dir} from "../../contracts/AppStorage.sol";
+import {IRocketTokenRETH} from "../../../contracts/interfaces/IRocketPool.sol";
+import {Dir} from "../../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 

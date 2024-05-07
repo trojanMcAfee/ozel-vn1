@@ -2,18 +2,18 @@
 pragma solidity 0.8.21;
 
 
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
+import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
 import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import {stdStorage, StdStorage} from "forge-std/Test.sol";
-import {ozToken} from "../../contracts/ozToken.sol";
+import {ozToken} from "../../../contracts/ozToken.sol";
 import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import {BaseMethods} from "./BaseMethods.sol";
 import {IUniswapV3Factory} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
-import {IRocketStorage} from "../../contracts/interfaces/IRocketPool.sol";
-import {stdMath} from "../../lib/forge-std/src/StdMath.sol";
-import {IPool} from "../../contracts/interfaces/IBalancer.sol";
+import {IRocketStorage} from "../../../contracts/interfaces/IRocketPool.sol";
+import {stdMath} from "../../../lib/forge-std/src/StdMath.sol";
+import {IPool} from "../../../contracts/interfaces/IBalancer.sol";
 import {n} from "./Setup.sol";
 import {Type} from "./AppStorageTests.sol";
 

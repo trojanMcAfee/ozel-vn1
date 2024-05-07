@@ -3,13 +3,13 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../base/TestMethods.sol";
-import {IOZL} from "../../contracts/interfaces/IOZL.sol";
-import {IWETH} from "../../contracts/interfaces/IWETH.sol";
-import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
-import {FixedPointMathLib} from "../../contracts/libraries/FixedPointMathLib.sol";
-import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
+import {IOZL} from "../../../contracts/interfaces/IOZL.sol";
+import {IWETH} from "../../../contracts/interfaces/IWETH.sol";
+import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
+import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
+import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {Type, Mock} from "../base/AppStorageTests.sol";
-import {QuoteAsset} from "../../contracts/interfaces/IOZL.sol";
+import {QuoteAsset} from "../../../contracts/interfaces/IOZL.sol";
 import {HelpersLib} from "../utils/HelpersLib.sol";
 
 
@@ -702,7 +702,7 @@ contract OZLtokenTest is TestMethods {
         uint pendingAllocPreRedeem_,
         IOZL OZL,
         uint ozlBalanceAlice_
-    ) private returns(uint, uint) {
+    ) private view returns(uint, uint) {
         uint pendingAllocPostRedeem = _getPendingAllocation();
         assertTrue(pendingAllocPreRedeem_ == pendingAllocPostRedeem);
 
