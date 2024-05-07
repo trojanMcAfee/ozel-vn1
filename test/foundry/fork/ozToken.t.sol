@@ -212,7 +212,7 @@ contract ozERC20TokenTest is TestMethods {
     
 
     //Tests that the accrual and redemption of rewards happens without issues when there's more
-    //than one user that's being accounted for (for internal proper internal accounting of varaibles)
+    //than one user that's being accounted for (for internal proper internal accounting of variables)
     function test_redeem_rewards() public {
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
