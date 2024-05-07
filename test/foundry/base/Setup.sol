@@ -36,6 +36,7 @@ import {
     SwapRouterMock,
     VaultMock
 } from "../mocks/MockContracts.sol";
+import {MockUnderlying} from "../mocks/MockUnderlying.sol";
 
 import "forge-std/console.sol";
 
@@ -44,10 +45,11 @@ import "forge-std/console.sol";
 enum Network {
     ARBITRUM,
     ETHEREUM,
-    ETH_N_MOCKS
+    ETH_N_MOCKS,
+    MOCKS
 }
 
-Network constant n = Network.ETH_N_MOCKS;
+Network constant n = Network.MOCKS;
 //****** */
 
 contract Setup is Test {
@@ -182,12 +184,16 @@ contract Setup is Test {
     /** FUNCTIONS **/ 
     function setUp() public {
         string memory network = _chooseNetwork(n);
+        
+        if (n != Network.MOCKS) {
+            redStoneFork = vm.createSelectFork(vm.rpcUrl(network), redStoneBlock);
+            _runSetup(n);
 
-        redStoneFork = vm.createSelectFork(vm.rpcUrl(network), redStoneBlock);
-        _runSetup(n);
-
-        mainFork = vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
-        _runSetup(n);
+            mainFork = vm.createSelectFork(vm.rpcUrl(network), mainBlockNumber);
+            _runSetup(n);
+        } else {
+            _runSetup(n);
+        }
 
         console.log('*** NETWORK ***: ', network);
         console.log('');
@@ -252,6 +258,11 @@ contract Setup is Test {
             mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
             secondaryBlockNumber = 18785221;
             redStoneBlock = 19154743;
+        } else if (chain_ == Network.MOCKS) {
+            usdcAddr = address(new MockUnderlying(6));
+            daiAddr = address(new MockUnderlying(18));
+
+            network = "mocks";
         }
     }
 

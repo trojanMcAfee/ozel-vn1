@@ -1,13 +1,29 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.0;
+// SPDX-License-Identifier: GPL-2.0-or-later
+pragma solidity 0.8.21;
 
-contract totalSupply_Unit_Concrete_Test {
+
+import {TestMethods} from "../../base/TestMethods.sol";
+import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
+
+
+contract totalSupply_Unit_Concrete_Test is TestMethods {
+
+    ozIToken ozERC20;
+    string constant version = "1";
+
     modifier whenTheUnderlyingHas6Decimals() {
+        (ozIToken a,) = _createOzTokens(usdcAddr, version);
+        ozERC20 = a;
         _;
     }
 
     function test_GivenTotalSharesEqual0_6() external whenTheUnderlyingHas6Decimals {
         // it should return 0.
+        //Pre-condition
+        assertEq(ozERC20.totalShares(), 0);
+
+        //Post-condition
+        assertEq(ozERC20.totalSupply(), 0);
     }
 
     function test_GivenTotalSharesIsNotEqualTo0_6() external whenTheUnderlyingHas6Decimals {

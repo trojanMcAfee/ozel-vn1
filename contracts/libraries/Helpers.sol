@@ -2,7 +2,7 @@
 pragma solidity 0.8.21;
 
 
-import {IVault, IAsset} from "../interfaces/IBalancer.sol";
+import {IVault} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {FixedPointMathLib} from "./FixedPointMathLib.sol";
