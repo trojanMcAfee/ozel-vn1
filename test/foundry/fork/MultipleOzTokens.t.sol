@@ -13,7 +13,7 @@ contract MultipleOzTokensTest is TestMethods {
 
     //Tests the creation of different ozTokens and that their minting of tokens is 
     //done properly. 
-    function test_createAndMint_two_ozTokens_oneUser() public returns(
+    function testFork_createAndMint_two_ozTokens_oneUser() public returns(
         ozIToken, ozIToken, uint, uint, uint
     ) {
         //Pre-conditions  
