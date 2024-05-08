@@ -114,9 +114,11 @@ contract BaseMethods is Setup {
             pk = CHARLIE_PK;
         }
 
+        console.log(1);
         (bytes memory data) = _createDataOffchain(
             ozERC20_, amountIn_, pk, user_, token_, Type.IN
         );
+        console.log(2);
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
@@ -188,6 +190,8 @@ contract BaseMethods is Setup {
             bytes32 permitHash = 
                 token_ == daiAddr ? _getPermitHashDAI(sender_, address(ozDiamond)) :
                 _getPermitHash(sender_, address(ozDiamond), amountIn_);
+
+                console.log(3);
 
             (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPK_, permitHash);
 
@@ -407,6 +411,7 @@ contract BaseMethods is Setup {
     * true - pre accrual of ETH staking rewards
     * false - post accrual of ETH staking rewards 
     */
+    //this function needs to be cleaned up
     function _mock_rETH_ETH_unit(Mock type_) internal {
         if (type_ == Mock.POSTACCRUAL_LINK) {
             RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();

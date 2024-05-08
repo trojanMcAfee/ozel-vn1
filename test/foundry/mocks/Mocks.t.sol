@@ -51,7 +51,6 @@ contract MocksTests is MockStorage, TestMethods {
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-        //The difference of totalSupply is +1
         assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply());
 
         console.log('totalSupply: ', ozERC20.totalSupply());
