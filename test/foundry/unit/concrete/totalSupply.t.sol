@@ -17,8 +17,10 @@ contract totalSupply_Unit_Concrete_Test is TestMethods {
         _;
     }
 
+    /**
+     * Action: it should return 0.
+     */
     function test_GivenTotalSharesEqual0_6() external whenTheUnderlyingHas6Decimals {
-        // it should return 0.
         //Pre-condition
         assertEq(ozERC20.totalShares(), 0);
 
@@ -31,11 +33,17 @@ contract totalSupply_Unit_Concrete_Test is TestMethods {
     }
 
     modifier whenTheUnderlyingHas18Decimals() {
+        (ozIToken a,) = _createOzTokens(daiAddr, version);
+        ozERC20 = a;
         _;
     }
 
     function test_GivenTotalSharesEqual0() external whenTheUnderlyingHas18Decimals {
-        // it should return 0.
+        //Pre-condition
+        assertEq(ozERC20.totalShares(), 0);
+
+        //Post-condition
+        assertEq(ozERC20.totalSupply(), 0);
     }
 
     function test_GivenTotalSharesIsNotEqualTo0() external whenTheUnderlyingHas18Decimals {
