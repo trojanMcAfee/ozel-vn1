@@ -37,6 +37,7 @@ import {
     VaultMock
 } from "../mocks/MockContracts.sol";
 import {MockUnderlying} from "../mocks/MockUnderlying.sol";
+import {MockRocketPoolStorage} from "../mocks/rocket-pool/MockRocketPoolStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -261,6 +262,8 @@ contract Setup is Test {
         } else if (chain_ == Network.MOCKS) {
             usdcAddr = address(new MockUnderlying(6));
             daiAddr = address(new MockUnderlying(18));
+            rocketPoolStorage = address(new MockRocketPoolStorage());
+            protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
 
             network = "mocks";
         }
