@@ -1,17 +1,20 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.21;
 
-import {TestMethods} from "../../base/TestMethods.sol";
-import {ozIToken} from "../../../../contracts/interfaces/ozIToken.sol";
 
+import {ozIToken} from "../../../../../contracts/interfaces/ozIToken.sol";
+import {IERC20} from "forge-std/interfaces/IERC20.sol";
+import {TotalSupply_Core} from "./totalSupply_core.sol";
 
-contract totalSupply_Unit_Concrete_Test is TestMethods {
+import {console} from "forge-std/console.sol";
+
+contract TotalSupply_Unit_Concrete_Test is TotalSupply_Core {
     
     ozIToken ozERC20;
     string constant version = "1";
 
     modifier whenTheUnderlyingHas6Decimals() {
-        (ozIToken a,) = _createOzTokens(usdcAddr, version);
+        (ozIToken a,) = _createOzTokens(usdcAddr, "2");
         ozERC20 = a;
         _;
     }
@@ -20,11 +23,7 @@ contract totalSupply_Unit_Concrete_Test is TestMethods {
      * Action: it should return 0.
      */
     function test_GivenTotalSharesEqual0_6() external whenTheUnderlyingHas6Decimals {
-        //Pre-condition
-        assertEq(ozERC20.totalShares(), 0);
-
-        //Post-condition
-        assertEq(ozERC20.totalSupply(), 0);
+        it_should_return_0(ozERC20, 6);
     }
 
     function test_GivenTotalSharesIsNotEqualTo0_6() external whenTheUnderlyingHas6Decimals {
@@ -41,11 +40,7 @@ contract totalSupply_Unit_Concrete_Test is TestMethods {
      * Action: it should return 0.
      */
     function test_GivenTotalSharesEqual0_18() external whenTheUnderlyingHas18Decimals {
-        //Pre-condition
-        assertEq(ozERC20.totalShares(), 0);
-
-        //Post-condition
-        assertEq(ozERC20.totalSupply(), 0);
+        it_should_return_0(ozERC20, 18);
     }
 
     function test_GivenTotalSharesIsNotEqualTo0_18() external whenTheUnderlyingHas18Decimals {
