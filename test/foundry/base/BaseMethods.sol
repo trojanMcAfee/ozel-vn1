@@ -114,7 +114,6 @@ contract BaseMethods is Setup {
             pk = CHARLIE_PK;
         }
 
-        console.log(1);
         (bytes memory data) = _createDataOffchain(
             ozERC20_, amountIn_, pk, user_, token_, Type.IN
         );
@@ -123,7 +122,9 @@ contract BaseMethods is Setup {
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         vm.startPrank(user_);
-        IERC20(token_).safeApprove(address(OZ), amountIn_);
+        IERC20(token_).approve(address(OZ), amountIn_);
+        // IERC20(token_).safeApprove(address(OZ), amountIn_);
+        console.log(4);
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
@@ -190,8 +191,6 @@ contract BaseMethods is Setup {
             bytes32 permitHash = 
                 token_ == daiAddr ? _getPermitHashDAI(sender_, address(ozDiamond)) :
                 _getPermitHash(sender_, address(ozDiamond), amountIn_);
-
-                console.log(3);
 
             (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPK_, permitHash);
 
@@ -413,22 +412,26 @@ contract BaseMethods is Setup {
     */
     //this function needs to be cleaned up
     function _mock_rETH_ETH_unit(Mock type_) internal {
-        if (type_ == Mock.POSTACCRUAL_LINK) {
+        if (type_ == Mock.POSTACCRUAL_LINK) { //check if this leg can be removed
             RethLinkFeedAccrued mockRETHaccrual = new RethLinkFeedAccrued();
             vm.etch(rEthEthChainlink, address(mockRETHaccrual).code);
         } else {
             MockOzOraclePreAccrual mockOracle = new MockOzOraclePreAccrual();
             
-            if (type_ == Mock.PREACCRUAL_UNI_NO_DEVIATION) {
+            if (type_ == Mock.PREACCRUAL_UNI_NO_DEVIATION) 
+            {
                 MockOzOraclePreAccrualNoDeviation mockOraclePreNoDeviation = new MockOzOraclePreAccrualNoDeviation();
                 vm.etch(address(mockOracle), address(mockOraclePreNoDeviation).code);
-            } else if (type_ == Mock.POSTACCRUAL_UNI) {
+            } else if (type_ == Mock.POSTACCRUAL_UNI) 
+            {
                 MockOzOraclePostAccrual mockOraclePost = new MockOzOraclePostAccrual();
                 vm.etch(address(mockOracle), address(mockOraclePost).code);
-            } else if (type_ == Mock.PREACCRUAL_LINK) {
+            } else if (type_ == Mock.PREACCRUAL_LINK) //check if can remove
+            {
                 MockOzOracleLink mockOracleLink = new  MockOzOracleLink();
                 vm.etch(address(mockOracle), address(mockOracleLink).code);
-            } else if (type_ == Mock.POSTACCRUAL_UNI_HIGHER) {
+            } else if (type_ == Mock.POSTACCRUAL_UNI_HIGHER) 
+            {
                 MockOzOraclePostAccrualHigher mockOraclePostHigher = new MockOzOraclePostAccrualHigher();
                 vm.etch(address(mockOracle), address(mockOraclePostHigher).code);
             }
@@ -603,9 +606,5 @@ contract BaseMethods is Setup {
             abi.encode(uint80(0), int(0), uint(0), uint(0), uint80(0))
         );
     }
-
-    // function dealMock(address token, address to, uint256 give) internal {
-    //     IERC20(token)
-    // }
 
 }

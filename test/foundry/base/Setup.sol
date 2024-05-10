@@ -264,6 +264,12 @@ contract Setup is Test {
             daiAddr = address(new MockUnderlying(18));
             rocketPoolStorage = address(new MockRocketPoolStorage());
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
+            ethUsdChainlink = address(new EthLinkFeed());
+            
+            console.log('address(ozDiamond): ', address(ozDiamond));
+            //^^ this shoudn't be address(0) - terminal
+
+            swapRouterUni = address(new SwapRouterMock(address(ozDiamond)));
 
             network = "mocks";
         }
@@ -285,9 +291,7 @@ contract Setup is Test {
         
 
         for (uint i=0; i<tokens.length; i++) {
-            console.log(20);
             deal(tokens[i], alice, baseAmount * (10 ** IERC20Permit(tokens[i]).decimals()));
-            console.log(21);
             deal(tokens[i], bob, amountBob * (10 ** IERC20Permit(tokens[i]).decimals()));
             deal(tokens[i], charlie, amountCharlie * (10 ** IERC20Permit(tokens[i]).decimals()));
         }
@@ -314,7 +318,7 @@ contract Setup is Test {
         initDiamond = new DiamondInit();
 
         //Set up mocks
-        if (n_ == Network.ETH_N_MOCKS) {
+        if (n_ == Network.ETH_N_MOCKS) { //join this with chooseNetwork(mocks)
             mockRETH = new RethLinkFeed();
             mockETH = new EthLinkFeed();
             mockRouter = new SwapRouterMock(address(ozDiamond));

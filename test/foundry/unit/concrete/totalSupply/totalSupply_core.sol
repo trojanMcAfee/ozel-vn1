@@ -21,22 +21,13 @@ contract TotalSupply_Core is TestMethods {
     }
 
     function it_should_return_the_sum_of_all_users_balances(ozIToken ozERC20_, uint decimals_) internal {
-        console.log(11);
-
         //Pre-conditions
         assertEq(IERC20(ozERC20_.asset()).decimals(), decimals_);
 
-        console.log(12);
-
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
-        console.log(14);
         address testToken_internal = ozERC20_.asset();
 
-        console.log(13);
-
         _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI_NO_DEVIATION);
-
-        console.log(14);
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
 

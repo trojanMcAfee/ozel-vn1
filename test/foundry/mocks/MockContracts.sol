@@ -424,7 +424,7 @@ contract MockOzOraclePreAccrualNoDeviation {
 
     function ETH_USD() public view returns(uint) { 
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        return success ? price : _callFallbackOracle(s.WETH);  
+        return success ? price : _callFallbackOracle(s.WETH);
     }
 
     function getUniPrice(uint tokenPair_, Dir side_) public pure returns(uint) {
