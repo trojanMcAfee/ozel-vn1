@@ -11,7 +11,7 @@ contract MockUnderlying is ERC20 {
 
     uint8 dec;
     uint public nonces;
-    uint t_supply;
+    // uint t_supply;
 
     bytes32 public DOMAIN_SEPARATOR;
     bytes32 public PERMIT_TYPEHASH;
@@ -21,7 +21,7 @@ contract MockUnderlying is ERC20 {
 
     constructor(uint dec_) ERC20("Mock", "MOCK") {
         dec = uint8(dec_);
-        t_supply = 100_000_000 * 10 ** dec_;
+        _mint(alice, 10_000_000 * 10 ** dec_);
     }
 
 
@@ -29,17 +29,17 @@ contract MockUnderlying is ERC20 {
         return dec;
     }
 
-    function approve(address spender, uint256 amount) public override returns (bool) {
-        return spender != address(0) && amount > 0;
-    }
+    // function approve(address spender, uint256 amount) public override returns (bool) {
+    //     return spender != address(0) && amount > 0;
+    // }
 
-    function balanceOf(address user) public view override returns(uint) {
-        return user == alice && msg.sender == foundry ? 1: 0;
-    }
+    // function balanceOf(address user) public view override returns(uint) {
+    //     return user == alice && msg.sender == foundry ? 1: 0;
+    // }
 
-    function totalSupply() public view override returns (uint256) {
-        return t_supply;
-    }
+    // function totalSupply() public view override returns (uint256) {
+    //     return t_supply;
+    // }
 
     // function transfer(address to, uint256 amount) public override returns (bool) {
 
