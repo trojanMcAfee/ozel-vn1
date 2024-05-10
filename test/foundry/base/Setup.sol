@@ -285,7 +285,9 @@ contract Setup is Test {
         
 
         for (uint i=0; i<tokens.length; i++) {
+            console.log(20);
             deal(tokens[i], alice, baseAmount * (10 ** IERC20Permit(tokens[i]).decimals()));
+            console.log(21);
             deal(tokens[i], bob, amountBob * (10 ** IERC20Permit(tokens[i]).decimals()));
             deal(tokens[i], charlie, amountCharlie * (10 ** IERC20Permit(tokens[i]).decimals()));
         }

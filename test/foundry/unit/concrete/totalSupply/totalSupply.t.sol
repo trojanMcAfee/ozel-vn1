@@ -28,7 +28,7 @@ contract TotalSupply_Unit_Concrete_Test is TotalSupply_Core {
     }
 
     modifier whenTheUnderlyingHas18Decimals() {
-        (ozIToken a,) = _createOzTokens(daiAddr, "2");
+        (ozIToken a,) = _createOzTokens(daiAddr, "1");
         ozERC20 = a;
         _;
     }
