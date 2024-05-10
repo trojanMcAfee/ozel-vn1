@@ -604,4 +604,8 @@ contract BaseMethods is Setup {
         );
     }
 
+    // function dealMock(address token, address to, uint256 give) internal {
+    //     IERC20(token)
+    // }
+
 }
