@@ -46,20 +46,21 @@ contract MockUnderlying is ERC20 {
         return dec;
     }
 
-    function approve(address spender, uint256 amount) public pure override returns(bool) {
-        return spender != ONE && amount > 0;
-    }
+    // function approve(address spender, uint256 amount) public pure override returns(bool) {
+    //     return spender != ONE && amount > 0;
+    // }
 
-    function allowance(address owner, address spender) public view override returns(uint256) {
-        console.log('spender: ', spender);
+    // function allowance(address owner, address spender) public view override returns(uint256) {
+    //     console.log('spender: ', spender);
+    //     console.log('msg.sender: ', msg.sender);
         
-        if (owner == ONE || spender == ONE) {
-            return MAX_UINT;
-        } else if (spender == mockSwapRouterUni) {
-            return 0;
-        } else {
-            return MAX_UINT;
-        }
-    }
+    //     if (owner == ONE || spender == ONE) {
+    //         return MAX_UINT;
+    //     } else if (spender == mockSwapRouterUni) {
+    //         return 0;
+    //     } else {
+    //         return MAX_UINT;
+    //     }
+    // }
 
 }
