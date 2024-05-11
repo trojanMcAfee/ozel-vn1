@@ -196,7 +196,6 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
-            // console.log('amountOut - _swapBalancer: ', amountOut);
         }
 
         if (type_ == Action.OZL_IN) {
@@ -255,8 +254,6 @@ contract ozEngine is Modifiers {
         uint amountIn_,
         uint minAmountOut_
     ) private returns(uint amountOut) {
-
-        // console.log('amountIn_ *****: ', amountIn_);
 
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(s.rEthWethPoolBalancer).getPoolId(),

@@ -37,6 +37,7 @@ import {
     VaultMock
 } from "../mocks/MockContracts.sol";
 import {MockUnderlying} from "../mocks/MockUnderlying.sol";
+import {MockRethWethPoolBalancer} from "../mocks/MockRethWethPoolBalancer.sol";
 import {MockRocketPoolStorage} from "../mocks/rocket-pool/MockRocketPoolStorage.sol";
 
 import "forge-std/console.sol";
@@ -112,7 +113,6 @@ contract Setup is Test {
     EthLinkFeed internal mockETH;
     SwapRouterMock internal mockRouter;
     VaultMock internal mockVault;
-    // MockOzOraclePreAccrual internal mockOracle;
 
     //Default diamond contracts and facets
     DiamondInit internal initDiamond;
@@ -262,12 +262,10 @@ contract Setup is Test {
         } else if (chain_ == Network.MOCKS) {
             usdcAddr = address(new MockUnderlying(6));
             daiAddr = address(new MockUnderlying(18));
-
             wethAddr = address(new MockUnderlying(18));
-            console.log('mock wethAddr: ', wethAddr);
-
             rocketPoolStorage = address(new MockRocketPoolStorage());
             ethUsdChainlink = address(new EthLinkFeed());
+            rEthWethPoolBalancer = address(new MockRethWethPoolBalancer());
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
 
             network = "mocks";
