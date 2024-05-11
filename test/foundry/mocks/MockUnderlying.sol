@@ -25,7 +25,7 @@ contract MockUnderlying is ERC20 {
 
     address public foundry = 0x34A1D3fff3958843C43aD80F30b94c510645C316;
     address public alice = 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E;
-    address public mockSwapRouterUni = 0x87B2d08110B7D50861141D7bBDd49326af3Ecb31;
+    address public mockSwapRouterUni = 0x26aFF6f249fDF81492cA987e78f1146296c727b4;
     address public constant ONE = address(1);
 
     constructor(uint dec_) ERC20("Mock", "MOCK") {
