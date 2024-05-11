@@ -78,7 +78,6 @@ contract ozEngine is Modifiers {
         uint[] memory minAmountsOut = amounts_.minAmountsOut;
         
         IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
-        console.log(6);
 
         //Swaps underlying to WETH in Uniswap
         uint amountOut = _swapUni(
@@ -88,8 +87,6 @@ contract ozEngine is Modifiers {
             amountIn, 
             minAmountsOut[0]
         );
-
-        console.log(7);
 
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
@@ -221,10 +218,7 @@ contract ozEngine is Modifiers {
         uint amountIn_, 
         uint minAmountOut_
     ) private returns(uint) {
-        console.log(61);
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
-        console.log(62);
-        console.log('tokenOut_: ', tokenOut_);
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 
@@ -237,8 +231,6 @@ contract ozEngine is Modifiers {
                 amountOutMinimum: minAmountOut_.formatMinOut(tokenOut_), 
                 sqrtPriceLimitX96: 0
             });
-
-        console.log(65);
 
         try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) {     
             return amountOut;

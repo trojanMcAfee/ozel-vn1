@@ -136,31 +136,22 @@ contract SwapRouterMock is MockStorage {
     function exactInputSingle(
         ExactInputSingleParams calldata params
     ) external payable returns (uint) {
-        console.log(66);
-
         uint amountOut;
         uint decimals = params.tokenIn == USDC ? 1e12 : 1; 
         uint decimals2 = params.tokenOut == USDC ? 1e12 : 1; 
 
         if (params.tokenIn == USDC || params.tokenIn == DAI) {
-            console.log(67);
             amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
         }
-
-        console.log(68);
     
         if (params.tokenIn == WETH) {
-            console.log(69);
             amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / decimals2;   
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
-            console.log(70);
 
             return amountOut;
         }
         
-        console.log(63);
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
-        console.log(64);
         
         if (IERC20(params.tokenOut).balanceOf(address(this)) / 1e18 != 0) {
             IERC20(params.tokenOut).transfer(address(OZ), amountOut);
@@ -229,7 +220,9 @@ contract VaultMock {
                 .unray();
         }
 
+        console.log(1);
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
+        console.log(2);
         
         emit DeadVars(funds, limit, deadline);
 

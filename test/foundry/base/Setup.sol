@@ -263,6 +263,7 @@ contract Setup is Test {
             usdcAddr = address(new MockUnderlying(6));
             daiAddr = address(new MockUnderlying(18));
             wethAddr = address(new MockUnderlying(18));
+            rEthAddr = address(new MockUnderlying(18));
             rocketPoolStorage = address(new MockRocketPoolStorage());
             ethUsdChainlink = address(new EthLinkFeed());
             rEthWethPoolBalancer = address(new MockRethWethPoolBalancer());
@@ -336,7 +337,7 @@ contract Setup is Test {
         //This needs to happen after ozDiamond is created
         if (n_ == Network.MOCKS) {
             swapRouterUni = address(new SwapRouterMock(address(ozDiamond)));
-            console.log('mock swapRouterUni: ', swapRouterUni);
+            vaultBalancer = address(new VaultMock(address(ozDiamond)));
         }
 
         //Deploys ozToken implementation contract for ozBeacon

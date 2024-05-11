@@ -14,11 +14,11 @@ contract MockRocketPoolStorage {
         settingsDeposit = address(new MockSettingsDeposit());
     }
 
-    function getAddress(bytes32 key_) external view returns(address) {
+    function getAddress(bytes32 key_) external view returns(address toReturn) {
         if (key_ == keccak256(abi.encodePacked('contract.address', 'rocketVault'))) {
-            return vault;
+            toReturn = vault;
         } else if (key_ == keccak256(abi.encodePacked("contract.address", "rocketDAOProtocolSettingsDeposit"))) {
-            return settingsDeposit;
+            toReturn = settingsDeposit;
         }
     }
 }

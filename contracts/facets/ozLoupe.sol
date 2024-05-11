@@ -62,7 +62,6 @@ contract ozLoupe is DiamondLoupeFacet {
         uint[] memory minAmountsOut = new uint[](2);
 
         uint[2] memory prices = [OZ.ETH_USD(), Helpers.rETH_ETH(OZ)];
-        console.log(12);
 
         /**
          * minAmountsOut[0] - minWethOut

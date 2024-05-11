@@ -117,14 +117,11 @@ contract BaseMethods is Setup {
         (bytes memory data) = _createDataOffchain(
             ozERC20_, amountIn_, pk, user_, token_, Type.IN
         );
-        console.log(2);
 
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         vm.startPrank(user_);
         IERC20(token_).approve(address(OZ), amountIn_);
-        // IERC20(token_).safeApprove(address(OZ), amountIn_);
-        console.log(4);
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
