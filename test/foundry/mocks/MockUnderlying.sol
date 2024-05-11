@@ -17,6 +17,7 @@ contract MockUnderlying is ERC20 {
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
     uint8 dec;
+    uint constant MAX_UINT = type(uint).max;
     // uint public nonces;
 
     bytes32 public DOMAIN_SEPARATOR;
@@ -24,7 +25,8 @@ contract MockUnderlying is ERC20 {
 
     address public foundry = 0x34A1D3fff3958843C43aD80F30b94c510645C316;
     address public alice = 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E;
-    address public constant ZERO = address(0);
+    address public mockSwapRouterUni = 0x87B2d08110B7D50861141D7bBDd49326af3Ecb31;
+    address public constant ONE = address(1);
 
     constructor(uint dec_) ERC20("Mock", "MOCK") {
         dec = uint8(dec_);
@@ -45,11 +47,17 @@ contract MockUnderlying is ERC20 {
     }
 
     function approve(address spender, uint256 amount) public override returns(bool) {
-        return spender != ZERO && amount > 0;
+        return spender != ONE && amount > 0;
     }
 
     function allowance(address owner, address spender) public view override returns(uint256) {
-        return owner == ZERO || spender == ZERO ? type(uint).max  : type(uint).max;
+        if (owner == ONE || spender == ONE) {
+            return MAX_UINT;
+        } else if (spender == mockSwapRouterUni) {
+            return 0;
+        } else {
+            return MAX_UINT;
+        }
     }
 
 }

@@ -265,11 +265,6 @@ contract Setup is Test {
             rocketPoolStorage = address(new MockRocketPoolStorage());
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
             ethUsdChainlink = address(new EthLinkFeed());
-            
-            console.log('address(ozDiamond): ', address(ozDiamond));
-            //^^ this shoudn't be address(0) - terminal
-
-            swapRouterUni = address(new SwapRouterMock(address(ozDiamond)));
 
             network = "mocks";
         }
@@ -334,6 +329,11 @@ contract Setup is Test {
             deal(daiAddr, address(mockRouter), 100000 * 1e18);
             deal(rEthAddr, address(mockVault), 1000 * 1e18);
             deal(wethAddr, address(mockVault), 1000 * 1e18);
+        }
+
+        //This needs to happen after ozDiamond is created
+        if (n_ == Network.MOCKS) {
+            swapRouterUni = address(new SwapRouterMock(address(ozDiamond)));
         }
 
         //Deploys ozToken implementation contract for ozBeacon
