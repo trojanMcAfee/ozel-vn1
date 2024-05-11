@@ -225,6 +225,7 @@ contract ozEngine is Modifiers {
         console.log(61);
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
         console.log(62);
+        console.log('tokenOut_: ', tokenOut_);
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 
@@ -237,6 +238,8 @@ contract ozEngine is Modifiers {
                 amountOutMinimum: minAmountOut_.formatMinOut(tokenOut_), 
                 sqrtPriceLimitX96: 0
             });
+
+        console.log(65);
 
         try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) {     
             return amountOut;

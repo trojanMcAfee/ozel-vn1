@@ -46,11 +46,13 @@ contract MockUnderlying is ERC20 {
         return dec;
     }
 
-    function approve(address spender, uint256 amount) public override returns(bool) {
+    function approve(address spender, uint256 amount) public pure override returns(bool) {
         return spender != ONE && amount > 0;
     }
 
     function allowance(address owner, address spender) public view override returns(uint256) {
+        console.log('spender: ', spender);
+        
         if (owner == ONE || spender == ONE) {
             return MAX_UINT;
         } else if (spender == mockSwapRouterUni) {
