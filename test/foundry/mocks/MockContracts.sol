@@ -137,10 +137,13 @@ contract SwapRouterMock is MockStorage {
         ExactInputSingleParams calldata params
     ) external payable returns (uint) {
         uint amountOut;
-        uint decimals = params.tokenIn == USDC ? 1e12 : 1; 
-        uint decimals2 = params.tokenOut == USDC ? 1e12 : 1; 
+        uint decimals = USDC(params.tokenIn) ? 1e12 : 1; 
+        uint decimals2 = USDC(params.tokenIn) ? 1e12 : 1; 
 
-        if (params.tokenIn == USDC || params.tokenIn == DAI) {
+        console.log('params.tokenIn: ', params.tokenIn);
+
+        if (USDC(params.tokenIn) || params.tokenIn == DAI) {
+            console.log('here');
             amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
         }
     
@@ -212,8 +215,10 @@ contract VaultMock {
     ) external payable returns (uint) {
         uint amountOut;
 
-        IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
+        console.log(1);
         console.log('singleSwap.amount in mock swap: ', singleSwap.amount);
+        IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
+        console.log(2);
 
         if (singleSwap.amount == 19673291323457014) 
         { 

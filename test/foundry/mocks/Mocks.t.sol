@@ -143,7 +143,7 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('eth_usd: ', eth_usd);
         console.log('reth_usd: ', reth_usd);
 
-        uint formatter = testToken == USDC ? 1e12 : 1;
+        uint formatter = USDC(testToken) ? 1e12 : 1;
         uint reth_preAccrual = (testTokenAmountIn * formatter).mulDivDown(1e18, reth_usd_preAccrual);
         console.log('reth_preAccrual: ', reth_preAccrual);
 

@@ -39,6 +39,7 @@ import {
 import {MockUnderlying} from "../mocks/MockUnderlying.sol";
 import {MockRethWethPoolBalancer} from "../mocks/MockRethWethPoolBalancer.sol";
 import {MockRocketPoolStorage} from "../mocks/rocket-pool/MockRocketPoolStorage.sol";
+import {MockStorage} from "../mocks/MockStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -54,7 +55,7 @@ enum Network {
 Network constant n = Network.MOCKS;
 //****** */
 
-contract Setup is Test {
+contract Setup is MockStorage, Test {
 
     uint OWNER_PK = 123;
     uint ALICE_PK = 456;
