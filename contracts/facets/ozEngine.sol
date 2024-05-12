@@ -193,6 +193,7 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
+            console.log('amountOut in ozEngine: ', amountOut);
         }
 
         if (type_ == Action.OZL_IN) {
