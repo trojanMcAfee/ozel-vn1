@@ -25,10 +25,11 @@ contract TotalSupply_Core is TestMethods {
         assertEq(IERC20(ozERC20_.asset()).decimals(), decimals_);
         
         address testToken_internal = ozERC20_.asset();
+        uint rawAmount = 100;
 
         _mock_rETH_ETH_unit(Mock.PREACCRUAL_UNI_NO_DEVIATION);
 
-        uint amountIn = (100 / 3) * 10 ** IERC20(testToken_internal).decimals();
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
 
         //Actions
         _mintOzTokens(ozERC20_, alice, testToken_internal, amountIn);
