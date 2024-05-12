@@ -140,18 +140,13 @@ contract SwapRouterMock is MockStorage {
         uint decimals = USDC(params.tokenIn) ? 1e12 : 1; 
         uint decimals2 = USDC(params.tokenIn) ? 1e12 : 1; 
 
-        console.log('params.tokenIn: ', params.tokenIn);
-
         if (USDC(params.tokenIn) || params.tokenIn == DAI) {
-            console.log('here');
             amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
         }
     
         if (params.tokenIn == WETH) {
             amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / decimals2;   
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
-
-            console.log('amountOut1: ', amountOut);
 
             return amountOut;
         }
@@ -162,12 +157,7 @@ contract SwapRouterMock is MockStorage {
             IERC20(params.tokenOut).transfer(address(OZ), amountOut);
         }
 
-        if (params.amountIn == 33000000) {
-            console.log('amountOut2: ', amountOut);
-            return amountOut;
-        }
-
-        console.log('amountOut3: ', amountOut);
+        if (params.amountIn == 33000000) return amountOut;
         
         return amountOut;
     }
@@ -215,10 +205,7 @@ contract VaultMock {
     ) external payable returns (uint) {
         uint amountOut;
 
-        console.log(1);
-        console.log('singleSwap.amount in mock swap: ', singleSwap.amount);
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
-        console.log(2);
 
         if (singleSwap.amount == 19673291323457014) 
         { 
@@ -233,11 +220,7 @@ contract VaultMock {
                 .unray();
         }
 
-        console.log(1);
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
-        console.log(2);
-        console.log('amountOut in mock swap: ', amountOut);
-        //<------- here *****
         
         emit DeadVars(funds, limit, deadline);
 

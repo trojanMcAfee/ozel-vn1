@@ -100,7 +100,6 @@ contract ozEngine is Modifiers {
             return postBalance - preBalance;
         
         } else {
-            console.log(8);
             return _checkPauseAndSwap(
                 s.WETH, 
                 s.rETH, 
@@ -193,7 +192,6 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
-            console.log('amountOut in ozEngine: ', amountOut);
         }
 
         if (type_ == Action.OZL_IN) {
