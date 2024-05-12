@@ -100,7 +100,8 @@ contract ozEngine is Modifiers {
             return postBalance - preBalance;
         
         } else {
-            return _checkPauseAndSwap(
+            console.log(9);
+            uint x = _checkPauseAndSwap(
                 s.WETH, 
                 s.rETH, 
                 address(this),
@@ -108,6 +109,9 @@ contract ozEngine is Modifiers {
                 minAmountsOut,
                 Action.OZ_IN
             );
+            console.log(10);
+            console.log('x: ', x);
+            return x;
         }
     }
 

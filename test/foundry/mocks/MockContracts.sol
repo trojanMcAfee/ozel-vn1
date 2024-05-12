@@ -205,22 +205,36 @@ contract VaultMock {
     ) external payable returns (uint) {
         uint amountOut;
 
+        console.log(1);
+
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
+
+        console.log(2);
 
         if (singleSwap.amount == 19673291323457014) 
         { 
+            console.log(3);
             uint wethIn = 19673291323457014;
             amountOut =  wethIn.mulDivDown(1e18, OZ.rETH_ETH());
+            console.log(4);
         } 
 
         if (singleSwap.amount == 18107251181805252) { 
+            console.log(5);
+
             uint rETHin = 18107251181805252;
             amountOut = ((rETHin.ray())
                 .mulDivRay(OZ.getUniPrice(0, Dir.UP).ray(), RAY ^ TWO))
                 .unray();
+
+            console.log(6);
         }
+        console.log(7);
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
+        //^^ amountOut is returning 0 <----- *****
+
+        console.log(8);
         
         emit DeadVars(funds, limit, deadline);
 
