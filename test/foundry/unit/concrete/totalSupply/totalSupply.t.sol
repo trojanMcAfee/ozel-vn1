@@ -10,7 +10,6 @@ import {console} from "forge-std/console.sol";
 contract TotalSupply_Unit_Concrete_Test is TotalSupply_Core {
     
     ozIToken ozERC20;
-    // string constant version = "1";
 
     modifier whenTheUnderlyingHas6Decimals() {
         (ozIToken a,) = _createOzTokens(usdcAddr, "1");

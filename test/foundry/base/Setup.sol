@@ -287,7 +287,6 @@ contract Setup is MockStorage, Test {
             tokens[1] = secondTestToken;
             tokens[2] = thirdTestToken;
         }
-        
 
         for (uint i=0; i<tokens.length; i++) {
             deal(tokens[i], alice, baseAmount * (10 ** IERC20Permit(tokens[i]).decimals()));
