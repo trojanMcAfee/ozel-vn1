@@ -52,7 +52,7 @@ enum Network {
     MOCKS
 }
 
-Network constant n = Network.ETHEREUM;
+Network constant n = Network.ETH_N_MOCKS;
 //****** */
 
 contract Setup is MockStorage, Test {
@@ -181,6 +181,11 @@ contract Setup is MockStorage, Test {
     //Variables used for simulating the rETH rewards acrrual using Uniswap v3's TWAP oracle
     bytes32 originalSlot0 = 0x00010000960096000000034100000000000000010ae5499d268d75ff31b0bffd;
     bytes32 newSlot0WithCardinality = 0x00010000960020000000034100000000000000010ae5499d268d75ff31b0bffd;
+
+    modifier skipOrNot {
+        _skip();
+        _;
+    }
 
 
     /** FUNCTIONS **/ 
@@ -598,9 +603,13 @@ contract Setup is MockStorage, Test {
     }
 
 
-    function _skip() internal pure returns(bool) {
-        if (n == Network.ETHEREUM) return true;
-        return false;
+    // function _skip() internal pure returns(bool) {
+    //     if (n == Network.ETHEREUM) return true;
+    //     return false;
+    // }
+
+    function _skip() internal {
+        if (n == Network.ETHEREUM) vm.skip(true);
     }
 
     function _setLabels() private {

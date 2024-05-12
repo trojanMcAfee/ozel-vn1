@@ -11,7 +11,9 @@ import {console} from "forge-std/console.sol";
 
 contract TotalSupply_Core is TestMethods {
 
-    function it_should_return_0(ozIToken ozERC20_, uint decimals_) internal view {
+    
+
+    function it_should_return_0(ozIToken ozERC20_, uint decimals_) skipOrNot internal {
         //Pre-conditions
         assertEq(IERC20(ozERC20_.asset()).decimals(), decimals_);
         assertEq(ozERC20_.totalShares(), 0);
@@ -20,7 +22,7 @@ contract TotalSupply_Core is TestMethods {
         assertEq(ozERC20_.totalSupply(), 0);
     }
 
-    function it_should_return_the_sum_of_all_users_balances(ozIToken ozERC20_, uint decimals_) internal {
+    function it_should_return_the_sum_of_all_users_balances(ozIToken ozERC20_, uint decimals_) skipOrNot internal {
         //Pre-conditions
         assertEq(IERC20(ozERC20_.asset()).decimals(), decimals_);
         
