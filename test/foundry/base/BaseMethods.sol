@@ -121,7 +121,8 @@ contract BaseMethods is Setup {
         (uint[] memory minAmountsOut,,,) = HelpersLib.extract(data);
 
         vm.startPrank(user_);
-        IERC20(token_).approve(address(OZ), amountIn_);
+        // IERC20(token_).approve(address(OZ), amountIn_);
+        IERC20(token_).safeApprove(address(OZ), amountIn_);
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
