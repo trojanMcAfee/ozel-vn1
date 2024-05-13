@@ -623,9 +623,12 @@ contract OZLtokenTest is TestMethods {
         return ozlRethBalance;
     }  
 
-    //------------
-
-    function test_x() public {
+    
+    /**
+     * Tests that the OZL rewards go to the receiver of the ozTokens and not
+     * the owner of the underlying (aka stable) used during the mint.
+     */
+    function test_rewards_to_receiver() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
@@ -633,11 +636,10 @@ contract OZLtokenTest is TestMethods {
         _changeSlippage(uint16(9900));
 
         _startCampaign();
-        // _mintOzTokens(ozERC20, alice, testToken, amountIn); 
         bytes memory data = OZ.getMintData(
             amountIn, 
             OZ.getDefaultSlippage(),
-            alice
+            bob
         );
 
         vm.startPrank(alice);
@@ -646,18 +648,37 @@ contract OZLtokenTest is TestMethods {
         vm.stopPrank();
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlice: ', ozBalanceAlice);
+        assertTrue(ozBalanceAlice == 0);
+        
+        uint ozBalanceBob = ozERC20.balanceOf(bob);
+        assertTrue(ozBalanceBob > 0);
 
         _accrueRewards(15);
 
         IOZL OZL = IOZL(address(ozlProxy));
 
+        uint ozlEarnedAlice = OZ.earned(alice);
+        assertTrue(ozlEarnedAlice == 0);
+
+        uint ozlEarnedBob = OZ.earned(bob);
+        assertTrue(ozlEarnedBob > 0);
+
         vm.prank(alice);
-        OZ.claimReward();
+        uint claimedAlice = OZ.claimReward();
+        assertTrue(claimedAlice == 0);
 
-        uint ozlBalance = OZL.balanceOf(alice);
-        console.log('ozlBalance: ', ozlBalance);
+        vm.prank(bob);
+        uint claimedBob = OZ.claimReward();
+        assertTrue(claimedBob > 0);
 
+        uint ozlBalanceAlice = OZL.balanceOf(alice);
+        assertTrue(ozlBalanceAlice == 0);
+
+        uint ozlBalanceBob = OZL.balanceOf(bob);
+        assertTrue(
+            ozlBalanceBob > 0 &&
+            ozlBalanceBob == claimedBob
+        );
     }
 
 
