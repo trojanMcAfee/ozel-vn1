@@ -139,8 +139,6 @@ contract SwapRouterMock is MockStorage {
         uint amountOut;
         uint decimals = USDC(params.tokenIn) ? 1e12 : 1; 
         uint decimals2 = USDC(params.tokenIn) ? 1e12 : 1; 
-
-        console.log('params.tokenIn: ', params.tokenIn);
         
         if (USDC(params.tokenIn) || params.tokenIn == DAI) {
             amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
@@ -148,7 +146,17 @@ contract SwapRouterMock is MockStorage {
     
         if (params.tokenIn == WETH) {
             console.log(12);  
+            console.log('params.tokenOut: ', params.tokenOut);
+
             amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / decimals2;   
+
+            console.log('params.amountIn: ', params.amountIn);
+            console.log('OZ.ETH_USD(): ', OZ.ETH_USD());
+            console.log('decimals2: ', decimals2);
+            console.log('is: ', (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)));
+            console.log('amountOut in mock router: ', amountOut);
+            console.log('bal tokenOut: ', IERC20(params.tokenOut).balanceOf(address(this)));
+
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
 
             return amountOut;
@@ -211,8 +219,6 @@ contract VaultMock {
         uint256 deadline
     ) external payable returns (uint) {
         uint amountOut;
-
-        console.log(1);
 
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
 
