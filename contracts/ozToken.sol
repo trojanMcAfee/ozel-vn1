@@ -210,11 +210,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return convertToAssets(sharesOf(account_), account_).unray();
     }
 
-    //test if owner_ being passed to updateReward() affects the owner_ getting the rewards
-    //(since the ozTokens would be going to receiver_ instead of owner_)
-    //test using OZLrewards.sol. Perhaps receiver_ needs to be eliminated. If that happens, 
-    //remove receiver_ from wozToken.sol - mintAndWrap()
-    //receiver_ is also used in ozLoupe
+    
     function mint(
         bytes memory data_, 
         address owner_

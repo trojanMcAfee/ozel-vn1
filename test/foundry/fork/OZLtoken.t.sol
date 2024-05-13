@@ -629,6 +629,7 @@ contract OZLtokenTest is TestMethods {
      * the owner of the underlying (aka stable) used during the mint.
      */
     function test_rewards_to_receiver() public {
+        //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
@@ -657,6 +658,7 @@ contract OZLtokenTest is TestMethods {
 
         IOZL OZL = IOZL(address(ozlProxy));
 
+        //Actions
         uint ozlEarnedAlice = OZ.earned(alice);
         assertTrue(ozlEarnedAlice == 0);
 
@@ -671,6 +673,7 @@ contract OZLtokenTest is TestMethods {
         uint claimedBob = OZ.claimReward();
         assertTrue(claimedBob > 0);
 
+        //Post-conditions
         uint ozlBalanceAlice = OZL.balanceOf(alice);
         assertTrue(ozlBalanceAlice == 0);
 
