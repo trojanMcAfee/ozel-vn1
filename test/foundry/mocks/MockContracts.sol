@@ -138,7 +138,7 @@ contract SwapRouterMock is MockStorage {
     ) external payable returns (uint) {
         uint amountOut;
         uint decimals = USDC(params.tokenIn) ? 1e12 : 1; 
-        uint decimals2 = USDC(params.tokenIn) ? 1e12 : 1; 
+        uint decimals2 = USDC(params.tokenOut) ? 1e12 : 1; 
         
         if (USDC(params.tokenIn) || params.tokenIn == DAI) {
             amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
