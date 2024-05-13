@@ -88,8 +88,6 @@ contract ozEngine is Modifiers {
             minAmountsOut[0]
         );
 
-        console.log('amountOut after _swapUni: ', amountOut);
-
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
@@ -102,8 +100,7 @@ contract ozEngine is Modifiers {
             return postBalance - preBalance;
         
         } else {
-            console.log(9);
-            uint x = _checkPauseAndSwap(
+            return _checkPauseAndSwap(
                 s.WETH, 
                 s.rETH, 
                 address(this),
@@ -111,9 +108,6 @@ contract ozEngine is Modifiers {
                 minAmountsOut,
                 Action.OZ_IN
             );
-            console.log(10);
-            console.log('x: ', x);
-            return x;
         }
     }
 

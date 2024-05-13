@@ -145,18 +145,7 @@ contract SwapRouterMock is MockStorage {
         }
     
         if (params.tokenIn == WETH) {
-            console.log(12);  
-            console.log('params.tokenOut: ', params.tokenOut);
-
             amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / decimals2;   
-
-            console.log('params.amountIn: ', params.amountIn);
-            console.log('OZ.ETH_USD(): ', OZ.ETH_USD());
-            console.log('decimals2: ', decimals2);
-            console.log('is: ', (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)));
-            console.log('amountOut in mock router: ', amountOut);
-            console.log('bal tokenOut: ', IERC20(params.tokenOut).balanceOf(address(this)));
-
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
 
             return amountOut;
@@ -165,14 +154,10 @@ contract SwapRouterMock is MockStorage {
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
         
         if (IERC20(params.tokenOut).balanceOf(address(this)) / 1e18 != 0) {
-            console.log(13);
             IERC20(params.tokenOut).transfer(address(OZ), amountOut);
         }
 
-        if (params.amountIn == 33000000) {
-            console.log(14);
-            return amountOut;
-        }
+        if (params.amountIn == 33000000) return amountOut;
         
         return amountOut;
     }
@@ -222,34 +207,21 @@ contract VaultMock {
 
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
 
-        console.log(2);
-        console.log('singleSwap.amount: ', singleSwap.amount);
-
         if (singleSwap.amount == 19673291323457014) 
         { 
-            console.log(3);
             uint wethIn = 19673291323457014;
             amountOut =  wethIn.mulDivDown(1e18, OZ.rETH_ETH());
-            console.log(4);
         } 
 
-        if (singleSwap.amount == 18107251181805252) { 
-            console.log(5);
-
+        if (singleSwap.amount == 18107251181805252) 
+        { 
             uint rETHin = 18107251181805252;
             amountOut = ((rETHin.ray())
                 .mulDivRay(OZ.getUniPrice(0, Dir.UP).ray(), RAY ^ TWO))
                 .unray();
-
-            console.log(6);
         }
-        console.log(7);
-        console.log('amountOut: ', amountOut);
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
-        //^^ amountOut is returning 0 <----- *****
-
-        console.log(8);
         
         emit DeadVars(funds, limit, deadline);
 
