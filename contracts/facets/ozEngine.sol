@@ -88,6 +88,8 @@ contract ozEngine is Modifiers {
             minAmountsOut[0]
         );
 
+        console.log('amountOut after _swapUni: ', amountOut);
+
         if (_checkRocketCapacity(amountOut)) {
             IWETH(s.WETH).withdraw(amountOut);
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
