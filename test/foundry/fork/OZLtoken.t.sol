@@ -633,16 +633,17 @@ contract OZLtokenTest is TestMethods {
         _changeSlippage(uint16(9900));
 
         _startCampaign();
-        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
-        // bytes memory data = OZ.getMintData(
-        //     amountIn, 
-        //     OZ.getDefaultSlippage(),
-        //     alice
-        // );
+        // _mintOzTokens(ozERC20, alice, testToken, amountIn); 
+        bytes memory data = OZ.getMintData(
+            amountIn, 
+            OZ.getDefaultSlippage(),
+            alice
+        );
 
-        // vm.startPrank(alice);
-        // IERC20Permit(testToken).approve(address(OZ), type(uint).max);
-        // ozERC20.mint(data, alice);
+        vm.startPrank(alice);
+        IERC20Permit(testToken).approve(address(OZ), type(uint).max);
+        ozERC20.mint(data, alice);
+        vm.stopPrank();
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('ozBalanceAlice: ', ozBalanceAlice);
