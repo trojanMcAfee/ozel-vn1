@@ -19,11 +19,18 @@ contract MockStorage {
     address mockUSDC = 0xFEfC6BAF87cF3684058D62Da40Ff3A795946Ab06;
     address[] public USDCa = [mainnetUSDC, mockUSDC];
 
+    address mainnetDAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+    address mockDAI = 0x2a9e8fa175F45b235efDdD97d2727741EF4Eee63;
+    address[] public DAIa = [mainnetDAI, mockDAI];
+    
     address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    address DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
 
     function USDC(address tokenIn_) public view returns(bool) {
         return USDCa.indexOf(tokenIn_) >= 0 ? true : false;
+    }
+
+    function DAI(address tokenIn_) public view returns(bool) {
+        return DAIa.indexOf(tokenIn_) >= 0 ? true : false;
     }
 }

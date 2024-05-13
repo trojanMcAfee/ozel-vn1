@@ -268,6 +268,9 @@ contract Setup is MockStorage, Test {
         } else if (chain_ == Network.MOCKS) {
             usdcAddr = address(new MockUnderlying(6));
             daiAddr = address(new MockUnderlying(18));
+
+            console.log('daiAddr: ', daiAddr);
+
             wethAddr = address(new MockUnderlying(18));
             rEthAddr = address(new MockUnderlying(18));
             rocketPoolStorage = address(new MockRocketPoolStorage());
