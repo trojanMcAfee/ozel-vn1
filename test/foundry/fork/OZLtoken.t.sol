@@ -623,7 +623,41 @@ contract OZLtokenTest is TestMethods {
         return ozlRethBalance;
     }  
 
+    //------------
 
+    function test_x() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        _changeSlippage(uint16(9900));
+
+        _startCampaign();
+        _mintOzTokens(ozERC20, alice, testToken, amountIn); 
+        // bytes memory data = OZ.getMintData(
+        //     amountIn, 
+        //     OZ.getDefaultSlippage(),
+        //     alice
+        // );
+
+        // vm.startPrank(alice);
+        // IERC20Permit(testToken).approve(address(OZ), type(uint).max);
+        // ozERC20.mint(data, alice);
+
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlice: ', ozBalanceAlice);
+
+        _accrueRewards(15);
+
+        IOZL OZL = IOZL(address(ozlProxy));
+
+        vm.prank(alice);
+        OZ.claimReward();
+
+        uint ozlBalance = OZL.balanceOf(alice);
+        console.log('ozlBalance: ', ozlBalance);
+
+    }
 
 
 

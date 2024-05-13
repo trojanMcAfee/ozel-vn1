@@ -303,7 +303,7 @@ contract Setup is MockStorage, Test {
 
     function _runSetup(Network n_) internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
-        testToken = daiAddr;
+        testToken = usdcAddr;
         secondTestToken = testToken == daiAddr ? usdcAddr : daiAddr;
         thirdTestToken = usdtAddr;
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
