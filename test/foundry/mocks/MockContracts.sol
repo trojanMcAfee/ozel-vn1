@@ -207,8 +207,6 @@ contract VaultMock {
 
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
 
-        console.log('singleSwap.amount: ', singleSwap.amount);
-
         if (singleSwap.amount == 19673291323457014) 
         { 
             uint wethIn = 19673291323457014;

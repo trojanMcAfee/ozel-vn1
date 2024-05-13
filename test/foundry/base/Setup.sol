@@ -46,13 +46,12 @@ import "forge-std/console.sol";
 
 //****** */
 enum Network {
-    ARBITRUM,
     ETHEREUM,
     ETH_N_MOCKS,
     MOCKS
 }
 
-Network constant n = Network.MOCKS;
+Network constant n = Network.ETHEREUM;
 //****** */
 
 contract Setup is MockStorage, Test {
@@ -268,9 +267,6 @@ contract Setup is MockStorage, Test {
         } else if (chain_ == Network.MOCKS) {
             usdcAddr = address(new MockUnderlying(6));
             daiAddr = address(new MockUnderlying(18));
-
-            console.log('daiAddr: ', daiAddr);
-
             wethAddr = address(new MockUnderlying(18));
             rEthAddr = address(new MockUnderlying(18));
             rocketPoolStorage = address(new MockRocketPoolStorage());
@@ -307,7 +303,7 @@ contract Setup is MockStorage, Test {
 
     function _runSetup(Network n_) internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
-        testToken = usdcAddr;
+        testToken = daiAddr;
         secondTestToken = testToken == daiAddr ? usdcAddr : daiAddr;
         thirdTestToken = usdtAddr;
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
