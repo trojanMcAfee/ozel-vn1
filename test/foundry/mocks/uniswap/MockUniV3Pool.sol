@@ -8,7 +8,10 @@ contract MockUniV3Pool {
         int56[] memory tickCumulatives, 
         uint160[] memory secondsPerLiquidityCumulativeX128s
     ) {
-        
+        if (secondsAgos.length > 0) {
+            tickCumulatives[0] = int56(27639974418);
+            tickCumulatives[1] = int56(27641473818);
+        }
     }
 
 }

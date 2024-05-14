@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.21;
 
+import {console} from "forge-std/console.sol";
 
 contract MockUniV3Factory {
 
@@ -19,6 +20,7 @@ contract MockUniV3Factory {
         address tokenB,
         uint24 fee
     ) external view returns (address pool) {
+        console.log('');
         if (tokenA == rETH && tokenB == WETH && fee != 0) return rETHwETHpool;
         return address(1);
     }
