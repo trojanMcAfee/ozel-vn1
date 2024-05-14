@@ -11,8 +11,6 @@ import {console} from "forge-std/console.sol";
 
 contract TotalSupply_Core is TestMethods {
 
-    
-
     function it_should_return_0(ozIToken ozERC20_, uint decimals_) skipOrNot internal {
         //Pre-conditions
         assertEq(IERC20(ozERC20_.asset()).decimals(), decimals_);
