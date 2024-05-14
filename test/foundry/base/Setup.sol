@@ -40,6 +40,8 @@ import {MockUnderlying} from "../mocks/MockUnderlying.sol";
 import {MockRethWethPoolBalancer} from "../mocks/MockRethWethPoolBalancer.sol";
 import {MockRocketPoolStorage} from "../mocks/rocket-pool/MockRocketPoolStorage.sol";
 import {MockStorage} from "../mocks/MockStorage.sol";
+import {MockUniV3Factory} from "../mocks/uniswap/MockUniV3Factory.sol";
+import {MockUniV3Pool} from "../mocks/uniswap/MockUniV3Pool.sol";
 
 import "forge-std/console.sol";
 
@@ -51,7 +53,7 @@ enum Network {
     MOCKS
 }
 
-Network constant n = Network.ETHEREUM;
+Network constant n = Network.MOCKS;
 //****** */
 
 contract Setup is MockStorage, Test {
@@ -93,6 +95,7 @@ contract Setup is MockStorage, Test {
     address internal ethUsdChainlink;
     address internal vaultBalancer; 
     address internal rEthWethPoolBalancer;
+    address internal rEthWethPoolUni;
     address internal rEthEthChainlink;
     address internal tellorOracle;
     address internal weETHETHredStone;
@@ -272,6 +275,10 @@ contract Setup is MockStorage, Test {
             rocketPoolStorage = address(new MockRocketPoolStorage());
             ethUsdChainlink = address(new EthLinkFeed());
             rEthWethPoolBalancer = address(new MockRethWethPoolBalancer());
+            rEthWethPoolUni = address(new MockUniV3Pool());
+
+            uniFactory = address(new MockUniV3Factory(rEthAddr, wethAddr, rEthWethPoolUni));
+
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
 
             network = "mocks";

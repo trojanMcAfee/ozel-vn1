@@ -2,7 +2,7 @@
 pragma solidity 0.8.21;
 
 
-import {ozIToken} from "../../../../../contracts/interfaces/ozIToken.sol";
+import {ozIToken} from "../../../../../../contracts/interfaces/ozIToken.sol";
 import {TotalSupply_Core} from "./totalSupply_core.sol";
 
 

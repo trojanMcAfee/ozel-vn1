@@ -2,10 +2,10 @@
 pragma solidity 0.8.21;
 
 
-import {ozIToken} from "../../../../../contracts/interfaces/ozIToken.sol";
-import {TestMethods} from "../../../base/TestMethods.sol";
+import {ozIToken} from "../../../../../../contracts/interfaces/ozIToken.sol";
+import {TestMethods} from "../../../../base/TestMethods.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
-import {Mock} from "../../../base/AppStorageTests.sol";
+import {Mock} from "../../../../base/AppStorageTests.sol";
 
 import {console} from "forge-std/console.sol";
 

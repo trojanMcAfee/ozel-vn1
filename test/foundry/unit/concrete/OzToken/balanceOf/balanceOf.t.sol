@@ -1,13 +1,20 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.0;
+// SPDX-License-Identifier: GPL-2.0-or-later
+pragma solidity 0.8.21;
 
-contract BalanceOf_Unit_Concrete_test2 {
-    modifier whenTheUnderlyingHas6Decimals() {
-        _;
-    }
+
+import {BalanceOf_Core} from "./BalanceOf_Core.sol";
+
+
+contract BalanceOf_Unit_Concrete_test is BalanceOf_Core {
+
+    // ozIToken ozERC20;
+
+    // modifier whenTheUnderlyingHas6Decimals() {
+    //     _;
+    // }
 
     function test_GivenTotalSupplyEquals0_6() external whenTheUnderlyingHas6Decimals {
-        // it should return 0.
+        it_should_return_0(6);
     }
 
     modifier whenTotalSupplyIsMoreThan0_6() {
@@ -38,9 +45,9 @@ contract BalanceOf_Unit_Concrete_test2 {
         // it should return 0.
     }
 
-    modifier whenTheUnderlyingHas18Decimals() {
-        _;
-    }
+    // modifier whenTheUnderlyingHas18Decimals() {
+    //     _;
+    // }
 
     function test_GivenTotalSupplyEquals0_18() external whenTheUnderlyingHas18Decimals {
         // it should return 0.

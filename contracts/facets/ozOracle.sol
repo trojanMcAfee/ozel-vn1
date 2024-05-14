@@ -128,6 +128,8 @@ contract ozOracle {
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
+        console.log('s.uniFactory: ', s.uniFactory);
+
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);
 
         uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
@@ -148,8 +150,6 @@ contract ozOracle {
         uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1 ether, token0, token1
         );
-
-        // console.log('amountOut *******: ', amountOut);
     
         return amountOut * (token1 == s.WETH ? 1 : 1e12);
     }
