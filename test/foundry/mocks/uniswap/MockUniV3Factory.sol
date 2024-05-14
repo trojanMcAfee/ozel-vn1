@@ -20,7 +20,6 @@ contract MockUniV3Factory {
         address tokenB,
         uint24 fee
     ) external view returns (address pool) {
-        console.log('');
         if (tokenA == rETH && tokenB == WETH && fee != 0) return rETHwETHpool;
         return address(1);
     }
