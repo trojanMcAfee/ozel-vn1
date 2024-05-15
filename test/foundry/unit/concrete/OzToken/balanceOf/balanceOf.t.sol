@@ -20,7 +20,7 @@ contract BalanceOf_Unit_Concrete_test is BalanceOf_Core {
         whenTheUnderlyingHas6Decimals
         whenTotalSupplyIsMoreThan0_6
     {
-        // it should return more than 0.
+        it_should_return_more_than_0(6);
     }
 
     function test_GivenThatTwoUsersAreEqualOzTokenHolders_6()

@@ -205,13 +205,20 @@ contract VaultMock {
     ) external payable returns (uint) {
         uint amountOut;
 
+        console.log(1);
+
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
+        console.log(2);
+        console.log('singleSwap.amount: ', singleSwap.amount);
 
         if (singleSwap.amount == 19673291323457014) 
         { 
             uint wethIn = 19673291323457014;
+            console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH());
             amountOut =  wethIn.mulDivDown(1e18, OZ.rETH_ETH());
         } 
+
+        console.log(3);
 
         if (singleSwap.amount == 18107251181805252) 
         { 
@@ -221,7 +228,13 @@ contract VaultMock {
                 .unray();
         }
 
+        console.log(4);
+        console.log('amountOut: ', amountOut);
+        console.log('bal sender: ', IERC20(address(singleSwap.assetOut)).balanceOf(msg.sender));
+
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
+
+        console.log(5);
         
         emit DeadVars(funds, limit, deadline);
 

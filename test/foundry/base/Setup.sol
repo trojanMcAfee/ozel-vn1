@@ -272,12 +272,14 @@ contract Setup is MockStorage, Test {
             daiAddr = address(new MockUnderlying(18));
             wethAddr = address(new MockUnderlying(18));
             rEthAddr = address(new MockUnderlying(18));
-            rocketPoolStorage = address(new MockRocketPoolStorage());
-            ethUsdChainlink = address(new EthLinkFeed());
-            rEthWethPoolBalancer = address(new MockRethWethPoolBalancer());
-            rEthWethPoolUni = address(new MockUniV3Pool());
 
+            rEthWethPoolBalancer = address(new MockRethWethPoolBalancer());
+            rocketPoolStorage = address(new MockRocketPoolStorage());
+            rEthWethPoolUni = address(new MockUniV3Pool());
             uniFactory = address(new MockUniV3Factory(rEthAddr, wethAddr, rEthWethPoolUni));
+
+            ethUsdChainlink = address(new EthLinkFeed());
+            rEthEthChainlink = address(new RethLinkFeed());
 
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
 
