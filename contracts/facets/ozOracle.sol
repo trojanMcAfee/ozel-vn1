@@ -52,18 +52,20 @@ contract ozOracle {
     //change this impl to getUniPrice(rETH)
     function rETH_ETH() public view returns(uint) {
         (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
-        uint mainPrice = getUniPrice(0, Dir.UP);
+        uint mainPrice = getUniPrice(0, Dir.UP) / 1e9;
 
-        console.log('');
-        console.log('success: ', success);
-        console.log('refPrice: ', refPrice);
-        console.log('s.rEthEthChainlink: ', s.rEthEthChainlink);
-        console.log('');
-        console.log('');
-        console.log('');
+        // console.log('');
+        // console.log('success: ', success);
+        // console.log('refPrice: ', refPrice);
+        // console.log('s.rEthEthChainlink: ', s.rEthEthChainlink);
+        // console.log('mainPrice - / 1e9: ', mainPrice);
+        // console.log('getUniPrice(0, Dir.UP): ', getUniPrice(0, Dir.UP));
+        // console.log('');
+
+        //^^ this was just solved. Continue with the rest - terminal
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
-            return mainPrice / 1e9;
+            return mainPrice;
         } else {
             return _callFallbackOracle(s.rETH);
         }
@@ -157,9 +159,9 @@ contract ozOracle {
         
         if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
         
-        uint amountOut2 = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, token0, token1
-        );
+        // uint amountOut2 = OracleLibrary.getQuoteAtTick(
+        //     tick, 1 ether, token0, token1
+        // );
 
         uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1e27, token0, token1
