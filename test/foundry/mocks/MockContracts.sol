@@ -428,8 +428,11 @@ contract MockOzOraclePreAccrualNoDeviation {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    function rETH_ETH() public pure returns(uint) {
-        return getUniPrice(0, Dir.UP) / 1e9;
+    function rETH_ETH() public view returns(uint) {
+        uint x = getUniPrice(0, Dir.UP) / 1e9;
+        console.log('x: ', x);
+        console.log('getUniPrice(0, Dir.UP): ', getUniPrice(0, Dir.UP));
+        return x;
     }
 
     function rETH_USD() public view returns(uint) {

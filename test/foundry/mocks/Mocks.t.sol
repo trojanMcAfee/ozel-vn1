@@ -29,8 +29,6 @@ contract MocksTests is MockStorage, TestMethods {
 
 
     function test_redeem_TWAP_rewards_mock() skipOrNot public returns(uint, uint, uint) {
-        // if (_skip()) return (0, 0, 0);
-
         //PRE-CONDITIONS
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);

@@ -53,9 +53,13 @@ contract ozOracle {
         (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP);
 
+        console.log('mainPrice ****: ', mainPrice);
+
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
+            console.log('here');
             return mainPrice / 1e9;
         } else {
+            console.log('here2');
             return _callFallbackOracle(s.rETH);
         }
     }
@@ -119,7 +123,7 @@ contract ozOracle {
      //like tick spacing). 
      //Right now, the ETH/USDC pool's oldest observation is from 10 hrs ago, but this pool has a 24hrs
      //volume of $365m. 
-     //In contract, the rETH/ETH pool's oldest observation is from 30 days ago, but the pool has a 24hrs
+     //In contrast, the rETH/ETH pool's oldest observation is from 30 days ago, but the pool has a 24hrs
      //volume of $22m. 
      //The difference between cardinalities is 722 against 150, so a possible mitigation is to drastically 
      //increase the Observations array with increaseObservationCardinalityNext() on the pool to avoid 
