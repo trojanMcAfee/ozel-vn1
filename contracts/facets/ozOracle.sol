@@ -30,7 +30,7 @@ contract ozOracle {
     using Helpers for uint;
 
     uint constant public TIMEOUT_LINK_ETHUSD = 4 hours; //14400 secs - put this inside AppStorage
-    uint constant public TIMEOUT_LINK_RETHETH = 24 hours; // also ^
+    // uint constant public TIMEOUT_LINK_RETHETH = 24 hours; // also ^
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     
@@ -80,7 +80,7 @@ contract ozOracle {
         if (!isLink_) timeout = TIMEOUT_EXTENDED;
         if (priceFeed_ == s.rEthEthChainlink) {
             BASE = 1;
-            timeout = TIMEOUT_LINK_RETHETH;
+            timeout = TIMEOUT_EXTENDED;
         }
 
         (
