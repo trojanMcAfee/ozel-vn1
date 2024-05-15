@@ -54,15 +54,9 @@ contract ozOracle {
         (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP);
 
-        console.log('mainPrice ****: ', mainPrice);
-        console.log('refPrice: ', refPrice);
-        console.log('success: ', success);
-
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
-            console.log('here');
             return mainPrice / 1e9;
         } else {
-            console.log('here2');
             return _callFallbackOracle(s.rETH);
         }
     }
@@ -94,16 +88,6 @@ contract ozOracle {
             int answer,,
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
-
-        console.log('');
-        console.log('priceFeed_: ', priceFeed_);
-        console.log('answer: ', answer > 0);
-        console.log('roundId: ', roundId != 0);
-        console.log('updatedAt: ', updatedAt != 0);
-        console.log('updatedAt <= block.timestamp: ', updatedAt <= block.timestamp);
-        console.log('block.timestamp - updatedAt <= timeout: ', block.timestamp - updatedAt <= timeout);
-        // console.log('timeout: ', timeout);
-        console.log('');
 
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 

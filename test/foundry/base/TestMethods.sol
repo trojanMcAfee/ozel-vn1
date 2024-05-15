@@ -410,18 +410,8 @@ contract TestMethods is BaseMethods {
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
 
-        // revert('here');
-
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, rawAmountBob);
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, rawAmountCharlie);
-
-        console.log('');
-        console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
-        console.log('balanceOzCharliePostMint: ', balanceOzCharliePostMint);
-        console.log('balance ozTokens alice: ', ozERC20.balanceOf(alice));
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('sum: ', balanceOzBobPostMint + balanceOzCharliePostMint + ozERC20.balanceOf(alice));
-        console.log('');
 
         uint ozAmountIn = amountToRedeem * 1e18;
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, address(ozERC20), Type.OUT);
