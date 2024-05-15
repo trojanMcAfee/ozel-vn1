@@ -153,7 +153,12 @@ contract ozOracle {
             tick, 1 ether, token0, token1
         );
 
+        uint amountOut2 = OracleLibrary.getQuoteAtTick(
+            tick, 1e27, token0, token1
+        );
+
         // console.log('amountOut in getUniPrice ^^^^: ', amountOut);
+        // console.log('amountOut2 in getUniPrice ^^^: ', amountOut2);
     
         return amountOut * (token1 == s.WETH ? 1 : 1e12);
     }

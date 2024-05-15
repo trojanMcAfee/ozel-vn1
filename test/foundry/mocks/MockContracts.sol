@@ -430,7 +430,7 @@ contract MockOzOraclePreAccrualNoDeviation {
 
     function rETH_ETH() public view returns(uint) {
         uint x = getUniPrice(0, Dir.UP) / 1e9;
-        console.log('x: ', x);
+        console.log('getUniPrice(0, Dir.UP) / 1e9: ', x);
         console.log('getUniPrice(0, Dir.UP): ', getUniPrice(0, Dir.UP));
         return x;
     }
