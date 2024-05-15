@@ -409,6 +409,9 @@ contract TestMethods is BaseMethods {
         assertTrue(amountIn == 100 * 10 ** IERC20Permit(testToken).decimals());
 
         (ozIToken ozERC20,) = _createAndMintOzTokens(testToken, amountIn, alice, ALICE_PK, true, true, Type.IN);
+
+        // revert('here');
+
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, rawAmountBob);
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, rawAmountCharlie);
 

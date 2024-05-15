@@ -29,7 +29,8 @@ contract ozOracle {
     using FixedPointMathLib for uint;
     using Helpers for uint;
 
-    uint constant public TIMEOUT_LINK = 4 hours; //14400 secs - put this inside AppStorage
+    uint constant public TIMEOUT_LINK_ETHUSD = 4 hours; //14400 secs - put this inside AppStorage
+    uint constant public TIMEOUT_LINK_RETHETH = 24 hours; // also ^
     uint constant public DISPUTE_BUFFER = 15 minutes; //add this also to AppStorage
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     
@@ -54,6 +55,8 @@ contract ozOracle {
         uint mainPrice = getUniPrice(0, Dir.UP);
 
         console.log('mainPrice ****: ', mainPrice);
+        console.log('refPrice: ', refPrice);
+        console.log('success: ', success);
 
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
             console.log('here');
@@ -77,17 +80,30 @@ contract ozOracle {
 
     //----------
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
-        uint timeout = TIMEOUT_LINK;
+        uint timeout = TIMEOUT_LINK_ETHUSD;
         uint BASE = 1e10;
 
         if (!isLink_) timeout = TIMEOUT_EXTENDED;
-        if (priceFeed_ == s.rEthEthChainlink) BASE = 1;
+        if (priceFeed_ == s.rEthEthChainlink) {
+            BASE = 1;
+            timeout = TIMEOUT_LINK_RETHETH;
+        }
 
         (
             uint80 roundId,
             int answer,,
             uint updatedAt,
         ) = AggregatorV3Interface(priceFeed_).latestRoundData();
+
+        console.log('');
+        console.log('priceFeed_: ', priceFeed_);
+        console.log('answer: ', answer > 0);
+        console.log('roundId: ', roundId != 0);
+        console.log('updatedAt: ', updatedAt != 0);
+        console.log('updatedAt <= block.timestamp: ', updatedAt <= block.timestamp);
+        console.log('block.timestamp - updatedAt <= timeout: ', block.timestamp - updatedAt <= timeout);
+        // console.log('timeout: ', timeout);
+        console.log('');
 
         if (
             (roundId != 0 || _exemptRed(priceFeed_)) && 
@@ -152,6 +168,8 @@ contract ozOracle {
         uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1 ether, token0, token1
         );
+
+        // console.log('amountOut in getUniPrice ^^^^: ', amountOut);
     
         return amountOut * (token1 == s.WETH ? 1 : 1e12);
     }
