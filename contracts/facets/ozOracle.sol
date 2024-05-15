@@ -54,6 +54,14 @@ contract ozOracle {
         (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP);
 
+        console.log('');
+        console.log('success: ', success);
+        console.log('refPrice: ', refPrice);
+        console.log('s.rEthEthChainlink: ', s.rEthEthChainlink);
+        console.log('');
+        console.log('');
+        console.log('');
+
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
             return mainPrice / 1e9;
         } else {
@@ -149,11 +157,11 @@ contract ozOracle {
         
         if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
         
-        uint amountOut = OracleLibrary.getQuoteAtTick(
+        uint amountOut2 = OracleLibrary.getQuoteAtTick(
             tick, 1 ether, token0, token1
         );
 
-        uint amountOut2 = OracleLibrary.getQuoteAtTick(
+        uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1e27, token0, token1
         );
 
