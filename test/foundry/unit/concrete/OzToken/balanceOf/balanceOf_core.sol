@@ -2,8 +2,11 @@
 pragma solidity 0.8.21;
 
 
+import {ozIToken} from "../../../../../../contracts/interfaces/ozIToken.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {SharedConditions} from "../SharedConditions.sol";
+
+import {console} from "forge-std/console.sol";
 
 
 contract BalanceOf_Core is SharedConditions {
@@ -52,6 +55,7 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_the_same_balance_for_both(uint decimals_) skipOrNot internal {
         //Pre-conditions
+        console.log('testToken_internal: ', testToken_internal);
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
@@ -62,6 +66,25 @@ contract BalanceOf_Core is SharedConditions {
 
         //Post-condition
         assertEq(ozERC20.balanceOf(alice), ozERC20.balanceOf(bob));
+    }
+
+    function it_should_have_same_balances_for_both_ozTokens_if_minting_equal_amounts(ozIToken ozERC20_1_, ozIToken ozERC20_2_) skipOrNot internal {
+        //Pre-conditions
+        assertEq(IERC20(ozERC20_1_.asset()).decimals(), 6);
+        assertEq(IERC20(ozERC20_2_.asset()).decimals(), 18);
+
+        uint amountIn = (rawAmount / 3) * 10 ** 6;
+        uint amountIn_2 = (rawAmount / 3) * 10 ** 18;
+
+        //Actions
+        console.log(1);
+        _mintOzTokens(ozERC20, alice, testToken_internal, amountIn);
+        console.log(2);
+        _mintOzTokens(ozERC20_2_, alice, ozERC20_2_.asset(), amountIn_2);
+        console.log(3);
+
+        //Post-condition
+        assertEq(ozERC20.balanceOf(alice), ozERC20_2_.balanceOf(alice));
     }
 
 }
