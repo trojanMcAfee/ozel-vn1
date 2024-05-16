@@ -231,6 +231,10 @@ contract VaultMock {
         console.log(4);
         console.log('amountOut: ', amountOut);
         console.log('bal sender: ', IERC20(address(singleSwap.assetOut)).balanceOf(msg.sender));
+        console.log('bal this: ', IERC20(address(singleSwap.assetOut)).balanceOf(address(this)));
+        console.log('this: ', address(this));
+        console.log('msg.sender: ', msg.sender);
+        console.log('assetOut: ', address(singleSwap.assetOut));
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
 
@@ -429,10 +433,7 @@ contract MockOzOraclePreAccrualNoDeviation {
     uint constant public TIMEOUT_LINK = 4 hours;
 
     function rETH_ETH() public view returns(uint) {
-        uint x = getUniPrice(0, Dir.UP) / 1e9;
-        console.log('getUniPrice(0, Dir.UP) / 1e9: ', x);
-        console.log('getUniPrice(0, Dir.UP): ', getUniPrice(0, Dir.UP));
-        return x;
+        return getUniPrice(0, Dir.UP) / 1e9;
     }
 
     function rETH_USD() public view returns(uint) {

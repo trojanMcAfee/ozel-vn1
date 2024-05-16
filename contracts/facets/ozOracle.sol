@@ -54,16 +54,6 @@ contract ozOracle {
         (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP) / 1e9;
 
-        // console.log('');
-        // console.log('success: ', success);
-        // console.log('refPrice: ', refPrice);
-        // console.log('s.rEthEthChainlink: ', s.rEthEthChainlink);
-        // console.log('mainPrice - / 1e9: ', mainPrice);
-        // console.log('getUniPrice(0, Dir.UP): ', getUniPrice(0, Dir.UP));
-        // console.log('');
-
-        //^^ this was just solved. Continue with the rest - terminal
-
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
             return mainPrice;
         } else {
