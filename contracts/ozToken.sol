@@ -345,18 +345,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function convertToAssets(uint shares_, address account_) public view returns (UintRay) { 
         UintRay preBalance = _subConvertToAssets(shares_, Dir.UP);
-
-        uint pre = preBalance.unray();
-        console.log('');
-        console.log('preBalance: ', pre);
-        console.log('preBalance == 0: ', pre == 0);
-
-        if (pre != 0) {
-            uint factor = _calculateScalingFactor(account_).unray();
-            console.log('scaling factor: ', factor);
-            console.log('is: ', (pre * factor) / (1e27 ^ 2));
-        }
-
         return preBalance == ZERO ? ZERO : preBalance.mulDivRay(_calculateScalingFactor(account_), RAY ^ TWO);
     }
 
@@ -376,12 +364,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (UintRay) {   
-        console.log('');
-        console.log('shares_: ', shares_);
-        console.log('side: ', uint(side_));
-        console.log('_OZ().getUniPrice(0, side_): ', _OZ().getUniPrice(0, side_));
-        console.log('totalShares: ', totalShares());
-        
         UintRay reth_eth = _OZ().getUniPrice(0, side_).ray();
         return (shares_.ray()).mulDivRay(reth_eth, totalShares() == 0 ? reth_eth : totalShares().ray());
     }

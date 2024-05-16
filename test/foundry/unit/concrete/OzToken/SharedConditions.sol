@@ -25,4 +25,8 @@ contract SharedConditions is TestMethods {
         _;
     }
 
+    function _toggle(uint amount_, uint decimals_) internal pure returns(uint) {
+        return decimals_ == 6 ? amount_ * 1e12 : amount_;
+    }
+
 }
