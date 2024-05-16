@@ -5,14 +5,12 @@ pragma solidity 0.8.21;
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {SharedConditions} from "../SharedConditions.sol";
 
-import {console} from "forge-std/console.sol";
-
 
 contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_0(uint decimals_) skipOrNot internal {
         //Pre-conditions
-        assertEq(IERC20(ozERC20.asset()).decimals(), decimals_);
+        assertEq(IERC20(testToken_internal).decimals(), decimals_);
         assertEq(ozERC20.totalSupply(), 0);
 
         //Post-condition
