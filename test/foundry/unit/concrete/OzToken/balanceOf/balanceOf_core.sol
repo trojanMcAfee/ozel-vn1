@@ -8,10 +8,27 @@ import {SharedConditions} from "../SharedConditions.sol";
 
 contract BalanceOf_Core is SharedConditions {
 
-    function it_should_return_0(uint decimals_) skipOrNot internal {
+    enum Variants {
+        FIRST,
+        SECOND
+    }
+
+    function it_should_return_0(uint decimals_, Variants v_) skipOrNot internal {
         //Pre-conditions
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
         assertEq(ozERC20.totalSupply(), 0);
+
+        if (v_ == Variants.SECOND) {
+            //Conditional action 
+            uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
+
+            _mintOzTokens(ozERC20, bob, testToken_internal, amountIn);
+
+            //Conditional post-condition
+            assertTrue(
+                _checkPercentageDiff(_toggle(amountIn, decimals_), ozERC20.balanceOf(bob), 2)
+            );
+        }
 
         //Post-condition
         assertEq(ozERC20.balanceOf(alice), 0);

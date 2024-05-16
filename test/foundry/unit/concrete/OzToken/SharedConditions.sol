@@ -10,6 +10,7 @@ contract SharedConditions is TestMethods {
 
     ozIToken internal ozERC20;
     address internal testToken_internal;
+    uint constant rawAmount = 100;
 
     modifier whenTheUnderlyingHas6Decimals() {
         (ozIToken a,) = _createOzTokens(usdcAddr, "1");
