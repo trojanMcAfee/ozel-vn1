@@ -36,8 +36,19 @@ contract BalanceOf_Core is SharedConditions {
     }
 
 
-    function it_should_return_the_same_balance_for_both() skipOrNot internal {
+    function it_should_return_the_same_balance_for_both(uint decimals_) skipOrNot internal {
+        //Pre-conditions
+        assertEq(IERC20(testToken_internal).decimals(), decimals_);
 
+        uint rawAmount = 100;
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
+
+        //Action
+        _mintOzTokens(ozERC20, alice, testToken_internal, amountIn);
+        _mintOzTokens(ozERC20, bob, testToken_internal, amountIn);
+
+        //Post-condition
+        assertEq(ozERC20.balanceOf(alice), ozERC20.balanceOf(bob));
     }
 
 }
