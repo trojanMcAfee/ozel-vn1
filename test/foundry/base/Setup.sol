@@ -351,6 +351,19 @@ contract Setup is MockStorage, Test {
         if (n_ == Network.MOCKS) {
             swapRouterUni = address(new SwapRouterMock(address(ozDiamond)));
             vaultBalancer = address(new VaultMock(address(ozDiamond)));
+
+            address[5] memory minters = [alice, bob, charlie, address(ozDiamond), vaultBalancer];
+            address[4] memory erc20s = [usdcAddr, daiAddr, wethAddr, rEthAddr];
+            uint amountToMint = 10_000_000;
+
+            for (uint i=0; i < minters.length; i++) {
+                address minter = minters[i];
+                for (uint j=0; j < erc20s.length; j++) {
+                    IERC20Permit erc20 = IERC20Permit(erc20s[j]);
+
+                    erc20.mint(minter, 10_000_000 * 10 ** erc20.decimals());
+                }
+            }
         }
 
         //Deploys ozToken implementation contract for ozBeacon

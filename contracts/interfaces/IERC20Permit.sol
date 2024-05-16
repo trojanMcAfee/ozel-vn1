@@ -58,4 +58,6 @@ interface IERC20Permit {
                     bool allowed, uint8 v, bytes32 r, bytes32 s) external;
 
     function nonces(address owner) external view returns (uint256);
+
+    function mint(address to_, uint amount_) external;
 }
