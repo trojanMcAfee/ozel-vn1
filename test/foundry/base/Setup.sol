@@ -354,7 +354,6 @@ contract Setup is MockStorage, Test {
 
             address[5] memory minters = [alice, bob, charlie, vaultBalancer, swapRouterUni];
             address[4] memory erc20s = [usdcAddr, daiAddr, wethAddr, rEthAddr];
-            uint amountToMint = 10_000_000;
 
             for (uint i=0; i < minters.length; i++) {
                 address minter = minters[i];

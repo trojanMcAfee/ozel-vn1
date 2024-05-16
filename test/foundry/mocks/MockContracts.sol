@@ -142,7 +142,6 @@ contract SwapRouterMock is MockStorage {
         
         if (USDC(params.tokenIn) || DAI(params.tokenIn)) {
             amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
-            console.log('amountOut in mock router ****: ', amountOut);
         }
     
         if (params.tokenIn == WETH) {
@@ -154,10 +153,7 @@ contract SwapRouterMock is MockStorage {
         
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
         
-        console.log('condition ^^^^^: ', IERC20(params.tokenOut).balanceOf(address(this)));
-        console.log('params.tokenOut: ', params.tokenOut);
         if (IERC20(params.tokenOut).balanceOf(address(this)) / 1e18 != 0) {
-            console.log(3);
             IERC20(params.tokenOut).transfer(address(OZ), amountOut);
         }
 
@@ -209,25 +205,13 @@ contract VaultMock {
     ) external payable returns (uint) {
         uint amountOut;
 
-        console.log(1);
-        console.log('singleSwap.amount: ', singleSwap.amount);
-        console.log('assetIn: ', address(singleSwap.assetIn));
-        uint x = IERC20(address(singleSwap.assetIn)).balanceOf(address(OZ));
-        console.log('assetIn bal oz: ', x);
-
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
-        console.log(2);
-
-        revert('hereee');
 
         if (singleSwap.amount == 19673291323457014) 
         { 
             uint wethIn = 19673291323457014;
-            console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH());
             amountOut =  wethIn.mulDivDown(1e18, OZ.rETH_ETH());
         } 
-
-        console.log(3);
 
         if (singleSwap.amount == 18107251181805252) 
         { 
@@ -431,7 +415,7 @@ contract MockOzOraclePreAccrualNoDeviation {
     uint constant public TIMEOUT_EXTENDED = 24 hours;
     uint constant public TIMEOUT_LINK = 4 hours;
 
-    function rETH_ETH() public view returns(uint) {
+    function rETH_ETH() public pure returns(uint) {
         return getUniPrice(0, Dir.UP) / 1e9;
     }
 
