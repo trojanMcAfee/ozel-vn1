@@ -38,23 +38,27 @@ contract MocksTests is MockStorage, TestMethods {
         uint reth_eth_current = OZ.rETH_ETH();
         uint reth_usd_preAccrual = OZ.rETH_USD(); 
 
-        console.log('');
-        console.log('reth_eth - pre accrual: ', reth_eth_current);
-        console.log('reth_usd - pre accrual: ', reth_usd_preAccrual);
-        console.log('');
+        // console.log('');
+        // console.log('reth_eth - pre accrual: ', reth_eth_current);
+        // console.log('reth_usd - pre accrual: ', reth_usd_preAccrual);
+        // console.log('');
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
 
+        console.log('amountIn: ', amountIn);
+
         _mintOzTokens(ozERC20, alice, testToken, amountIn);
-        _mintOzTokens(ozERC20, bob, testToken, amountIn);
+        // _mintOzTokens(ozERC20, bob, testToken, amountIn);
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
 
-        assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply());
+        // assertTrue(ozERC20.balanceOf(bob) + ozBalanceAlice == ozERC20.totalSupply());
 
-        console.log('totalSupply: ', ozERC20.totalSupply());
+        // console.log('totalSupply: ', ozERC20.totalSupply());
         console.log('ozBalanceAlice: ', ozBalanceAlice);
-        console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
+        // console.log('ozBalanceBob: ', ozERC20.balanceOf(bob));
+
+        revert('here3');
 
         //This simulates the rETH rewards accrual.
         console.log('');

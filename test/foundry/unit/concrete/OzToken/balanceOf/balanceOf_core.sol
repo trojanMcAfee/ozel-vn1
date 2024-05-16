@@ -25,15 +25,18 @@ contract BalanceOf_Core is SharedConditions {
 
         uint rawAmount = 100;
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
+
         console.log('amountIn: ', amountIn);
 
+        //Action
         _mintOzTokens(ozERC20, alice, testToken_internal, amountIn);
 
-        uint ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlice: ', ozBalanceAlice);
+        console.log('bal alice oz: ', ozERC20.balanceOf(alice));
 
-
+        //Post-condition
+        assertGt(ozERC20.balanceOf(alice), 0);
     }
+
 
     function it_should_return_the_same_balance_for_both() skipOrNot internal {
 
