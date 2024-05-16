@@ -38,7 +38,6 @@ contract BalanceOf_Core is SharedConditions {
         //Pre-conditions
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
 
-        uint rawAmount = 100;
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
 
         //Action
@@ -55,10 +54,9 @@ contract BalanceOf_Core is SharedConditions {
         //Pre-conditions
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
 
-        uint rawAmount = 100;
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
 
-        //Action
+        //Actions
         _mintOzTokens(ozERC20, alice, testToken_internal, amountIn);
         _mintOzTokens(ozERC20, bob, testToken_internal, amountIn);
 

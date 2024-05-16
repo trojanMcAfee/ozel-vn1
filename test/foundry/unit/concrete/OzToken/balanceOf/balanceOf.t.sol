@@ -41,7 +41,7 @@ contract BalanceOf_Unit_Concrete_test is BalanceOf_Core {
 
 
     function test_GivenTotalSupplyEquals0_18() external whenTheUnderlyingHas18Decimals {
-        // it should return 0.
+        it_should_return_0(18, Variants.FIRST);
     }
 
     modifier whenTotalSupplyIsMoreThan0_18() {
@@ -53,7 +53,7 @@ contract BalanceOf_Unit_Concrete_test is BalanceOf_Core {
         whenTheUnderlyingHas18Decimals
         whenTotalSupplyIsMoreThan0_18
     {
-        // it should return more than 0.
+        it_should_return_a_delta_of_less_than_2_bps(18);
     }
 
     function test_GivenThatTwoUsersAreEqualOzTokenHolders_18()
@@ -61,7 +61,7 @@ contract BalanceOf_Unit_Concrete_test is BalanceOf_Core {
         whenTheUnderlyingHas18Decimals
         whenTotalSupplyIsMoreThan0_18
     {
-        // it should return the same balance for both.
+        it_should_return_the_same_balance_for_both(18);
     }
 
     function test_GivenThatUserIsNotAnOzTokenHolder_18()
@@ -69,6 +69,18 @@ contract BalanceOf_Unit_Concrete_test is BalanceOf_Core {
         whenTheUnderlyingHas18Decimals
         whenTotalSupplyIsMoreThan0_18
     {
-        // it should return 0.
+        it_should_return_0(18, Variants.SECOND);
+    }
+
+    modifier whenUsingBoth6_decAnd18_decUnderlyings() {
+        _;
+    }
+
+    function test_GivenThereIsOneOzTokenHolder() external whenUsingBoth6_decAnd18_decUnderlyings {
+        // it should have same balances for both ozTokens if minting equal amounts.
+    }
+
+    function test_GivenThereAreTwoOzTokenHolders() external whenUsingBoth6_decAnd18_decUnderlyings {
+        // it should have same balances between holders for both ozTokens if minting equal amounts.
     }
 }
