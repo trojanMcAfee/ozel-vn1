@@ -142,6 +142,7 @@ contract SwapRouterMock is MockStorage {
         
         if (USDC(params.tokenIn) || DAI(params.tokenIn)) {
             amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
+            console.log('amountOut in mock router ****: ', amountOut);
         }
     
         if (params.tokenIn == WETH) {
@@ -153,7 +154,10 @@ contract SwapRouterMock is MockStorage {
         
         IERC20(params.tokenIn).transferFrom(msg.sender, address(1), params.amountIn);
         
+        console.log('condition ^^^^^: ', IERC20(params.tokenOut).balanceOf(address(this)));
+        console.log('params.tokenOut: ', params.tokenOut);
         if (IERC20(params.tokenOut).balanceOf(address(this)) / 1e18 != 0) {
+            console.log(3);
             IERC20(params.tokenOut).transfer(address(OZ), amountOut);
         }
 
@@ -206,10 +210,15 @@ contract VaultMock {
         uint amountOut;
 
         console.log(1);
+        console.log('singleSwap.amount: ', singleSwap.amount);
+        console.log('assetIn: ', address(singleSwap.assetIn));
+        uint x = IERC20(address(singleSwap.assetIn)).balanceOf(address(OZ));
+        console.log('assetIn bal oz: ', x);
 
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
         console.log(2);
-        console.log('singleSwap.amount: ', singleSwap.amount);
+
+        revert('hereee');
 
         if (singleSwap.amount == 19673291323457014) 
         { 
@@ -228,17 +237,7 @@ contract VaultMock {
                 .unray();
         }
 
-        console.log(4);
-        console.log('amountOut: ', amountOut);
-        console.log('bal sender: ', IERC20(address(singleSwap.assetOut)).balanceOf(msg.sender));
-        console.log('bal this: ', IERC20(address(singleSwap.assetOut)).balanceOf(address(this)));
-        console.log('this: ', address(this));
-        console.log('msg.sender: ', msg.sender);
-        console.log('assetOut: ', address(singleSwap.assetOut));
-
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
-
-        console.log(5);
         
         emit DeadVars(funds, limit, deadline);
 

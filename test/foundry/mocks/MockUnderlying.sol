@@ -34,11 +34,6 @@ contract MockUnderlying is ERC20 {
 
     constructor(uint dec_) ERC20("Mock", "MOCK") {
         dec = uint8(dec_);
-        // _mint(alice, 10_000_000 * 10 ** dec_);
-        // _mint(bob, 10_000_000 * 10 ** dec_);
-        // _mint(charlie, 10_000_000 * 10 ** dec_);
-        // _mint(OZ, 10_000_000 * 10 ** dec_);
-        // _mint(mockVault, 10_000_000 * 10 ** dec_);
     }
 
 
