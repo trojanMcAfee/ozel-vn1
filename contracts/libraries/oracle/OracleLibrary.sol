@@ -6,6 +6,8 @@ import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import './FullMath.sol';
 import './TickMath.sol';
 
+import {console} from "forge-std/console.sol";
+
 
 /// @title Oracle library
 /// @notice Provides functions to integrate with V3 pool oracle
@@ -53,12 +55,17 @@ library OracleLibrary {
         uint128 baseAmount,
         address baseToken,
         address quoteToken
-    ) internal pure returns (uint256 quoteAmount) {
+    ) internal view returns (uint256 quoteAmount) {
+        console.log(40);
         uint160 sqrtRatioX96 = TickMath.getSqrtRatioAtTick(tick);
 
         // Calculate quoteAmount with better precision if it doesn't overflow when multiplied by itself
         if (sqrtRatioX96 <= type(uint128).max) {
+            console.log(41);
+            console.log('baseToken < quoteToken: ', baseToken < quoteToken);
+
             uint256 ratioX192 = uint256(sqrtRatioX96) * sqrtRatioX96;
+            console.log(42);
             quoteAmount = baseToken < quoteToken
                 ? FullMath.mulDiv(ratioX192, baseAmount, 1 << 192)
                 : FullMath.mulDiv(1 << 192, baseAmount, ratioX192);

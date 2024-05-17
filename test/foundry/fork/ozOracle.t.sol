@@ -3,7 +3,6 @@ pragma solidity 0.8.21;
 
 
 import {TestMethods} from "../base/TestMethods.sol";
-// import {ModifiersTests} from "../base/ModifiersTests.sol";
 import {IRocketTokenRETH} from "../../../contracts/interfaces/IRocketPool.sol";
 import {Dir} from "../../../contracts/AppStorage.sol";
 
@@ -73,7 +72,7 @@ contract ozOracleTest is TestMethods {
         //Action
         _redeeming_bigBalance_bigMint_bigRedeem();
 
-        //Post-conditions
+        //Post-condition
         uint uni01Reth = OZ.getUniPrice(1, Dir.UP);
         uint protocolReth = IRocketTokenRETH(rEthAddr).getExchangeRate();
         uint backupReth = OZ.rETH_ETH();

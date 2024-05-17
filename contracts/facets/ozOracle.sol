@@ -63,7 +63,10 @@ contract ozOracle {
 
 
     function ETH_USD() public view returns(uint) {
+        console.log(1);
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
+        console.log(2);
+        console.log('success: ', success);
         return success ? price : _callFallbackOracle(s.WETH); 
     }
 
@@ -149,9 +152,16 @@ contract ozOracle {
         
         if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
 
+        console.log(31);
+
         uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1e27, token0, token1
         );
+
+        console.log('amountOut: ', amountOut);
+
+        uint x = amountOut * (token1 == s.WETH ? 1 : 1e12);
+        console.log(32);
     
         return amountOut * (token1 == s.WETH ? 1 : 1e12);
     }
@@ -184,9 +194,13 @@ contract ozOracle {
 
     function _callFallbackOracle(address baseToken_) private view returns(uint) {
         if (baseToken_ == s.WETH) {
+            console.log(3);
             uint uniPrice = getUniPrice(2, Dir.UP);
+            console.log(4);
             (bool success, uint tellorPrice) = getOracleBackUp1();
+            console.log(5);
             (bool success2, uint redPrice) = getOracleBackUp2();
+            console.log(6);
 
             if (success && success2) {
                 return uniPrice.getMedium(tellorPrice, redPrice);
