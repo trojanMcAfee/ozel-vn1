@@ -92,6 +92,6 @@ contract BalanceOf_Unit_Concrete_test is BalanceOf_Core {
     }
 
     function test_GivenThereAreTwoOzTokenHolders() external whenUsingBoth6_decAnd18_decUnderlyings {
-        // it should have same balances between holders for both ozTokens if minting equal amounts.
+        it_should_have_same_balances_between_holders_for_both_ozTokens_if_minting_equal_amounts(ozERC20_1, ozERC20_2);
     }
 }

@@ -55,7 +55,6 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_the_same_balance_for_both(uint decimals_) skipOrNot internal {
         //Pre-conditions
-        console.log('testToken_internal: ', testToken_internal);
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
@@ -84,4 +83,23 @@ contract BalanceOf_Core is SharedConditions {
         assertEq(ozERC20_1_.balanceOf(alice), ozERC20_2_.balanceOf(alice));
     }
 
+
+    function it_should_have_same_balances_between_holders_for_both_ozTokens_if_minting_equal_amounts(
+        ozIToken ozERC20_1_, 
+        ozIToken ozERC20_2_
+    ) skipOrNot public {
+        //Pre-conditions
+        assertEq(IERC20(ozERC20_1_.asset()).decimals(), 6);
+        assertEq(IERC20(ozERC20_2_.asset()).decimals(), 18);
+
+        uint amountIn = (rawAmount / 3) * 10 ** 6;
+        uint amountIn_2 = (rawAmount / 3) * 10 ** 18;
+
+        //Actions
+        _mintOzTokens(ozERC20_1_, alice, ozERC20_1_.asset(), amountIn);
+        _mintOzTokens(ozERC20_2_, bob, ozERC20_2_.asset(), amountIn_2);
+
+        //Post-condition
+        assertEq(ozERC20_1_.balanceOf(alice), ozERC20_2_.balanceOf(bob));
+    }
 }
