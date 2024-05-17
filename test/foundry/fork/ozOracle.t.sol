@@ -89,7 +89,7 @@ contract ozOracleTest is TestMethods {
         _mock_false_chainlink_feed(rEthEthChainlink);
 
         //Post-conditions
-        uint uni01Reth = OZ.getUniPrice(1, Dir.UP);
+        uint uni01Reth = OZ.getUniPrice(1, Dir.UP) / 1e9;
         uint protocolReth = IRocketTokenRETH(rEthAddr).getExchangeRate();
         uint backupReth = OZ.rETH_ETH();
 
