@@ -172,7 +172,7 @@ contract ozEngine is Modifiers {
         uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint amountOut) {
-        
+
         (address tokenOutInternal, uint minAmountOutFirstLeg) = 
             _triageInternalVars(type_, minAmountsOut_, tokenOut_);
 
@@ -262,12 +262,6 @@ contract ozEngine is Modifiers {
             recipient: payable(address(this)),
             toInternalBalance: false
         });
-
-        console.log('');
-        console.log('singleSwap.amount: ', singleSwap.amount);
-        console.log('minAmountOut_: ', minAmountOut_);
-        console.log('tokenIn_: ', tokenIn_);
-        console.log('tokenOut_: ', tokenOut_);
 
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);

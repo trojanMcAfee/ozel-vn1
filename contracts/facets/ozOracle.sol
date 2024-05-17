@@ -54,8 +54,6 @@ contract ozOracle {
         (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP) / 1e9;
 
-        console.log('success - false (rETH_ETH): ', success);
-
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
             return mainPrice;
         } else {
@@ -65,21 +63,8 @@ contract ozOracle {
 
 
     function ETH_USD() public view returns(uint) {
-        console.log(1);
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
-        console.log(2);
-        console.log('success - true (ETH_USD): ', success);
-
-        uint x;
-        if (!success) {
-            console.log(3);
-            x = _callFallbackOracle(s.WETH);
-            // console.log('fallback price: ', x);
-            console.log(4);
-        } 
-        console.log('price: ', price);
-
-        return success ? price : x; 
+        return success ? price : _callFallbackOracle(s.WETH);
     }
 
     function rETH_USD() public view returns(uint) {
@@ -212,14 +197,10 @@ contract ozOracle {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) { 
-            console.log('should log');
             uint uniPrice01 = getUniPrice(1, Dir.UP) / 1e9;
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 
-            uint x = uniPrice01.getMedium(protocolPrice);
-            console.log('backup rETH (bug here <--------): ', x);
-
-            return x;
+            return uniPrice01.getMedium(protocolPrice);
         }
         revert OZError23(baseToken_);
     }
