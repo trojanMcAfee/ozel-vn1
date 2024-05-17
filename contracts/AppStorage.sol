@@ -107,7 +107,8 @@ enum Action {
     OZ_OUT
 }
 
-
+//uint amountIn - amount of underlying in
+//uint[] minAmountsOut - weth, reth
 struct AmountsIn {
     uint amountIn;
     uint[] minAmountsOut;

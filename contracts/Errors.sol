@@ -34,7 +34,7 @@ error OZError14(uint blockNumber); //_applyFee - blockNum is equal or less than 
 
 //--- ozToken errors
 error OZError03(); //decreaseAllowance - decreased allowance below zero
-error OZError04(address from, address to); //_approve / _transfer - can't be zero address
+error OZError04(address from, address to); //_approve / _transfer - can't be zero address(0)
 error OZError05(uint amount); //_spendAllowance - insufficient allowance
 error OZError06(address sender, uint accountShares, uint shares); //redeem - insufficient redeem balance
 error OZError07(address from, uint fromShares, uint shares); //ozToken.sol / _transfer - insufficient sender balance
@@ -61,6 +61,7 @@ error OZError26(address newBeacon); //_setBeacon / ozERC1967Upgrade.sol - new be
 error OZError33(address caller); // multiple ozCut.sol funcs / Modifiers.sol / not owner
 error OZError34(uint amount); //allocate / OZL.sol - amount greater than pending to allocate
 error OZError36(address wrongOwner); //acceptOwnership / OwnershipFacet.sol - sender is not pending owner
+error OZError37(uint underlinygIn); //mint / ozToken.sol - can't be zero address(0)
 
 //Oracle errors
 error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_

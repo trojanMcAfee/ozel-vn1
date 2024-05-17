@@ -54,6 +54,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     using Helpers for bytes32;
     // using Uint512 for uint;
 
+    event OzTokenMinted(address owner, uint shares, uint assets);
+
     address private _ozDiamond;
     address private _underlying;
     
@@ -218,12 +220,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
 
+        if (amts.amountIn == 0) revert OZError37(amts.amountIn); //****** */
+
         uint assets = amts.amountIn.format(FORMAT_DECIMALS); 
 
         try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner_, amts) returns(uint amountRethOut) {
             _setValuePerOzToken(amountRethOut, true);
 
-            // uint shares = totalShares() == 0 ? assets : previewMint(assets);
             uint shares = assets;
 
             _setAssetsAndShares(assets, shares, true);
@@ -236,6 +239,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             return shares;
 
             //put a mint even here
+            emit OzTokenMinted(owner_, shares, assets);
 
         } catch Error(string memory reason) {
             revert OZError22(reason);

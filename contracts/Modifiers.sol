@@ -18,6 +18,10 @@ contract Modifiers is IOZLrewards {
     AppStorage internal s;
     
 
+    /**
+     * It updates the main variables that calculate the reward rate that
+     * an user is going to accumulate.
+     */
     modifier updateReward(address user_, address ozDiamond_) {
         if (ozDiamond_ != address(0)) {
             ozIDiamond(ozDiamond_).setRewardsDataExternally(user_);
