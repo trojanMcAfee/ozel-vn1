@@ -202,7 +202,7 @@ contract ozOracle {
 
     function _callFallbackOracle(address baseToken_) private view returns(uint) {
         if (baseToken_ == s.WETH) {
-            uint uniPrice = getUniPrice(2, Dir.UP);
+            uint uniPrice = getUniPrice(2, Dir.UP) / 1e9;
             (bool success, uint tellorPrice) = getOracleBackUp1();
             (bool success2, uint redPrice) = getOracleBackUp2();
 
@@ -213,10 +213,13 @@ contract ozOracle {
             }
         } else if (baseToken_ == s.rETH) { 
             console.log('should log');
-            uint uniPrice01 = getUniPrice(1, Dir.UP);
+            uint uniPrice01 = getUniPrice(1, Dir.UP) / 1e9;
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 
-            return uniPrice01.getMedium(protocolPrice);
+            uint x = uniPrice01.getMedium(protocolPrice);
+            console.log('backup rETH (bug here <--------): ', x);
+
+            return x;
         }
         revert OZError23(baseToken_);
     }
