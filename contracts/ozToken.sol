@@ -220,7 +220,10 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
 
-        if (amts.amountIn == 0) revert OZError37(amts.amountIn); //****** */
+        console.log(1);
+        console.log('amts.amountIn: ', amts.amountIn);
+        if (amts.amountIn == 0) revert OZError37();
+        console.log(2);
 
         uint assets = amts.amountIn.format(FORMAT_DECIMALS); 
 
@@ -236,10 +239,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _assets[receiver] += assets;
             }
 
-            return shares;
-
-            //put a mint even here
             emit OzTokenMinted(owner_, shares, assets);
+
+            return shares;
 
         } catch Error(string memory reason) {
             revert OZError22(reason);
