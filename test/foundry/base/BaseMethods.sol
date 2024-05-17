@@ -515,10 +515,10 @@ contract BaseMethods is Setup {
         (int24 tick,) = OracleLibrary.consult(pool, uint32(1800));
 
         uint256 amountOut = OracleLibrary.getQuoteAtTick(
-            tick, 1 ether, wethAddr, usdcAddr
+            tick, 1e27, wethAddr, usdcAddr
         );
     
-        return amountOut * 1e12;
+        return amountOut * 1e3;
     }
 
 
