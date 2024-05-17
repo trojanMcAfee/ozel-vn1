@@ -67,17 +67,24 @@ contract ozOracleTest is TestMethods {
     function test_failed_false_deviation() public {
         //Pre-conditions
         vm.selectFork(redStoneFork);
-        _mock_false_chainlink_feed(ethUsdChainlink);
+        _mock_false_chainlink_feed(rEthEthChainlink);
+        // _mock_false_chainlink_feed(ethUsdChainlink);
 
         //Action
         _redeeming_bigBalance_bigMint_bigRedeem();
 
         //Post-condition
-        uint uni01Reth = OZ.getUniPrice(1, Dir.UP);
+        uint uni01Reth = OZ.getUniPrice(1, Dir.UP) / 1e9;
         uint protocolReth = IRocketTokenRETH(rEthAddr).getExchangeRate();
+        console.log('start *****');
         uint backupReth = OZ.rETH_ETH();
 
+        console.log('');
+        console.log('backupReth: ', backupReth);
+        console.log('uni01Reth: ', uni01Reth);
+        console.log('protocolReth: ', protocolReth);
         assertTrue(backupReth == (uni01Reth + protocolReth) / 2);
+        console.log(9);
     }
 
     /**

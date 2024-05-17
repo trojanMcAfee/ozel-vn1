@@ -54,6 +54,8 @@ contract ozOracle {
         (bool success, uint refPrice) = _useLinkInterface(s.rEthEthChainlink, true);
         uint mainPrice = getUniPrice(0, Dir.UP) / 1e9;
 
+        console.log('success - false (rETH_ETH): ', success);
+
         if (mainPrice.checkDeviation(refPrice, s.deviation) && success) {
             return mainPrice;
         } else {
@@ -66,8 +68,18 @@ contract ozOracle {
         console.log(1);
         (bool success, uint price) = _useLinkInterface(s.ethUsdChainlink, true);
         console.log(2);
-        console.log('success: ', success);
-        return success ? price : _callFallbackOracle(s.WETH); 
+        console.log('success - true (ETH_USD): ', success);
+
+        uint x;
+        if (!success) {
+            console.log(3);
+            x = _callFallbackOracle(s.WETH);
+            // console.log('fallback price: ', x);
+            console.log(4);
+        } 
+        console.log('price: ', price);
+
+        return success ? price : x; 
     }
 
     function rETH_USD() public view returns(uint) {
@@ -132,6 +144,9 @@ contract ozOracle {
      //increase the Observations array with increaseObservationCardinalityNext() on the pool to avoid 
      //getting timed out, since the mechanism needs 24 hrs historical price data. 
      //It worth mentioning that this won't be a problem until trading on this pool considerably rises. 
+     //.
+     //.
+     //This function will return values with 27 deciamls *** IMPORTANT ***
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
@@ -152,17 +167,10 @@ contract ozOracle {
         
         if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int32(secsAgo) != 0)) tick--;
 
-        console.log(31);
-
         uint amountOut = OracleLibrary.getQuoteAtTick(
             tick, 1e27, token0, token1
         );
 
-        console.log('amountOut: ', amountOut);
-
-        uint x = amountOut * (token1 == s.WETH ? 1 : 1e12);
-        console.log(32);
-    
         return amountOut * (token1 == s.WETH ? 1 : 1e12);
     }
 
@@ -194,13 +202,9 @@ contract ozOracle {
 
     function _callFallbackOracle(address baseToken_) private view returns(uint) {
         if (baseToken_ == s.WETH) {
-            console.log(3);
             uint uniPrice = getUniPrice(2, Dir.UP);
-            console.log(4);
             (bool success, uint tellorPrice) = getOracleBackUp1();
-            console.log(5);
             (bool success2, uint redPrice) = getOracleBackUp2();
-            console.log(6);
 
             if (success && success2) {
                 return uniPrice.getMedium(tellorPrice, redPrice);
@@ -208,6 +212,7 @@ contract ozOracle {
                 return uniPrice;
             }
         } else if (baseToken_ == s.rETH) { 
+            console.log('should log');
             uint uniPrice01 = getUniPrice(1, Dir.UP);
             uint protocolPrice = IRocketTokenRETH(s.rETH).getExchangeRate();
 

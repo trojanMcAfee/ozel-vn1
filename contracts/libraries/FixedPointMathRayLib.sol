@@ -35,6 +35,11 @@ library FixedPointMathRayLib {
         return UintRay.wrap(r0.div512x256(r1, cc));
     }
 
+    function mulDiv512(uint a, uint b, uint c) internal pure returns(uint) {
+        (uint r0, uint r1) = a.mul256x256(b);
+        return r0.div512x256(r1, c);
+    }
+
     function ray(uint num) internal pure returns(UintRay) {
         return UintRay.wrap(num * 1e27);
     }

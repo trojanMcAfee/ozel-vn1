@@ -3,15 +3,16 @@ pragma solidity 0.8.21;
 
 
 import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
-import './FullMath.sol';
+// import './FullMath.sol';
 import './TickMath.sol';
-
-import {console} from "forge-std/console.sol";
+import {FixedPointMathRayLib} from "./../FixedPointMathRayLib.sol";
 
 
 /// @title Oracle library
 /// @notice Provides functions to integrate with V3 pool oracle
 library OracleLibrary {
+    using FixedPointMathRayLib for uint;
+
     /// @notice Calculates time-weighted means of tick and liquidity for a given Uniswap V3 pool
     /// @param pool Address of the pool that we want to observe
     /// @param secondsAgo Number of seconds in the past from which to calculate the time-weighted means
@@ -55,25 +56,21 @@ library OracleLibrary {
         uint128 baseAmount,
         address baseToken,
         address quoteToken
-    ) internal view returns (uint256 quoteAmount) {
-        console.log(40);
+    ) internal pure returns (uint256 quoteAmount) {
         uint160 sqrtRatioX96 = TickMath.getSqrtRatioAtTick(tick);
 
         // Calculate quoteAmount with better precision if it doesn't overflow when multiplied by itself
         if (sqrtRatioX96 <= type(uint128).max) {
-            console.log(41);
-            console.log('baseToken < quoteToken: ', baseToken < quoteToken);
-
             uint256 ratioX192 = uint256(sqrtRatioX96) * sqrtRatioX96;
-            console.log(42);
+
             quoteAmount = baseToken < quoteToken
-                ? FullMath.mulDiv(ratioX192, baseAmount, 1 << 192)
-                : FullMath.mulDiv(1 << 192, baseAmount, ratioX192);
+                ? ratioX192.mulDiv512(baseAmount, 1 << 192)
+                : uint(1 << 192).mulDiv512(baseAmount, ratioX192);
         } else {
-            uint256 ratioX128 = FullMath.mulDiv(sqrtRatioX96, sqrtRatioX96, 1 << 64);
+            uint256 ratioX128 = uint(sqrtRatioX96).mulDiv512(sqrtRatioX96, 1 << 64);
             quoteAmount = baseToken < quoteToken
-                ? FullMath.mulDiv(ratioX128, baseAmount, 1 << 128)
-                : FullMath.mulDiv(1 << 128, baseAmount, ratioX128);
+                ? ratioX128.mulDiv512(baseAmount, 1 << 128)
+                : uint(1 << 128).mulDiv512(baseAmount, ratioX128);
         }
     }
 
