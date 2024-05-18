@@ -52,15 +52,24 @@ contract Mint_Core is SharedConditions {
     }
 
 
-    // function it_should_mint(uint decimals_) internal {
-    //     //Pre-conditions
-    //     (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
-    //     assertEq(IERC20(underlying).decimals(), decimals_);
+    function it_should_mint(uint decimals_) internal {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+        
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
 
-    //     AmountsIn memory amountsIn = AmountsIn(
-    //         (rawAmount / 3) * 10 ** IERC20(underlying).decimals(),
+        AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, OZ.getDefaultSlippage());
+        amountsIn.minAmountsOut[0] = 0;
 
-    //     );
-    // }
+        bytes memory data = abi.encode(amountsIn, alice);
+
+        vm.startPrank(alice);
+        IERC20(underlying).approve(address(OZ), amountIn);
+        ozERC20.mint(data, alice);
+
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        console.log('ozBalanceAlice: ', ozBalanceAlice);
+    }
 
 }

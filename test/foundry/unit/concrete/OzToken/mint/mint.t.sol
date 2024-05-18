@@ -23,7 +23,7 @@ contract Mint_Unit_Concrete_test is Mint_Core {
         whenAnalysingMintData
         whenAnalysingMinAmountsOut
     {
-        // it should mint with slippage_6dec
+        it_should_mint(6);
         // it should mint with slippage_18dec
     }
 
