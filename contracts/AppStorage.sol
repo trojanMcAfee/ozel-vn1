@@ -112,6 +112,7 @@ enum Action {
 struct AmountsIn {
     uint amountIn;
     uint[] minAmountsOut;
+    //^^ try changing this to a static array. Then continue with the test right next <-----------
 }
 
 struct AmountsOut {

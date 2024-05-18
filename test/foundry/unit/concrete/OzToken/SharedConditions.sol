@@ -33,10 +33,10 @@ contract SharedConditions is TestMethods {
 
     //--------
 
-    function setUpOzToken(uint decimals_) internal returns(ozIToken) {
+    function setUpOzToken(uint decimals_) internal returns(ozIToken, address) {
         address underlying = decimals_ == 6 ? usdcAddr : daiAddr; 
         (ozIToken a,) = _createOzTokens(underlying, "1"); //change "a" for ozERC20 if i end up removing the variable above
-        return a; 
+        return (a, underlying); 
     }
 
 }

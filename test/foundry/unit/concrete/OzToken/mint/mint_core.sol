@@ -5,6 +5,7 @@ pragma solidity 0.8.21;
 import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
+import {AmountsIn} from "./../../../../../../contracts/AppStorage.sol";
 import "./../../../../../../contracts/Errors.sol";
 
 import {console} from "forge-std/console.sol";
@@ -19,8 +20,7 @@ contract Mint_Core is SharedConditions {
 
     function it_should_revert(uint decimals_, Revert type_) internal {
         //Pre-conditions
-        ozIToken ozERC20 = setUpOzToken(decimals_);
-        address underlying = ozERC20.asset();
+        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
         uint amountIn;
@@ -50,5 +50,17 @@ contract Mint_Core is SharedConditions {
         );
         ozERC20.mint(data, owner);
     }
+
+
+    // function it_should_mint(uint decimals_) internal {
+    //     //Pre-conditions
+    //     (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+    //     assertEq(IERC20(underlying).decimals(), decimals_);
+
+    //     AmountsIn memory amountsIn = AmountsIn(
+    //         (rawAmount / 3) * 10 ** IERC20(underlying).decimals(),
+
+    //     );
+    // }
 
 }
