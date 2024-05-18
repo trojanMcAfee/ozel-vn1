@@ -12,6 +12,7 @@ contract SharedConditions is TestMethods {
     address internal testToken_internal;
     uint constant rawAmount = 100;
 
+
     modifier whenTheUnderlyingHas6Decimals() {
         (ozIToken a,) = _createOzTokens(usdcAddr, "1");
         ozERC20 = a;
@@ -28,6 +29,14 @@ contract SharedConditions is TestMethods {
 
     function _toggle(uint amount_, uint decimals_) internal pure returns(uint) {
         return decimals_ == 6 ? amount_ * 1e12 : amount_;
+    }
+
+    //--------
+
+    function setUpOzToken(uint decimals_) internal returns(ozIToken) {
+        address underlying = decimals_ == 6 ? usdcAddr : daiAddr; 
+        (ozIToken a,) = _createOzTokens(underlying, "1"); //change "a" for ozERC20 if i end up removing the variable above
+        return a; 
     }
 
 }
