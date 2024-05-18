@@ -29,7 +29,6 @@ contract Mint_Core is SharedConditions {
             abi.encodeWithSelector(OZError37.selector)
         );
         ozERC20.mint(data, alice);
-
     }
 
 }

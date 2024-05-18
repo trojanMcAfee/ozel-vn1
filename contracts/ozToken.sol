@@ -220,8 +220,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
 
-        // console.log(1);
-        // console.log('amts.amountIn: ', amts.amountIn);
         if (amts.amountIn == 0) revert OZError37();
 
         uint assets = amts.amountIn.format(FORMAT_DECIMALS); 
