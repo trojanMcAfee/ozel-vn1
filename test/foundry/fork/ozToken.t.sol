@@ -337,4 +337,62 @@ contract ozERC20TokenTest is TestMethods {
         assertTrue(_fm2(ozTotalSupplyPreRedeem) == _fm2(ozERC20.totalSupply() + (ozBalAlicePre / 3) + (ozBalBobPre / 5)));
     }
 
+
+    /**
+     * When one or both values of the minAmountsOut array is zero, it still should mint ozTokens.
+     * The risk is that the caller could receive fewer ozTokens due to slippage. 
+     */ 
+    function test_one_minAmountsOut_is_zero() public {
+        //Pre-conditions
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        _getResetVarsAndChangeSlip();
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+
+        AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, OZ.getDefaultSlippage());
+        amountsIn.minAmountsOut[0] = 0;
+
+        bytes memory data = abi.encode(amountsIn, alice);
+
+        vm.startPrank(alice);
+        IERC20Permit(testToken).approve(address(OZ), amountIn);
+        ozERC20.mint(data, alice);
+
+        assertTrue(
+            _checkPercentageDiff(amountIn, ozERC20.balanceOf(alice), 2)
+        );
+    }
+
+
+    /**
+     * Tests that if at least one element from the minAmountsOut array is bigger to what
+     * it should swap for based on its exchange rate (like type(uint).max), it reverts with
+     * a custom error.
+     */
+    function test_one_minAmountsOut_is_uint_max() public {
+        //Pre-conditions
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        _getResetVarsAndChangeSlip();
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+
+        AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, OZ.getDefaultSlippage());
+        amountsIn.minAmountsOut[0] = type(uint).max;
+
+        bytes memory data = abi.encode(amountsIn, alice);
+
+        vm.startPrank(alice);
+        IERC20Permit(testToken).approve(address(OZ), amountIn);
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError01.selector, "Too little received")
+        );
+        ozERC20.mint(data, alice);
+    }
+
 }
