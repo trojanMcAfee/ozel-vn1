@@ -6,8 +6,8 @@ import {Mint_Core} from "./Mint_Core.sol";
 
 contract Mint_Unit_Concrete_test is Mint_Core {
     function test_WhenOwnerIsZero() external {
-        // it should revert_6dec
-        // it should revert_18dec
+        it_should_revert(6, Revert.OWNER);
+        it_should_revert(18, Revert.OWNER);
     }
 
     modifier whenAnalysingMintData() {
@@ -37,8 +37,8 @@ contract Mint_Unit_Concrete_test is Mint_Core {
     }
 
     function test_WhenAmountInIsZero() external whenAnalysingMintData {
-        it_should_revert(6);
-        it_should_revert(18);
+        it_should_revert(6, Revert.AMOUNT_IN);
+        it_should_revert(18, Revert.AMOUNT_IN);
     }
 
     function test_WhenSlippageIsNotEnough() external whenAnalysingMintData {

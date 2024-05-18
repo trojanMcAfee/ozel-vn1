@@ -12,18 +12,29 @@ import {console} from "forge-std/console.sol";
 
 contract Mint_Core is SharedConditions {
 
-    function it_should_revert(uint decimals_) internal {
+    enum Revert {
+        OWNER,
+        AMOUNT_IN
+    }
+
+    function it_should_revert(uint decimals_, Revert type_) internal {
         //Pre-conditions
         ozIToken ozERC20 = setUpOzToken(decimals_);
         assertEq(IERC20(ozERC20.asset()).decimals(), decimals_);
 
-        uint amountIn = 0;
+        uint amountIn;
+        address owner;
+
+        if (type_ == Revert.AMOUNT_IN) {
+            amountIn = 0;
+            owner = alice;
+        }
 
         //Action
         bytes memory data = OZ.getMintData(
             amountIn,
             OZ.getDefaultSlippage(), 
-            alice
+            owner
         );
 
         vm.startPrank(alice);
