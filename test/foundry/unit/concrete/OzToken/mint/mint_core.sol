@@ -6,6 +6,8 @@ import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import "./../../../../../../contracts/Errors.sol";
 
+import {console} from "forge-std/console.sol";
+
 
 contract Mint_Core is SharedConditions {
 
@@ -16,10 +18,17 @@ contract Mint_Core is SharedConditions {
         uint amountIn = 0;
 
         //Action
+        bytes memory data = OZ.getMintData(
+            amountIn,
+            OZ.getDefaultSlippage(), 
+            alice
+        );
+
+        vm.startPrank(alice);
         vm.expectRevert(
             abi.encodeWithSelector(OZError37.selector)
         );
-        _mintOzTokens(ozERC20, alice, testToken_internal, amountIn);
+        ozERC20.mint(data, alice);
 
     }
 
