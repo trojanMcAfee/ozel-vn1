@@ -20,28 +20,35 @@ contract Mint_Core is SharedConditions {
     function it_should_revert(uint decimals_, Revert type_) internal {
         //Pre-conditions
         ozIToken ozERC20 = setUpOzToken(decimals_);
-        assertEq(IERC20(ozERC20.asset()).decimals(), decimals_);
+        address underlying = ozERC20.asset();
+        assertEq(IERC20(underlying).decimals(), decimals_);
 
         uint amountIn;
         address owner;
+        bytes4 selector;
 
         if (type_ == Revert.AMOUNT_IN) {
             amountIn = 0;
             owner = alice;
+            selector = OZError37.selector;
+        } else if (type_ == Revert.OWNER) {
+            amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+            owner = address(0);
+            selector = OZError38.selector;
         }
 
         //Action
         bytes memory data = OZ.getMintData(
             amountIn,
             OZ.getDefaultSlippage(), 
-            owner
+            alice
         );
 
         vm.startPrank(alice);
         vm.expectRevert(
-            abi.encodeWithSelector(OZError37.selector)
+            abi.encodeWithSelector(selector)
         );
-        ozERC20.mint(data, alice);
+        ozERC20.mint(data, owner);
     }
 
 }
