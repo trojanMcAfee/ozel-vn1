@@ -57,8 +57,8 @@ contract Mint_Unit_Concrete_test is Mint_Core {
     }
 
     function test_WhenUserHasUnderlyingBalance() external {
-        // it should mint_6dec
-        // it should mint_18dec
+        it_should_mint(6);
+        it_should_mint(18);
     }
 
     function test_WhenUserDoesntHaveUnderlyingBalance() external {

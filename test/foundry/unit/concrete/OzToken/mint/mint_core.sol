@@ -61,18 +61,17 @@ contract Mint_Core is SharedConditions {
         assertEq(IERC20(underlying).decimals(), decimals_);
         
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
-
-        AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, OZ.getDefaultSlippage());
-        amountsIn.minAmountsOut[0] = 0;
-
-        bytes memory data = abi.encode(amountsIn, alice);
+        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
 
         vm.startPrank(alice);
         IERC20(underlying).approve(address(OZ), amountIn);
         ozERC20.mint(data, alice);
 
-        uint ozBalanceAlice = ozERC20.balanceOf(alice);
-        console.log('ozBalanceAlice: ', ozBalanceAlice);
+        uint decimals_internal = decimals_ == 6 ? 1e12 : 1;
+
+        assertTrue(
+            _checkPercentageDiff(amountIn * decimals_internal, ozERC20.balanceOf(alice), 2)
+        );
     }
 
     function it_should_throw_error(uint decimals_) internal {
