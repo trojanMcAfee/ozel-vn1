@@ -31,7 +31,6 @@ contract MockReentrantRocketVault {
 
     function balanceOf(string memory pool_) external {
         bytes memory data = abi.encode(pool_);
-        console.log('ozERC20: ', ozERC20addr);
         ozIToken(ozERC20addr).mint(data, deadAddr);
     }
 }   

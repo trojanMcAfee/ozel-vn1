@@ -228,7 +228,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         bytes memory data_, 
         address owner_
     ) external lock(TRANSIENT_SLOT) updateReward(owner_, _ozDiamond) returns(uint) {
-        console.log(1);
         if (data_.length != 224) revert OZError39(data_);
 
         (AmountsIn memory amts, address receiver) = 

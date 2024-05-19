@@ -18,7 +18,8 @@ contract Mint_Core is SharedConditions {
     enum Revert {
         OWNER,
         AMOUNT_IN,
-        RECEIVER
+        RECEIVER,
+        REENTRANT
     }
 
     function it_should_revert(uint decimals_, Revert type_) internal {
@@ -40,6 +41,13 @@ contract Mint_Core is SharedConditions {
         } else if (type_ == Revert.RECEIVER) {
             receiver = address(0);
             selector = OZError38.selector;
+        } else if (type_ == Revert.REENTRANT) {
+            MockReentrantRocketVault reentrantVault = new MockReentrantRocketVault(ozERC20);
+
+            address mockRocketVault = IMockRocketPoolStorage(rocketPoolStorage).vault();
+            vm.etch(mockRocketVault, address(reentrantVault).code);
+
+            selector = OZError40.selector;
         }
 
         //Actions + Post-conditions
@@ -50,6 +58,8 @@ contract Mint_Core is SharedConditions {
         );
 
         vm.startPrank(alice);
+        IERC20(underlying).approve(address(OZ), amountIn);
+        
         vm.expectRevert(
             abi.encodeWithSelector(selector)
         );
@@ -134,12 +144,11 @@ contract Mint_Core is SharedConditions {
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
-        //-------
+        //Actions
         MockReentrantRocketVault reentrantVault = new MockReentrantRocketVault(ozERC20);
 
         address mockRocketVault = IMockRocketPoolStorage(rocketPoolStorage).vault();
         vm.etch(mockRocketVault, address(reentrantVault).code);
-        //-------
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
         bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
@@ -147,6 +156,7 @@ contract Mint_Core is SharedConditions {
         vm.startPrank(alice);
         IERC20(underlying).approve(address(OZ), amountIn);
 
+        //Post-condition
         vm.expectRevert(
             abi.encodeWithSelector(OZError40.selector)
         );

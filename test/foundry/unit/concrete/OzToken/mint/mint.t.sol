@@ -42,6 +42,7 @@ contract Mint_Unit_Concrete_test is Mint_Core {
     }
 
     function test_WhenYouTryToReenter() external {
-        it_reverts2(6);
+        it_should_revert(6, Revert.REENTRANT);
+        it_should_revert(18, Revert.REENTRANT);
     }
 }
