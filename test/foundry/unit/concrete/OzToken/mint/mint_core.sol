@@ -82,7 +82,14 @@ contract Mint_Core is SharedConditions {
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
 
-        bytes memory data = abi.encode(usdcAddr, daiAddr, amountIn);
+        uint[] memory minAmountsOut = new uint[](3);
+        for (uint i=0; i < minAmountsOut.length; i++) {
+            minAmountsOut[i] = type(uint).max;
+        }
+
+        AmountsIn memory amts = AmountsIn(amountIn, minAmountsOut);
+
+        bytes memory data = abi.encode(amts, alice);
 
         vm.startPrank(alice);
         IERC20(underlying).approve(address(OZ), amountIn);
