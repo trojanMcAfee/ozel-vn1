@@ -54,7 +54,7 @@ contract Mint_Core is SharedConditions {
         ozERC20.mint(data, owner);
     }
 
-    //so far, not used
+
     function it_should_mint(uint decimals_) internal {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
@@ -93,10 +93,39 @@ contract Mint_Core is SharedConditions {
         vm.startPrank(alice);
         IERC20(underlying).approve(address(OZ), amountIn);
 
+        //Action + post-condition
         vm.expectRevert(
             abi.encodeWithSelector(OZError39.selector, data)
         );
         ozERC20.mint(data, alice);
+    }
+
+
+    function it_should_throw_error2(uint decimals_) internal {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+
+        uint underlyingBalanceAlice = IERC20(underlying).balanceOf(alice);
+        assertGt(underlyingBalanceAlice, 0);
+
+        vm.prank(alice);
+        IERC20(underlying).transfer(address(1), underlyingBalanceAlice);
+
+        underlyingBalanceAlice = IERC20(underlying).balanceOf(alice);
+        assertEq(underlyingBalanceAlice, 0);
+
+
+        //Pre-conditions
+        // (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        // assertEq(IERC20(underlying).decimals(), decimals_);
+        
+        // uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+        // bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+
+        // vm.startPrank(alice);
+        // IERC20(underlying).approve(address(OZ), amountIn);
+        // ozERC20.mint(data, alice);
     }
     
 }

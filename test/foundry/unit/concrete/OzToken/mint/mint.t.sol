@@ -62,7 +62,7 @@ contract Mint_Unit_Concrete_test is Mint_Core {
     }
 
     function test_WhenUserDoesntHaveUnderlyingBalance() external {
-        // it should throw error_6dec
+        it_should_throw_error2(6);
         // it should throw error_18dec
     }
 }
