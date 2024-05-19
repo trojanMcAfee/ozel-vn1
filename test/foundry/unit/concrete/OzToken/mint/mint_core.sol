@@ -59,7 +59,7 @@ contract Mint_Core is SharedConditions {
 
         vm.startPrank(alice);
         IERC20(underlying).approve(address(OZ), amountIn);
-        
+
         vm.expectRevert(
             abi.encodeWithSelector(selector)
         );
@@ -134,31 +134,6 @@ contract Mint_Core is SharedConditions {
 
         vm.expectRevert(
             abi.encodeWithSelector(OZError22.selector, "ERC20: transfer amount exceeds balance")
-        );
-        ozERC20.mint(data, alice);
-    }
-
-
-    function it_reverts2(uint decimals_) internal skipOrNot {
-        //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
-        assertEq(IERC20(underlying).decimals(), decimals_);
-
-        //Actions
-        MockReentrantRocketVault reentrantVault = new MockReentrantRocketVault(ozERC20);
-
-        address mockRocketVault = IMockRocketPoolStorage(rocketPoolStorage).vault();
-        vm.etch(mockRocketVault, address(reentrantVault).code);
-
-        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
-        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
-
-        vm.startPrank(alice);
-        IERC20(underlying).approve(address(OZ), amountIn);
-
-        //Post-condition
-        vm.expectRevert(
-            abi.encodeWithSelector(OZError40.selector)
         );
         ozERC20.mint(data, alice);
     }
