@@ -74,7 +74,7 @@ contract Mint_Core is SharedConditions {
         );
     }
 
-    function it_should_throw_error(uint decimals_) internal {
+    function it_should_throw_error_39(uint decimals_) internal {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -101,7 +101,7 @@ contract Mint_Core is SharedConditions {
     }
 
 
-    function it_should_throw_error2(uint decimals_) internal {
+    function it_should_throw_error_22(uint decimals_) internal {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -109,23 +109,21 @@ contract Mint_Core is SharedConditions {
         uint underlyingBalanceAlice = IERC20(underlying).balanceOf(alice);
         assertGt(underlyingBalanceAlice, 0);
 
-        vm.prank(alice);
+        vm.startPrank(alice);
         IERC20(underlying).transfer(address(1), underlyingBalanceAlice);
 
-        underlyingBalanceAlice = IERC20(underlying).balanceOf(alice);
-        assertEq(underlyingBalanceAlice, 0);
-
-
-        //Pre-conditions
-        // (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
-        // assertEq(IERC20(underlying).decimals(), decimals_);
+        assertEq(IERC20(underlying).balanceOf(alice), 0);
         
-        // uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
-        // bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
 
-        // vm.startPrank(alice);
-        // IERC20(underlying).approve(address(OZ), amountIn);
-        // ozERC20.mint(data, alice);
+        //Action + Post-condtion
+        IERC20(underlying).approve(address(OZ), amountIn);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError22.selector, "ERC20: transfer amount exceeds balance")
+        );
+        ozERC20.mint(data, alice);
     }
     
 }

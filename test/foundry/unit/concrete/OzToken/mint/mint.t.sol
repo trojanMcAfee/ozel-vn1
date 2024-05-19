@@ -52,8 +52,8 @@ contract Mint_Unit_Concrete_test is Mint_Core {
     }
 
     function test_WhenMintDataIsNotProperlyEncoded() external whenAnalysingMintData {
-        it_should_throw_error(6);
-        it_should_throw_error(18);
+        it_should_throw_error_39(6);
+        it_should_throw_error_39(18);
     }
 
     function test_WhenUserHasUnderlyingBalance() external {
@@ -62,7 +62,7 @@ contract Mint_Unit_Concrete_test is Mint_Core {
     }
 
     function test_WhenUserDoesntHaveUnderlyingBalance() external {
-        it_should_throw_error2(6);
-        // it should throw error_18dec
+        it_should_throw_error_22(6);
+        it_should_throw_error_22(18);
     }
 }
