@@ -41,6 +41,9 @@ error OZError07(address from, uint fromShares, uint shares); //ozToken.sol / _tr
 error OZError08(uint deadline, uint blockTimestamp); //permit - ERC2612ExpiredDeadline
 error OZError09(address owner, address spender); //permit - ERC2612InvalidSignature
 error OZError35(uint ozAmountIn); //redeem - ozAmountIn is less than allowed
+error OZError37(); //mint / ozToken.sol - amountIn can't be zero
+error OZError38(); //mint / ozToken.sol - can't be address(0)
+error OZError39(bytes mintData); //mint / ozToken.sol - invalid mint data
 
 //--- OZLrewards errors
 error OZError15(); //setRewardsDuration - rewards duration not finished
@@ -61,8 +64,7 @@ error OZError26(address newBeacon); //_setBeacon / ozERC1967Upgrade.sol - new be
 error OZError33(address caller); // multiple ozCut.sol funcs / Modifiers.sol / not owner
 error OZError34(uint amount); //allocate / OZL.sol - amount greater than pending to allocate
 error OZError36(address wrongOwner); //acceptOwnership / OwnershipFacet.sol - sender is not pending owner
-error OZError37(); //mint / ozToken.sol - amountIn can't be zero
-error OZError38(); //mint / ozToken.sol - can't be address(0)
+
 
 //Oracle errors
 error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_

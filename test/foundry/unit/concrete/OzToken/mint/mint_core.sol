@@ -40,7 +40,7 @@ contract Mint_Core is SharedConditions {
             selector = OZError38.selector;
         }
 
-        //Action
+        //Actions + Post-conditions
         bytes memory data = OZ.getMintData(
             amountIn,
             OZ.getDefaultSlippage(), 
@@ -73,6 +73,24 @@ contract Mint_Core is SharedConditions {
 
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('ozBalanceAlice: ', ozBalanceAlice);
+    }
+
+    function it_should_throw_error(uint decimals_) internal {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+
+        bytes memory data = abi.encode(usdcAddr, daiAddr, amountIn);
+
+        vm.startPrank(alice);
+        IERC20(underlying).approve(address(OZ), amountIn);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError39.selector, data)
+        );
+        ozERC20.mint(data, alice);
     }
     
 }

@@ -52,7 +52,7 @@ contract Mint_Unit_Concrete_test is Mint_Core {
     }
 
     function test_WhenMintDataIsNotProperlyEncoded() external whenAnalysingMintData {
-        // it should throw error_6dec
+        it_should_throw_error(6);
         // it should throw error_18dec
     }
 
