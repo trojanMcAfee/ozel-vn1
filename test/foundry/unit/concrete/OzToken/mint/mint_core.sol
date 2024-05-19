@@ -15,7 +15,8 @@ contract Mint_Core is SharedConditions {
 
     enum Revert {
         OWNER,
-        AMOUNT_IN
+        AMOUNT_IN,
+        RECEIVER
     }
 
     function it_should_revert(uint decimals_, Revert type_) internal {
@@ -23,17 +24,19 @@ contract Mint_Core is SharedConditions {
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
-        uint amountIn;
-        address owner;
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+        address owner = alice;
+        address receiver = alice;
         bytes4 selector;
 
         if (type_ == Revert.AMOUNT_IN) {
             amountIn = 0;
-            owner = alice;
             selector = OZError37.selector;
         } else if (type_ == Revert.OWNER) {
-            amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
             owner = address(0);
+            selector = OZError38.selector;
+        } else if (type_ == Revert.RECEIVER) {
+            receiver = address(0);
             selector = OZError38.selector;
         }
 
@@ -41,7 +44,7 @@ contract Mint_Core is SharedConditions {
         bytes memory data = OZ.getMintData(
             amountIn,
             OZ.getDefaultSlippage(), 
-            alice
+            receiver
         );
 
         vm.startPrank(alice);
@@ -51,7 +54,7 @@ contract Mint_Core is SharedConditions {
         ozERC20.mint(data, owner);
     }
 
-
+    //so far, not used
     function it_should_mint(uint decimals_) internal {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
@@ -71,5 +74,5 @@ contract Mint_Core is SharedConditions {
         uint ozBalanceAlice = ozERC20.balanceOf(alice);
         console.log('ozBalanceAlice: ', ozBalanceAlice);
     }
-
+    
 }

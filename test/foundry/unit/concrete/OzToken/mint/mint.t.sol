@@ -41,14 +41,14 @@ contract Mint_Unit_Concrete_test is Mint_Core {
         it_should_revert(18, Revert.AMOUNT_IN);
     }
 
-    function test_WhenSlippageIsNotEnough() external whenAnalysingMintData {
-        // it should throw error_6dec
-        // it should throw error_18dec
-    }
+    // function test_WhenSlippageIsNotEnough() external whenAnalysingMintData {
+    //     // it should throw error_6dec
+    //     // it should throw error_18dec
+    // }
 
     function test_WhenReceiverIsZero() external whenAnalysingMintData {
-        // it should revert_6dec
-        // it should revert_18dec
+        it_should_revert(6, Revert.RECEIVER);
+        it_should_revert(18, Revert.RECEIVER);
     }
 
     function test_WhenMintDataIsNotProperlyEncoded() external whenAnalysingMintData {
