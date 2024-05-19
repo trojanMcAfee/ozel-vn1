@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity 0.8.21;
+pragma solidity 0.8.24;
 
 
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
@@ -9,7 +9,7 @@ import {SharedConditions} from "../SharedConditions.sol";
 
 contract TotalSupply_Core is SharedConditions {
 
-    function it_should_return_0(uint decimals_) skipOrNot internal {
+    function it_should_return_0(uint decimals_) internal skipOrNot {
         //Pre-conditions
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
         assertEq(ozERC20.totalShares(), 0);
@@ -18,7 +18,7 @@ contract TotalSupply_Core is SharedConditions {
         assertEq(ozERC20.totalSupply(), 0);
     }
 
-    function it_should_return_the_sum_of_all_users_balances(uint decimals_) skipOrNot internal {
+    function it_should_return_the_sum_of_all_users_balances(uint decimals_) internal skipOrNot {
         //Pre-conditions
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
         

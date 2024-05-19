@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity 0.8.21;
+pragma solidity 0.8.24;
 
 
 import {SharedConditions} from "../SharedConditions.sol";
@@ -55,7 +55,7 @@ contract Mint_Core is SharedConditions {
     }
 
 
-    function it_should_mint(uint decimals_) internal {
+    function it_should_mint(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -74,7 +74,7 @@ contract Mint_Core is SharedConditions {
         );
     }
 
-    function it_should_throw_error_39(uint decimals_) internal {
+    function it_should_throw_error_39(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -101,7 +101,7 @@ contract Mint_Core is SharedConditions {
     }
 
 
-    function it_should_throw_error_22(uint decimals_) internal {
+    function it_should_throw_error_22(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);

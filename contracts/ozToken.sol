@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity 0.8.21;
+pragma solidity 0.8.24;
 
 
 import {
@@ -215,7 +215,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function mint(
         bytes memory data_, 
         address owner_
-    ) external updateReward(owner_, _ozDiamond) returns(uint) { 
+    ) external updateReward(owner_, _ozDiamond) returns(uint) {
         if (data_.length != 224) revert OZError39(data_);
 
         (AmountsIn memory amts, address receiver) = 

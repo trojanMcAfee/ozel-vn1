@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity 0.8.21;
+pragma solidity 0.8.24;
 
 
 import {ozIDiamond} from "../../../contracts/interfaces/ozIDiamond.sol";
@@ -53,7 +53,7 @@ enum Network {
     MOCKS
 }
 
-Network constant n = Network.MOCKS;
+Network constant n = Network.ETHEREUM;
 //****** */
 
 contract Setup is MockStorage, Test {

@@ -5,7 +5,7 @@ require('dotenv').config();
 
 module.exports = {
   solidity: {
-    version: "0.8.21",
+    version: "0.8.24",
     settings: {
       viaIR: false,
     }

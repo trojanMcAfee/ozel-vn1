@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity 0.8.21;
+pragma solidity 0.8.24;
 
 
 import {ozIToken} from "../../../../../../contracts/interfaces/ozIToken.sol";
@@ -16,7 +16,7 @@ contract BalanceOf_Core is SharedConditions {
         SECOND
     }
 
-    function it_should_return_0(uint decimals_, Variants v_) skipOrNot internal {
+    function it_should_return_0(uint decimals_, Variants v_) internal skipOrNot {
         //Pre-conditions
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
         assertEq(ozERC20.totalSupply(), 0);
@@ -37,7 +37,7 @@ contract BalanceOf_Core is SharedConditions {
         assertEq(ozERC20.balanceOf(alice), 0);
     }
 
-    function it_should_return_a_delta_of_less_than_2_bps(uint decimals_) skipOrNot internal {
+    function it_should_return_a_delta_of_less_than_2_bps(uint decimals_) internal skipOrNot {
         //Pre-conditions
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
 
@@ -53,7 +53,7 @@ contract BalanceOf_Core is SharedConditions {
     }
 
 
-    function it_should_return_the_same_balance_for_both(uint decimals_) skipOrNot internal {
+    function it_should_return_the_same_balance_for_both(uint decimals_) internal skipOrNot {
         //Pre-conditions
         assertEq(IERC20(testToken_internal).decimals(), decimals_);
 
@@ -87,7 +87,7 @@ contract BalanceOf_Core is SharedConditions {
     function it_should_have_same_balances_between_holders_for_both_ozTokens_if_minting_equal_amounts(
         ozIToken ozERC20_1_, 
         ozIToken ozERC20_2_
-    ) skipOrNot public {
+    ) public skipOrNot {
         //Pre-conditions
         assertEq(IERC20(ozERC20_1_.asset()).decimals(), 6);
         assertEq(IERC20(ozERC20_2_.asset()).decimals(), 18);

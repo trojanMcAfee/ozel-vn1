@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (proxy/beacon/UpgradeableBeacon.sol)
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.24;
 
 import {LibDiamond} from "../libraries/LibDiamond.sol";
 import {Helpers} from "../libraries/Helpers.sol";
