@@ -70,7 +70,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     bytes32 private constant _PERMIT_TYPEHASH =
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
-    bytes32 TRANSIENT_SLOT = keccak256("transient storage slot");
+    bytes32 constant TRANSIENT_SLOT = keccak256("transient storage slot");
 
     uint public FORMAT_DECIMALS;
     uint constant MASK = 2 ** (128) - 1;
