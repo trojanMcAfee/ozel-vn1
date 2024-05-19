@@ -18,14 +18,15 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_0(uint decimals_, Variants v_) internal skipOrNot {
         //Pre-conditions
-        assertEq(IERC20(testToken_internal).decimals(), decimals_);
+        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
         assertEq(ozERC20.totalSupply(), 0);
 
         if (v_ == Variants.SECOND) {
             //Conditional action 
-            uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
+            uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
 
-            _mintOzTokens(ozERC20, bob, testToken_internal, amountIn);
+            _mintOzTokens(ozERC20, bob, underlying, amountIn);
 
             //Conditional post-condition
             assertTrue(
