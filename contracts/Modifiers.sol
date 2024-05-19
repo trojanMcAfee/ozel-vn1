@@ -16,8 +16,6 @@ contract Modifiers is IOZLrewards {
     using Helpers for address[];
 
     AppStorage internal s;
-
-    bytes32 constant TRANSIENT_SLOT = keccak256("transient storage slot");
     
 
     /**
@@ -68,16 +66,16 @@ contract Modifiers is IOZLrewards {
         }
     }
 
-    modifier lock {
+    modifier lock(bytes32 location_) {
         assembly {
-            if tload(TRANSIENT_SLOT) {
-                revert(0, 0);
+            if tload(location_) {
+                revert(0, 0)
             }
-            tstore(TRANSIENT_SLOT, 1)
+            tstore(location_, 1)
         }
         _;
         assembly {
-            tstore(TRANSIENT_SLOT, 0)
+            tstore(location_, 0)
         }
     }
 }

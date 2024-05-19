@@ -5,8 +5,10 @@ pragma solidity 0.8.24;
 import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
+import {IMockRocketPoolStorage} from "./../../../../../../contracts/interfaces/IRocketPool.sol";
 import {AmountsIn} from "./../../../../../../contracts/AppStorage.sol";
 import "./../../../../../../contracts/Errors.sol";
+import {MockReentrantRocketVault} from "../../../../mocks/rocket-pool/MockRocketVault.sol";
 
 import {console} from "forge-std/console.sol";
 
@@ -123,6 +125,27 @@ contract Mint_Core is SharedConditions {
         vm.expectRevert(
             abi.encodeWithSelector(OZError22.selector, "ERC20: transfer amount exceeds balance")
         );
+        ozERC20.mint(data, alice);
+    }
+
+
+    function it_reverts2(uint decimals_) internal skipOrNot {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+
+        //-------
+        MockReentrantRocketVault reentrantVault = new MockReentrantRocketVault(ozERC20);
+
+        address mockRocketVault = IMockRocketPoolStorage(rocketPoolStorage).vault();
+        vm.etch(mockRocketVault, address(reentrantVault).code);
+        //-------
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+
+        vm.startPrank(alice);
+        IERC20(underlying).approve(address(OZ), amountIn);
         ozERC20.mint(data, alice);
     }
     

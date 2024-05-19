@@ -69,3 +69,7 @@ interface IRocketDAOProtocolSettingsDeposit {
 interface DAOdepositSettings {
     function setSettingUint(string memory _settingPath, uint256 _value) external;
 }
+
+interface IMockRocketPoolStorage {
+    function vault() external view returns(address);
+}

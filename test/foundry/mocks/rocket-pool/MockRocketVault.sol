@@ -2,6 +2,9 @@
 pragma solidity 0.8.24;
 
 import {Helpers} from "./../../../../contracts/libraries/Helpers.sol";
+import {ozIToken} from "./../../../../contracts/interfaces/ozIToken.sol";
+
+import {console} from "forge-std/console.sol";
 
 
 contract MockRocketVault {
@@ -18,8 +21,17 @@ contract MockRocketVault {
 
 contract MockReentrantRocketVault {
 
-    function balanceOf(string memory pool_) external {
-        
+    address deadAddr = 0x000000000000000000000000000000000000dEaD;
+
+    address immutable ozERC20addr;
+
+    constructor(ozIToken ozToken_) {
+        ozERC20addr = address(ozToken_);
     }
 
+    function balanceOf(string memory pool_) external {
+        bytes memory data = abi.encode(pool_);
+        console.log('ozERC20: ', ozERC20addr);
+        ozIToken(ozERC20addr).mint(data, deadAddr);
+    }
 }   
