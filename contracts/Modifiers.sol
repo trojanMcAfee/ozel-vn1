@@ -69,7 +69,12 @@ contract Modifiers is IOZLrewards {
     modifier lock(bytes32 location_) {
         assembly {
             if tload(location_) {
-                revert(0, 0)
+                let data := mload(0x40)
+                mstore(data, shl(224, 0xb9554255)) 
+
+                mstore(0x40, add(data, 4))
+
+                revert(data, 4)
             }
             tstore(location_, 1)
         }

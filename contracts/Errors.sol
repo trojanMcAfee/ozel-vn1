@@ -64,6 +64,7 @@ error OZError26(address newBeacon); //_setBeacon / ozERC1967Upgrade.sol - new be
 error OZError33(address caller); // multiple ozCut.sol funcs / Modifiers.sol / not owner
 error OZError34(uint amount); //allocate / OZL.sol - amount greater than pending to allocate
 error OZError36(address wrongOwner); //acceptOwnership / OwnershipFacet.sol - sender is not pending owner
+error OZError40(); //lock mod / Modifiers.sol - no reentrancy (this gets triggered in its bytes4 form: 0xb9554255)
 
 
 //Oracle errors

@@ -146,6 +146,10 @@ contract Mint_Core is SharedConditions {
 
         vm.startPrank(alice);
         IERC20(underlying).approve(address(OZ), amountIn);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError40.selector)
+        );
         ozERC20.mint(data, alice);
     }
     
