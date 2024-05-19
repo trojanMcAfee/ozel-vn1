@@ -14,3 +14,12 @@ contract MockRocketVault {
         return !flag ? pool_.compareStrings('rocketDepositPool') ? 1 : 0 : 0;
     }
 }
+
+
+contract MockReentrantRocketVault {
+
+    function balanceOf(string memory pool_) external {
+        
+    }
+
+}   

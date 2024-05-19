@@ -65,19 +65,31 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     mapping(address => CountersUpgradeable.Counter) private _nonces;
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    // Token name
     string private _name;
-    // Token Symbol
     string private _symbol;
 
     bytes32 private constant _PERMIT_TYPEHASH =
         keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+    // bytes32 constant TRANSIENT_SLOT = keccak256("transient storage slot");
 
     uint public FORMAT_DECIMALS;
-
     uint constant MASK = 2 ** (128) - 1;
     
     mapping(address user => uint assets) private _assets;
+
+
+    // modifier lock {
+    //     assembly {
+    //         if tload(TRANSIENT_SLOT) {
+    //             revert(0, 0);
+    //         }
+    //         tstore(TRANSIENT_SLOT, 1)
+    //     }
+    //     _;
+    //     assembly {
+    //         tstore(TRANSIENT_SLOT, 0)
+    //     }
+    // }
 
    
     constructor() {
@@ -215,7 +227,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function mint(
         bytes memory data_, 
         address owner_
-    ) external updateReward(owner_, _ozDiamond) returns(uint) {
+    ) external updateReward(owner_, _ozDiamond) lock returns(uint) {
         if (data_.length != 224) revert OZError39(data_);
 
         (AmountsIn memory amts, address receiver) = 
