@@ -368,6 +368,34 @@ contract ozERC20TokenTest is TestMethods {
 
 
     /**
+     * When the slippage for minting ozTokens is not enough (or zero), the minting operations
+     * reverts with a custom error.
+     */
+    function test_minting_slippage_is_zero() public {
+        //Pre-conditions
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        _getResetVarsAndChangeSlip();
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+
+        AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, 0);
+
+        bytes memory data = abi.encode(amountsIn, alice);
+
+        vm.startPrank(alice);
+        IERC20Permit(testToken).approve(address(OZ), amountIn);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError01.selector, "Too little received")
+        );
+        ozERC20.mint(data, alice);
+    }
+
+
+    /**
      * Tests that if at least one element from the minAmountsOut array is bigger to what
      * it should swap for based on its exchange rate (like type(uint).max), it reverts with
      * a custom error.

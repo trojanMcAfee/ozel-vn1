@@ -18,23 +18,23 @@ contract Mint_Unit_Concrete_test is Mint_Core {
         _;
     }
 
-    function test_WhenAtLeastOneElementFromMinAmountsOutIsZero()
-        external
-        whenAnalysingMintData
-        whenAnalysingMinAmountsOut
-    {
-        it_should_mint(6);
-        // it should mint with slippage_18dec
-    }
+    // function test_WhenAtLeastOneElementFromMinAmountsOutIsZero()
+    //     external
+    //     whenAnalysingMintData
+    //     whenAnalysingMinAmountsOut
+    // {
+    //     it_should_mint(6);
+    //     // it should mint with slippage_18dec
+    // }
 
-    function test_WhenAtLeastOneElementMinAmountsOutIsUintMax()
-        external
-        whenAnalysingMintData
-        whenAnalysingMinAmountsOut
-    {
-        // it should throw error_6dec
-        // it should throw error_18dec
-    }
+    // function test_WhenAtLeastOneElementMinAmountsOutIsUintMax()
+    //     external
+    //     whenAnalysingMintData
+    //     whenAnalysingMinAmountsOut
+    // {
+    //     // it should throw error_6dec
+    //     // it should throw error_18dec
+    // }
 
     function test_WhenAmountInIsZero() external whenAnalysingMintData {
         it_should_revert(6, Revert.AMOUNT_IN);
