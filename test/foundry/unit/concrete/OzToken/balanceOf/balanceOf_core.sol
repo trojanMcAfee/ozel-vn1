@@ -18,7 +18,7 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_0(uint decimals_, Variants v_) internal skipOrNot {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
         assertEq(ozERC20.totalSupply(), 0);
 
@@ -40,7 +40,7 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_a_delta_of_less_than_2_bps(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
@@ -57,7 +57,7 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_the_same_balance_for_both(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
@@ -72,7 +72,7 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_have_same_balances_for_both_ozTokens_if_minting_equal_amounts() skipOrNot internal {
         //Pre-conditions
-        (ozIToken ozUSDC, ozIToken ozDAI) = setUpTwoOzTokens();
+        (ozIToken ozUSDC, ozIToken ozDAI) = _setUpTwoOzTokens();
         assertEq(IERC20(ozUSDC.asset()).decimals(), 6);
         assertEq(IERC20(ozDAI.asset()).decimals(), 18);
 
@@ -90,7 +90,7 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_have_same_balances_between_holders_for_both_ozTokens_if_minting_equal_amounts() public skipOrNot {
         //Pre-conditions
-        (ozIToken ozUSDC, ozIToken ozDAI) = setUpTwoOzTokens();
+        (ozIToken ozUSDC, ozIToken ozDAI) = _setUpTwoOzTokens();
         assertEq(IERC20(ozUSDC.asset()).decimals(), 6);
         assertEq(IERC20(ozDAI.asset()).decimals(), 18);
 

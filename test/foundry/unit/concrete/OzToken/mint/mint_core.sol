@@ -24,7 +24,7 @@ contract Mint_Core is SharedConditions {
 
     function it_should_revert(uint decimals_, Revert type_) internal {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
@@ -69,7 +69,7 @@ contract Mint_Core is SharedConditions {
 
     function it_should_mint(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
         
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
@@ -88,7 +88,7 @@ contract Mint_Core is SharedConditions {
 
     function it_should_throw_error_39(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
@@ -115,7 +115,7 @@ contract Mint_Core is SharedConditions {
 
     function it_should_throw_error_22(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
         uint underlyingBalanceAlice = IERC20(underlying).balanceOf(alice);

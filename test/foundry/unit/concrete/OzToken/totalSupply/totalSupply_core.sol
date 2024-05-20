@@ -12,7 +12,7 @@ contract TotalSupply_Core is SharedConditions {
 
     function it_should_return_0(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
         assertEq(ozERC20.totalShares(), 0);
 
@@ -22,7 +22,7 @@ contract TotalSupply_Core is SharedConditions {
 
     function it_should_return_the_sum_of_all_users_balances(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
         
         uint rawAmount = 100;
