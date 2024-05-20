@@ -12,6 +12,7 @@ import {AmountsIn} from "../../../contracts/AppStorage.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../../../contracts/Errors.sol";
 import {Dummy1} from "../mocks/Dummy1.sol";
+import {Type} from "../base/AppStorageTests.sol"; 
 
 import "forge-std/console.sol";
 
@@ -19,6 +20,8 @@ import "forge-std/console.sol";
 contract ozERC20TokenTest is TestMethods {
 
     using SafeERC20 for IERC20;
+
+    event OzTokenMinted(address owner, uint shares, uint assets);
 
 
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
@@ -421,6 +424,28 @@ contract ozERC20TokenTest is TestMethods {
             abi.encodeWithSelector(OZError01.selector, "Too little received")
         );
         ozERC20.mint(data, alice);
+    }
+
+    function test_should_emit_OzTokenMinted() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+
+        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+
+        uint shares = 33000000;
+        uint assets = 33000000;
+
+        vm.startPrank(alice);
+        IERC20Permit(testToken).approve(address(OZ), amountIn);
+        
+        vm.expectEmit(false, false, false, true);
+        emit OzTokenMinted(alice, shares, assets);
+
+        ozERC20.mint(data, alice);
+
+
     }
 
 }

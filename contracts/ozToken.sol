@@ -76,25 +76,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     uint constant MASK = 2 ** (128) - 1;
     
     mapping(address user => uint assets) private _assets;
-
-
-    // modifier lock {
-    //     assembly {
-    //         if tload(TRANSIENT_SLOT) {
-    //             revert(0, 0);
-    //         }
-    //         tstore(TRANSIENT_SLOT, 1)
-    //     }
-    //     _;
-    //     assembly {
-    //         tstore(TRANSIENT_SLOT, 0)
-    //     }
-    // }
-
    
     constructor() {
         _disableInitializers();
     }
+
 
     function initialize(
         address underlying_,
