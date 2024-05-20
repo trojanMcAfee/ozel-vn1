@@ -40,12 +40,13 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_a_delta_of_less_than_2_bps(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        assertEq(IERC20(testToken_internal).decimals(), decimals_);
+        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
 
-        uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
 
         //Action
-        _mintOzTokens(ozERC20, alice, testToken_internal, amountIn);
+        _mintOzTokens(ozERC20, alice, underlying, amountIn);
 
         //Post-condition
         assertTrue(
@@ -56,13 +57,14 @@ contract BalanceOf_Core is SharedConditions {
 
     function it_should_return_the_same_balance_for_both(uint decimals_) internal skipOrNot {
         //Pre-conditions
-        assertEq(IERC20(testToken_internal).decimals(), decimals_);
+        (ozIToken ozERC20, address underlying) = setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
 
-        uint amountIn = (rawAmount / 3) * 10 ** IERC20(testToken_internal).decimals();
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
 
         //Actions
-        _mintOzTokens(ozERC20, alice, testToken_internal, amountIn);
-        _mintOzTokens(ozERC20, bob, testToken_internal, amountIn);
+        _mintOzTokens(ozERC20, alice, underlying, amountIn);
+        _mintOzTokens(ozERC20, bob, underlying, amountIn);
 
         //Post-condition
         assertEq(ozERC20.balanceOf(alice), ozERC20.balanceOf(bob));
