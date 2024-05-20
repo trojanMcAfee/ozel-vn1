@@ -127,6 +127,8 @@ contract ozEngine is Modifiers {
         
         msg.sender.safeTransferFrom(owner_, address(this), amts.ozAmountIn);
 
+        console.log('amountInReth in useOzTokens: ', amountInReth);
+
         //Swap rETH to WETH
         uint amountOut = _checkPauseAndSwap(
             s.rETH,

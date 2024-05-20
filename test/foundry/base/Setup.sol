@@ -53,7 +53,7 @@ enum Network {
     MOCKS
 }
 
-Network constant n = Network.ETH_N_MOCKS;
+Network constant n = Network.MOCKS;
 //****** */
 
 contract Setup is MockStorage, Test {
