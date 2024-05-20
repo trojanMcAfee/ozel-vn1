@@ -39,4 +39,10 @@ contract SharedConditions is TestMethods {
         return (a, underlying); 
     }
 
+    function setUpTwoOzTokens() internal returns(ozIToken, ozIToken) {
+        (ozIToken ozUSDC,) = _createOzTokens(usdcAddr, "1");
+        (ozIToken ozDAI,) = _createOzTokens(daiAddr, "1");
+        return (ozUSDC, ozDAI);
+    }
+
 }

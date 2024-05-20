@@ -70,39 +70,38 @@ contract BalanceOf_Core is SharedConditions {
         assertEq(ozERC20.balanceOf(alice), ozERC20.balanceOf(bob));
     }
 
-    function it_should_have_same_balances_for_both_ozTokens_if_minting_equal_amounts(ozIToken ozERC20_1_, ozIToken ozERC20_2_) skipOrNot internal {
+    function it_should_have_same_balances_for_both_ozTokens_if_minting_equal_amounts() skipOrNot internal {
         //Pre-conditions
-        assertEq(IERC20(ozERC20_1_.asset()).decimals(), 6);
-        assertEq(IERC20(ozERC20_2_.asset()).decimals(), 18);
+        (ozIToken ozUSDC, ozIToken ozDAI) = setUpTwoOzTokens();
+        assertEq(IERC20(ozUSDC.asset()).decimals(), 6);
+        assertEq(IERC20(ozDAI.asset()).decimals(), 18);
 
         uint amountIn = (rawAmount / 3) * 10 ** 6;
         uint amountIn_2 = (rawAmount / 3) * 10 ** 18;
 
         //Actions
-        _mintOzTokens(ozERC20_1_, alice, ozERC20_1_.asset(), amountIn);
-        _mintOzTokens(ozERC20_2_, alice, ozERC20_2_.asset(), amountIn_2);
+        _mintOzTokens(ozUSDC, alice, ozUSDC.asset(), amountIn);
+        _mintOzTokens(ozDAI, alice, ozDAI.asset(), amountIn_2);
 
         //Post-condition
-        assertEq(ozERC20_1_.balanceOf(alice), ozERC20_2_.balanceOf(alice));
+        assertEq(ozUSDC.balanceOf(alice), ozDAI.balanceOf(alice));
     }
 
 
-    function it_should_have_same_balances_between_holders_for_both_ozTokens_if_minting_equal_amounts(
-        ozIToken ozERC20_1_, 
-        ozIToken ozERC20_2_
-    ) public skipOrNot {
+    function it_should_have_same_balances_between_holders_for_both_ozTokens_if_minting_equal_amounts() public skipOrNot {
         //Pre-conditions
-        assertEq(IERC20(ozERC20_1_.asset()).decimals(), 6);
-        assertEq(IERC20(ozERC20_2_.asset()).decimals(), 18);
+        (ozIToken ozUSDC, ozIToken ozDAI) = setUpTwoOzTokens();
+        assertEq(IERC20(ozUSDC.asset()).decimals(), 6);
+        assertEq(IERC20(ozDAI.asset()).decimals(), 18);
 
         uint amountIn = (rawAmount / 3) * 10 ** 6;
         uint amountIn_2 = (rawAmount / 3) * 10 ** 18;
 
         //Actions
-        _mintOzTokens(ozERC20_1_, alice, ozERC20_1_.asset(), amountIn);
-        _mintOzTokens(ozERC20_2_, bob, ozERC20_2_.asset(), amountIn_2);
+        _mintOzTokens(ozUSDC, alice, ozUSDC.asset(), amountIn);
+        _mintOzTokens(ozDAI, bob, ozDAI.asset(), amountIn_2);
 
         //Post-condition
-        assertEq(ozERC20_1_.balanceOf(alice), ozERC20_2_.balanceOf(bob));
+        assertEq(ozUSDC.balanceOf(alice), ozDAI.balanceOf(bob));
     }
 }
