@@ -345,7 +345,7 @@ contract ozERC20TokenTest is TestMethods {
      * When one or both values of the minAmountsOut array is zero, it still should mint ozTokens.
      * The risk is that the caller could receive fewer ozTokens due to slippage. 
      */ 
-    function test_one_minAmountsOut_is_zero() public {
+    function test_minting_minAmountsOut_is_zero() public {
         //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
@@ -369,12 +369,16 @@ contract ozERC20TokenTest is TestMethods {
         );
     }
 
+    function test_redeeming_minAmountsOut_is_zero() public {
+        revert('do this');
+    }
+
 
     /**
      * When the slippage for minting ozTokens is not enough (or zero), the minting operations
      * reverts with a custom error.
      */
-    function test_minting_slippage_is_zero() public {
+    function test_RevertWhen_minting_slippage_is_zero() public {
         //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
@@ -398,12 +402,17 @@ contract ozERC20TokenTest is TestMethods {
     }
 
 
+    function test_RevertWhen_redeeming_slippage_is_zero() public {
+        revert('do this');
+    }
+
+
     /**
      * Tests that if at least one element from the minAmountsOut array is bigger to what
      * it should swap for based on its exchange rate (like type(uint).max), it reverts with
      * a custom error.
      */
-    function test_one_minAmountsOut_is_uint_max() public {
+    function test_RevertWhen_minting_one_minAmountsOut_is_uint_max() public {
         //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
@@ -426,7 +435,13 @@ contract ozERC20TokenTest is TestMethods {
         ozERC20.mint(data, alice);
     }
 
-    function test_should_emit_OzTokenMinted() public {
+
+    function test_RevertWhen_redeeming_one_minAmountsOut_is_uint_max() public {
+        revert('do this');
+    }
+
+
+    function test_minting_should_emit_OzTokenMinted() public {
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
@@ -439,13 +454,16 @@ contract ozERC20TokenTest is TestMethods {
 
         vm.startPrank(alice);
         IERC20Permit(testToken).approve(address(OZ), amountIn);
-        
+
         vm.expectEmit(false, false, false, true);
         emit OzTokenMinted(alice, shares, assets);
 
         ozERC20.mint(data, alice);
+    }
 
 
+    function test_redeeming_should_emit_OzTokenRedeemed() public {
+        revert('do this');
     }
 
 }

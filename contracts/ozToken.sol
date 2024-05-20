@@ -52,9 +52,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     using FixedPointMathRayLib for uint;
     using Helpers for uint;
     using Helpers for bytes32;
-    // using Uint512 for uint;
 
     event OzTokenMinted(address owner, uint shares, uint assets);
+    event OzTokenRedeemed(address owner, uint ozAmountIn, uint shares, uint assets);
 
     address private _ozDiamond;
     address private _underlying;
@@ -291,8 +291,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint assets = shares; 
 
-        // uint assets2 = previewRedeem(shares); 
-
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
             _setValuePerOzToken(amountRethOut, false);
 
@@ -305,13 +303,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _assets[owner_] -= assets; 
             }         
 
-            //put a redeem event here
+            emit OzTokenRedeemed(owner_, ozAmountIn, shares, assets);
 
             return amountAssetOut;
         } catch Error(string memory reason) {
             revert OZError22(reason);
         }
-
     }
 
 

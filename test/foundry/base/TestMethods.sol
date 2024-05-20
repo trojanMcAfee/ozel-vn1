@@ -395,7 +395,7 @@ contract TestMethods is BaseMethods {
 
 
     /**
-     * Use 100 of underlying to mint ozTokens, where redeeming 1 ozTokens, would
+     * Use 100 of underlying to mint ozTokens, where redeeming 1 ozToken, it would
      * be ineligble so the MEV produced would be quite lower, proving the efficacy of the 
      * rebase algorithm, without the need of having to rebalance Uniswap and Balancer's pools.
      *
@@ -412,14 +412,6 @@ contract TestMethods is BaseMethods {
 
         uint balanceOzBobPostMint = _createMintAssertOzTokens(bob, ozERC20, BOB_PK, rawAmountBob);
         uint balanceOzCharliePostMint = _createMintAssertOzTokens(charlie, ozERC20, CHARLIE_PK, rawAmountCharlie);
-
-        console.log('');
-        console.log('balanceOzBobPostMint: ', balanceOzBobPostMint);
-        console.log('balanceOzCharliePostMint: ', balanceOzCharliePostMint);
-        console.log('balance ozTokens alice: ', ozERC20.balanceOf(alice));
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('sum: ', balanceOzBobPostMint + balanceOzCharliePostMint + ozERC20.balanceOf(alice));
-        console.log('');
 
         uint ozAmountIn = amountToRedeem * 1e18;
         bytes memory redeemData = _createDataOffchain(ozERC20, ozAmountIn, ALICE_PK, alice, address(ozERC20), Type.OUT);

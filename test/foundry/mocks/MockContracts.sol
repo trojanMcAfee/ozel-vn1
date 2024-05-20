@@ -203,6 +203,7 @@ contract VaultMock {
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint) {
+        console.log('singleSwap.amount: ', singleSwap.amount);
         uint amountOut;
 
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
@@ -220,6 +221,8 @@ contract VaultMock {
                 .mulDivRay(OZ.getUniPrice(0, Dir.UP).ray(), RAY ^ TWO))
                 .unray();
         }
+
+        console.log('amountOut: ', amountOut);
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
         

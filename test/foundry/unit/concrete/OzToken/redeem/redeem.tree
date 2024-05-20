@@ -1,0 +1,25 @@
+Redeem_Unit_Concrete_test
+├── when owner is zero
+│   ├── it should revert_6dec.
+│   └── it should revert_18dec.
+├── when analysing redeemData
+│   ├── when ozAmountIn is more than user's balance
+│   │   ├── it should throw error_6dec.
+│   │   └── it should throw error_18dec.
+│   ├── when ozToken is invalid
+│   │   ├── it should throw error_6dec.
+│   │   └── it should throw error_18dec.
+│   ├── when receiver is zero
+│   │   ├── it should revert_6dec.
+│   │   └── it should revert_18dec.
+│   ├── when in mintData owner is zero
+│   │   ├── it should revert_6dec.
+│   │   └── it should revert_18dec.
+│   ├── when redeemData is not properly encoded
+│   │   ├── it should throw error_6dec.
+│   │   └── it should throw error_18dec.
+│   └── when ozAmountIn doesn't correspond to amountInReth
+│       ├── it should throw error_6dec.
+│       └── it should throw error_18dec.
+└── when you try to reenter
+    └── it should revert.
