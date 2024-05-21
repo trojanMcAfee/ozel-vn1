@@ -5,7 +5,7 @@ pragma solidity 0.8.24;
 import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
-import {OZError06} from "./../../../../../../contracts/Errors.sol";
+import {OZError06, OZError38} from "./../../../../../../contracts/Errors.sol";
 
 import {console} from "forge-std/console.sol";
 
@@ -31,7 +31,12 @@ contract Redeem_Core is SharedConditions {
 
         vm.startPrank(alice);
         ozERC20.approve(address(OZ), ozAmountIn);
-        ozERC20.redeem(data, alice);
+
+        //Action + Post-Condition
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError38.selector)
+        );
+        ozERC20.redeem(data, address(0));
     }
 
 
@@ -58,6 +63,7 @@ contract Redeem_Core is SharedConditions {
         uint sharesAlice = ozERC20.sharesOf(alice);
         uint alledgedShares = ozERC20.subConvertToShares(ozAmountIn, alice);
 
+        //Action + Post-Condition
         vm.expectRevert(
             abi.encodeWithSelector(OZError06.selector, alice, sharesAlice, alledgedShares)
         );
@@ -65,4 +71,5 @@ contract Redeem_Core is SharedConditions {
     }
 
 
+    function 
 }
