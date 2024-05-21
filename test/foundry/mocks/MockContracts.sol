@@ -216,7 +216,7 @@ contract VaultMock {
             console.log('amountOut2: ', amountOut);
         } 
 
-        if (singleSwap.amount == 18107251181805252) 
+        if (singleSwap.amount == 18107251181805252 || singleSwap.amount == 18100980538372605) 
         { 
             uint rETHin = 18107251181805252;
             amountOut = ((rETHin.ray())
