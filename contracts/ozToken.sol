@@ -272,8 +272,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function convertToUnderlying(uint shares_) external view returns(uint) {
         console.log('');
         console.log('shares_: ', shares_);
-        console.log('');
-        console.log('');
+        console.log('under: ', ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING));
+        console.log('totalShares: ', totalShares());
         console.log('');
 
         return (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
