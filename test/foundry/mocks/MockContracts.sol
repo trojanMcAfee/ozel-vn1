@@ -212,6 +212,8 @@ contract VaultMock {
         { 
             uint wethIn = 19673291323457014;
             amountOut =  wethIn.mulDivDown(1e18, OZ.rETH_ETH());
+            console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH());
+            console.log('amountOut2: ', amountOut);
         } 
 
         if (singleSwap.amount == 18107251181805252) 
@@ -223,6 +225,8 @@ contract VaultMock {
         }
 
         console.log('amountOut - rETH sent to ozDiamond: ', amountOut);
+        console.log('assetOut: ', address(singleSwap.assetOut));
+        console.log('assetIn: ', address(singleSwap.assetIn));
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
         

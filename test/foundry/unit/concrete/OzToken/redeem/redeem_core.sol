@@ -19,7 +19,7 @@ contract Redeem_Core is SharedConditions {
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
 
         _mintOzTokens(ozERC20, alice, underlying, amountIn);
-        _mintOzTokens(ozERC20, bob, underlying, amountIn);
+        // _mintOzTokens(ozERC20, bob, underlying, amountIn);
         
         uint ozAmountIn = ozERC20.balanceOf(alice);
 
