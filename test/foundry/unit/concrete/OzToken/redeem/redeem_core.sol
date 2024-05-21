@@ -80,8 +80,6 @@ contract Redeem_Core is SharedConditions {
         _mintOzTokens(ozERC20, alice, underlying, amountIn);
         uint ozAmountIn = ozERC20.balanceOf(alice);
 
-        console.log('address(ozERC20): ', address(ozERC20));
-
         bytes memory data = OZ.getRedeemData(
             ozAmountIn, 
             address(ozERC20), 
@@ -98,6 +96,5 @@ contract Redeem_Core is SharedConditions {
             abi.encodeWithSelector(OZError38.selector)
         );
         ozERC20.redeem(data, alice);
-
     }
 }

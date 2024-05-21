@@ -19,9 +19,9 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
         it_should_throw_error_06(18);
     }
 
-    function test_RevertOn_WhenReceiverIsZero() external whenAnalysingRedeemData {
+    function test_RevertIf_WhenReceiverIsZero() external whenAnalysingRedeemData {
         it_should_throw_error_38(6);
-        // it_should_throw_error_38(18);
+        it_should_throw_error_38(18);
     }
 
     function test_WhenInMintDataOwnerIsZero() external whenAnalysingRedeemData {
