@@ -33,9 +33,7 @@ contract Redeem_Core is SharedConditions {
 
         vm.startPrank(alice);
         ozERC20.approve(address(OZ), ozAmountIn);
-        console.log(2);
         ozERC20.redeem(data, alice);
-        console.log(3);
     }
 
 }

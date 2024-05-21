@@ -7,7 +7,7 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
 
     function test_WhenOwnerIsZero() external {
         it_should_revert(6); 
-        // it should revert_18dec.
+        it_should_revert(18);    
     }
 
     modifier whenAnalysingRedeemData() {

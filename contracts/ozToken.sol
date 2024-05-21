@@ -270,16 +270,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function convertToUnderlying(uint shares_) external view returns(uint) {
-        console.log('');
-        console.log('*** in convertToUnderlying ***');
-        console.log('shares_: ', shares_);
-        console.log('under: ', ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING));
-        console.log('totalShares: ', totalShares());
-        console.log('');
-
         return (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
     }
-    //^^ issue is here. Cross-check with debugBranch's logs
 
     //properly check the data_ that's passed here, like if user's ozAmtIn corresponds to the rEthAmount they're passing also
     function redeem(

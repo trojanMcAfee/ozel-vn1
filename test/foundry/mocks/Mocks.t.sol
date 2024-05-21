@@ -93,8 +93,6 @@ contract MocksTests is MockStorage, TestMethods {
         vm.startPrank(alice);
         ozERC20.approve(address(ozDiamond), type(uint).max);
 
-        // console.log('******* REDEEM starts here *******');
-
         ozERC20.redeem(redeemData, alice);
         vm.stopPrank();
 

@@ -203,7 +203,6 @@ contract VaultMock {
         uint256 limit,
         uint256 deadline
     ) external payable returns (uint) {
-        console.log('singleSwap.amount: ', singleSwap.amount);
         uint amountOut;
 
         IERC20(address(singleSwap.assetIn)).transferFrom(address(OZ), address(1), singleSwap.amount);
@@ -212,8 +211,6 @@ contract VaultMock {
         { 
             uint wethIn = 19673291323457014;
             amountOut =  wethIn.mulDivDown(1e18, OZ.rETH_ETH());
-            console.log('OZ.rETH_ETH(): ', OZ.rETH_ETH());
-            console.log('amountOut2: ', amountOut);
         } 
 
         if (singleSwap.amount == 18107251181805252 || singleSwap.amount == 18100980538372605) 
@@ -223,10 +220,6 @@ contract VaultMock {
                 .mulDivRay(OZ.getUniPrice(0, Dir.UP).ray(), RAY ^ TWO))
                 .unray();
         }
-
-        console.log('amountOut - rETH sent to ozDiamond: ', amountOut);
-        console.log('assetOut: ', address(singleSwap.assetOut));
-        console.log('assetIn: ', address(singleSwap.assetIn));
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
         

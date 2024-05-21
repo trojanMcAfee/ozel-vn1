@@ -52,7 +52,7 @@ enum Network {
     MOCKS
 }
 
-Network constant n = Network.MOCKS;
+Network constant n = Network.ETH_N_MOCKS;
 //****** */
 
 contract Setup is MockStorage, Test {
@@ -271,12 +271,6 @@ contract Setup is MockStorage, Test {
             daiAddr = address(new MockUnderlying(18));
             wethAddr = address(new MockUnderlying(18));
             rEthAddr = address(new MockUnderlying(18));
-
-            console.log('');
-            console.log('wethAddr: ', wethAddr);
-            console.log('rEthAddr: ', rEthAddr);
-            console.log('');
-
             rEthWethPoolBalancer = address(new MockRethWethPoolBalancer());
             rocketPoolStorage = address(new MockRocketPoolStorage());
             rEthWethPoolUni = address(new MockUniV3Pool());
