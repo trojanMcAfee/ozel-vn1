@@ -9,6 +9,7 @@ import {TestMethods} from "../../../base/TestMethods.sol";
 contract SharedConditions is TestMethods {
 
     uint constant rawAmount = 100;
+    address constant deadAddr = 0x000000000000000000000000000000000000dEaD;
 
 
     function _setUpOzToken(uint decimals_) internal returns(ozIToken, address) {

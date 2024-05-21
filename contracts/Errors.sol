@@ -66,6 +66,9 @@ error OZError34(uint amount); //allocate / OZL.sol - amount greater than pending
 error OZError36(address wrongOwner); //acceptOwnership / OwnershipFacet.sol - sender is not pending owner
 error OZError40(); //lock mod / Modifiers.sol - no reentrancy (this gets triggered in its bytes4 form: 0xb9554255)
 
+//---- ozLoupe errors
+error OZError41(address ozToken); //quoteAmountsOut - ozLoupe.sol - invalid ozToken
+
 
 //Oracle errors
 error OZError23(address baseToken); //_callFallbackOracle - wrong baseToken_

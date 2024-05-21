@@ -278,11 +278,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         bytes memory data_, 
         address owner_
     ) external updateReward(owner_, _ozDiamond) returns(uint) {
-        if (owner_ == address(0)) revert OZError38();
+        (AmountsOut memory amts, address receiver) = abi.decode(data_, (AmountsOut, address));
 
-        (AmountsOut memory amts,) = abi.decode(data_, (AmountsOut, address));
         uint ozAmountIn = amts.ozAmountIn;
-
+        
+        if (owner_ == address(0) || receiver == address(0)) revert OZError38();
         if (ozAmountIn < 3 * 1e18) revert OZError35(ozAmountIn); //<-- check if after optimizations, this check is required (_redeeming_multipleBigBalances_bigMints_smallRedeem)
 
         uint256 accountShares = sharesOf(owner_);

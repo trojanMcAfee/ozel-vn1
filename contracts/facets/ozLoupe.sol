@@ -9,9 +9,9 @@ import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 import {ozIToken} from "../interfaces/ozIToken.sol";
 import {Helpers} from "../libraries/Helpers.sol";
 import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
-// import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20} from "../../lib/forge-std/src/interfaces/IERC20.sol";
 import {BitMaps} from "@openzeppelin/contracts/utils/structs/BitMaps.sol";
+import {OZError41} from "./../Errors.sol";
 
 import "forge-std/console.sol";
 
@@ -45,7 +45,7 @@ contract ozLoupe is DiamondLoupeFacet {
     }
 
     //Checks if there exists an ozToken for a certain underlying_
-    function ozTokens(address underlying_) external view returns(address) {
+    function ozTokens(address underlying_) public view returns(address) {
         return s.ozTokens[underlying_];
     }
 
@@ -86,6 +86,8 @@ contract ozLoupe is DiamondLoupeFacet {
         uint16 slippage_,
         address owner_
     ) public view returns(AmountsOut memory) {
+        if (ozIToken(ozToken_).asset() == address(0)) revert OZError41(ozToken_);
+
         ozIToken ozERC20 = ozIToken(ozToken_);
 
         uint amountInReth = ozERC20.convertToUnderlying(

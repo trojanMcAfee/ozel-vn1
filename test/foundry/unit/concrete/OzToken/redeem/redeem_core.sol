@@ -5,7 +5,7 @@ pragma solidity 0.8.24;
 import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
-import {OZError06, OZError38} from "./../../../../../../contracts/Errors.sol";
+import {OZError06, OZError38, OZError41} from "./../../../../../../contracts/Errors.sol";
 
 import {console} from "forge-std/console.sol";
 
@@ -71,5 +71,33 @@ contract Redeem_Core is SharedConditions {
     }
 
 
-    function 
+    function it_should_throw_error_38(uint decimals_) internal {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+        _mintOzTokens(ozERC20, alice, underlying, amountIn);
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+
+        console.log('address(ozERC20): ', address(ozERC20));
+
+        bytes memory data = OZ.getRedeemData(
+            ozAmountIn, 
+            address(ozERC20), 
+            OZ.getDefaultSlippage(), 
+            address(0), 
+            alice
+        );
+
+        vm.startPrank(alice);
+        ozERC20.approve(address(OZ), ozAmountIn);
+
+        //Action + Post-Condition
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError38.selector)
+        );
+        ozERC20.redeem(data, alice);
+
+    }
 }

@@ -19,14 +19,9 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
         it_should_throw_error_06(18);
     }
 
-    function test_WhenOzTokenIsInvalid() external whenAnalysingRedeemData {
-        // it should throw error_6dec.
-        // it should throw error_18dec.
-    }
-
-    function test_WhenReceiverIsZero() external whenAnalysingRedeemData {
-        // it should revert_6dec.
-        // it should revert_18dec.
+    function test_RevertOn_WhenReceiverIsZero() external whenAnalysingRedeemData {
+        it_should_throw_error_38(6);
+        // it_should_throw_error_38(18);
     }
 
     function test_WhenInMintDataOwnerIsZero() external whenAnalysingRedeemData {
