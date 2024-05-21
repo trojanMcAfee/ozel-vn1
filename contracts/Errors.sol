@@ -43,7 +43,7 @@ error OZError09(address owner, address spender); //permit - ERC2612InvalidSignat
 error OZError35(uint ozAmountIn); //redeem - ozAmountIn is less than allowed
 error OZError37(); //mint / ozToken.sol - amountIn can't be zero
 error OZError38(); //mint, redeem / ozToken.sol - can't be address(0)
-error OZError39(bytes mintData); //mint / ozToken.sol - invalid mint data
+error OZError39(bytes data); //mint, redeem / ozToken.sol - invalid bytes data
 
 //--- OZLrewards errors
 error OZError15(); //setRewardsDuration - rewards duration not finished
