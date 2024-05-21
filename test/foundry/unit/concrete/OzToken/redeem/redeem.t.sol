@@ -38,4 +38,10 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
     function test_WhenYouTryToReenter() external {
         // it should revert.
     }
+
+
+    function test_WhenAllValuesAreCorrect() external {
+        // it_should_redeem(6);
+        it_should_redeem(18);
+    }
 }

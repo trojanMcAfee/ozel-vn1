@@ -119,4 +119,35 @@ contract Redeem_Core is SharedConditions {
         );
         ozERC20.redeem(data, alice);
     }
+
+
+    function it_should_redeem(uint decimals_) internal {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+        _mintOzTokens(ozERC20, alice, underlying, amountIn);
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+
+        console.log('ozBalance alice - pre redeem: ', ozAmountIn);
+        console.log('underlying bal alice - pre redeem: ', IERC20(underlying).balanceOf(alice));
+
+        bytes memory data = OZ.getRedeemData(
+            ozAmountIn, 
+            address(ozERC20), 
+            OZ.getDefaultSlippage(), 
+            alice, 
+            alice
+        );
+
+        vm.startPrank(alice);
+        ozERC20.approve(address(OZ), ozAmountIn);
+
+        //Action + Post-Condition
+        ozERC20.redeem(data, alice);
+
+        console.log('ozBalance alice - post redeem: ', ozERC20.balanceOf(alice));
+        console.log('underlying bal alice - post redeem: ', IERC20(underlying).balanceOf(alice));
+    }
 }
