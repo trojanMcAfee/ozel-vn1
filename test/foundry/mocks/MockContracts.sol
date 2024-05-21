@@ -222,7 +222,7 @@ contract VaultMock {
                 .unray();
         }
 
-        console.log('amountOut: ', amountOut);
+        console.log('amountOut - rETH sent to ozDiamond: ', amountOut);
 
         IERC20(address(singleSwap.assetOut)).transfer(address(OZ), amountOut);
         
