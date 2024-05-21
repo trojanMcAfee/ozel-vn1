@@ -14,9 +14,9 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
         _;
     }
 
-    function test_WhenOzAmountInIsMoreThanUsersBalance() external whenAnalysingRedeemData {
-        // it should throw error_6dec.
-        // it should throw error_18dec.
+    function test_RevertOn_WhenOzAmountInIsMoreThanUsersBalance() external whenAnalysingRedeemData {
+        it_should_throw_error_06(6);
+        it_should_throw_error_06(18);
     }
 
     function test_WhenOzTokenIsInvalid() external whenAnalysingRedeemData {
