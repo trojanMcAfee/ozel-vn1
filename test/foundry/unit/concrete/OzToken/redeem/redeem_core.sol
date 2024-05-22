@@ -149,5 +149,8 @@ contract Redeem_Core is SharedConditions {
 
         console.log('ozBalance alice - post redeem: ', ozERC20.balanceOf(alice));
         console.log('underlying bal alice - post redeem: ', IERC20(underlying).balanceOf(alice));
+        //^^ underlinh bal alice is the same. Not changing. Check MockContracts and cross-check with TWAP test
+        //to see which if branch get executed to send the DAI to recipient.
+        //Also, check that the stables are properly deducted in the mint test
     }
 }
