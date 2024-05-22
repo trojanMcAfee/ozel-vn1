@@ -437,11 +437,6 @@ contract ozERC20TokenTest is TestMethods {
     }
 
 
-    function test_RevertWhen_redeeming_slippage_is_zero() public {
-        revert('do this');
-    }
-
-
     /**
      * Tests that if at least one element from the minAmountsOut array is bigger to what
      * it should swap for based on its exchange rate (like type(uint).max), it reverts with
@@ -472,7 +467,34 @@ contract ozERC20TokenTest is TestMethods {
 
 
     function test_RevertWhen_redeeming_one_minAmountsOut_is_uint_max() public {
-        revert('do this');
+        //Pre-condition
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        (ozIToken ozERC20,) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, false, Type.IN
+        );
+
+        assertTrue(ozERC20.balanceOf(alice) > 33 * 10 ** IERC20Permit(testToken).decimals());
+
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+
+        AmountsOut memory amts = OZ.quoteAmountsOut(
+            ozAmountIn, address(ozERC20), OZ.getDefaultSlippage(), alice
+        );
+
+        amts.minAmountsOut[0] = type(uint).max;
+
+        bytes memory data = abi.encode(amts, alice);
+
+        //Actions
+        vm.startPrank(alice);        
+        ozERC20.approve(address(OZ), ozAmountIn);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError20.selector)
+        );
+        ozERC20.redeem(data, alice);
     }
 
 
