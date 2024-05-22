@@ -254,7 +254,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return assets_.mulDivDown(totalShares(), totalAssets());
     }
 
-    function _convertToSharesFromOzBalance(uint ozBalance_) private view returns(uint) {
+    function convertToSharesFromOzBalance(uint ozBalance_) public view returns(uint) {
         return ozBalance_.mulDivUp(totalShares(), totalSupply());
     }
 
@@ -320,7 +320,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     ) internal {
         if (from == address(0) || to == address(0)) revert OZError04(from, to);
 
-        uint shares = _convertToSharesFromOzBalance(amount);
+        uint shares = convertToSharesFromOzBalance(amount);
     
         uint256 fromShares = _shares[from];
 

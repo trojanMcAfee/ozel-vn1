@@ -548,4 +548,32 @@ contract ozERC20TokenTest is TestMethods {
         ozERC20.redeem(data, alice);
     }
 
+
+    function test_x() public {
+        //Pre-conditions
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        _getResetVarsAndChangeSlip();
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+
+        AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, OZ.getDefaultSlippage());
+        bytes memory data = abi.encode(amountsIn, alice);
+
+        //Actions
+        vm.startPrank(alice);
+        IERC20Permit(testToken).approve(address(OZ), amountIn);
+        uint shares = ozERC20.mint(data, alice);
+
+        console.log('oz balance: ', ozERC20.balanceOf(alice));
+        console.log('shares from mint: ', shares);
+        console.log('sharesOf: ', ozERC20.sharesOf(alice));
+        console.log('previewMint: ', ozERC20.previewMint(amountIn));
+        console.log('amountIn: ', amountIn);
+        console.log('convertToAssets: ', ozERC20.convertToAssets(shares, alice));
+
+
+    }
+
 }
