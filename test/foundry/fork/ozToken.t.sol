@@ -23,6 +23,7 @@ contract ozERC20TokenTest is TestMethods {
     using SafeERC20 for IERC20;
 
     event OzTokenMinted(address owner, uint shares, uint assets);
+    event OzTokenRedeemed(address owner, uint ozAmountIn, uint shares, uint assets);
 
 
     //Tests that the try/catch on ozToken's mint() catches errors on safeTransfers 
@@ -520,7 +521,31 @@ contract ozERC20TokenTest is TestMethods {
 
 
     function test_redeeming_should_emit_OzTokenRedeemed() public {
-        revert('do this');
+        //Pre-condition
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        (ozIToken ozERC20,) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, false, Type.IN
+        );
+
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+
+        bytes memory data = OZ.getRedeemData(
+            ozAmountIn, address(ozERC20), OZ.getDefaultSlippage(), alice, alice
+        );
+
+        uint shares = ozERC20.sharesOf(alice);
+        uint assets = shares;
+
+        //Actions + Post-conditions
+        vm.startPrank(alice);        
+        ozERC20.approve(address(OZ), ozAmountIn);
+
+        vm.expectEmit(false, false, false, true);
+        emit OzTokenRedeemed(alice, ozAmountIn, shares, assets);
+
+        ozERC20.redeem(data, alice);
     }
 
 }
