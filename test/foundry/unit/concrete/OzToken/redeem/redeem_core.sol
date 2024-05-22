@@ -5,8 +5,9 @@ pragma solidity 0.8.24;
 import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
-import {OZError06, OZError38, OZError39, OZError40} from "./../../../../../../contracts/Errors.sol";
+import {OZError06, OZError38, OZError39, OZError40, OZError21} from "./../../../../../../contracts/Errors.sol";
 import {MockReentrantVaultBalancer} from "../../../../mocks/balancer/MockReentrantVaultBalancer.sol";
+import {AmountsOut} from "./../../../../../../contracts/AppStorage.sol";
 
 import {console} from "forge-std/console.sol";
 
@@ -155,10 +156,9 @@ contract Redeem_Core is SharedConditions {
             alice
         );
 
+        //Actions
         vm.startPrank(alice);
         ozERC20.approve(address(OZ), ozAmountIn);
-
-        //Action
         ozERC20.redeem(data, alice);
 
         //Post-conditions
@@ -166,5 +166,36 @@ contract Redeem_Core is SharedConditions {
         assertGt(IERC20(underlying).balanceOf(alice), underlyingBalanceAlicePreRedeem);
 
         //Also, check that the stables are properly deducted in the mint test
+    }
+
+
+    function it_should_throw_error_21(uint decimals_) internal {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+        _mintOzTokens(ozERC20, alice, underlying, amountIn);
+
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+
+        AmountsOut memory amts = OZ.quoteAmountsOut(
+            ozAmountIn, 
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            alice
+        );
+
+        amts.amountInReth *= 2;
+        bytes memory data = abi.encode(amts, alice);
+
+        //Actions
+        vm.startPrank(alice);
+        ozERC20.approve(address(OZ), ozAmountIn);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError21.selector, "ERC20: transfer amount exceeds balance")
+        );
+        ozERC20.redeem(data, alice);
     }
 }

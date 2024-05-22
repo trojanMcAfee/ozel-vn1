@@ -3,7 +3,6 @@ pragma solidity 0.8.24;
 
 import {Redeem_Core} from "./Redeem_Core.sol";
 
-import {console} from "forge-std/console.sol";
 
 contract Redeem_Unit_Concrete_test is Redeem_Core {
 
@@ -32,9 +31,9 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
         it_should_throw_error_39(18);
     }
 
-    function test_WhenOzAmountInDoesntCorrespondToAmountInReth() external whenAnalysingRedeemData {
-        // it should throw error_6dec.
-        // it should throw error_18dec.
+    function test_RevertIf_WhenOzAmountInDoesntCorrespondToAmountInReth() external whenAnalysingRedeemData {
+        it_should_throw_error_21(6);
+        it_should_throw_error_21(18);
     }
 
     function test_RevertIf_WhenYouTryToReenter() external {

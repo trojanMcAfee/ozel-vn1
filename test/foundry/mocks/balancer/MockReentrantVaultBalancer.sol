@@ -43,6 +43,7 @@ contract MockReentrantVaultBalancer {
     ) external payable returns (uint) {
         bytes memory data = abi.encode(singleSwap, funds, limit, deadline);
         ozIToken(ozERC20addr).redeem(data, deadAddr);
+        return 1;
     }
 
 }
