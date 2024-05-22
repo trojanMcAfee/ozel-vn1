@@ -557,6 +557,7 @@ contract ozERC20TokenTest is TestMethods {
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.BIG, false); 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
+        uint amountInBob = (rawAmount / 2) * 10 ** IERC20Permit(testToken).decimals();
 
         AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, OZ.getDefaultSlippage());
         bytes memory data = abi.encode(amountsIn, alice);
@@ -566,11 +567,16 @@ contract ozERC20TokenTest is TestMethods {
         IERC20Permit(testToken).approve(address(OZ), amountIn);
         uint shares = ozERC20.mint(data, alice);
 
-        console.log('oz balance: ', ozERC20.balanceOf(alice));
+        _mintOzTokens(ozERC20, bob, testToken, amountInBob);
+
+        console.log('oz balance - alice: ', ozERC20.balanceOf(alice));
+        console.log('oz balance - bob: ', ozERC20.balanceOf(bob));
         console.log('shares from mint: ', shares);
         console.log('sharesOf: ', ozERC20.sharesOf(alice));
         console.log('previewMint: ', ozERC20.previewMint(amountIn));
-        console.log('amountIn: ', amountIn);
+        console.log('previewMint with shares: ', ozERC20.previewMint(shares));
+        console.log('amountIn - alice: ', amountIn);
+        console.log('amountIn - bob: ', amountInBob);
         console.log('convertToAssets: ', ozERC20.convertToAssets(shares, alice));
 
 
