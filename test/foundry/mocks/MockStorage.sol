@@ -3,6 +3,7 @@ pragma solidity 0.8.24;
 
 
 import {Helpers} from "./../../../contracts/libraries/Helpers.sol";
+import {Network, n} from "../base/Setup.sol";
 
 import {console} from "forge-std/console.sol";
 
@@ -23,7 +24,7 @@ contract MockStorage {
     address mockDAI = 0x2a9e8fa175F45b235efDdD97d2727741EF4Eee63;
     address[] public DAIa = [mainnetDAI, mockDAI];
     
-    address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    address WETH = n == Network.ETH_N_MOCKS ? 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 : 0x72384992222BE015DE0146a6D7E5dA0E19d2Ba49;
 
 
     function USDC(address tokenIn_) public view returns(bool) {

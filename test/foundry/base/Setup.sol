@@ -271,6 +271,12 @@ contract Setup is MockStorage, Test {
             daiAddr = address(new MockUnderlying(18));
             wethAddr = address(new MockUnderlying(18));
             rEthAddr = address(new MockUnderlying(18));
+
+            console.log('usdcAddr: ', usdcAddr);
+            console.log('daiAddr: ', daiAddr);
+            console.log('wethAddr: ', wethAddr);
+            console.log('rEthAddr: ', rEthAddr);
+
             rEthWethPoolBalancer = address(new MockRethWethPoolBalancer());
             rocketPoolStorage = address(new MockRocketPoolStorage());
             rEthWethPoolUni = address(new MockUniV3Pool());

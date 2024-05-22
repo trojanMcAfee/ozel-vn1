@@ -145,6 +145,9 @@ contract Redeem_Core is SharedConditions {
         ozERC20.approve(address(OZ), ozAmountIn);
 
         //Action + Post-Condition
+        console.log('');
+        console.log('****** START OF REDEEM ******');
+        console.log('');
         ozERC20.redeem(data, alice);
 
         console.log('ozBalance alice - post redeem: ', ozERC20.balanceOf(alice));
