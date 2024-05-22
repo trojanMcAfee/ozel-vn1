@@ -73,10 +73,6 @@ contract MocksTests is MockStorage, TestMethods {
         uint ozBalanceBobPostMock = ozERC20.balanceOf(bob);
 
         assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
-        console.log('ozBalanceAlicePostMock: ', ozBalanceAlicePostMock);
-        console.log('ozBalanceBobPostMock: ', ozBalanceBobPostMock);
-        console.log('totalSupply: ', ozERC20.totalSupply());
-        console.log('');
         assertTrue(ozBalanceAlicePostMock + ozBalanceBobPostMock == ozERC20.totalSupply());
 
         bytes memory redeemData = OZ.getRedeemData(

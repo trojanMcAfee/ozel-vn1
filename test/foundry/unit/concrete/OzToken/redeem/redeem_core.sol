@@ -130,9 +130,6 @@ contract Redeem_Core is SharedConditions {
         _mintOzTokens(ozERC20, alice, underlying, amountIn);
         uint ozAmountIn = ozERC20.balanceOf(alice);
 
-        console.log('ozBalance alice - pre redeem: ', ozAmountIn);
-        console.log('underlying bal alice - pre redeem: ', IERC20(underlying).balanceOf(alice));
-
         bytes memory data = OZ.getRedeemData(
             ozAmountIn, 
             address(ozERC20), 
@@ -144,16 +141,11 @@ contract Redeem_Core is SharedConditions {
         vm.startPrank(alice);
         ozERC20.approve(address(OZ), ozAmountIn);
 
-        //Action + Post-Condition
-        console.log('');
-        console.log('****** START OF REDEEM ******');
-        console.log('');
+        //Action
         ozERC20.redeem(data, alice);
 
-        console.log('ozBalance alice - post redeem: ', ozERC20.balanceOf(alice));
-        console.log('underlying bal alice - post redeem: ', IERC20(underlying).balanceOf(alice));
-        //^^ underlinh bal alice is the same. Not changing. Check MockContracts and cross-check with TWAP test
-        //to see which if branch get executed to send the DAI to recipient.
+        //Post-conditions
+
         //Also, check that the stables are properly deducted in the mint test
     }
 }

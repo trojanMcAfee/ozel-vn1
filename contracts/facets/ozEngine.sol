@@ -138,7 +138,6 @@ contract ozEngine is Modifiers {
         );
 
         //swap WETH to underlying
-        console.log('token in before _swapUni - should be s.WEHT: ', s.WETH);
         amountOut = _swapUni(
             s.WETH,
             ozIToken(msg.sender).asset(),

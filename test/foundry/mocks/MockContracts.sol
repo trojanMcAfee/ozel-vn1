@@ -144,20 +144,9 @@ contract SwapRouterMock is MockStorage {
             amountOut = (params.amountIn * decimals).mulDivDown(1e18, OZ.ETH_USD());
         }
     
-        console.log('');
-        console.log('params.tokenIn: ', params.tokenIn);
-        console.log('WETH: ', WETH);
         if (params.tokenIn == WETH) {
-            console.log('here ******');
             amountOut = (params.amountIn.mulDivDown(OZ.ETH_USD(), 1 ether)) / decimals2;   
-
-            console.log('params.tokenOut: ', params.tokenOut);
-            console.log('bal pre: ', IERC20(params.tokenOut).balanceOf(params.recipient));
-
             IERC20(params.tokenOut).transfer(params.recipient, amountOut);
-
-            console.log('bal post: ', IERC20(params.tokenOut).balanceOf(params.recipient));
-            console.log('');
 
             return amountOut;
         }
