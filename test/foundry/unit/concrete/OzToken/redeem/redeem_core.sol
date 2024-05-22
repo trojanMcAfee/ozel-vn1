@@ -50,7 +50,7 @@ contract Redeem_Core is SharedConditions {
         vm.expectRevert(
             abi.encodeWithSelector(selector)
         );
-        ozERC20.redeem(data, alice);
+        ozERC20.redeem(data, owner);
     }
 
 

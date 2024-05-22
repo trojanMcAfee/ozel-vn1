@@ -6,7 +6,7 @@ import {Redeem_Core} from "./Redeem_Core.sol";
 
 contract Redeem_Unit_Concrete_test is Redeem_Core {
 
-    function test_RevertOn_WhenOwnerIsZero() external {
+    function test_RevertIf_WhenOwnerIsZero() external {
         it_should_revert(6, Revert.OWNER); 
         it_should_revert(18, Revert.OWNER);    
     }
@@ -15,7 +15,7 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
         _;
     }
 
-    function test_RevertOn_WhenOzAmountInIsMoreThanUsersBalance() external whenAnalysingRedeemData {
+    function test_RevertIf_WhenOzAmountInIsMoreThanUsersBalance() external whenAnalysingRedeemData {
         it_should_throw_error_06(6);
         it_should_throw_error_06(18);
     }
