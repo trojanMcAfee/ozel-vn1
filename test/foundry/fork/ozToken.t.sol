@@ -13,6 +13,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import "../../../contracts/Errors.sol";
 import {Dummy1} from "../mocks/Dummy1.sol";
 import {Type} from "../base/AppStorageTests.sol"; 
+import {AmountsOut} from "./../../../contracts/AppStorage.sol";
 
 import "forge-std/console.sol";
 
@@ -360,17 +361,51 @@ contract ozERC20TokenTest is TestMethods {
 
         bytes memory data = abi.encode(amountsIn, alice);
 
+        //Actions
         vm.startPrank(alice);
         IERC20Permit(testToken).approve(address(OZ), amountIn);
         ozERC20.mint(data, alice);
 
+        //Post-conditions
         assertTrue(
             _checkPercentageDiff(amountIn, ozERC20.balanceOf(alice), 2)
         );
     }
 
+
+    //Checks that even when at least one value of minAmountsOut be 0,
+    //the ozTokens can still be redeemed.
     function test_redeeming_minAmountsOut_is_zero() public {
-        revert('do this');
+        //Pre-condition
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        (ozIToken ozERC20,) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, false, Type.IN
+        );
+
+        assertTrue(ozERC20.balanceOf(alice) > 33 * 10 ** IERC20Permit(testToken).decimals());
+
+        uint ozAmountIn = ozERC20.balanceOf(alice);
+
+        AmountsOut memory amts = OZ.quoteAmountsOut(
+            ozAmountIn, address(ozERC20), OZ.getDefaultSlippage(), alice
+        );
+
+        amts.minAmountsOut[0] = 0;
+
+        bytes memory data = abi.encode(amts, alice);
+
+        uint underlyingBalanceAlicePreRedeem = IERC20(testToken).balanceOf(alice);
+        assertTrue(underlyingBalanceAlicePreRedeem == 0);
+
+        //Actions
+        vm.startPrank(alice);        
+        ozERC20.approve(address(OZ), ozAmountIn);
+        ozERC20.redeem(data, alice);
+
+        //Post-conditions
+        assertTrue(IERC20(testToken).balanceOf(alice) > underlyingBalanceAlicePreRedeem);
     }
 
 

@@ -273,7 +273,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return (shares_ * ozIDiamond(_ozDiamond).totalUnderlying(Asset.UNDERLYING)) / totalShares();
     }
 
-    //properly check the data_ that's passed here, like if user's ozAmtIn corresponds to the rEthAmount they're passing also
+
     function redeem(
         bytes memory data_, 
         address owner_
