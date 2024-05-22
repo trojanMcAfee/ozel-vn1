@@ -15,7 +15,7 @@ import {console} from "forge-std/console.sol";
 
 contract Mint_Core is SharedConditions {
 
-    function it_should_revert(uint decimals_, Revert type_) internal {
+    function it_should_revert(uint decimals_, Revert type_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);

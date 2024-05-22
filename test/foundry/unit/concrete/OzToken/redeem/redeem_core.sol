@@ -14,7 +14,7 @@ import {console} from "forge-std/console.sol";
 
 contract Redeem_Core is SharedConditions {
 
-    function it_should_revert(uint decimals_, Revert type_) internal {
+    function it_should_revert(uint decimals_, Revert type_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -54,7 +54,7 @@ contract Redeem_Core is SharedConditions {
     }
 
 
-    function it_should_throw_error_06(uint decimals_) internal {
+    function it_should_throw_error_06(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -85,7 +85,7 @@ contract Redeem_Core is SharedConditions {
     }
 
 
-    function it_should_throw_error_38(uint decimals_) internal {
+    function it_should_throw_error_38(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -113,7 +113,7 @@ contract Redeem_Core is SharedConditions {
     }
 
 
-    function it_should_throw_error_39(uint decimals_) internal {
+    function it_should_throw_error_39(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -135,7 +135,7 @@ contract Redeem_Core is SharedConditions {
     }
 
 
-    function it_should_redeem(uint decimals_) internal {
+    function it_should_redeem(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -169,7 +169,7 @@ contract Redeem_Core is SharedConditions {
     }
 
 
-    function it_should_throw_error_21(uint decimals_) internal {
+    function it_should_throw_error_21(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
