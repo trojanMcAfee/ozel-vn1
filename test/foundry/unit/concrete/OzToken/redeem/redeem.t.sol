@@ -3,6 +3,8 @@ pragma solidity 0.8.24;
 
 import {Redeem_Core} from "./Redeem_Core.sol";
 
+import {console} from "forge-std/console.sol";
+
 contract Redeem_Unit_Concrete_test is Redeem_Core {
 
     function test_RevertOn_WhenOwnerIsZero() external {
@@ -41,7 +43,10 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
 
 
     function test_WhenAllValuesAreCorrect() external {
-        // it_should_redeem(6);
+        uint id = vm.snapshot();
+        it_should_redeem(6);
+        
+        vm.revertTo(id);
         it_should_redeem(18);
     }
 }

@@ -128,7 +128,11 @@ contract Redeem_Core is SharedConditions {
 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
         _mintOzTokens(ozERC20, alice, underlying, amountIn);
+
         uint ozAmountIn = ozERC20.balanceOf(alice);
+        assertGt(ozERC20.balanceOf(alice), 0);
+        
+        uint underlyingBalanceAlicePreRedeem = IERC20(underlying).balanceOf(alice);
 
         bytes memory data = OZ.getRedeemData(
             ozAmountIn, 
@@ -145,6 +149,8 @@ contract Redeem_Core is SharedConditions {
         ozERC20.redeem(data, alice);
 
         //Post-conditions
+        assertEq(ozERC20.balanceOf(alice), 0);
+        assertGt(IERC20(underlying).balanceOf(alice), underlyingBalanceAlicePreRedeem);
 
         //Also, check that the stables are properly deducted in the mint test
     }
