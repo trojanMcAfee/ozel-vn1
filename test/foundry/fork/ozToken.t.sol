@@ -573,13 +573,23 @@ contract ozERC20TokenTest is TestMethods {
         console.log('oz balance - bob: ', ozERC20.balanceOf(bob));
         console.log('shares from mint: ', shares);
         console.log('sharesOf: ', ozERC20.sharesOf(alice));
-        console.log('previewMint: ', ozERC20.previewMint(amountIn));
-        console.log('previewMint with shares: ', ozERC20.previewMint(shares));
+        // console.log('previewWithdraw: ', ozERC20.previewWithdraw(amountIn));
+        // console.log('previewWithdraw with shares: ', ozERC20.previewWithdraw(shares));
         console.log('amountIn - alice: ', amountIn);
         console.log('amountIn - bob: ', amountInBob);
-        console.log('convertToAssets: ', ozERC20.convertToAssets(shares, alice));
+        console.log('convertToAssets: ', ozERC20.convertToOzTokens(shares, alice));
 
+        uint ozAmountIn = ozERC20.balanceOf(alice);
 
+        data = OZ.getRedeemData(
+            ozAmountIn, address(ozERC20), OZ.getDefaultSlippage(), alice, alice
+        );
+
+        vm.startPrank(alice);
+        ozERC20.approve(address(OZ), ozAmountIn);
+        uint underlyingOut = ozERC20.redeem(data, alice);
+        console.log('');
+        console.log('underlyingOut: ', underlyingOut);
     }
 
 }

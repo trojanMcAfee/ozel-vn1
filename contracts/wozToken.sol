@@ -98,7 +98,7 @@ contract wozToken is ERC20PermitUpgradeable {
     function mintAndWrap(bytes memory data_, address owner_) external returns(uint wozAmountOut) {
         (bytes memory data, address originalReceiver) = _changeReceiver(data_);
         uint shares = _ozERC20.mint(data, owner_);
-        uint ozAmountIn = _ozERC20.convertToAssets(shares, address(this));
+        uint ozAmountIn = _ozERC20.convertToOzTokens(shares, address(this));
         wozAmountOut = wrap(ozAmountIn, address(this), originalReceiver);
     }
 
