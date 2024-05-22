@@ -277,7 +277,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function redeem(
         bytes memory data_, 
         address owner_
-    ) external updateReward(owner_, _ozDiamond) returns(uint) {
+    ) external lock(TRANSIENT_SLOT) updateReward(owner_, _ozDiamond) returns(uint) {
         if (data_.length != 256) revert OZError39(data_);
         (AmountsOut memory amts, address receiver) = abi.decode(data_, (AmountsOut, address));
 

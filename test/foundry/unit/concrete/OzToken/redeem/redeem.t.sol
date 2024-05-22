@@ -8,8 +8,8 @@ import {console} from "forge-std/console.sol";
 contract Redeem_Unit_Concrete_test is Redeem_Core {
 
     function test_RevertOn_WhenOwnerIsZero() external {
-        it_should_revert(6); 
-        it_should_revert(18);    
+        it_should_revert(6, Revert.OWNER); 
+        it_should_revert(18, Revert.OWNER);    
     }
 
     modifier whenAnalysingRedeemData() {
@@ -37,15 +37,15 @@ contract Redeem_Unit_Concrete_test is Redeem_Core {
         // it should throw error_18dec.
     }
 
-    function test_WhenYouTryToReenter() external {
-        // it should revert.
+    function test_RevertIf_WhenYouTryToReenter() external {
+        it_should_revert(6, Revert.REENTRANT);
     }
 
 
     function test_WhenAllValuesAreCorrect() external {
         uint id = vm.snapshot();
         it_should_redeem(6);
-        
+
         vm.revertTo(id);
         it_should_redeem(18);
     }

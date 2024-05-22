@@ -15,13 +15,6 @@ import {console} from "forge-std/console.sol";
 
 contract Mint_Core is SharedConditions {
 
-    enum Revert {
-        OWNER,
-        AMOUNT_IN,
-        RECEIVER,
-        REENTRANT
-    }
-
     function it_should_revert(uint decimals_, Revert type_) internal {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);

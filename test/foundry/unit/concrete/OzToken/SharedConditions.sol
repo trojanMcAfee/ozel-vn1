@@ -11,6 +11,12 @@ contract SharedConditions is TestMethods {
     uint constant rawAmount = 100;
     address constant deadAddr = 0x000000000000000000000000000000000000dEaD;
 
+    enum Revert {
+        OWNER,
+        AMOUNT_IN,
+        RECEIVER,
+        REENTRANT
+    }
 
     function _setUpOzToken(uint decimals_) internal returns(ozIToken, address) {
         address underlying = decimals_ == 6 ? usdcAddr : daiAddr; 

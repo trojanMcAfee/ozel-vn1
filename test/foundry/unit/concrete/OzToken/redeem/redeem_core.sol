@@ -5,14 +5,15 @@ pragma solidity 0.8.24;
 import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
-import {OZError06, OZError38, OZError39} from "./../../../../../../contracts/Errors.sol";
+import {OZError06, OZError38, OZError39, OZError40} from "./../../../../../../contracts/Errors.sol";
+import {MockReentrantVaultBalancer} from "../../../../mocks/balancer/MockReentrantVaultBalancer.sol";
 
 import {console} from "forge-std/console.sol";
 
 
 contract Redeem_Core is SharedConditions {
 
-    function it_should_revert(uint decimals_) internal {
+    function it_should_revert(uint decimals_, Revert type_) internal {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -32,11 +33,23 @@ contract Redeem_Core is SharedConditions {
         vm.startPrank(alice);
         ozERC20.approve(address(OZ), ozAmountIn);
 
+        address owner = alice;
+        bytes4 selector;
+
+        if (type_ == Revert.OWNER) {
+            owner = address(0);
+            selector = OZError38.selector;
+        } else if (type_ == Revert.REENTRANT) {
+            MockReentrantVaultBalancer reentrantVault = new MockReentrantVaultBalancer(ozERC20);
+            vm.etch(vaultBalancer, address(reentrantVault).code);
+            selector = OZError40.selector;
+        }
+
         //Action + Post-Condition
         vm.expectRevert(
-            abi.encodeWithSelector(OZError38.selector)
+            abi.encodeWithSelector(selector)
         );
-        ozERC20.redeem(data, address(0));
+        ozERC20.redeem(data, alice);
     }
 
 
@@ -131,7 +144,7 @@ contract Redeem_Core is SharedConditions {
 
         uint ozAmountIn = ozERC20.balanceOf(alice);
         assertGt(ozERC20.balanceOf(alice), 0);
-        
+
         uint underlyingBalanceAlicePreRedeem = IERC20(underlying).balanceOf(alice);
 
         bytes memory data = OZ.getRedeemData(
