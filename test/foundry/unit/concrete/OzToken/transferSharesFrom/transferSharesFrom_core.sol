@@ -55,7 +55,7 @@ contract TransferSharesFrom_Core is SharedConditions {
     }
 
 
-    function it_should_throw_error(uint decimals_) internal skipOrNot {
+    function it_should_throw_error_05(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -83,6 +83,40 @@ contract TransferSharesFrom_Core is SharedConditions {
             abi.encodeWithSelector(OZError05.selector, ozBalanceAlicePreTransfer)
         );
         ozERC20.transferSharesFrom(alice, bob, sharesAlicePreTransfer);
+    }
+
+
+    function it_should_throw_error_04(uint decimals_) internal skipOrNot {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+
+        bytes memory data = OZ.getMintData(
+            amountIn,
+            OZ.getDefaultSlippage(),
+            alice
+        );
+
+        vm.startPrank(alice);
+        IERC20(underlying).approve(address(OZ), amountIn);
+        uint sharesAlicePreTransfer = ozERC20.mint(data, alice);
+        uint ozBalanceAlicePreTransfer = ozERC20.balanceOf(alice);
+        
+        assertEq(ozERC20.sharesOf(bob), 0);
+        assertEq(ozERC20.sharesOf(alice), sharesAlicePreTransfer);
+
+        //Actions        
+        address recipient = address(0);
+        vm.startPrank(bob);
+        ozERC20.approve(recipient, ozBalanceAlicePreTransfer);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError04.selector, alice, recipient)
+        );
+        //^^ it's not recognizing this expectRevert. Check terminal
+        ozERC20.transferSharesFrom(alice, recipient, sharesAlicePreTransfer);
     }
 
 }
