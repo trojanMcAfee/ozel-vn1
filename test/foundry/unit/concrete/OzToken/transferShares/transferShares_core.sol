@@ -11,7 +11,11 @@ import "./../../../../../../contracts/Errors.sol";
 
 contract TransferShares_Core is SharedConditions {
 
-    function it_should_transfer_shares(uint decimals_) internal skipOrNot {
+    event TransferShares(address indexed from, address indexed to, uint sharesAmount);
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+
+    function it_should_transfer_shares_and_emit_events(uint decimals_) internal skipOrNot {
         //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
@@ -35,7 +39,14 @@ contract TransferShares_Core is SharedConditions {
         assertEq(ozBalanceBobPreTransfer, 0);
 
         //Action
+        vm.expectEmit(true, true, false, true);
+        emit Transfer(alice, bob, ozBalanceAlicePreTransfer);
+
+        vm.expectEmit(true, true, false, true);
+        emit TransferShares(alice, bob, sharesOut);
+
         uint ozBalanceOut = ozERC20.transferShares(bob, sharesOut);
+        
 
         //Post-conditions
         uint ozBalanceBobPostTransfer = ozERC20.balanceOf(bob);

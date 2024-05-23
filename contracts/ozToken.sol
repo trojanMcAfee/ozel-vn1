@@ -55,7 +55,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     event OzTokenMinted(address owner, uint shares, uint assets);
     event OzTokenRedeemed(address owner, uint ozAmountIn, uint shares, uint assets);
-    event TransferShares(address from, address to, uint sharesAmoutn);
+    event TransferShares(address indexed from, address indexed to, uint sharesAmoutn);
 
     address private _ozDiamond;
     address private _underlying;
@@ -323,9 +323,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         emit Transfer(from, to, amount); //<---- put here, and everywhere it's used, _emitTransferEvents
     }
 
-    function _emitTransferEvents(address from_, address to_, uint ozAmount_, uint sharesAmount_) private {
-        emit Transfer(from_, to_, ozAmount_); //<---- check where this event lies 
-        emit TransferShares(from_, to_, sharesAmount_);
+    function _emitTransferEvents(address sender_, address recipient_, uint ozAmount_, uint sharesAmount_) private {
+        emit Transfer(sender_, recipient_, ozAmount_); //<---- check where this event lies 
+        emit TransferShares(sender_, recipient_, sharesAmount_);
     }
 
 
