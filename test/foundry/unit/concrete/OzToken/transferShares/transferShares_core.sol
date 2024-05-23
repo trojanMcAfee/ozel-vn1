@@ -5,6 +5,8 @@ pragma solidity 0.8.24;
 import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
+import {Type} from "../../../../base/AppStorageTests.sol";
+import {OZError07} from "./../../../../../../contracts/Errors.sol";
 
 
 contract TransferShares_Core is SharedConditions {
@@ -42,6 +44,30 @@ contract TransferShares_Core is SharedConditions {
         assertEq(ozBalanceAlicePreTransfer, ozBalanceOut);
         assertEq(ozBalanceAlicePreTransfer, ozBalanceBobPostTransfer);
         assertEq(ozBalanceAlicePostTransfer, 0);
+    }
+
+
+    function it_should_throw_error(uint decimals_) internal skipOrNot {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+
+        uint sharesAlice = _mintOzTokens(ozERC20, alice, underlying, amountIn);
+        uint sharesToTransfer = sharesAlice * 2;
+
+        //Actions + Post-condition
+        vm.startPrank(alice);
+        
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                OZError07.selector, 
+                alice, 
+                ozERC20.sharesOf(alice), 
+                sharesToTransfer
+            )
+        );
+        ozERC20.transferShares(bob, sharesToTransfer);
     }
 
 

@@ -103,7 +103,7 @@ contract BaseMethods is Setup {
         address user_, 
         address token_, 
         uint amountIn_
-    ) internal {
+    ) internal returns(uint) {
         uint pk;
 
         if (user_ == alice) {
@@ -128,8 +128,10 @@ contract BaseMethods is Setup {
             minAmountsOut
         );
 
-        ozERC20_.mint(abi.encode(amounts, user_), user_);   
+        uint shares = ozERC20_.mint(abi.encode(amounts, user_), user_);   
         vm.stopPrank();
+
+        return shares;
     }
 
 

@@ -329,18 +329,18 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function transferShares(address to_, uint amount_) external returns(uint) {
-        uint ozAmount = convertToOzTokens(amount_, msg.sender).unray();
-        _transferShares(msg.sender, to_, amount_);
-        _emitTransferEvents(msg.sender, to_, ozAmount, amount_);
+    function transferShares(address recipient_, uint shares_) external returns(uint) {
+        uint ozAmount = convertToOzTokens(shares_, msg.sender).unray();
+        _transferShares(msg.sender, recipient_, shares_);
+        _emitTransferEvents(msg.sender, recipient_, ozAmount, shares_);
         return ozAmount;
     }
 
-    function transferSharesFrom(address from_, address to_, uint amount_) external returns(uint) {
-        uint ozAmount = convertToOzTokens(amount_, from_).unray();
-        _spendAllowance(from_, msg.sender, ozAmount);
-        _transferShares(from_, to_, amount_);
-        _emitTransferEvents(from_, to_, ozAmount, amount_);
+    function transferSharesFrom(address sender_, address recipient_, uint shares_) external returns(uint) {
+        uint ozAmount = convertToOzTokens(shares_, sender_).unray();
+        _spendAllowance(sender_, msg.sender, ozAmount);
+        _transferShares(sender_, recipient_, shares_);
+        _emitTransferEvents(sender_, recipient_, ozAmount, shares_);
         return ozAmount;
     }
 
