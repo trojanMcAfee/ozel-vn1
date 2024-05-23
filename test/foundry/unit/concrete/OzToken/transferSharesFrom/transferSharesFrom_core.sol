@@ -5,6 +5,7 @@ pragma solidity 0.8.24;
 import {SharedConditions} from "../SharedConditions.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
+import "./../../../../../../contracts/Errors.sol";
 
 
 contract TransferSharesFrom_Core is SharedConditions {
@@ -54,7 +55,8 @@ contract TransferSharesFrom_Core is SharedConditions {
     }
 
 
-    //Pre-conditions
+    function it_should_throw_error(uint decimals_) internal skipOrNot {
+        //Pre-conditions
         (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
         assertEq(IERC20(underlying).decimals(), decimals_);
 
@@ -66,25 +68,21 @@ contract TransferSharesFrom_Core is SharedConditions {
             alice
         );
 
-        // vm.startPrank(alice);
-        // IERC20(underlying).approve(address(OZ), amountIn);
-        // uint sharesAlicePreTransfer = ozERC20.mint(data, alice);
-        // uint ozBalanceAlicePreTransfer = ozERC20.balanceOf(alice);
+        vm.startPrank(alice);
+        IERC20(underlying).approve(address(OZ), amountIn);
+        uint sharesAlicePreTransfer = ozERC20.mint(data, alice);
+        uint ozBalanceAlicePreTransfer = ozERC20.balanceOf(alice);
         
-        // assertEq(ozERC20.sharesOf(bob), 0);
-        // assertEq(ozERC20.sharesOf(alice), sharesAlicePreTransfer);
+        assertEq(ozERC20.sharesOf(bob), 0);
+        assertEq(ozERC20.sharesOf(alice), sharesAlicePreTransfer);
 
-        // //Actions
-        // ozERC20.approve(bob, ozBalanceAlicePreTransfer);
-        
-        // vm.startPrank(bob);
+        //Actions        
+        vm.startPrank(bob);
 
-        // vm.expectEmit(true, true, false, true);
-        // emit Transfer(alice, bob, ozBalanceAlicePreTransfer);
-
-        // vm.expectEmit(true, true, false, true);
-        // emit TransferShares(alice, bob, sharesAlicePreTransfer);
-
-        // ozERC20.transferSharesFrom(alice, bob, ozERC20.sharesOf(alice));
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError05.selector, ozBalanceAlicePreTransfer)
+        );
+        ozERC20.transferSharesFrom(alice, bob, sharesAlicePreTransfer);
+    }
 
 }
