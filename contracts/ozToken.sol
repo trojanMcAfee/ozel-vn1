@@ -329,15 +329,22 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
 
-    function transferShares(uint to_, uint amount_) external returns(uint) {
+    function transferShares(address to_, uint amount_) external returns(uint) {
+        console.log(1);
+        uint ozAmount = convertToOzTokens(amount_, msg.sender).unray();
         _transferShares(msg.sender, to_, amount_);
-        uint ozAmount = convertToOzTokens(amount_, msg.sender);
+        console.log(2);
+        console.log('amount_ in transferShares: ', amount_);
+        console.log('msg.sender: ', msg.sender);
+        console.log(3);
+
         _emitTransferEvents(msg.sender, to_, ozAmount, amount_);
+        console.log(4);
         return ozAmount;
     }
 
     function transferSharesFrom(address from_, address to_, uint amount_) external returns(uint) {
-        uint ozAmount = convertToOzTokens(amount_, from_);
+        uint ozAmount = convertToOzTokens(amount_, from_).unray();
         _spendAllowance(from_, msg.sender, ozAmount);
         _transferShares(from_, to_, amount_);
         _emitTransferEvents(from_, to_, ozAmount, amount_);
@@ -349,6 +356,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         if (recipient_ == address(this)) revert OZError42();
 
         uint senderShares = sharesOf(sender_);
+
         if (sharesAmount_ > senderShares) revert OZError07(sender_, senderShares, sharesAmount_);
 
         unchecked {
@@ -366,7 +374,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _calculateScalingFactor(address account_) private view returns(UintRay) {
-        return ((_shares[account_] * 1e12).ray()).mulDivRay(RAY ^ TWO, _convertToAssets(sharesOf(account_), Dir.DOWN));
+        console.log(23);
+        console.log('account_ in scalingFact: ', account_);
+        console.log('_shares[account_]: ', _shares[account_]);
+        console.log('sharesOf(account_) ', sharesOf(account_));
+        UintRay x = ((_shares[account_] * 1e12).ray()).mulDivRay(RAY ^ TWO, _convertToAssets(sharesOf(account_), Dir.DOWN));
+        console.log(24);
+        return x;
     }
 
     function convertToShares(uint assets_, address account_) public view returns(uint) { 

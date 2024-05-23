@@ -549,6 +549,36 @@ contract ozERC20TokenTest is TestMethods {
     }
 
 
+    function test_transferShares() public {
+        //Pre-condition
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        (ozIToken ozERC20, uint sharesOut) = _createAndMintOzTokens(
+            testToken, amountIn, alice, ALICE_PK, true, false, Type.IN
+        );
+
+        assertEq(sharesOut, ozERC20.sharesOf(alice));
+
+        uint ozBalanceAlicePreTransfer = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPreTransfer = ozERC20.balanceOf(bob);
+        assertEq(ozBalanceBobPreTransfer, 0);
+
+        //Action
+        vm.prank(alice);
+        uint ozBalanceOut = ozERC20.transferShares(bob, sharesOut);
+        console.log(21);
+
+        //Post-conditions
+        uint ozBalanceBobPostTransfer = ozERC20.balanceOf(bob);
+        uint ozBalanceAlicePostTransfer = ozERC20.balanceOf(alice);
+
+        assertEq(ozBalanceAlicePreTransfer, ozBalanceOut);
+        assertEq(ozBalanceAlicePreTransfer, ozBalanceBobPostTransfer);
+        assertEq(ozBalanceAlicePostTransfer, 0);
+    }
+
+
     function test_x() public {
         //Pre-conditions
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");

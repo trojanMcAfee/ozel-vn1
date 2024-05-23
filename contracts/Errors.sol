@@ -44,7 +44,7 @@ error OZError35(uint ozAmountIn); //redeem - ozAmountIn is less than allowed
 error OZError37(); //mint / ozToken.sol - amountIn can't be zero
 error OZError38(); //mint, redeem / ozToken.sol - can't be address(0)
 error OZError39(bytes data); //mint, redeem / ozToken.sol - invalid bytes data
-error OZError42() //_transferShares / ozToken.sol - can't transfer to self 
+error OZError42(); //_transferShares / ozToken.sol - can't transfer to self 
 
 //--- OZLrewards errors
 error OZError15(); //setRewardsDuration - rewards duration not finished
