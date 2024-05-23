@@ -88,4 +88,5 @@ interface ozIToken {
 
     function convertToOzTokens(uint shares_, address account_) external view returns (uint);
     function transferShares(address to_, uint amount_) external returns(uint);
+    function transferSharesFrom(address sender_, address recipient_, uint shares_) external returns(uint);
 }

@@ -5,7 +5,6 @@ pragma solidity 0.8.24;
 import {SharedConditions} from "../SharedConditions.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ozIToken} from "./../../../../../../contracts/interfaces/ozIToken.sol";
-import {Type} from "../../../../base/AppStorageTests.sol";
 import "./../../../../../../contracts/Errors.sol";
 
 
