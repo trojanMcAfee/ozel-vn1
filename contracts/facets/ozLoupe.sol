@@ -91,7 +91,7 @@ contract ozLoupe is DiamondLoupeFacet {
         ozIToken ozERC20 = ozIToken(ozToken_);
 
         uint amountInReth = ozERC20.convertToUnderlying(
-            ozERC20.subConvertToShares(ozAmountIn_, owner_)
+            ozERC20.convertToShares(ozAmountIn_, owner_)
         );
 
         ozIDiamond OZ = ozIDiamond(address(this));

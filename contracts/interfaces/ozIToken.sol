@@ -82,7 +82,7 @@ interface ozIToken {
 
     function asset() external view returns(address);
     function convertToAssets(uint shares_, address account_) external view returns(uint assets);
-    function subConvertToShares(uint256 assets, address account_) external view returns (uint256 shares);
+    function convertToShares(uint256 assets, address account_) external view returns (uint256 shares);
     function previewRedeem(uint shares_) external view returns(uint);
     function previewMint(uint assets_) external view returns(uint);
 

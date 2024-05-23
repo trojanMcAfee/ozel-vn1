@@ -192,8 +192,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     function totalSupply() public view returns(uint) {
         return totalShares() == 0 ? 0 : 
-            _subConvertToAssets(totalShares(), Dir.UP)
-                .mulDivRay((totalAssets() * 1e12).ray(), _subConvertToAssets(totalShares(), Dir.DOWN))
+            _convertToAssets(totalShares(), Dir.UP)
+                .mulDivRay((totalAssets() * 1e12).ray(), _convertToAssets(totalShares(), Dir.DOWN))
                 .unray();
     }
 
@@ -273,7 +273,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         if (ozAmountIn < 3 * 1e18) revert OZError35(ozAmountIn); //<-- check if after optimizations, this check is required (_redeeming_multipleBigBalances_bigMints_smallRedeem)
 
         uint256 accountShares = sharesOf(owner_);
-        uint shares = subConvertToShares(ozAmountIn, owner_);
+        uint shares = convertToShares(ozAmountIn, owner_);
 
         if (accountShares < shares) revert OZError06(owner_, accountShares, shares);
         uint assets = shares; 
@@ -328,22 +328,22 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     //change all the unit256 to uint ***
     function convertToOzTokens(uint shares_, address account_) public view returns (UintRay) { 
         //merge this with balanceOf
-        UintRay preBalance = _subConvertToAssets(shares_, Dir.UP);
+        UintRay preBalance = _convertToAssets(shares_, Dir.UP);
         return preBalance == ZERO ? ZERO : preBalance.mulDivRay(_calculateScalingFactor(account_), RAY ^ TWO);
     }
 
     function _calculateScalingFactor(address account_) private view returns(UintRay) {
-        return ((_shares[account_] * 1e12).ray()).mulDivRay(RAY ^ TWO, _subConvertToAssets(sharesOf(account_), Dir.DOWN));
+        return ((_shares[account_] * 1e12).ray()).mulDivRay(RAY ^ TWO, _convertToAssets(sharesOf(account_), Dir.DOWN));
     }
 
-    function subConvertToShares(uint assets_, address account_) public view returns(uint) { 
+    function convertToShares(uint assets_, address account_) public view returns(uint) { 
         UintRay reth_eth = UintRay.wrap(_OZ().getUniPrice(0, Dir.UP));
         return (assets_.ray())
             .mulDivRay(totalShares().ray(), reth_eth)
             .divUpRay(_calculateScalingFactor(account_)); 
     }
 
-    function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (UintRay) {   
+    function _convertToAssets(uint256 shares_, Dir side_) private view returns (UintRay) {   
         UintRay reth_eth = _OZ().getUniPrice(0, side_).ray();
         return (shares_.ray()).mulDivRay(reth_eth, totalShares() == 0 ? reth_eth : totalShares().ray());
     }

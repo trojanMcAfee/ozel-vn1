@@ -75,7 +75,7 @@ contract Redeem_Core is SharedConditions {
         ozERC20.approve(address(OZ), ozAmountIn);
 
         uint sharesAlice = ozERC20.sharesOf(alice);
-        uint alledgedShares = ozERC20.subConvertToShares(ozAmountIn, alice);
+        uint alledgedShares = ozERC20.convertToShares(ozAmountIn, alice);
 
         //Action + Post-Condition
         vm.expectRevert(
