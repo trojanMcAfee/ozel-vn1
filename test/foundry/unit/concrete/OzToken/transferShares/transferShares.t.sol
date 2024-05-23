@@ -12,12 +12,13 @@ contract TransferShares_Unit_Concrete_test is TransferShares_Core {
     }
 
     function test_WhenSenderDoesntHaveTheNecessaryShares() external {
-        it_should_throw_error(6);
-        it_should_throw_error(18);
+        it_should_throw_error_07(6);
+        it_should_throw_error_07(18);
     }
 
     function test_WhenRecipientIsZero() external {
-        // it should throw error.
+        it_should_throw_error_04(6);
+        it_should_throw_error_04(18);
     }
 
     function test_WhenRecipientIsSelf() external {
