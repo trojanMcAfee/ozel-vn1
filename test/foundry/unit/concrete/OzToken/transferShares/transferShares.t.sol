@@ -8,7 +8,7 @@ import {TransferShares_Core} from "./TransferShares_Core.sol";
 contract TransferShares_Unit_Concrete_test is TransferShares_Core {
     function test_WhenSenderHasTheNecessaryShares() external {
         it_should_transfer_shares(6);
-        // it should transfer shares_18dec.
+        it_should_transfer_shares(18);
     }
 
     function test_WhenSenderDoesntHaveTheNecessaryShares() external {

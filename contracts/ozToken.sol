@@ -330,16 +330,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
 
     function transferShares(address to_, uint amount_) external returns(uint) {
-        console.log(1);
         uint ozAmount = convertToOzTokens(amount_, msg.sender).unray();
         _transferShares(msg.sender, to_, amount_);
-        console.log(2);
-        console.log('amount_ in transferShares: ', amount_);
-        console.log('msg.sender: ', msg.sender);
-        console.log(3);
-
         _emitTransferEvents(msg.sender, to_, ozAmount, amount_);
-        console.log(4);
         return ozAmount;
     }
 
@@ -374,13 +367,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function _calculateScalingFactor(address account_) private view returns(UintRay) {
-        console.log(23);
-        console.log('account_ in scalingFact: ', account_);
-        console.log('_shares[account_]: ', _shares[account_]);
-        console.log('sharesOf(account_) ', sharesOf(account_));
-        UintRay x = ((_shares[account_] * 1e12).ray()).mulDivRay(RAY ^ TWO, _convertToAssets(sharesOf(account_), Dir.DOWN));
-        console.log(24);
-        return x;
+        return ((_shares[account_] * 1e12).ray()).mulDivRay(RAY ^ TWO, _convertToAssets(sharesOf(account_), Dir.DOWN));
     }
 
     function convertToShares(uint assets_, address account_) public view returns(uint) { 
