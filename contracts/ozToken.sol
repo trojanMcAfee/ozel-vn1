@@ -250,22 +250,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountOut_, addOrSub_);
     }
 
-    // function _convertToSharesFromUnderlying(uint assets_) private view returns(uint) {  
-    //     return assets_.mulDivDown(totalShares(), totalAssets());
-    // }
-
     function convertToSharesFromOzBalance(uint ozBalance_) public view returns(uint) {
         return ozBalance_.mulDivUp(totalShares(), totalSupply());
-    }
-
-    // function previewMint(uint assets_) public view returns(uint) {
-    //     return _convertToSharesFromUnderlying(assets_);
-    // }
-
-    function previewRedeem(uint shares_) public view returns(uint) {
-        // return shares_.mulDivDown(_rETH_ETH(), _subConvertToAssets(shares_, Dir.UP));
-
-        //fix this ^
     }
 
 
@@ -336,10 +322,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         emit Transfer(from, to, amount);
     }
 
-    // function previewWithdraw(uint256 assets) public view returns (uint256) {
-    //     return convertToShares(assets); 
-    // }
-
     // function transferShares() external {} <--- https://docs.lido.fi/guides/lido-tokens-integration-guide#transfer-shares-function-for-steth
 
 
@@ -360,10 +342,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             .mulDivRay(totalShares().ray(), reth_eth)
             .divUpRay(_calculateScalingFactor(account_)); 
     }
-
-    // function convertToShares(uint assets_) public view returns(uint) { 
-    //     return assets_.mulDivUp(totalShares(), _OZ().getUniPrice(0, Dir.UP));
-    // }
 
     function _subConvertToAssets(uint256 shares_, Dir side_) private view returns (UintRay) {   
         UintRay reth_eth = _OZ().getUniPrice(0, side_).ray();
