@@ -55,6 +55,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     event OzTokenMinted(address owner, uint shares, uint assets);
     event OzTokenRedeemed(address owner, uint ozAmountIn, uint shares, uint assets);
+    event TransferShares(address from, address to, uint sharesAmoutn);
 
     address private _ozDiamond;
     address private _underlying;
@@ -319,15 +320,47 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             _shares[to] += shares;
         }
 
-        emit Transfer(from, to, amount);
+        emit Transfer(from, to, amount); //<---- put here, and everywhere it's used, _emitTransferEvents
     }
 
-    // function transferShares() external {} <--- https://docs.lido.fi/guides/lido-tokens-integration-guide#transfer-shares-function-for-steth
+    function _emitTransferEvents(address from_, address to_, uint ozAmount_, uint sharesAmount_) private {
+        emit Transfer(from_, to_, ozAmount_); //<---- check where this event lies 
+        emit TransferShares(from_, to_, sharesAmount_);
+    }
+
+
+    function transferShares(uint to_, uint amount_) external returns(uint) {
+        _transferShares(msg.sender, to_, amount_);
+        uint ozAmount = convertToOzTokens(amount_, msg.sender);
+        _emitTransferEvents(msg.sender, to_, ozAmount, amount_);
+        return ozAmount;
+    }
+
+    function transferSharesFrom(address from_, address to_, uint amount_) external returns(uint) {
+        uint ozAmount = convertToOzTokens(amount_, from_);
+        _spendAllowance(from_, msg.sender, ozAmount);
+        _transferShares(from_, to_, amount_);
+        _emitTransferEvents(from_, to_, ozAmount, amount_);
+        return ozAmount;
+    }
+
+    function _transferShares(address sender_, address recipient_, uint sharesAmount_) internal {
+        if (sender_ == address(0) || recipient_ == address(0)) revert OZError04(sender_, recipient_);
+        if (recipient_ == address(this)) revert OZError42();
+
+        uint senderShares = sharesOf(sender_);
+        if (sharesAmount_ > senderShares) revert OZError07(sender_, senderShares, sharesAmount_);
+
+        unchecked {
+            _shares[sender_] = senderShares - sharesAmount_;
+            _shares[recipient_] += sharesAmount_;
+        }
+    }
 
 
     //change all the unit256 to uint ***
+    //Converts an amount of shares into ozTokens
     function convertToOzTokens(uint shares_, address account_) public view returns (UintRay) { 
-        //merge this with balanceOf
         UintRay preBalance = _convertToAssets(shares_, Dir.UP);
         return preBalance == ZERO ? ZERO : preBalance.mulDivRay(_calculateScalingFactor(account_), RAY ^ TWO);
     }

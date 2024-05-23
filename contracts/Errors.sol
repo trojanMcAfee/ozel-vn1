@@ -34,16 +34,17 @@ error OZError14(uint blockNumber); //_applyFee - blockNum is equal or less than 
 
 //--- ozToken errors
 error OZError03(); //decreaseAllowance - decreased allowance below zero
-error OZError04(address from, address to); //_approve / _transfer - can't be zero address(0)
+error OZError04(address from, address to); //_approve / _transfer / _transferShares - can't be zero address(0)
 error OZError05(uint amount); //_spendAllowance - insufficient allowance
 error OZError06(address sender, uint accountShares, uint shares); //redeem - insufficient redeem balance
-error OZError07(address from, uint fromShares, uint shares); //ozToken.sol / _transfer - insufficient sender balance
+error OZError07(address from, uint fromShares, uint shares); //ozToken.sol / _transfer / _transferShares - insufficient sender balance
 error OZError08(uint deadline, uint blockTimestamp); //permit - ERC2612ExpiredDeadline
 error OZError09(address owner, address spender); //permit - ERC2612InvalidSignature
 error OZError35(uint ozAmountIn); //redeem - ozAmountIn is less than allowed
 error OZError37(); //mint / ozToken.sol - amountIn can't be zero
 error OZError38(); //mint, redeem / ozToken.sol - can't be address(0)
 error OZError39(bytes data); //mint, redeem / ozToken.sol - invalid bytes data
+error OZError42() //_transferShares / ozToken.sol - can't transfer to self 
 
 //--- OZLrewards errors
 error OZError15(); //setRewardsDuration - rewards duration not finished
