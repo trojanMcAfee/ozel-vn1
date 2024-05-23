@@ -22,6 +22,7 @@ contract TransferShares_Unit_Concrete_test is TransferShares_Core {
     }
 
     function test_WhenRecipientIsSelf() external {
-        // it should throw error.
+        it_should_throw_error_42(6);
+        it_should_throw_error_42(18);
     }
 }

@@ -89,4 +89,22 @@ contract TransferShares_Core is SharedConditions {
         );
         ozERC20.transferShares(address(0), sharesAlice);
     }
+
+
+    function it_should_throw_error_42(uint decimals_) internal skipOrNot {
+        //Pre-conditions
+        (ozIToken ozERC20, address underlying) = _setUpOzToken(decimals_);
+        assertEq(IERC20(underlying).decimals(), decimals_);
+        uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
+
+        uint sharesAlice = _mintOzTokens(ozERC20, alice, underlying, amountIn);
+
+        //Actions + Post-condition
+        vm.startPrank(alice);
+        
+        vm.expectRevert(
+            abi.encodeWithSelector(OZError42.selector)
+        );
+        ozERC20.transferShares(address(ozERC20), sharesAlice);
+    }
 }
