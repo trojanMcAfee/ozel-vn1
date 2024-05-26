@@ -220,6 +220,11 @@ contract ozEngine is Modifiers {
     ) private returns(uint) {
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
 
+        console.log('');
+        console.log('*** in _swapUni ***');
+        console.log('amountIn_: ', amountIn_);
+        console.log('minAmountOut: ', minAmountOut_.formatMinOut(tokenOut_));
+
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 
                 tokenIn: tokenIn_,
@@ -233,6 +238,9 @@ contract ozEngine is Modifiers {
             });
 
         try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) {     
+            console.log('amountOut: ', amountOut);
+            console.log('');
+
             return amountOut;
         } catch Error(string memory reason) {
             revert OZError01(reason);

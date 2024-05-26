@@ -14,6 +14,7 @@ import "../../../contracts/Errors.sol";
 import {Dummy1} from "../mocks/Dummy1.sol";
 import {Type} from "../base/AppStorageTests.sol"; 
 import {AmountsOut} from "./../../../contracts/AppStorage.sol";
+import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
 import "forge-std/console.sol";
 
@@ -213,8 +214,92 @@ contract ozERC20TokenTest is TestMethods {
         );
     }
 
-    //------------
+
+    function test_ETH_trend2() public {
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+
+        //This function needs to happen before the minting.
+        _mock_rETH_ETH_pt1();
+
+        _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
+        _mintOzTokens(ozERC20, bob, testToken, amountIn);
+
+        uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPre = ozERC20.balanceOf(bob);
     
+        uint ozBalanceAlicePostUp = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPostUp = ozERC20.balanceOf(bob);
+
+        assertTrue(
+            ozBalanceAlicePre == ozBalanceAlicePostUp &&
+            ozBalanceBobPre == ozBalanceBobPostUp
+        );
+
+        //Simulates rETH accrual.
+        _mock_rETH_ETH_pt2();
+
+        uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPostRewards = ozERC20.balanceOf(bob);
+        console.log('ozBalanceAlicePostRewards - pre Dir.DOWN mock: ', ozBalanceAlicePostRewards);
+        console.log('');
+
+        assertTrue(
+            ozBalanceAlicePostRewards > ozBalanceAlicePostUp &&
+            ozBalanceBobPostRewards > ozBalanceBobPostUp
+        );
+
+        console.log('ETHUSD pre Dir.DOWN mock: ', OZ.ETH_USD());
+        console.log('rETHUSD pre Dir.DOWN mock: ', OZ.rETH_USD());
+
+        _mock_ETH_USD(Dir.DOWN, 500);
+
+        console.log('ETHUSD post Dir.DOWN mock: ', OZ.ETH_USD());
+        console.log('rETHUSD post Dir.DOWN mock: ', OZ.rETH_USD());
+        console.log('');
+
+        console.log('ozBalanceAlice - post Dir.DOWN mock: ', ozERC20.balanceOf(alice));
+
+        uint ozBalanceAlicePostDown = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPostDown = ozERC20.balanceOf(bob);
+
+        assertTrue(
+            ozBalanceAlicePostDown == ozBalanceAlicePostRewards &&
+            ozBalanceBobPostDown == ozBalanceBobPostRewards 
+        );
+
+        //------------
+
+        bytes memory data = OZ.getRedeemData(
+            ozBalanceAlicePostDown, address(ozERC20), OZ.getDefaultSlippage(), alice, alice
+        );
+
+        console.log('balance testToken alice - pre redeem', IERC20Permit(testToken).balanceOf(alice));
+
+        //---- mock ETHUSD price in swapUni---
+        // vm.mockCall(
+        //     swapRouterUni, 
+        //     abi.encodeWithSelector(ISwapRouter.exactInputSingle.selector, arg); 
+        //     returnData
+        // );
+
+        //^^ mock here an ETHUSD price on routerUni of $1000 and change the _mock call above to be $1000
+        //run the test checking that when the WETH<>USDC swap happens, $1000 per ETH is actually used.
+
+        //-------
+
+        vm.startPrank(alice);
+        ozERC20.approve(address(OZ), ozBalanceAlicePostDown);
+        ozERC20.redeem(data, alice);
+
+        console.log('balance testToken alice - post redeem', IERC20Permit(testToken).balanceOf(alice));
+    }
+
+
+
 
     //Tests that the accrual and redemption of rewards happens without issues when there's more
     //than one user that's being accounted for (for internal proper internal accounting of variables)
