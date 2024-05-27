@@ -215,15 +215,13 @@ contract ozERC20TokenTest is TestMethods {
     }
 
 
-    function test_ETH_trend2() public {
+    function test_project_destroyer() public {
         if (testToken == usdcAddr) testToken = daiAddr;
 
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-        console.log('amountIn alice ^^^^: ', amountIn / 2);
-
 
         //This function needs to happen before the minting.
         _mock_rETH_ETH_pt1();
@@ -256,12 +254,10 @@ contract ozERC20TokenTest is TestMethods {
         );
 
         console.log('ETHUSD pre Dir.DOWN mock: ', OZ.ETH_USD());
-        console.log('rETHUSD pre Dir.DOWN mock: ', OZ.rETH_USD());
 
         _mock_ETH_USD(Dir.DOWN, 4217);
 
         console.log('ETHUSD post Dir.DOWN mock: ', OZ.ETH_USD());
-        console.log('rETHUSD post Dir.DOWN mock: ', OZ.rETH_USD());
         console.log('');
 
         console.log('ozBalanceAlice - post Dir.DOWN mock: ', ozERC20.balanceOf(alice));
@@ -280,7 +276,8 @@ contract ozERC20TokenTest is TestMethods {
             ozBalanceAlicePostDown, address(ozERC20), OZ.getDefaultSlippage(), alice, alice
         );
 
-        console.log('balance testToken alice - pre redeem', IERC20Permit(testToken).balanceOf(alice));
+        uint balanceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
+        console.log('balance testToken alice - pre redeem', balanceTestTokenPreRedeem);
 
         //---- mock ETHUSD price in swapUni---
         ISwapRouter.ExactInputSingleParams memory params =
@@ -311,7 +308,11 @@ contract ozERC20TokenTest is TestMethods {
         ozERC20.approve(address(OZ), ozBalanceAlicePostDown);
         ozERC20.redeem(data, alice);
 
-        console.log('balance testToken alice - post redeem', IERC20Permit(testToken).balanceOf(alice));
+        uint balanceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
+        console.log('balance testToken alice - post redeem', balanceTestTokenPostRedeem);
+        console.log('');
+        console.logInt(int(balanceTestTokenPostRedeem - balanceTestTokenPreRedeem) - int(amountIn / 2));
+        console.log('net profits from using the system ^^^^');
     }
 
 

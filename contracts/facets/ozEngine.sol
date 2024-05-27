@@ -116,7 +116,6 @@ contract ozEngine is Modifiers {
         address owner_,
         bytes memory data_
     ) external onlyOzToken returns(uint, uint) {
-        console.log(1);
         (AmountsOut memory amts, address receiver) = abi.decode(data_, (AmountsOut, address));
         
         /**
@@ -221,16 +220,6 @@ contract ozEngine is Modifiers {
     ) private returns(uint) {
         IERC20(tokenIn_).safeApprove(s.swapRouterUni, amountIn_);
 
-        console.log('');
-        console.log('*** in _swapUni ***');
-        console.log('amountIn_: ', amountIn_);
-        console.log('minAmountOut: ', minAmountOut_.formatMinOut(tokenOut_));
-        console.log('tokenIn_: ', tokenIn_);
-        console.log('tokenOut_: ', tokenOut_);
-        console.log('s.uniFee: ', s.uniFee);
-        console.log('receiver: ', receiver_);
-        console.log('block.timestamp: ', block.timestamp);
-
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 
                 tokenIn: tokenIn_,
@@ -244,9 +233,6 @@ contract ozEngine is Modifiers {
             });
 
         try ISwapRouter(s.swapRouterUni).exactInputSingle(params) returns(uint amountOut) {     
-            console.log('amountOut: ', amountOut);
-            console.log('');
-
             return amountOut;
         } catch Error(string memory reason) {
             revert OZError01(reason);
