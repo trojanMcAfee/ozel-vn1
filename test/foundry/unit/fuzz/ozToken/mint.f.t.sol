@@ -2,7 +2,7 @@
 pragma solidity 0.8.24;
 
 
-import {SharedConditions} from "../../concrete/ozToken/SharedConditions.sol";
+import {SharedConditions} from "../../concrete/OzToken/SharedConditions.sol";
 import {ozIToken} from "./../../../../../contracts/interfaces/ozIToken.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {AmountsIn} from "./../../../../../contracts/AppStorage.sol";
