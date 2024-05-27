@@ -224,6 +224,11 @@ contract ozEngine is Modifiers {
         console.log('*** in _swapUni ***');
         console.log('amountIn_: ', amountIn_);
         console.log('minAmountOut: ', minAmountOut_.formatMinOut(tokenOut_));
+        console.log('tokenIn_: ', tokenIn_);
+        console.log('tokenOut_: ', tokenOut_);
+        console.log('s.uniFee: ', s.uniFee);
+        console.log('receiver: ', receiver_);
+        console.log('block.timestamp: ', block.timestamp);
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({ 

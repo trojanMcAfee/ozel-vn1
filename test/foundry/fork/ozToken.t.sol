@@ -220,6 +220,7 @@ contract ozERC20TokenTest is TestMethods {
 
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+        console.log('amountIn alice ^^^^: ', amountIn / 2);
 
 
         //This function needs to happen before the minting.
@@ -255,7 +256,7 @@ contract ozERC20TokenTest is TestMethods {
         console.log('ETHUSD pre Dir.DOWN mock: ', OZ.ETH_USD());
         console.log('rETHUSD pre Dir.DOWN mock: ', OZ.rETH_USD());
 
-        _mock_ETH_USD(Dir.DOWN, 500);
+        _mock_ETH_USD(Dir.DOWN, 4217);
 
         console.log('ETHUSD post Dir.DOWN mock: ', OZ.ETH_USD());
         console.log('rETHUSD post Dir.DOWN mock: ', OZ.rETH_USD());
@@ -280,14 +281,23 @@ contract ozERC20TokenTest is TestMethods {
         console.log('balance testToken alice - pre redeem', IERC20Permit(testToken).balanceOf(alice));
 
         //---- mock ETHUSD price in swapUni---
-        // vm.mockCall(
-        //     swapRouterUni, 
-        //     abi.encodeWithSelector(ISwapRouter.exactInputSingle.selector, arg); 
-        //     returnData
-        // );
-
-        //^^ mock here an ETHUSD price on routerUni of $1000 and change the _mock call above to be $1000
-        //run the test checking that when the WETH<>USDC swap happens, $1000 per ETH is actually used.
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({ 
+                tokenIn: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, //wethAddr
+                tokenOut: 0x6B175474E89094C44Da98b954EedeAC495271d0F, //daiAddr 
+                fee: 500, //uniPoolFee
+                recipient: 0x37cB1a23e763D2F975bFf3B2B86cFa901f7B517E, //alice
+                deadline: 1698071987, //block.timestamp,
+                amountIn: 29773482427462619,
+                amountOutMinimum: 28600980339205039359, //minAmountOut_.formatMinOut(tokenOut_), 
+                sqrtPriceLimitX96: 0
+            });
+            
+        vm.mockCall(
+            swapRouterUni, 
+            abi.encodeWithSelector(ISwapRouter.exactInputSingle.selector, params),
+            abi.encode(uint(28881499894978946881))
+        );
 
         //-------
 
