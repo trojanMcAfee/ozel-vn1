@@ -50,6 +50,12 @@ Native rETH minting is also used, but since this option is not always available,
 - The distribution of OZL tokens to the users of the protocol is done in the [OZLrewards](https://github.com/trojanMcAfee/ozel-vn1/blob/main/contracts/facets/OZLrewards.sol) facet, with a modified version of [Synthethix's Staking Rewards contract](https://github.com/Synthetixio/synthetix/blob/develop/contracts/StakingRewards.sol) .
 - The distribution of OZL tokens to the team and [Protocol Guild](https://protocol-guild.readthedocs.io/en/latest/) is done through [Open Zeppelin's Vesting Wallet](https://docs.openzeppelin.com/contracts/4.x/api/finance#VestingWallet) contract, with a vesting period of 1 year.
 
+## High level overview of the System Architecture
+The following diagram only includes the main contracts in order to show the most important relationships between the key sections: 
+
+<img width="1044" alt="image" src="https://github.com/trojanMcAfee/staking-wrapper/assets/59457858/bc2cb788-4e3b-496f-992f-619712d98b14">
+
+
 ## Running the PoC 
 For seeing how the system behaves, such as the creation, minting, and redeeming of ozTokens, collecting the Admin Fee and the claiming & redeeming of OZL:
    - Pull the proper Docker image with `docker pull dnyrm/ozel-vn1:0.0.9`.
