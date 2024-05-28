@@ -23,7 +23,7 @@ contract OZLrewards is Modifiers { //check if I can put IOZLrewards here instead
 
     
     //Calculates the reward rate
-    function notifyRewardAmount(uint amount_) public override updateReward(address(0), address(0)) { //4:55
+    function notifyRewardAmount(uint amount_) public override updateReward(address(0), address(0)) { 
         LibDiamond.enforceIsContractOwner();
 
         if (block.timestamp > s.r.finishAt) {
