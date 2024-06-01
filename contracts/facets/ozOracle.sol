@@ -147,6 +147,14 @@ contract ozOracle {
 
         (int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
 
+        // console.log('');
+        // console.log('secsAgo: ', secsAgo);
+        // console.log('pool: ', pool);
+        // console.log('tickCumulatives: ', tickCumulatives.length);
+        // console.log('tickCumulatives[0]: ', uint(int(tickCumulatives[0]))); //+28989928216
+        // console.log('tickCumulatives[1]: ', uint(int(tickCumulatives[1]))); //+28991500848
+        // console.log('');
+
         int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
         int24 tick = int24(tickCumulativesDelta / int32(secsAgo));
         

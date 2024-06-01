@@ -15,6 +15,7 @@ import {Dummy1} from "../mocks/Dummy1.sol";
 import {Type} from "../base/AppStorageTests.sol"; 
 import {AmountsOut} from "./../../../contracts/AppStorage.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 
 import "forge-std/console.sol";
 
@@ -420,6 +421,71 @@ contract ozERC20TokenTest is TestMethods {
 
         //This simulates the rETH rewards accrual.
         _mock_rETH_ETH_pt2();
+
+        //--- mock observe() here ---
+
+        // int56[] memory tickCumulatives = new int56[](2);
+        // tickCumulatives[0] = 28989928216;
+        // tickCumulatives[1] = 28991500848;
+        // address rEthWethPoolUni = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613; //fix this var in Setup.sol
+
+        // uint32 side = 1800;
+
+        // uint32[] memory secondsAgo = new uint32[](2);
+        // secondsAgo[0] = side;
+        // secondsAgo[1] = 0;
+
+        // if (side == 1800) secondsAgo[0] = side;
+
+        // function observe(uint32[] calldata secondsAgos)
+        // external
+        // view
+        // override
+        // noDelegateCall
+        // returns (int56[] memory tickCumulatives, uint160[] memory secondsPerLiquidityCumulativeX128s)
+
+        // vm.mockCall(
+        //     rEthWethPoolUni,
+        //     abi.encodeWithSelector(IUniswapV3Pool.observe.selector, secondsAgo),
+        //     abi.encode(tickCumulatives, new uint160[](2));
+        // );
+
+        // side = 86400;
+        // secondsAgo[0] = side;
+
+
+        uint32[2] memory secsAgo = [uint32(1800), uint32(86400)];
+
+        for (uint i=0; i < secsAgo.length; i++) {
+            uint32 secsAgo_internal;
+            int56[] memory tickCumulatives = new int56[](2);
+
+            if (i == 0) {
+                secsAgo_internal = secsAgo[i];
+                tickCumulatives[0] = 28989928216;
+                tickCumulatives[1] = 28991500848;
+            } else if (i == 1) {
+                secsAgo_internal = secsAgo[i];
+                tickCumulatives[0] = 27639974418;
+                tickCumulatives[1] = 27641473818;
+            } else {
+                revert('error in secsAgo');
+            }
+
+            uint32[] memory secondsAgo = new uint32[](2);
+            secondsAgo[0] = secsAgo_internal;
+            secondsAgo[1] = 0;
+
+            address rEthWethPoolUni = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613; //fix this var in Setup.sol
+
+            vm.mockCall(
+                rEthWethPoolUni,
+                abi.encodeWithSignature('observe(uint32[])', secondsAgo),
+                abi.encode(tickCumulatives, new uint160[](2))
+            );
+        }
+
+        //-----------
 
         console.log('');
         console.log('rETH-ETH - post mock ETH pt2: ', OZ.rETH_ETH());

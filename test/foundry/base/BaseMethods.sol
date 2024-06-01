@@ -505,6 +505,14 @@ contract BaseMethods is Setup {
         ); 
     }
 
+
+    function _mock_rETH_ETH_observe(uint32 secsAgo_) internal {
+        
+
+
+    }
+
+
     function _accrueRewards(uint secs_) internal {
         vm.warp(block.timestamp + secs_);
         _mock_rETH_ETH_unit(Mock.POSTACCRUAL_UNI);
