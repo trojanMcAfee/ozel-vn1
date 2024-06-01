@@ -317,7 +317,6 @@ contract ozERC20TokenTest is TestMethods {
 
 
 
-
     //Tests that the accrual and redemption of rewards happens without issues when there's more
     //than one user that's being accounted for (for internal proper internal accounting of variables)
     function test_redeem_rewards() public {
@@ -387,6 +386,90 @@ contract ozERC20TokenTest is TestMethods {
         assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
     }
 
+
+    function test_redeem_rewards2() public {
+        //PRE-CONDITIONS
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
+
+        _getResetVarsAndChangeSlip();        
+        _mock_rETH_ETH_pt1();
+
+        console.log('');
+        console.log('rETH-ETH - post mock ETH pt1: ', OZ.rETH_ETH());
+        console.log('rETH-USD - post mock ETH pt1: ', OZ.rETH_USD());
+        console.log('');
+
+        uint decimals = 10 ** IERC20Permit(testToken).decimals();
+
+        uint amountIn = (rawAmount / 3) * decimals;
+
+        console.log('testToken balance alice: ', IERC20Permit(testToken).balanceOf(alice));
+        console.log('testToken amountIn: ', amountIn);
+        console.log('ozBalance alice - pre mint: ', ozERC20.balanceOf(alice));
+        console.log('');
+
+        _mintOzTokens(ozERC20, alice, testToken, amountIn);
+        _mintOzTokens(ozERC20, bob, testToken, amountIn);
+
+        uint ozBalanceAlice = ozERC20.balanceOf(alice);
+        uint ozBalanceBob = ozERC20.balanceOf(bob);
+        assertTrue(_fm(ozBalanceBob + ozBalanceAlice) == _fm(ozERC20.totalSupply()));
+
+        console.log('ozBalance alice - post mint - pre mock: ', ozBalanceAlice);
+
+        //This simulates the rETH rewards accrual.
+        _mock_rETH_ETH_pt2();
+
+        console.log('');
+        console.log('rETH-ETH - post mock ETH pt2: ', OZ.rETH_ETH());
+        console.log('rETH-USD - post mock ETH pt2: ', OZ.rETH_USD());
+        console.log('');
+
+        uint ozBalanceAlicePostMock = ozERC20.balanceOf(alice);
+        assertTrue(ozBalanceAlice < ozBalanceAlicePostMock);
+
+        console.log('ozBalance alice - post mint - post mock: ', ozBalanceAlicePostMock);
+
+        bytes memory redeemData = OZ.getRedeemData(
+            ozBalanceAlicePostMock, 
+            address(ozERC20),
+            OZ.getDefaultSlippage(),
+            alice,
+            alice
+        );
+
+        uint balanceAliceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
+
+        console.log('balanceAliceTestTokenPreRedeem: ', balanceAliceTestTokenPreRedeem);
+        console.log('');
+
+        //ACTION
+        vm.startPrank(alice);
+        ozERC20.approve(address(ozDiamond), type(uint).max);
+        ozERC20.redeem(redeemData, alice);
+        vm.stopPrank();
+
+        //POST-CONDITIONS
+        uint ozBalanceAlicePostRedeem = ozERC20.balanceOf(alice);
+        uint balanceAliceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
+        uint deltaBalanceTestToken = balanceAliceTestTokenPostRedeem - balanceAliceTestTokenPreRedeem;
+        // ozBalanceAlice = ozERC20.balanceOf(alice);
+        ozBalanceBob = ozERC20.balanceOf(bob);
+
+        console.log('ozBalanceAlicePostRedeem: ', ozBalanceAlicePostRedeem);
+        console.log('balanceAliceTestTokenPostRedeem: ', balanceAliceTestTokenPostRedeem);
+        console.log('');
+
+        assertTrue(_fm(ozBalanceBob + ozBalanceAlicePostRedeem) == _fm(ozERC20.totalSupply()));
+        assertTrue(ozBalanceAlicePostMock > ozBalanceAlicePostRedeem);
+        assertTrue(ozBalanceAlicePostRedeem == 0 || ozBalanceAlicePostRedeem < 0.0000011 * 1e18);
+        assertTrue(balanceAliceTestTokenPreRedeem < balanceAliceTestTokenPostRedeem);
+        assertTrue(deltaBalanceTestToken > 32 * decimals  && deltaBalanceTestToken <= 33 * decimals);
+    }
+
+
+    //--------------------------
 
     //Tests minting/redeeming with several users involved and with odd, non-whole amounts
     function test_multiple_users_odd_amounts() public {
