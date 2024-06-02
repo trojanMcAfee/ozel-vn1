@@ -30,6 +30,7 @@ import {IUniswapV3Pool} from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Po
 import "../Errors.sol";
 import {Modifiers} from "../Modifiers.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IAave} from "../interfaces/IAave.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -100,7 +101,7 @@ contract ozEngine is Modifiers {
             return postBalance - preBalance;
         
         } else {
-            return _checkPauseAndSwap(
+            uint amountRethOut = _checkPauseAndSwap(
                 s.WETH, 
                 s.rETH, 
                 address(this),
@@ -108,7 +109,30 @@ contract ozEngine is Modifiers {
                 minAmountsOut,
                 Action.OZ_IN
             );
+
+            _hedgeLST(amountRethOut);
+
+            revert('here');
+
+            return amountRethOut;
         }
+    }
+
+
+    function _hedgeLST(uint amountInLst_) private {
+        //deposit LST in aave
+        IERC20(s.rETH).approve(s.poolAave, amountInLst_);
+        IAave(s.poolAave).supply(s.rETH, amountInLst_, address(this), 0);
+
+        uint x = IERC20(0xCc9EE9483f662091a1de4795249E24aC0aC2630f).balanceOf(address(this));
+
+        console.log('amountInLst_: ', amountInLst_);
+        console.log('arETH bal this: ', x);
+
+
+        //sell LST and do accounting with the funds
+        //modify _setValuePerOzToken
+
     }
 
 

@@ -52,10 +52,11 @@ contract DiamondInit {
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
 
-        //DEXs
+        //Money markets
         s.swapRouterUni = dexes_.swapRouterUni;
         s.vaultBalancer = dexes_.vaultBalancer;
         s.rEthWethPoolBalancer = dexes_.rEthWethPoolBalancer;
+        s.poolAave = dexes_.poolAave;
 
         //Oracles
         s.ethUsdChainlink = oracles_.ethUsdChainlink;

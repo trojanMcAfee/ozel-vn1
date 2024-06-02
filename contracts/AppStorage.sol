@@ -84,6 +84,8 @@ struct AppStorage {
     uint prevAPR;
 
     address pendingOwner;
+
+    address poolAave;
 }
 
 
@@ -137,10 +139,11 @@ struct Tokens {
     address usdt;
 }
 
-struct Dexes {
+struct Dexes { //change this name to MoneyMarkets
     address swapRouterUni;
     address vaultBalancer;
     address rEthWethPoolBalancer;
+    address poolAave;
 }
 
 struct Oracles {
