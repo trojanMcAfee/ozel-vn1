@@ -178,17 +178,11 @@ contract MocksTests is MockStorage, TestMethods {
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
-
+    
         uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
         uint ozBalanceBobPre = ozERC20.balanceOf(bob);
-    
-        uint ozBalanceAlicePostUp = ozERC20.balanceOf(alice);
-        uint ozBalanceBobPostUp = ozERC20.balanceOf(bob);
 
-        assertTrue(
-            ozBalanceAlicePre == ozBalanceAlicePostUp &&
-            ozBalanceBobPre == ozBalanceBobPostUp
-        );
+        console.log('ozBalanceAlicePreMock: ', ozBalanceAlicePre);
 
         //Simulates rETH accrual.
         _mock_rETH_ETH_pt2();
@@ -199,8 +193,8 @@ contract MocksTests is MockStorage, TestMethods {
         console.log('');
 
         assertTrue(
-            ozBalanceAlicePostRewards > ozBalanceAlicePostUp &&
-            ozBalanceBobPostRewards > ozBalanceBobPostUp
+            ozBalanceAlicePostRewards > ozBalanceAlicePre &&
+            ozBalanceBobPostRewards > ozBalanceBobPre
         );
 
         console.log('ETHUSD pre Dir.DOWN mock: ', OZ.ETH_USD());
