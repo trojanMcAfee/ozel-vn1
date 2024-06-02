@@ -422,20 +422,7 @@ contract ozERC20TokenTest is TestMethods {
         //This simulates the rETH rewards accrual.
         _mock_rETH_ETH_pt2();
 
-        //--- mock observe() here ---
-
-        // int56[] memory tickCumulatives = new int56[](2);
-        // tickCumulatives[0] = 28989928216;
-        // tickCumulatives[1] = 28991500848;
-        // address rEthWethPoolUni = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613; //fix this var in Setup.sol
-
-        // uint32 side = 1800;
-
-        // uint32[] memory secondsAgo = new uint32[](2);
-        // secondsAgo[0] = side;
-        // secondsAgo[1] = 0;
-
-        // if (side == 1800) secondsAgo[0] = side;
+        //--- mock observe() here --
 
         // function observe(uint32[] calldata secondsAgos)
         // external
@@ -444,17 +431,8 @@ contract ozERC20TokenTest is TestMethods {
         // noDelegateCall
         // returns (int56[] memory tickCumulatives, uint160[] memory secondsPerLiquidityCumulativeX128s)
 
-        // vm.mockCall(
-        //     rEthWethPoolUni,
-        //     abi.encodeWithSelector(IUniswapV3Pool.observe.selector, secondsAgo),
-        //     abi.encode(tickCumulatives, new uint160[](2));
-        // );
 
-        // side = 86400;
-        // secondsAgo[0] = side;
-
-
-        uint32[2] memory secsAgo = [uint32(1800), uint32(86400)];
+        // uint32[2] memory secsAgo = [uint32(1800), uint32(86400)];
 
         for (uint i=0; i < secsAgo.length; i++) {
             uint32 secsAgo_internal;
@@ -483,7 +461,8 @@ contract ozERC20TokenTest is TestMethods {
                 abi.encodeWithSignature('observe(uint32[])', secondsAgo),
                 abi.encode(tickCumulatives, new uint160[](2))
             );
-        }
+        } 
+
 
         //-----------
 
