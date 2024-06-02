@@ -14,7 +14,6 @@ import "../../../contracts/Errors.sol";
 import {Dummy1} from "../mocks/Dummy1.sol";
 import {Type} from "../base/AppStorageTests.sol"; 
 import {AmountsOut} from "./../../../contracts/AppStorage.sol";
-import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import {IUniswapV3Pool} from '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 
 import "forge-std/console.sol";
@@ -216,107 +215,6 @@ contract ozERC20TokenTest is TestMethods {
     }
 
 
-    function test_project_destroyer() public {
-        if (testToken == usdcAddr) testToken = daiAddr;
-
-        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
-
-        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
-        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
-
-        //This function needs to happen before the minting.
-        _mock_rETH_ETH_pt1();
-
-        _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
-        _mintOzTokens(ozERC20, bob, testToken, amountIn);
-
-        uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
-        uint ozBalanceBobPre = ozERC20.balanceOf(bob);
-    
-        uint ozBalanceAlicePostUp = ozERC20.balanceOf(alice);
-        uint ozBalanceBobPostUp = ozERC20.balanceOf(bob);
-
-        assertTrue(
-            ozBalanceAlicePre == ozBalanceAlicePostUp &&
-            ozBalanceBobPre == ozBalanceBobPostUp
-        );
-
-        //Simulates rETH accrual.
-        _mock_rETH_ETH_pt2();
-
-        uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
-        uint ozBalanceBobPostRewards = ozERC20.balanceOf(bob);
-        console.log('ozBalanceAlicePostRewards - pre Dir.DOWN mock: ', ozBalanceAlicePostRewards);
-        console.log('');
-
-        assertTrue(
-            ozBalanceAlicePostRewards > ozBalanceAlicePostUp &&
-            ozBalanceBobPostRewards > ozBalanceBobPostUp
-        );
-
-        console.log('ETHUSD pre Dir.DOWN mock: ', OZ.ETH_USD());
-
-        _mock_ETH_USD(Dir.DOWN, 4217);
-
-        console.log('ETHUSD post Dir.DOWN mock: ', OZ.ETH_USD());
-        console.log('');
-
-        console.log('ozBalanceAlice - post Dir.DOWN mock: ', ozERC20.balanceOf(alice));
-
-        uint ozBalanceAlicePostDown = ozERC20.balanceOf(alice);
-        uint ozBalanceBobPostDown = ozERC20.balanceOf(bob);
-
-        assertTrue(
-            ozBalanceAlicePostDown == ozBalanceAlicePostRewards &&
-            ozBalanceBobPostDown == ozBalanceBobPostRewards 
-        );
-
-        //------------
-
-        bytes memory data = OZ.getRedeemData(
-            ozBalanceAlicePostDown, address(ozERC20), OZ.getDefaultSlippage(), alice, alice
-        );
-
-        uint balanceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
-        console.log('balance testToken alice - pre redeem', balanceTestTokenPreRedeem);
-
-        //---- mock ETHUSD price in swapUni---
-        ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({ 
-                tokenIn: wethAddr, 
-                tokenOut: testToken, 
-                fee: uniPoolFee, 
-                recipient: alice, 
-                deadline: block.timestamp, 
-                amountIn: 29773482427462619,
-                amountOutMinimum: 28600980339205039359, 
-                sqrtPriceLimitX96: 0
-            });
-        
-        uint amountOut = 28881499894978946881;
-
-        vm.mockCall(
-            swapRouterUni, 
-            abi.encodeWithSelector(ISwapRouter.exactInputSingle.selector, params),
-            abi.encode(amountOut)
-        );
-
-        deal(testToken, alice, IERC20Permit(testToken).balanceOf(alice) + amountOut);
-
-        //-------
-
-        vm.startPrank(alice);
-        ozERC20.approve(address(OZ), ozBalanceAlicePostDown);
-        ozERC20.redeem(data, alice);
-
-        uint balanceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
-        console.log('balance testToken alice - post redeem', balanceTestTokenPostRedeem);
-        console.log('');
-        console.logInt(int(balanceTestTokenPostRedeem - balanceTestTokenPreRedeem) - int(amountIn / 2));
-        console.log('net profits from using the system ^^^^');
-    }
-
-
 
     //Tests that the accrual and redemption of rewards happens without issues when there's more
     //than one user that's being accounted for (for internal proper internal accounting of variables)
@@ -432,36 +330,36 @@ contract ozERC20TokenTest is TestMethods {
         // returns (int56[] memory tickCumulatives, uint160[] memory secondsPerLiquidityCumulativeX128s)
 
 
-        // uint32[2] memory secsAgo = [uint32(1800), uint32(86400)];
+        uint32[2] memory secsAgo = [uint32(1800), uint32(86400)];
 
-        for (uint i=0; i < secsAgo.length; i++) {
-            uint32 secsAgo_internal;
-            int56[] memory tickCumulatives = new int56[](2);
+        // for (uint i=0; i < secsAgo.length; i++) {
+        //     uint32 secsAgo_internal;
+        //     int56[] memory tickCumulatives = new int56[](2);
 
-            if (i == 0) {
-                secsAgo_internal = secsAgo[i];
-                tickCumulatives[0] = 28989928216;
-                tickCumulatives[1] = 28991500848;
-            } else if (i == 1) {
-                secsAgo_internal = secsAgo[i];
-                tickCumulatives[0] = 27639974418;
-                tickCumulatives[1] = 27641473818;
-            } else {
-                revert('error in secsAgo');
-            }
+        //     if (i == 0) {
+        //         secsAgo_internal = secsAgo[i];
+        //         tickCumulatives[0] = 28989928216;
+        //         tickCumulatives[1] = 28991500848;
+        //     } else if (i == 1) {
+        //         secsAgo_internal = secsAgo[i];
+        //         tickCumulatives[0] = 27639974418;
+        //         tickCumulatives[1] = 27641473818;
+        //     } else {
+        //         revert('error in secsAgo');
+        //     }
 
-            uint32[] memory secondsAgo = new uint32[](2);
-            secondsAgo[0] = secsAgo_internal;
-            secondsAgo[1] = 0;
+        //     uint32[] memory secondsAgo = new uint32[](2);
+        //     secondsAgo[0] = secsAgo_internal;
+        //     secondsAgo[1] = 0;
 
-            address rEthWethPoolUni = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613; //fix this var in Setup.sol
+        //     address rEthWethPoolUni = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613; //fix this var in Setup.sol
 
-            vm.mockCall(
-                rEthWethPoolUni,
-                abi.encodeWithSignature('observe(uint32[])', secondsAgo),
-                abi.encode(tickCumulatives, new uint160[](2))
-            );
-        } 
+        //     vm.mockCall(
+        //         rEthWethPoolUni,
+        //         abi.encodeWithSignature('observe(uint32[])', secondsAgo),
+        //         abi.encode(tickCumulatives, new uint160[](2))
+        //     );
+        // } 
 
 
         //-----------

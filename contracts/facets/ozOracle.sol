@@ -164,6 +164,8 @@ contract ozOracle {
             tick, 1e27, token0, token1
         );
 
+        // console.log('tick: ', uint(int(tick)));
+
         return amountOut * (token1 == s.WETH ? 1 : 1e12);
     }
 

@@ -28,6 +28,7 @@ import {
     MockOzOraclePreAccrualNoDeviation
 } from "../mocks/MockContracts.sol";
 import {IDiamondCut} from "../../../contracts/interfaces/IDiamondCut.sol";
+import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
 import "forge-std/console.sol";
 
@@ -507,7 +508,7 @@ contract BaseMethods is Setup {
 
 
     function _mock_rETH_ETH_observe(uint32 secsAgo_) internal {
-        
+
 
 
     }
@@ -612,6 +613,31 @@ contract BaseMethods is Setup {
             abi.encodeWithSignature('latestRoundData()'),
             abi.encode(uint80(0), int(0), uint(0), uint(0), uint80(0))
         );
+    }
+
+
+    function _mock_ETH_USD_swapUni() internal {
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({ 
+                tokenIn: wethAddr, 
+                tokenOut: testToken, 
+                fee: uniPoolFee, 
+                recipient: alice, 
+                deadline: block.timestamp, 
+                amountIn: 29773482427462619,
+                amountOutMinimum: 28600980339205039359, 
+                sqrtPriceLimitX96: 0
+            });
+        
+        uint amountOut = 28881499894978946881;
+
+        vm.mockCall(
+            swapRouterUni, 
+            abi.encodeWithSelector(ISwapRouter.exactInputSingle.selector, params),
+            abi.encode(amountOut)
+        );
+
+        deal(testToken, alice, IERC20Permit(testToken).balanceOf(alice) + amountOut);
     }
 
 }

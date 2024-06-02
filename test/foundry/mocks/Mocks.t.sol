@@ -7,7 +7,7 @@ import {IERC20Permit} from "../../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../../contracts/interfaces/ozIToken.sol";
 import {MockStorage} from "./MockStorage.sol";
 import {FixedPointMathLib} from "../../../contracts/libraries/FixedPointMathLib.sol";
-import {Mock} from "../base/AppStorageTests.sol";
+import {Mock, Dir} from "../base/AppStorageTests.sol";
 // import {ModifiersTests} from "../base/ModifiersTests.sol";
 import {stdStorage, StdStorage} from "forge-std/Test.sol";    
 import {Test} from "forge-std/Test.sol";       
@@ -16,6 +16,16 @@ import {Helpers} from "../../../contracts/libraries/Helpers.sol";
 import {HelpersLib} from "../utils/HelpersLib.sol";
 
 import "forge-std/console.sol";
+
+struct Slot0 {
+    uint160 sqrtPriceX96;
+    int24 tick;
+    uint16 observationIndex;
+    uint16 observationCardinality;
+    uint16 observationCardinalityNext;
+    uint8 feeProtocol;
+    bool unlocked;
+}
 
 
 
@@ -152,6 +162,86 @@ contract MocksTests is MockStorage, TestMethods {
         } else {
             assertTrue(_fm(deltaBalanceTestToken, 4) == _fm(testToken_alledged_rewards, 4));
         }
+    }
+
+
+    function test_project_destroyer() public {
+        if (testToken == usdcAddr) testToken = daiAddr;
+
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();
+
+        //This function needs to happen before the minting.
+        _mock_rETH_ETH_pt1();
+
+        _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
+        _mintOzTokens(ozERC20, bob, testToken, amountIn);
+
+        uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPre = ozERC20.balanceOf(bob);
+    
+        uint ozBalanceAlicePostUp = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPostUp = ozERC20.balanceOf(bob);
+
+        assertTrue(
+            ozBalanceAlicePre == ozBalanceAlicePostUp &&
+            ozBalanceBobPre == ozBalanceBobPostUp
+        );
+
+        //Simulates rETH accrual.
+        _mock_rETH_ETH_pt2();
+
+        uint ozBalanceAlicePostRewards = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPostRewards = ozERC20.balanceOf(bob);
+        console.log('ozBalanceAlicePostRewards - pre Dir.DOWN mock: ', ozBalanceAlicePostRewards);
+        console.log('');
+
+        assertTrue(
+            ozBalanceAlicePostRewards > ozBalanceAlicePostUp &&
+            ozBalanceBobPostRewards > ozBalanceBobPostUp
+        );
+
+        console.log('ETHUSD pre Dir.DOWN mock: ', OZ.ETH_USD());
+
+        _mock_ETH_USD(Dir.DOWN, 4217);
+
+        console.log('ETHUSD post Dir.DOWN mock: ', OZ.ETH_USD());
+        console.log('');
+
+        console.log('ozBalanceAlice - post Dir.DOWN mock: ', ozERC20.balanceOf(alice));
+
+        uint ozBalanceAlicePostDown = ozERC20.balanceOf(alice);
+        uint ozBalanceBobPostDown = ozERC20.balanceOf(bob);
+
+        assertTrue(
+            ozBalanceAlicePostDown == ozBalanceAlicePostRewards &&
+            ozBalanceBobPostDown == ozBalanceBobPostRewards 
+        );
+
+        //------------
+
+        bytes memory data = OZ.getRedeemData(
+            ozBalanceAlicePostDown, address(ozERC20), OZ.getDefaultSlippage(), alice, alice
+        );
+
+        uint balanceTestTokenPreRedeem = IERC20Permit(testToken).balanceOf(alice);
+        console.log('balance testToken alice - pre redeem', balanceTestTokenPreRedeem);
+
+        //---- mock ETHUSD swap in swapUni
+        //This is for the final swap that sends the stablecoin back to the user when redeeming
+        _mock_ETH_USD_swapUni();
+
+        vm.startPrank(alice);
+        ozERC20.approve(address(OZ), ozBalanceAlicePostDown);
+        ozERC20.redeem(data, alice);
+
+        uint balanceTestTokenPostRedeem = IERC20Permit(testToken).balanceOf(alice);
+        console.log('balance testToken alice - post redeem', balanceTestTokenPostRedeem);
+        console.log('');
+        console.logInt(int(balanceTestTokenPostRedeem - balanceTestTokenPreRedeem) - int(amountIn / 2));
+        console.log('net profits from using the system ^^^^');
     }
 
 
