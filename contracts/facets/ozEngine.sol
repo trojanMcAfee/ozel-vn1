@@ -112,7 +112,7 @@ contract ozEngine is Modifiers {
 
             _hedgeLST(amountRethOut);
 
-            revert('here');
+            revert('here in ozEngine');
 
             return amountRethOut;
         }
@@ -128,11 +128,39 @@ contract ozEngine is Modifiers {
 
         console.log('amountInLst_: ', amountInLst_);
         console.log('arETH bal this: ', x);
+        console.log('');
 
+        //borrow LST
+        console.log('rETH bal pre borrow - 0: ', IERC20(s.rETH).balanceOf(address(this)));
+        console.log('eMode of ozDiamond - 1: ', IAave(s.poolAave).getUserEMode(address(this)));
+
+        IAave(s.poolAave).borrow(s.rETH, _getEmodeLTV(amountInLst_), 2, 0, address(this));
+        console.log('rETH bal post borrow - not 0: ', IERC20(s.rETH).balanceOf(address(this)));
+        console.log('');
+
+        (
+            uint256 totalCollateralBase,
+            uint256 totalDebtBase,
+            uint256 availableBorrowsBase,
+            uint256 currentLiquidationThreshold,
+            uint256 ltv,
+            uint256 healthFactor
+        ) = IAave(s.poolAave).getUserAccountData(address(this));
+
+        console.log('totalCollateralBase: ', totalCollateralBase);
+        console.log('totalDebtBase: ', totalDebtBase);
+        console.log('availableBorrowsBase: ', availableBorrowsBase);
+        console.log('currentLiquidationThreshold: ', currentLiquidationThreshold);
+        console.log('ltv: ', ltv);
+        console.log('healthFactor: ', healthFactor);
 
         //sell LST and do accounting with the funds
         //modify _setValuePerOzToken
+    }
 
+
+    function _getEmodeLTV(uint amountInLst_) private returns(uint) {
+        return uint(9000).mulDivDown(amountInLst_, 10_000);
     }
 
 

@@ -13,6 +13,7 @@ import { IDiamondLoupe } from "../interfaces/IDiamondLoupe.sol";
 import { IDiamondCut } from "../interfaces/IDiamondCut.sol";
 import { IERC173 } from "../interfaces/IERC173.sol";
 import { IERC165 } from "../interfaces/IERC165.sol";
+import { IAave } from "../interfaces/IAave.sol";
 
 import {
     AppStorage,
@@ -116,6 +117,8 @@ contract DiamondInit {
         s.tokenPairs[2] = Pair(s.WETH, s.USDC, s.uniFee);  //<--- put these in Setup.sol
 
         s.deviation = 100; //<---- put this in Setup.sol
+
+        IAave(s.poolAave).setUserEMode(1);
     }
 
 
