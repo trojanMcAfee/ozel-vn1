@@ -36,11 +36,16 @@ const query = () => {
     }
 };
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
 async function queryKraken(targetTimestamp) {
     const krakenURL = `https://api.kraken.com/0/public/OHLC?pair=ETHUSD&interval=1440&since=${targetTimestamp - 10000000}`;
 
     const result = await axios.get(krakenURL);
     const data = result.data; // Axios automatically parses JSON response
+    // console.log('is - false: ', data.error[0]);
+    if (data.error[0] !== undefined) console.log(data.error[0]);
     const prices = data.result.XETHZUSD;
     
     // Find the value closest to the given UNIX timestamp
@@ -56,7 +61,7 @@ async function queryKraken(targetTimestamp) {
         }
     }
 
-    console.log('Closest Value:', closestValue);
+    // console.log('Closest Value:', closestValue);
     return closestValue[5];
 }
 
@@ -72,37 +77,47 @@ async function main() {
     let totalRewardsInETH = 0;
     let totalRewardsInUSD = 0;
 
-    for (let i=0; i < 2; i++) {
-        let eventRate = Number(totalRewards[i].apr) / 12;
-        rewardsRate.push(eventRate);
-        console.log('eventRate: ', eventRate);
+    for (let i=0; i < totalRewards.length; i++) {
+        console.log(i);
 
-        let targetTimestamp = totalRewards[i].blockTime;
-        console.log('targetTimestamp: ', targetTimestamp);
+        try {
+            let eventRate = Number(totalRewards[i].apr) / 12;
+            rewardsRate.push(eventRate);
 
-        let currentEthPrice = await queryKraken(targetTimestamp);
-        ETHprices.push(currentEthPrice);
-        console.log('ETHUSD: ', currentEthPrice);
+            let targetTimestamp = totalRewards[i].blockTime;
 
-        let ethBought = principal / currentEthPrice;
-        console.log('ethBought: ', ethBought);
+            if (i % 8 == 0) await delay(10000);
 
-        let ethReward = (eventRate * ethBought) / 100;
-        rewardsInETH.push(ethReward);
-        totalRewardsInETH += ethReward;
-        console.log('ethReward: ', ethReward);
+            let currentEthPrice = await queryKraken(targetTimestamp);
+            ETHprices.push(currentEthPrice);
 
-        let usdReward = ethReward * currentEthPrice;
-        rewardsInUSD.push(usdReward);
-        totalRewardsInUSD += Number(usdReward);
-        console.log('usdReward: ', usdReward);
-        console.log('');
-        console.log('');
+            let ethBought = principal / currentEthPrice;
+
+            let ethReward = (eventRate * ethBought) / 100;
+            rewardsInETH.push(ethReward);
+            totalRewardsInETH += ethReward;
+
+            let usdReward = ethReward * currentEthPrice;
+            rewardsInUSD.push(usdReward);
+            totalRewardsInUSD += Number(usdReward);
+        } catch(e) {
+            console.log('e: ', e);
+        }
+
     }
 
     console.log('totalRewardsInETH: ', totalRewardsInETH);
     console.log('totalRewardsInUSD: ', totalRewardsInUSD);
-    console.log('l: ', rewardsInUSD.length);
+    console.log('rewardsInUSD length: ', rewardsInUSD.length);
+    console.log('rewardsInETH length: ', rewardsInETH.length);
+    console.log('rewardsRate length: ', rewardsRate.length);
+    console.log('ETHprices length: ', ETHprices.length);
+
+    const APR = (rewardsInUSD * 100) / principal;
+    console.log('APR / event-base settlement rate: ', APR);
+
+    // totalRewardsInETH:  751.360842349494
+    // totalRewardsInUSD:  1323913.2104648598
 }
 
 
