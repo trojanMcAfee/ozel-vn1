@@ -4,8 +4,8 @@ class Month {
         this.days = days;
         this.ETHprice = undefined;
         this.rewardsRate = undefined;
-        this.rewardsInETH = undefined;
-        this.rewardsInUSD = undefined;
+        this.totalRewardsInETH = undefined;
+        this.totalRewardsInUSD = undefined;
     }
 
     setValue(varName, value) {
@@ -16,10 +16,10 @@ class Month {
             case 'rewardsRate':
                 this.rewardsRate = value;
             case 'rewardsInETH':
-                this.rewardsInETH = value;
+                this.totalRewardsInETH = value;
                 break;
             case 'rewardsInUSD':
-                this.rewardsInUSD = value;
+                this.totalRewardsInUSD = value;
         }
     }
 }

@@ -198,8 +198,8 @@ async function monthlyCalculation() {
         let totalRewardsInUSD = 0;
         let totalRewardsInETH = 0;
         for (let i=0; i < year.months.length; i++) {
-            totalRewardsInUSD += year.months[i].rewardsInUSD;
-            totalRewardsInETH += year.months[i].rewardsInETH;
+            totalRewardsInUSD += year.months[i].totalRewardsInUSD;
+            totalRewardsInETH += year.months[i].totalRewardsInETH;
         }
         console.log('');
         console.log('totalRewardsInUSD: ', totalRewardsInUSD);
