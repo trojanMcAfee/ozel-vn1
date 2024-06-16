@@ -3,20 +3,23 @@ class Month {
         this.name = name;
         this.days = days;
         this.ETHprice = undefined;
-        this.rewardRate = undefined;
+        this.rewardsRate = undefined;
         this.rewardsInETH = undefined;
+        this.rewardsInUSD = undefined;
     }
 
     setValue(varName, value) {
         switch(varName) {
-            case 'ETHprice':
+            case 'ETHprices':
                 this.ETHprice = value;
                 break;
-            case 'rewardRate':
-                this.rewardRate = value;
+            case 'rewardsRate':
+                this.rewardsRate = value;
             case 'rewardsInETH':
                 this.rewardsInETH = value;
                 break;
+            case 'rewardsInUSD':
+                this.rewardsInUSD = value;
         }
     }
 }

@@ -151,12 +151,6 @@ async function dailyCalculation() {
 }
 
 //------------------
-// class Month {
-//     constructor(days) {
-//         this.days = days;
-//     }
-// }
-
 
 async function monthlyCalculation() {
     function completeMonth(array, varName, month) {
@@ -167,10 +161,10 @@ async function monthlyCalculation() {
             acc += Number(array[j]);
 
             if (j == days - 1) {
-                let avg = acc / days;
+                let = denominator = varName == 'rewardsInETH' || varName == 'rewardsInUSD' ? 1 : days;
+                let avg = acc / denominator;
                 month.setValue(varName, avg);
-                console.log('month: ', month);
-                return;
+                array.slice(0, days - 1);
             }
         }
     }
@@ -178,30 +172,39 @@ async function monthlyCalculation() {
     try {
         const data = await fs.readFile('scripts/data/data.json', 'utf8');
         const results = JSON.parse(data);
-        let acc = 0;
 
-        const { 
-            ETHprices,
-            rewardsRate,
-            rewardsInETH,
-            rewardsInUSD,
-            totalRewards: {
-                totalRewardsInETH,
-                totalRewardsInUSD,
-                apr_ETH,
-                apr_USD
-            },
-            initialETHbuy
-        } = results;
+        delete results.totalRewards;
+        delete results.initialETHbuy;
 
-        for (let i=0; i < year.months.length; i++) {
-            let month = year.months[i];
-            let days = month.days;
+        //   const { 
+        //     ETHprices,
+        //     rewardsRate,
+        //     rewardsInETH,
+        //     rewardsInUSD
+        // } = results;
 
-            completeMonth(ETHprices, 'ETHprice', month);
+        for (let key in results) {
+            let values = results[key];
 
+            for (let i=0; i < year.months.length; i++) {
+                let month = year.months[i];
 
+                completeMonth(values, key, month);
+            }
         }
+
+        console.log('year: ', year);
+
+        let totalRewardsInUSD = 0;
+        let totalRewardsInETH = 0;
+        for (let i=0; i < year.months.length; i++) {
+            totalRewardsInUSD += year.months[i].rewardsInUSD;
+            totalRewardsInETH += year.months[i].rewardsInETH;
+        }
+        console.log('');
+        console.log('totalRewardsInUSD: ', totalRewardsInUSD);
+        console.log('totalRewardsInETH: ', totalRewardsInETH);
+
     } catch (error) {
         console.error('Error reading results file:', error);
     }
