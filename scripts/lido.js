@@ -1,4 +1,5 @@
 const axios = require('axios').default;
+const fs = require('fs').promises;
 
 
 const URL = `https://gateway-arbitrum.network.thegraph.com/api/a2bf64d6b822525b225e908912310821/subgraphs/
@@ -44,7 +45,6 @@ async function queryKraken(targetTimestamp) {
 
     const result = await axios.get(krakenURL);
     const data = result.data; // Axios automatically parses JSON response
-    // console.log('is - false: ', data.error[0]);
     if (data.error[0] !== undefined) console.log(data.error[0]);
     const prices = data.result.XETHZUSD;
     
@@ -61,7 +61,7 @@ async function queryKraken(targetTimestamp) {
         }
     }
 
-    // console.log('Closest Value:', closestValue);
+    //vwap price
     return closestValue[5];
 }
 
@@ -76,12 +76,14 @@ async function main() {
     const rewardsInUSD = [];
     let totalRewardsInETH = 0;
     let totalRewardsInUSD = 0;
+    let initialETHbuy = 0;
 
     for (let i=0; i < totalRewards.length; i++) {
         console.log(i);
 
         try {
-            let eventRate = Number(totalRewards[i].apr) / 12;
+            //Event rate is daily
+            let eventRate = Number(totalRewards[i].apr) / 365;
             rewardsRate.push(eventRate);
 
             let targetTimestamp = totalRewards[i].blockTime;
@@ -92,6 +94,7 @@ async function main() {
             ETHprices.push(currentEthPrice);
 
             let ethBought = principal / currentEthPrice;
+            if (i == 0) initialETHbuy = ethBought;
 
             let ethReward = (eventRate * ethBought) / 100;
             rewardsInETH.push(ethReward);
@@ -112,12 +115,38 @@ async function main() {
     console.log('rewardsInETH length: ', rewardsInETH.length);
     console.log('rewardsRate length: ', rewardsRate.length);
     console.log('ETHprices length: ', ETHprices.length);
+    console.log('initialETHbuy: ', initialETHbuy);
 
-    const APR = (rewardsInUSD * 100) / principal;
-    console.log('APR / event-base settlement rate: ', APR);
+    const apr_USD = (totalRewardsInUSD * 100) / principal;
+    const apr_ETH = (totalRewardsInETH * 100) / initialETHbuy;
+    console.log('APR in USD / event-base settlement rate: ', apr_USD);
+    console.log('APR in ETH / event-base settlement rate: ', apr_ETH);
 
-    // totalRewardsInETH:  751.360842349494
-    // totalRewardsInUSD:  1323913.2104648598
+    // totalRewardsInETH:  24.702274269024475
+    // totalRewardsInUSD:  43525.913768707724
+    // rewardsInUSD length:  365
+    // rewardsInETH length:  365
+    // rewardsRate length:  365
+    // ETHprices length:  365
+    // APR in USD / event-base settlement rate:  4.352591376870773
+    // APR in ETH / event-base settlement rate:  3.0019191782689303
+
+    const results = {
+        ETHprices,
+        rewardsRate,
+        rewardsInETH,
+        rewardsInUSD,
+        totalRewards: {
+            totalRewardsInETH,
+            totalRewardsInUSD,
+            apr_ETH,
+            apr_USD
+        },
+        initialETHbuy
+    };
+
+    await fs.writeFile('results.json', JSON.stringify(results, null, 2));
+    console.log('Results saved to results.json');
 }
 
 
