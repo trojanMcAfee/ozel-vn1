@@ -1,5 +1,6 @@
 const axios = require('axios').default;
 const fs = require('fs').promises;
+const year = require('./data/vars');
 
 
 const URL = `https://gateway-arbitrum.network.thegraph.com/api/a2bf64d6b822525b225e908912310821/subgraphs/
@@ -151,17 +152,33 @@ async function dailyCalculation() {
 
 //------------------
 // class Month {
-//     constructor(name, days) {
-//         this.name = name;
+//     constructor(days) {
 //         this.days = days;
 //     }
 // }
 
 
 async function monthlyCalculation() {
+    function completeMonth(array, varName, month) {
+        let acc = 0;
+        let days = month.days;
+
+        for (let j=0; j < days; j++) {
+            acc += Number(array[j]);
+
+            if (j == days - 1) {
+                let avg = acc / days;
+                month.setValue(varName, avg);
+                console.log('month: ', month);
+                return;
+            }
+        }
+    }
+
     try {
-        const data = await fs.readFile('scripts/data.json', 'utf8');
+        const data = await fs.readFile('scripts/data/data.json', 'utf8');
         const results = JSON.parse(data);
+        let acc = 0;
 
         const { 
             ETHprices,
@@ -177,28 +194,14 @@ async function monthlyCalculation() {
             initialETHbuy
         } = results;
 
-        // const january = new Month('January')
+        for (let i=0; i < year.months.length; i++) {
+            let month = year.months[i];
+            let days = month.days;
+
+            completeMonth(ETHprices, 'ETHprice', month);
 
 
-        jan 31
-        feb 28
-        mar 31
-        apr 30
-        may 31
-        jun 30
-        jul 31
-        aug 31
-        sep 30
-        oct 31
-        nov 30
-        dec 31
-
-        7 31
-        1 28 
-        4 30
-        
-
-
+        }
     } catch (error) {
         console.error('Error reading results file:', error);
     }
@@ -206,7 +209,7 @@ async function monthlyCalculation() {
 
 
 async function main() {
-    await dailyCalculation();
+    // await dailyCalculation();
     await monthlyCalculation();
 }
 
