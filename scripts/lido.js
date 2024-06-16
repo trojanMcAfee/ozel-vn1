@@ -66,7 +66,7 @@ async function queryKraken(targetTimestamp) {
 }
 
 
-async function main() { 
+async function dailyCalculation() { 
     const result = await axios.post(URL, query());
     const { totalRewards } = result.data.data;
     const principal = 1_000_000;
@@ -147,6 +147,67 @@ async function main() {
 
     await fs.writeFile('results.json', JSON.stringify(results, null, 2));
     console.log('Results saved to results.json');
+}
+
+//------------------
+// class Month {
+//     constructor(name, days) {
+//         this.name = name;
+//         this.days = days;
+//     }
+// }
+
+
+async function monthlyCalculation() {
+    try {
+        const data = await fs.readFile('scripts/data.json', 'utf8');
+        const results = JSON.parse(data);
+
+        const { 
+            ETHprices,
+            rewardsRate,
+            rewardsInETH,
+            rewardsInUSD,
+            totalRewards: {
+                totalRewardsInETH,
+                totalRewardsInUSD,
+                apr_ETH,
+                apr_USD
+            },
+            initialETHbuy
+        } = results;
+
+        // const january = new Month('January')
+
+
+        jan 31
+        feb 28
+        mar 31
+        apr 30
+        may 31
+        jun 30
+        jul 31
+        aug 31
+        sep 30
+        oct 31
+        nov 30
+        dec 31
+
+        7 31
+        1 28 
+        4 30
+        
+
+
+    } catch (error) {
+        console.error('Error reading results file:', error);
+    }
+}
+
+
+async function main() {
+    await dailyCalculation();
+    await monthlyCalculation();
 }
 
 
