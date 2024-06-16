@@ -6,6 +6,8 @@ class Month {
         this.rewardsRate = undefined;
         this.totalRewardsInETH = undefined;
         this.totalRewardsInUSD = undefined;
+        this.rewardsInETH = [];
+        this.rewardsInUSD = [];
     }
 
     setValue(varName, value) {
