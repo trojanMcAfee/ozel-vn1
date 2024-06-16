@@ -187,6 +187,21 @@ async function monthlyCalculation() {
             if (i >= 304 && i < 334) year.months[10][varName].push(currentRewards); //nov
             if (i >= 334 && i < 365) year.months[11][varName].push(currentRewards); //dec
         }
+
+
+        for (let j=0; j < year.months.length; j++) {
+            let month = year.months[j];
+
+            let acc = 0;
+            for (let i=0; i < month[varName].length; i++) {
+                let reward = month[varName][i];
+                acc += reward;
+            }
+
+            month.setValue(varName, acc);
+            // console.log('total: ', acc);
+
+        }
     }
 
     //----------
@@ -208,40 +223,6 @@ async function monthlyCalculation() {
         setRewards(rewardsInUSD, 'rewardsInUSD');
         setRewards(rewardsInETH, 'rewardsInETH');
 
-        // for (let i=0; i < rewardsInUSD.length; i++) {
-        //     let currentRewards = rewardsInUSD[i];
-
-        //     if (i < 31) year.months[0]['rewardsInUSD'].push(currentRewards);
-        //     if (i >= 31 && i < 59) year.months[1]['rewardsInUSD'].push(currentRewards); //feb
-        //     if (i >= 59 && i < 90) year.months[2]['rewardsInUSD'].push(currentRewards); //mar
-        //     if (i >= 90 && i < 120) year.months[3]['rewardsInUSD'].push(currentRewards); //apr
-        //     if (i >= 120 && i < 151) year.months[4]['rewardsInUSD'].push(currentRewards); //may
-        //     if (i >= 151 && i < 181) year.months[5]['rewardsInUSD'].push(currentRewards); //jun
-        //     if (i >= 181 && i < 212) year.months[6]['rewardsInUSD'].push(currentRewards); //jul
-        //     if (i >= 212 && i < 243) year.months[7]['rewardsInUSD'].push(currentRewards); //aug
-        //     if (i >= 243 && i < 273) year.months[8]['rewardsInUSD'].push(currentRewards); //sep
-        //     if (i >= 273 && i < 304) year.months[9]['rewardsInUSD'].push(currentRewards); //oct
-        //     if (i >= 304 && i < 334) year.months[10]['rewardsInUSD'].push(currentRewards); //nov
-        //     if (i >= 334 && i < 365) year.months[11]['rewardsInUSD'].push(currentRewards); //dec
-        // }
-
-        // for (let i=0; i < rewardsInETH.length; i++) {
-        //     let currentRewards = rewardsInETH[i];
-
-        //     if (i < 31) year.months[0]['rewardsInETH'].push(currentRewards);
-        //     if (i >= 31 && i < 59) year.months[1]['rewardsInETH'].push(currentRewards); //feb
-        //     if (i >= 59 && i < 90) year.months[2]['rewardsInETH'].push(currentRewards); //mar
-        //     if (i >= 90 && i < 120) year.months[3]['rewardsInETH'].push(currentRewards); //apr
-        //     if (i >= 120 && i < 151) year.months[4]['rewardsInETH'].push(currentRewards); //may
-        //     if (i >= 151 && i < 181) year.months[5]['rewardsInETH'].push(currentRewards); //jun
-        //     if (i >= 181 && i < 212) year.months[6]['rewardsInETH'].push(currentRewards); //jul
-        //     if (i >= 212 && i < 243) year.months[7]['rewardsInETH'].push(currentRewards); //aug
-        //     if (i >= 243 && i < 273) year.months[8]['rewardsInETH'].push(currentRewards); //sep
-        //     if (i >= 273 && i < 304) year.months[9]['rewardsInETH'].push(currentRewards); //oct
-        //     if (i >= 304 && i < 334) year.months[10]['rewardsInETH'].push(currentRewards); //nov
-        //     if (i >= 334 && i < 365) year.months[11]['rewardsInETH'].push(currentRewards); //dec
-        // }
-
         // for (let key in results) {
         //     let values = results[key];
 
@@ -254,6 +235,18 @@ async function monthlyCalculation() {
 
 
         console.log('year: ', year.months);
+
+        const march = year.months[2];
+        console.log('');
+        console.log('---- March ----');
+        console.log('l: ', march.rewardsInUSD.length);
+
+        let acc = 0;
+        for (let i=0; i < march.rewardsInUSD.length; i++) {
+            let reward = march.rewardsInUSD[i];
+            acc += reward;
+        }
+        console.log('total: ', acc);
 
         // let totalRewardsInUSD = 0;
         // let totalRewardsInETH = 0;
