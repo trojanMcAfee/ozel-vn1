@@ -161,10 +161,10 @@ async function monthlyCalculation() {
             acc += Number(array[j]);
 
             if (j == days - 1) {
-                let = denominator = varName == 'rewardsInETH' || varName == 'rewardsInUSD' ? 1 : days;
+                let = denominator = varName == 'totalRewardsInETH' || varName == 'totalRewardsInUSD' ? 1 : days;
                 let avg = acc / denominator;
                 month.setValue(varName, avg);
-                array.slice(0, days - 1);
+                array.slice(days - 1);
             }
         }
     }
@@ -173,15 +173,11 @@ async function monthlyCalculation() {
         const data = await fs.readFile('scripts/data/data.json', 'utf8');
         const results = JSON.parse(data);
 
+        const originalTotalRewardsInUSD = results.totalRewards.totalRewardsInUSD;
+        const originalTotalRewardsInETH = results.totalRewards.totalRewardsInETH;
+
         delete results.totalRewards;
         delete results.initialETHbuy;
-
-        //   const { 
-        //     ETHprices,
-        //     rewardsRate,
-        //     rewardsInETH,
-        //     rewardsInUSD
-        // } = results;
 
         for (let key in results) {
             let values = results[key];
@@ -190,6 +186,7 @@ async function monthlyCalculation() {
                 let month = year.months[i];
 
                 completeMonth(values, key, month);
+                // results[key] = completeMonth(values, key, month);
             }
         }
 
@@ -198,12 +195,16 @@ async function monthlyCalculation() {
         let totalRewardsInUSD = 0;
         let totalRewardsInETH = 0;
         for (let i=0; i < year.months.length; i++) {
-            totalRewardsInUSD += year.months[i].rewardsInUSD;
-            totalRewardsInETH += year.months[i].rewardsInETH;
+            totalRewardsInUSD += year.months[i].totalRewardsInUSD;
+            totalRewardsInETH += year.months[i].totalRewardsInETH;
         }
+
         console.log('');
         console.log('totalRewardsInUSD: ', totalRewardsInUSD);
         console.log('totalRewardsInETH: ', totalRewardsInETH);
+        console.log('');
+        console.log('originalTotalRewardsInUSD: ', originalTotalRewardsInUSD);
+        console.log('originalTotalRewardsInETH: ', originalTotalRewardsInETH);
 
     } catch (error) {
         console.error('Error reading results file:', error);
@@ -214,6 +215,109 @@ async function monthlyCalculation() {
 async function main() {
     // await dailyCalculation();
     await monthlyCalculation();
+}
+
+
+async function main2() {
+    const data = await fs.readFile('scripts/data/data.json', 'utf8');
+    const results = JSON.parse(data);
+
+    let {totalRewardsInUSD} = results;
+    // console.log('totalRewardsInUSD: ', totalRewardsInUSD[31]);
+    totalRewardsInUSD = totalRewardsInUSD.slice(31);
+    // console.log('totalRewardsInUSD2: ', totalRewardsInUSD[0]);
+    totalRewardsInUSD = totalRewardsInUSD.slice(0, 28);
+    // totalRewardsInUSD.slice(0, 31);
+    // totalRewardsInUSD.slice(0, 30);
+    // totalRewardsInUSD.slice(0, 31);
+    // totalRewardsInUSD.slice(0, 30);
+    // totalRewardsInUSD.slice(0, 31);
+
+    let acc = 0;
+    for (let i=0; i < 31; i++) {
+        acc += totalRewardsInUSD[i];
+        console.log(`Adding ${totalRewardsInUSD[i]} to acc, now acc is ${acc}`);
+    }
+
+    console.log('acc - mar: ', acc);
+}
+
+
+async function main3() {
+    const jan = [
+        117.94062861059268,
+        121.5542990960402,
+        126.65405688737901,
+        133.47592243328018,
+        151.65972681582664,
+        123.55773388525758,
+        124.4092777367219,
+        117.62779366275134,
+        145.17401209119575,
+        129.7736872064771,
+        122.5741539209645,
+        146.1562418937195,
+        151.79137408281505,
+        165.5869145548191,
+        132.28113539478005,
+        139.11859401344964,
+        138.26920589062948,
+        133.25118140079485,
+        151.5380141036535,
+        123.51148221672442,
+        145.96691306186688,
+        126.748235243127,
+        127.48710360929537,
+        139.92312751200168,
+        149.4097504647803,
+        139.669070955869,
+        156.9288873941427,
+        127.47816343701626,
+        123.01852060552035,
+        128.01335545210696,
+        132.62383464289783
+    ];
+
+    const feb = [
+        129.99338169046447,
+        141.33359314147833,
+        136.00039116475182,
+        137.52970990581605,
+        127.04489571611029,
+        125.86254908895377,
+        136.89826035635932,
+        140.91905035051803,
+        148.11811879055202,
+        141.60577537167492,
+        131.3665878781617,
+        121.83117012338036,
+        137.1470642789202,
+        130.82340415781061,
+        178.66810440488277,
+        146.02325015304484,
+        138.54349001217366,
+        150.24175267809215,
+        137.79138866892598,
+        134.18761481134587,
+        139.07831183195694,
+        146.87402649231632,
+        138.55994743287727,
+        129.94084561011672,
+        124.47848149677844,
+        115.21599183167626,
+        111.38561494136815,
+        125.91605604382242,
+    ];
+
+    let acc = 0;
+    for (let i=0; i < feb.length; i++) {
+        acc += feb[i];
+    }
+
+    console.log('total: ', acc);
+    console.log('length: ', feb.length);
+
+
 }
 
 
