@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 const fs = require('fs').promises;
-const year = require('./data/vars');
+const { year, principal, setRewards, setAvg, setAPR } = require('./data/vars');
 
 
 const URL = `https://gateway-arbitrum.network.thegraph.com/api/a2bf64d6b822525b225e908912310821/subgraphs/
@@ -153,22 +153,6 @@ async function dailyCalculation() {
 //------------------
 
 async function monthlyCalculation() {
-    function completeMonth(array, varName, month) {
-        let acc = 0;
-        let days = month.days;
-
-        for (let j=0; j < days; j++) {
-            acc += Number(array[j]);
-
-            if (j == days - 1) {
-                let = denominator = varName == 'totalRewardsInETH' || varName == 'totalRewardsInUSD' ? 1 : days;
-                let avg = acc / denominator;
-                month.setValue(varName, avg);
-                array.slice(days - 1);
-            }
-        }
-    }
-
     try {
         const data = await fs.readFile('scripts/data/data.json', 'utf8');
         const results = JSON.parse(data);
@@ -179,24 +163,28 @@ async function monthlyCalculation() {
         delete results.totalRewards;
         delete results.initialETHbuy;
 
-        for (let key in results) {
-            let values = results[key];
+        const { 
+            ETHprices,
+            rewardsRate,
+            rewardsInETH,
+            rewardsInUSD
+        } = results;
 
-            for (let i=0; i < year.months.length; i++) {
-                let month = year.months[i];
+        setRewards(rewardsInUSD, 'rewardsInUSD');
+        setRewards(rewardsInETH, 'rewardsInETH');
+        setRewards(ETHprices, 'ETHprices');
 
-                completeMonth(values, key, month);
-                // results[key] = completeMonth(values, key, month);
-            }
-        }
+        setAvg(ETHprices, 'ETHprice');
+        setAvg(rewardsRate, 'rewardsRate');
 
-        console.log('year: ', year);
+        setAPR('inETH');
+        setAPR('inUSD');
 
         let totalRewardsInUSD = 0;
         let totalRewardsInETH = 0;
         for (let i=0; i < year.months.length; i++) {
-            totalRewardsInUSD += year.months[i].totalRewardsInUSD;
-            totalRewardsInETH += year.months[i].totalRewardsInETH;
+            totalRewardsInUSD += year.months[i].totalRewards.inUSD.total;
+            totalRewardsInETH += year.months[i].totalRewards.inETH.total;
         }
 
         console.log('');
@@ -212,113 +200,56 @@ async function monthlyCalculation() {
 }
 
 
+async function setYear() {
+    const inAsset = ['inUSD', 'inETH'];
+
+    for (let i=0; i < inAsset.length; i++) {
+        let acc = 0;
+        for (let j=0; j < year.months.length; j++) {
+            let month = year.months[j];
+            acc += month.totalRewards[inAsset[i]].apr;
+        }
+        year.apr.monthlyAvg[inAsset[i]] = acc;
+    }
+
+    for (let i=0; i < inAsset.length; i++) {
+        let acc = 0;
+        for (let j=0; j < year.months.length; j++) {
+            let month = year.months[j];
+            let rewardType = inAsset[i] == 'inUSD' ? 'rewardsInUSD' : 'rewardsInETH';
+
+            for (let z=0; z < month[rewardType].length; z++) {
+                if (rewardType == 'rewardsInETH') {
+                    let currPrice = month.ETHprices[z];
+                    let buyIn = principal / currPrice;
+                    let currDailyRate = (month[rewardType][z] * 100) / buyIn;
+                    acc += currDailyRate;
+                } else {
+                    acc += month[rewardType][z];
+                }
+            }
+        }
+
+        if (inAsset[i] == 'inUSD') {
+            year.apr.dailyAvg.inUSD = (acc * 100) / principal;
+        } else {
+            year.apr.dailyAvg.inETH = acc;
+        }
+    }
+}
+
+
 async function main() {
     // await dailyCalculation();
     await monthlyCalculation();
-}
+    //------
+    await setYear();
+    console.log('year2: ', year.apr);
+    // console.log('year: ', year.months[0].totalRewards);
 
-
-async function main2() {
-    const data = await fs.readFile('scripts/data/data.json', 'utf8');
-    const results = JSON.parse(data);
-
-    let {totalRewardsInUSD} = results;
-    // console.log('totalRewardsInUSD: ', totalRewardsInUSD[31]);
-    totalRewardsInUSD = totalRewardsInUSD.slice(31);
-    // console.log('totalRewardsInUSD2: ', totalRewardsInUSD[0]);
-    totalRewardsInUSD = totalRewardsInUSD.slice(0, 28);
-    // totalRewardsInUSD.slice(0, 31);
-    // totalRewardsInUSD.slice(0, 30);
-    // totalRewardsInUSD.slice(0, 31);
-    // totalRewardsInUSD.slice(0, 30);
-    // totalRewardsInUSD.slice(0, 31);
-
-    let acc = 0;
-    for (let i=0; i < 31; i++) {
-        acc += totalRewardsInUSD[i];
-        console.log(`Adding ${totalRewardsInUSD[i]} to acc, now acc is ${acc}`);
-    }
-
-    console.log('acc - mar: ', acc);
-}
-
-
-async function main3() {
-    const jan = [
-        117.94062861059268,
-        121.5542990960402,
-        126.65405688737901,
-        133.47592243328018,
-        151.65972681582664,
-        123.55773388525758,
-        124.4092777367219,
-        117.62779366275134,
-        145.17401209119575,
-        129.7736872064771,
-        122.5741539209645,
-        146.1562418937195,
-        151.79137408281505,
-        165.5869145548191,
-        132.28113539478005,
-        139.11859401344964,
-        138.26920589062948,
-        133.25118140079485,
-        151.5380141036535,
-        123.51148221672442,
-        145.96691306186688,
-        126.748235243127,
-        127.48710360929537,
-        139.92312751200168,
-        149.4097504647803,
-        139.669070955869,
-        156.9288873941427,
-        127.47816343701626,
-        123.01852060552035,
-        128.01335545210696,
-        132.62383464289783
-    ];
-
-    const feb = [
-        129.99338169046447,
-        141.33359314147833,
-        136.00039116475182,
-        137.52970990581605,
-        127.04489571611029,
-        125.86254908895377,
-        136.89826035635932,
-        140.91905035051803,
-        148.11811879055202,
-        141.60577537167492,
-        131.3665878781617,
-        121.83117012338036,
-        137.1470642789202,
-        130.82340415781061,
-        178.66810440488277,
-        146.02325015304484,
-        138.54349001217366,
-        150.24175267809215,
-        137.79138866892598,
-        134.18761481134587,
-        139.07831183195694,
-        146.87402649231632,
-        138.55994743287727,
-        129.94084561011672,
-        124.47848149677844,
-        115.21599183167626,
-        111.38561494136815,
-        125.91605604382242,
-    ];
-
-    let acc = 0;
-    for (let i=0; i < feb.length; i++) {
-        acc += feb[i];
-    }
-
-    console.log('total: ', acc);
-    console.log('length: ', feb.length);
-
-
+    // await fs.writeFile('scripts/data/filtered.json', JSON.stringify(year, null, 2));
 }
 
 
 main();
+
