@@ -12,11 +12,6 @@ class Month {
 
     setValue(varName, value) {
         switch(varName) {
-            case 'ETHprices':
-                this.ETHprice = value;
-                break;
-            case 'rewardsRate':
-                this.rewardsRate = value;
             case 'rewardsInETH':
                 this.totalRewardsInETH = value;
                 break;
@@ -46,4 +41,66 @@ const year = {
     thirty: 4
 };
 
-module.exports = year;
+function setAvg(array, varName) {
+    for (let i=0; i < array.length; i++) {
+        let currEthPrice = array[i];
+
+        if (i < 31) year.months[0][varName] += Number(currEthPrice);
+        if (i >= 31 && i < 59) year.months[1][varName] += Number(currEthPrice);
+        if (i >= 59 && i < 90) year.months[2][varName] += Number(currEthPrice);
+        if (i >= 90 && i < 120) year.months[3][varName] += Number(currEthPrice);
+        if (i >= 120 && i < 151) year.months[4][varName] += Number(currEthPrice);
+        if (i >= 151 && i < 181) year.months[5][varName] += Number(currEthPrice);
+        if (i >= 181 && i < 212) year.months[6][varName] += Number(currEthPrice);
+        if (i >= 212 && i < 243) year.months[7][varName] += Number(currEthPrice);
+        if (i >= 243 && i < 273) year.months[8][varName] += Number(currEthPrice);
+        if (i >= 273 && i < 304) year.months[9][varName] += Number(currEthPrice);
+        if (i >= 304 && i < 334) year.months[10][varName] += Number(currEthPrice);
+        if (i >= 334 && i < 365) year.months[11][varName] += Number(currEthPrice);
+    }
+
+    for (let i=0; i < year.months.length; i++) {
+        let month = year.months[i];
+        month[varName] /= month.days;
+    }
+}
+
+
+function setRewards(rewardsArray, varName) {
+    //rewardsInUSD/ETH
+    for (let i=0; i < rewardsArray.length; i++) {
+        let currentRewards = rewardsArray[i];
+
+        if (i < 31) year.months[0][varName].push(currentRewards);
+        if (i >= 31 && i < 59) year.months[1][varName].push(currentRewards); //feb
+        if (i >= 59 && i < 90) year.months[2][varName].push(currentRewards); //mar
+        if (i >= 90 && i < 120) year.months[3][varName].push(currentRewards); //apr
+        if (i >= 120 && i < 151) year.months[4][varName].push(currentRewards); //may
+        if (i >= 151 && i < 181) year.months[5][varName].push(currentRewards); //jun
+        if (i >= 181 && i < 212) year.months[6][varName].push(currentRewards); //jul
+        if (i >= 212 && i < 243) year.months[7][varName].push(currentRewards); //aug
+        if (i >= 243 && i < 273) year.months[8][varName].push(currentRewards); //sep
+        if (i >= 273 && i < 304) year.months[9][varName].push(currentRewards); //oct
+        if (i >= 304 && i < 334) year.months[10][varName].push(currentRewards); //nov
+        if (i >= 334 && i < 365) year.months[11][varName].push(currentRewards); //dec
+    }
+
+    //totalRewards
+    for (let j=0; j < year.months.length; j++) {
+        let month = year.months[j];
+
+        let acc = 0;
+        for (let i=0; i < month[varName].length; i++) {
+            let reward = month[varName][i];
+            acc += reward;
+        }
+
+        month.setValue(varName, acc);
+    }
+}
+
+module.exports = {
+    year,
+    setRewards,
+    setAvg
+};
