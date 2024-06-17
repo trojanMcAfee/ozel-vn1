@@ -174,7 +174,7 @@ async function monthlyCalculation() {
         setAvg(rewardsRate, 'rewardsRate');
 
         setAPR('inETH');
-        // setAPR('inUSD');
+        setAPR('inUSD');
 
         console.log('year: ', year.months[0].totalRewards);
         // console.log('year: ', year);

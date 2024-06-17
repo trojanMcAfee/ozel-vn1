@@ -80,15 +80,14 @@ function setAPR(varName) {
         let month = year.months[i];
         let ethPrice = month.ETHprice;
 
-        // 1 eth --- ethPrice
-        //   x ----- principal
+        let denominator = principal / ethPrice;
 
-        let initialETHbuy = principal / ethPrice;
+        if (varName == 'inUSD') {
+            month.totalRewards[varName].total = month.totalRewards.inETH.total * ethPrice;
+            denominator = principal;
+        }
 
-        // initialETHbuy -- 100%
-        // month.totalRewards[varName].total --- x
-
-        month.totalRewards[varName].apr = (month.totalRewards[varName].total * 100) / initialETHbuy;
+        month.totalRewards[varName].apr = (month.totalRewards[varName].total * 100) / denominator;
 
     }
 }
