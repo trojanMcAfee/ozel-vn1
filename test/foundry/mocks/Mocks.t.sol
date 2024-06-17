@@ -177,9 +177,6 @@ contract MocksTests is MockStorage, TestMethods {
         _mock_rETH_ETH_pt1();
 
         _mintOzTokens(ozERC20, alice, testToken, amountIn / 2);
-
-        revert('here2');
-
         _mintOzTokens(ozERC20, bob, testToken, amountIn);
     
         uint ozBalanceAlicePre = ozERC20.balanceOf(alice);
