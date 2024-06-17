@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 const fs = require('fs').promises;
-const { year, setRewards, setAvg} = require('./data/vars');
+const { year, setRewards, setAvg, setAPR } = require('./data/vars');
 
 
 const URL = `https://gateway-arbitrum.network.thegraph.com/api/a2bf64d6b822525b225e908912310821/subgraphs/
@@ -160,7 +160,7 @@ async function monthlyCalculation() {
         delete results.totalRewards;
         delete results.initialETHbuy;
 
-          const { 
+        const { 
             ETHprices,
             rewardsRate,
             rewardsInETH,
@@ -173,13 +173,17 @@ async function monthlyCalculation() {
         setAvg(ETHprices, 'ETHprice');
         setAvg(rewardsRate, 'rewardsRate');
 
-        console.log('year: ', year);
+        setAPR('inETH');
+        // setAPR('inUSD');
+
+        console.log('year: ', year.months[0].totalRewards);
+        // console.log('year: ', year);
 
         let totalRewardsInUSD = 0;
         let totalRewardsInETH = 0;
         for (let i=0; i < year.months.length; i++) {
-            totalRewardsInUSD += year.months[i].totalRewardsInUSD;
-            totalRewardsInETH += year.months[i].totalRewardsInETH;
+            totalRewardsInUSD += year.months[i].totalRewards.inUSD.total;
+            totalRewardsInETH += year.months[i].totalRewards.inETH.total;
         }
         console.log('');
         console.log('totalRewardsInUSD: ', totalRewardsInUSD);

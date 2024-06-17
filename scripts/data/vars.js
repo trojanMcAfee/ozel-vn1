@@ -4,8 +4,16 @@ class Month {
         this.days = days;
         this.ETHprice = 0;
         this.rewardsRate = 0;
-        this.totalRewardsInETH = 0;
-        this.totalRewardsInUSD = 0;
+        this.totalRewards = {
+            inETH: {
+                total: 0,
+                apr: 0
+            },
+            inUSD: {
+                total: 0,
+                apr: 0
+            }
+        };
         this.rewardsInETH = [];
         this.rewardsInUSD = [];
     }
@@ -13,10 +21,10 @@ class Month {
     setValue(varName, value) {
         switch(varName) {
             case 'rewardsInETH':
-                this.totalRewardsInETH = value;
+                this.totalRewards.inETH.total = value;
                 break;
             case 'rewardsInUSD':
-                this.totalRewardsInUSD = value;
+                this.totalRewards.inUSD.total = value;
         }
     }
 }
@@ -65,6 +73,26 @@ function setAvg(array, varName) {
     }
 }
 
+function setAPR(varName) {
+    const principal = 1_000_000;
+
+    for (let i=0; i < year.months.length; i++) {
+        let month = year.months[i];
+        let ethPrice = month.ETHprice;
+
+        // 1 eth --- ethPrice
+        //   x ----- principal
+
+        let initialETHbuy = principal / ethPrice;
+
+        // initialETHbuy -- 100%
+        // month.totalRewards[varName].total --- x
+
+        month.totalRewards[varName].apr = (month.totalRewards[varName].total * 100) / initialETHbuy;
+
+    }
+}
+
 
 function setRewards(rewardsArray, varName) {
     //rewardsInUSD/ETH
@@ -102,5 +130,6 @@ function setRewards(rewardsArray, varName) {
 module.exports = {
     year,
     setRewards,
-    setAvg
+    setAvg,
+    setAPR
 };
