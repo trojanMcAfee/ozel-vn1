@@ -169,8 +169,35 @@ async function monthlyCalculation() {
         }
     }
 
+    function setAvg(array, varName) {
+        // let acc;
+        for (let i=0; i < array.length; i++) {
+            let currEthPrice = array[i];
+            // acc += currEthPrice;
+
+            if (i < 31) year.months[0][varName] += Number(currEthPrice);
+            if (i >= 31 && i < 59) year.months[1][varName] += Number(currEthPrice);
+            if (i >= 59 && i < 90) year.months[2][varName] += Number(currEthPrice);
+            if (i >= 90 && i < 120) year.months[3][varName] += Number(currEthPrice);
+            if (i >= 120 && i < 151) year.months[4][varName] += Number(currEthPrice);
+            if (i >= 151 && i < 181) year.months[5][varName] += Number(currEthPrice);
+            if (i >= 181 && i < 212) year.months[6][varName] += Number(currEthPrice);
+            if (i >= 212 && i < 243) year.months[7][varName] += Number(currEthPrice);
+            if (i >= 243 && i < 273) year.months[8][varName] += Number(currEthPrice);
+            if (i >= 273 && i < 304) year.months[9][varName] += Number(currEthPrice);
+            if (i >= 304 && i < 334) year.months[10][varName] += Number(currEthPrice);
+            if (i >= 334 && i < 365) year.months[11][varName] += Number(currEthPrice);
+        }
+
+        for (let i=0; i < year.months.length; i++) {
+            let month = year.months[i];
+            month[varName] /= month.days;
+        }
+    }
+
 
     function setRewards(rewardsArray, varName) {
+        //rewardsInUSD/ETH
         for (let i=0; i < rewardsArray.length; i++) {
             let currentRewards = rewardsArray[i];
 
@@ -188,7 +215,7 @@ async function monthlyCalculation() {
             if (i >= 334 && i < 365) year.months[11][varName].push(currentRewards); //dec
         }
 
-
+        //totalRewards
         for (let j=0; j < year.months.length; j++) {
             let month = year.months[j];
 
@@ -199,8 +226,6 @@ async function monthlyCalculation() {
             }
 
             month.setValue(varName, acc);
-            // console.log('total: ', acc);
-
         }
     }
 
@@ -223,6 +248,9 @@ async function monthlyCalculation() {
         setRewards(rewardsInUSD, 'rewardsInUSD');
         setRewards(rewardsInETH, 'rewardsInETH');
 
+        setAvg(ETHprices, 'ETHprice');
+        setAvg(rewardsRate, 'rewardsRate');
+
         // for (let key in results) {
         //     let values = results[key];
 
@@ -236,17 +264,7 @@ async function monthlyCalculation() {
 
         console.log('year: ', year.months);
 
-        const march = year.months[2];
-        console.log('');
-        console.log('---- March ----');
-        console.log('l: ', march.rewardsInUSD.length);
 
-        let acc = 0;
-        for (let i=0; i < march.rewardsInUSD.length; i++) {
-            let reward = march.rewardsInUSD[i];
-            acc += reward;
-        }
-        console.log('total: ', acc);
 
         // let totalRewardsInUSD = 0;
         // let totalRewardsInETH = 0;

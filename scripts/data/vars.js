@@ -2,10 +2,10 @@ class Month {
     constructor(name, days) {
         this.name = name;
         this.days = days;
-        this.ETHprice = undefined;
-        this.rewardsRate = undefined;
-        this.totalRewardsInETH = undefined;
-        this.totalRewardsInUSD = undefined;
+        this.ETHprice = 0;
+        this.rewardsRate = 0;
+        this.totalRewardsInETH = 0;
+        this.totalRewardsInUSD = 0;
         this.rewardsInETH = [];
         this.rewardsInUSD = [];
     }
