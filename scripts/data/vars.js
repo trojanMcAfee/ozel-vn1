@@ -44,6 +44,16 @@ const dec = new Month('december', 31);
 
 const year = {
     months: [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec],
+    apr: {
+        monthlyAvg: {
+            inETH: 0,
+            inUSD: 0
+        },
+        dailyAvg: {
+            inETH: 0,
+            inUSD: 0
+        }
+    },
     thirtyOne: 7,
     twentyEight: 1,
     thirty: 4

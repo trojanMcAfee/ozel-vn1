@@ -195,9 +195,26 @@ async function monthlyCalculation() {
 }
 
 
+async function setYear() {
+    const inAsset = ['inUSD', 'inETH'];
+
+    for (let i=0; i < inAsset.length; i++) {
+        let acc = 0;
+        for (let j=0; j < year.months.length; j++) {
+            let month = year.months[j];
+            acc += month.totalRewards[inAsset[i]].apr;
+        }
+        year.apr.monthlyAvg[inAsset[i]] = acc / 12
+    }
+}
+
+
 async function main() {
     // await dailyCalculation();
     await monthlyCalculation();
+    //------
+    await setYear();
+    console.log('year2: ', year.apr);
 }
 
 
