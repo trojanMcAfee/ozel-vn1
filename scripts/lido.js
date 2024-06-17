@@ -169,15 +169,13 @@ async function monthlyCalculation() {
 
         setRewards(rewardsInUSD, 'rewardsInUSD');
         setRewards(rewardsInETH, 'rewardsInETH');
+        setRewards(ETHprices, 'ETHprices');
 
         setAvg(ETHprices, 'ETHprice');
         setAvg(rewardsRate, 'rewardsRate');
 
         setAPR('inETH');
         setAPR('inUSD');
-
-        console.log('year: ', year.months[0].totalRewards);
-        // console.log('year: ', year);
 
         let totalRewardsInUSD = 0;
         let totalRewardsInETH = 0;
@@ -214,14 +212,21 @@ async function setYear() {
             let rewardType = inAsset[i] == 'inUSD' ? 'rewardsInUSD' : 'rewardsInETH';
 
             for (let z=0; z < month[rewardType].length; z++) {
-                acc += month[rewardType][z];
+                if (rewardType == 'rewardsInETH') {
+                    let currPrice = month.ETHprices[z];
+                    let buyIn = principal / currPrice;
+                    let currDailyRate = (month[rewardType][z] * 100) / buyIn;
+                    acc += currDailyRate;
+                } else {
+                    acc += month[rewardType][z];
+                }
             }
         }
 
         if (inAsset[i] == 'inUSD') {
             year.apr.dailyAvg.inUSD = (acc * 100) / principal;
         } else {
-
+            year.apr.dailyAvg.inETH = acc;
         }
 
     }
@@ -234,6 +239,7 @@ async function main() {
     //------
     await setYear();
     console.log('year2: ', year.apr);
+    // console.log('year: ', year.months[0].totalRewards);
 }
 
 

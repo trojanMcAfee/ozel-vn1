@@ -16,6 +16,7 @@ class Month {
         };
         this.rewardsInETH = [];
         this.rewardsInUSD = [];
+        this.ETHprices = [];
     }
 
     setValue(varName, value) {
@@ -124,17 +125,19 @@ function setRewards(rewardsArray, varName) {
         if (i >= 334 && i < 365) year.months[11][varName].push(currentRewards); //dec
     }
 
-    //totalRewards
-    for (let j=0; j < year.months.length; j++) {
-        let month = year.months[j];
+    if (varName != 'ETHprices') {
+        //totalRewards
+        for (let j=0; j < year.months.length; j++) {
+            let month = year.months[j];
 
-        let acc = 0;
-        for (let i=0; i < month[varName].length; i++) {
-            let reward = month[varName][i];
-            acc += reward;
+            let acc = 0;
+            for (let i=0; i < month[varName].length; i++) {
+                let reward = month[varName][i];
+                acc += reward;
+            }
+
+            month.setValue(varName, acc);
         }
-
-        month.setValue(varName, acc);
     }
 }
 
