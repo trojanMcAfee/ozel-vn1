@@ -228,7 +228,6 @@ async function setYear() {
         } else {
             year.apr.dailyAvg.inETH = acc;
         }
-
     }
 }
 
@@ -240,7 +239,10 @@ async function main() {
     await setYear();
     console.log('year2: ', year.apr);
     // console.log('year: ', year.months[0].totalRewards);
+
+    // await fs.writeFile('scripts/data/filtered.json', JSON.stringify(year, null, 2));
 }
 
 
 main();
+
