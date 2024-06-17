@@ -91,7 +91,7 @@ contract Mint_Core is SharedConditions {
             minAmountsOut[i] = type(uint).max;
         }
 
-        AmountsIn memory amts = AmountsIn(amountIn, minAmountsOut);
+        AmountsIn memory amts = AmountsIn(amountIn, 2, 1);
 
         bytes memory data = abi.encode(amts, alice);
 

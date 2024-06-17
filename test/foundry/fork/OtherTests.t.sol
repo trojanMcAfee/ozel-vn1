@@ -54,7 +54,8 @@ contract OtherTests is TestMethods {
 
         AmountsIn memory amounts = AmountsIn(
             amountIn,
-            minAmountsOut
+            1,
+            2
         );
 
         bytes memory mintData = abi.encode(amounts, attacker);

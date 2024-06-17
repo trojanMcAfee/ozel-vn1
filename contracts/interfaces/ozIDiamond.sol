@@ -112,6 +112,12 @@ interface ozIDiamond {
         address receiver_
     ) external view returns(bytes memory);
 
+    // function getMintData(
+    //     uint amountInStable_,
+    //     uint16 slippage_,
+    //     address receiver_
+    // ) external view returns(bytes memory, uint);
+
     function quoteAmountsOut(
         uint ozAmountIn_,
         address ozToken_,

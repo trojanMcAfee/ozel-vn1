@@ -53,31 +53,47 @@ contract ozLoupe is DiamondLoupeFacet {
         return s.LSDs;
     }
 
+    //----------------------
     function quoteAmountsIn(
-        uint amountIn_,
+        uint amountInStable_,
         uint16 slippage_
-    ) public view returns(AmountsIn memory) { 
-
+    ) public view returns(AmountsIn memory) {
         ozIDiamond OZ = ozIDiamond(address(this));
-        uint[] memory minAmountsOut = new uint[](2);
 
-        uint[2] memory prices = [OZ.ETH_USD(), Helpers.rETH_ETH(OZ)];
+        uint amountInETH = amountInStable_.mulDivDown(1 ether, OZ.ETH_USD());
+        uint expectedOutRETH = amountInETH.mulDivDown(Helpers.rETH_ETH(OZ), 1 ether);
+        uint minAmountOutRETH = expectedOutRETH - expectedOutRETH.mulDivDown(uint(slippage_), 10_000);
 
-        /**
-         * minAmountsOut[0] - minWethOut
-         * minAmountsOut[1] - minRethOut
-         */
-
-        uint length = prices.length;
-        for (uint i=0; i < length; i++) {
-            uint expectedOut = ( i == 0 ? amountIn_ : minAmountsOut[i - 1] )
-                .mulDivDown(1 ether, prices[i]);
-
-            minAmountsOut[i] = expectedOut - expectedOut.mulDivDown(uint(slippage_), 10_000);
-        }
-
-        return AmountsIn(amountIn_, minAmountsOut);
+        return AmountsIn(amountInStable_, amountInETH, minAmountOutRETH);
     }
+
+
+    // function quoteAmountsIn(
+    //     uint amountIn_,
+    //     uint16 slippage_
+    // ) public view returns(AmountsIn memory) { 
+
+    //     ozIDiamond OZ = ozIDiamond(address(this));
+    //     uint[] memory minAmountsOut = new uint[](2);
+
+    //     uint[2] memory prices = [OZ.ETH_USD(), Helpers.rETH_ETH(OZ)];
+
+    //     /**
+    //      * minAmountsOut[0] - minWethOut
+    //      * minAmountsOut[1] - minRethOut
+    //      */
+    //     uint length = prices.length;
+    //     for (uint i=0; i < length; i++) {
+    //         uint expectedOut = ( i == 0 ? amountIn_ : minAmountsOut[i - 1] )
+    //             .mulDivDown(1 ether, prices[i]);
+
+    //         minAmountsOut[i] = expectedOut - expectedOut.mulDivDown(uint(slippage_), 10_000);
+    //     }
+
+    //     return AmountsIn(amountIn_, minAmountsOut);
+    // }
+
+    //----------------------
 
 
     function quoteAmountsOut(
@@ -119,14 +135,12 @@ contract ozLoupe is DiamondLoupeFacet {
     } 
    
     function getMintData(
-        uint amountIn_,
+        uint amountInStable_,
         uint16 slippage_,
         address receiver_
     ) external view returns(bytes memory) {
-        return abi.encode(
-            quoteAmountsIn(amountIn_, slippage_), 
-            receiver_
-        );
+        AmountsIn memory amts = quoteAmountsIn(amountInStable_, slippage_);
+        return abi.encode(amts, receiver_);
     }
 
     function getAdminFee() external view returns(uint) {

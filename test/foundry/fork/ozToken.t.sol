@@ -46,7 +46,8 @@ contract ozERC20TokenTest is TestMethods {
 
         AmountsIn memory amounts = AmountsIn(
             amountIn,
-            minAmountsOut
+            1,
+            2
         );
 
         //Actions
@@ -486,7 +487,7 @@ contract ozERC20TokenTest is TestMethods {
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
 
         AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, OZ.getDefaultSlippage());
-        amountsIn.minAmountsOut[0] = 0;
+        // amountsIn.minAmountsOut[0] = 0;
 
         bytes memory data = abi.encode(amountsIn, alice);
 
@@ -582,7 +583,7 @@ contract ozERC20TokenTest is TestMethods {
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
 
         AmountsIn memory amountsIn = OZ.quoteAmountsIn(amountIn, OZ.getDefaultSlippage());
-        amountsIn.minAmountsOut[0] = type(uint).max;
+        // amountsIn.minAmountsOut[0] = type(uint).max;
 
         bytes memory data = abi.encode(amountsIn, alice);
 

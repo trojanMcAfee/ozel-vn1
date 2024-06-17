@@ -210,20 +210,31 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return convertToOzTokens(sharesOf(account_), account_).unray();
     }
 
-    
     function mint(
         bytes memory data_, 
         address owner_
-    ) external lock(TRANSIENT_SLOT) updateReward(owner_, _ozDiamond) returns(uint) {
-        if (data_.length != 224) revert OZError39(data_);
+    ) external payable returns(uint) {}
+
+    
+    function mint2(
+        bytes memory data_, 
+        address owner_,
+        bool isETH_
+    ) external payable lock(TRANSIENT_SLOT) updateReward(owner_, _ozDiamond) returns(uint) {
+        // if (data_.length != 224) revert OZError39(data_); <--- new length
 
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
 
-        if (amts.amountIn == 0) revert OZError37();
+        if (isETH_) if (amts.amountInETH != msg.value) revert OZError43();
+
+        console.log('value: ', msg.value);
+        revert('here'); //<----- continue here ********
+
+        if (amts.amountInStable == 0 || amts.amountInETH == 0) revert OZError37();
         if (owner_ == address(0) || receiver == address(0)) revert OZError38();
 
-        uint assets = amts.amountIn.format(FORMAT_DECIMALS); 
+        uint assets = amts.amountInStable.format(FORMAT_DECIMALS); 
 
         try ozIDiamond(_ozDiamond).useUnderlying(asset(), owner_, amts) returns(uint amountRethOut) {
             _setValuePerOzToken(amountRethOut, true);

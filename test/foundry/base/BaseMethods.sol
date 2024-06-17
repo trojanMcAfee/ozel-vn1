@@ -70,7 +70,8 @@ contract BaseMethods is Setup {
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
-            minAmountsOut
+            1,
+            2
         );
 
         bytes memory mintData = abi.encode(amounts, user_);
@@ -126,7 +127,8 @@ contract BaseMethods is Setup {
 
         AmountsIn memory amounts = AmountsIn(
             amountIn_,
-            minAmountsOut
+            1,
+            2
         );
 
         uint shares = ozERC20_.mint(abi.encode(amounts, user_), user_);   
@@ -184,9 +186,10 @@ contract BaseMethods is Setup {
             );
 
         } else if (reqType_ == Type.IN) { 
-            uint[] memory minAmountsOut = OZ.quoteAmountsIn(
-                amountIn_, OZ.getDefaultSlippage()
-            ).minAmountsOut;
+            uint[] memory minAmountsOut;
+            // uint[] memory minAmountsOut = OZ.quoteAmountsIn(
+            //     amountIn_, OZ.getDefaultSlippage()
+            // ).minAmountsOut;
 
             bytes32 permitHash = 
                 token_ == daiAddr ? _getPermitHashDAI(sender_, address(ozDiamond)) :

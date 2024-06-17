@@ -41,10 +41,11 @@ error OZError07(address from, uint fromShares, uint shares); //ozToken.sol / _tr
 error OZError08(uint deadline, uint blockTimestamp); //permit - ERC2612ExpiredDeadline
 error OZError09(address owner, address spender); //permit - ERC2612InvalidSignature
 error OZError35(uint ozAmountIn); //redeem - ozAmountIn is less than allowed
-error OZError37(); //mint / ozToken.sol - amountIn can't be zero
+error OZError37(); //mint / ozToken.sol - amountIns can't be zero
 error OZError38(); //mint, redeem / ozToken.sol - can't be address(0)
 error OZError39(bytes data); //mint, redeem / ozToken.sol - invalid bytes data
 error OZError42(); //_transferShares / ozToken.sol - can't transfer to self 
+error OZError43(); //mint / ozToken.sol - msg.value & amountInETH mismatch
 
 //--- OZLrewards errors
 error OZError15(); //setRewardsDuration - rewards duration not finished

@@ -111,9 +111,15 @@ enum Action {
 
 //uint amountIn - amount of underlying in
 //uint[] minAmountsOut - weth, reth
+// struct AmountsIn {
+//     uint amountIn;
+//     uint[] minAmountsOut;
+// }
+
 struct AmountsIn {
-    uint amountIn;
-    uint[] minAmountsOut;
+    uint amountInStable;
+    uint amountInETH;
+    uint minAmountOutRETH;
 }
 
 struct AmountsOut {

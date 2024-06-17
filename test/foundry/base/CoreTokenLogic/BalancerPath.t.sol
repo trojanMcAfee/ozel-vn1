@@ -5,6 +5,13 @@ pragma solidity 0.8.24;
 import {TestMethods} from "../TestMethods.sol";
 import {FixedPointMathLib} from "../../../../contracts/libraries/FixedPointMathLib.sol";
 
+//--------
+import {IERC20Permit} from "./../../../../contracts/interfaces/IERC20Permit.sol";
+import {ozIToken} from "./../../../../contracts/interfaces/ozIToken.sol";
+import {IERC20} from "forge-std/interfaces/IERC20.sol";
+import {AmountsIn} from "./../../../../contracts/AppStorage.sol";
+
+
 import "forge-std/console.sol";
 
 
@@ -12,7 +19,29 @@ contract BalancerPathTest is TestMethods {
 
     using FixedPointMathLib for uint;
 
+    function test_strategy_new() public {
+        //Pre-condition
+        (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
+        uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();   
+
+        (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
+
+        bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+        (AmountsIn memory amts,) = abi.decode(mintData, (AmountsIn, address));
+        console.log('amountInETH: ', amts.amountInETH);
+
+        payable(alice).transfer(1000 ether);
+
+        vm.startPrank(alice);
+
+        IERC20(testToken).approve(address(OZ), amountIn);
+        ozERC20.mint2{value: amts.amountInETH}(mintData, alice, true);
+
+        vm.stopPrank();
+    }
+
    
+   //------------
     function test_minting_approve_smallMint_balancer() public {
         _minting_approve_smallMint();
     }

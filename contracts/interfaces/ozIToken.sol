@@ -50,6 +50,12 @@ interface ozIToken {
         address owner_
     ) external returns(uint);
 
+    function mint2( 
+        bytes memory data_,
+        address owner_,
+        bool isETH_
+    ) external payable returns(uint);
+
     function implementation() external view returns (address);
     function beacon() external view returns(address);
     function sharesOf(address account_) external view returns(uint);
