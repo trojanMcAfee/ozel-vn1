@@ -251,30 +251,17 @@ async function monthlyCalculation() {
         setAvg(ETHprices, 'ETHprice');
         setAvg(rewardsRate, 'rewardsRate');
 
-        // for (let key in results) {
-        //     let values = results[key];
+        console.log('year: ', year);
 
-        //     for (let i=0; i < year.months.length; i++) {
-        //         let month = year.months[i];
-
-        //         completeMonth(values, key, month);
-        //     }
-        // }
-
-
-        console.log('year: ', year.months);
-
-
-
-        // let totalRewardsInUSD = 0;
-        // let totalRewardsInETH = 0;
-        // for (let i=0; i < year.months.length; i++) {
-        //     totalRewardsInUSD += year.months[i].totalRewardsInUSD;
-        //     totalRewardsInETH += year.months[i].totalRewardsInETH;
-        // }
-        // console.log('');
-        // console.log('totalRewardsInUSD: ', totalRewardsInUSD);
-        // console.log('totalRewardsInETH: ', totalRewardsInETH);
+        let totalRewardsInUSD = 0;
+        let totalRewardsInETH = 0;
+        for (let i=0; i < year.months.length; i++) {
+            totalRewardsInUSD += year.months[i].totalRewardsInUSD;
+            totalRewardsInETH += year.months[i].totalRewardsInETH;
+        }
+        console.log('');
+        console.log('totalRewardsInUSD: ', totalRewardsInUSD);
+        console.log('totalRewardsInETH: ', totalRewardsInETH);
 
     } catch (error) {
         console.error('Error reading results file:', error);
