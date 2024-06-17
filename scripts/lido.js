@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 const fs = require('fs').promises;
-const { year, setRewards, setAvg, setAPR } = require('./data/vars');
+const { year, principal, setRewards, setAvg, setAPR } = require('./data/vars');
 
 
 const URL = `https://gateway-arbitrum.network.thegraph.com/api/a2bf64d6b822525b225e908912310821/subgraphs/
@@ -204,7 +204,26 @@ async function setYear() {
             let month = year.months[j];
             acc += month.totalRewards[inAsset[i]].apr;
         }
-        year.apr.monthlyAvg[inAsset[i]] = acc / 12
+        year.apr.monthlyAvg[inAsset[i]] = acc;
+    }
+
+    for (let i=0; i < inAsset.length; i++) {
+        let acc = 0;
+        for (let j=0; j < year.months.length; j++) {
+            let month = year.months[j];
+            let rewardType = inAsset[i] == 'inUSD' ? 'rewardsInUSD' : 'rewardsInETH';
+
+            for (let z=0; z < month[rewardType].length; z++) {
+                acc += month[rewardType][z];
+            }
+        }
+
+        if (inAsset[i] == 'inUSD') {
+            year.apr.dailyAvg.inUSD = (acc * 100) / principal;
+        } else {
+
+        }
+
     }
 }
 

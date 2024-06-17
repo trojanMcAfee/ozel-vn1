@@ -42,6 +42,8 @@ const oct = new Month('october', 31);
 const nov = new Month('november', 30);
 const dec = new Month('december', 31);
 
+const principal = 1_000_000;
+
 const year = {
     months: [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec],
     apr: {
@@ -138,6 +140,7 @@ function setRewards(rewardsArray, varName) {
 
 module.exports = {
     year,
+    principal,
     setRewards,
     setAvg,
     setAPR
