@@ -31,7 +31,7 @@ interface ozIDiamond {
         address owner_, 
         AmountsIn memory amounts_,
         bool isETH_
-    ) external payable returns(uint);
+    ) external payable returns(uint, uint);
 
 
     function useOzTokens(
@@ -93,8 +93,9 @@ interface ozIDiamond {
 
     function getLSDs() external view returns(address[] memory);
     function setRewardsDataExternally(address user_) external;
-    function setValuePerOzToken(address ozToken_, uint amount, bool addOrSub_) external;
+    // function setValuePerOzToken(address ozToken_, uint amount, bool addOrSub_) external;
 
+    function setValuePerOzToken(address ozToken_, uint amountOutRETH, uint amountOutAUSDC, bool addOrSub_) external;
     function getRewardsData() external view returns(
         uint rewardRate,
         uint circulatingSupply,

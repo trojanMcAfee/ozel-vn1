@@ -70,8 +70,9 @@ contract ozEngine is Modifiers {
         address owner_,
         AmountsIn memory amts_,
         bool isETH_
-    ) external payable onlyOzToken returns(uint) { 
+    ) external payable onlyOzToken returns(uint, uint) { 
         uint amountInStable = amts_.amountInStable;
+        uint amountOutRETH;
 
         /**
          * minAmountsOut[0] - minWethOut
@@ -93,8 +94,6 @@ contract ozEngine is Modifiers {
 
         if (isETH_) IWETH(s.WETH).deposit{value: msg.value}();
         uint amountInWETH = IWETH(s.WETH).balanceOf(address(this));
-        console.log('amoutnInETH: ', amts_.amountInETH);
-        console.log('amoutnInWETH: ', amountInWETH);
 
 
         if (_checkRocketCapacity(amountInWETH)) { //haven't done this for ETH = true / _checkRocketCapacity(amountOut)
@@ -106,10 +105,10 @@ contract ozEngine is Modifiers {
             IRocketDepositPool(rocketDepositPool).deposit{value: amountInWETH}();
             uint postBalance = IERC20(s.rETH).balanceOf(address(this));
 
-            return postBalance - preBalance;
+            amountOutRETH = postBalance - preBalance;
         
         } else {
-            uint amountRethOut = _checkPauseAndSwap2(
+            amountOutRETH = _checkPauseAndSwap2(
                 s.WETH, 
                 s.rETH, 
                 address(this),
@@ -117,25 +116,25 @@ contract ozEngine is Modifiers {
                 amts_.minAmountOutRETH,
                 Action.OZ_IN
             );
-            // _hedgeLST(amountRethOut);
-            // return amountRethOut;
         }
 
-        _lendToAave(amountInStable, stable_);
+        uint amountOutAUSDC = _lendToAave(amountInStable, stable_);
+
+        return (amountOutRETH, amountOutAUSDC);
     }
 
     //--------------
-    function _lendToAave(uint amountInStable_, address stable_) private {
+    function _lendToAave(uint amountInStable_, address stable_) private returns(uint) {
         address poolAave = IAave(s.poolProviderAave).getPool();
         IERC20(stable_).approve(poolAave, amountInStable_);
 
         IAave(poolAave).supply(stable_, amountInStable_, address(this), 0);
 
-        uint x = IERC20(s.aUSDC).balanceOf(address(this));
-        console.log('aUSDC: ', x);
+        // uint x = IERC20(s.aUSDC).balanceOf(address(this));
+        // console.log('aUSDC: ', x);
 
-        revert('here2');
 
+        return amountInStable_;
     }
 
 

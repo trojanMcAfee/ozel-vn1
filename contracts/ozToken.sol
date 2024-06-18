@@ -233,8 +233,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         uint assets = amts.amountInStable.format(FORMAT_DECIMALS); 
 
-        try ozIDiamond(_ozDiamond).useUnderlying{value: msg.value}(asset(), owner_, amts, isETH_) returns(uint amountRethOut) {
-            _setValuePerOzToken(amountRethOut, true);
+        try ozIDiamond(_ozDiamond).useUnderlying{value: msg.value}(asset(), owner_, amts, isETH_) returns(uint amountOutRETH, uint amountOutAUSDC) {
+            // _setValuePerOzToken(amountOutRETH, true);
+            _setValuePerOzToken(amountOutRETH, amountOutAUSDC, true);
 
             uint shares = assets;
 
@@ -255,8 +256,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
     //-------------
 
-    function _setValuePerOzToken(uint amountOut_, bool addOrSub_) private {
-        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountOut_, addOrSub_);
+    // function _setValuePerOzToken(uint amountOut_, bool addOrSub_) private {
+    //     ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountOut_, addOrSub_);
+    // }
+
+    function _setValuePerOzToken(uint amountOutRETH_, uint amountOutAUSDC_, bool addOrSub_) private {
+        ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountOutRETH_, amountOutAUSDC_, addOrSub_);
     }
 
     function convertToSharesFromOzBalance(uint ozBalance_) public view returns(uint) {
@@ -288,7 +293,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint assets = shares; 
 
         try ozIDiamond(_ozDiamond).useOzTokens(owner_, data_) returns(uint amountRethOut, uint amountAssetOut) {
-            _setValuePerOzToken(amountRethOut, false);
+            _setValuePerOzToken(amountRethOut, 0, false);
 
             accountShares = sharesOf(_ozDiamond);
 

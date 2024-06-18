@@ -224,11 +224,26 @@ contract ozOracle {
 
     //------
 
-    function setValuePerOzToken(address ozToken_, uint amount_, bool addOrSub_) external { //put an onlyOzToken mod
+    // function setValuePerOzToken(address ozToken_, uint amount_, bool addOrSub_) external { //put an onlyOzToken mod
+    //     if (addOrSub_) {
+    //         s.valuePerOzToken[ozToken_] += amount_;
+    //     } else {
+    //         s.valuePerOzToken[ozToken_] -= amount_;
+    //     }
+    // }
+
+    function setValuePerOzToken(
+        address ozToken_, 
+        uint amountOutRETH_, 
+        uint amountOutAUSDC_, 
+        bool addOrSub_
+    ) external { //put an onlyOzToken mod
         if (addOrSub_) {
-            s.valuePerOzToken[ozToken_] += amount_;
+            s.valuePerOzToken2[ozToken_][s.rETH] += amountOutRETH_;
+            s.valuePerOzToken2[ozToken_][s.aUSDC] += amountOutAUSDC_;
         } else {
-            s.valuePerOzToken[ozToken_] -= amount_;
+            s.valuePerOzToken2[ozToken_][s.rETH] -= amountOutRETH_;
+            s.valuePerOzToken2[ozToken_][s.aUSDC] -= amountOutAUSDC_;
         }
     }
 

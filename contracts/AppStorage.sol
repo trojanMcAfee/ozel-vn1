@@ -55,6 +55,7 @@ struct AppStorage {
     address[] LSDs;
 
     mapping(address ozToken => uint value) valuePerOzToken;
+    mapping(address ozToken => mapping(address yieldToken => uint value)) valuePerOzToken2;
 
     address uniFactory;
     address tellorOracle;
