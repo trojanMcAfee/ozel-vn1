@@ -221,7 +221,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         address owner_,
         bool isETH_
     ) external payable lock(TRANSIENT_SLOT) updateReward(owner_, _ozDiamond) returns(uint) {
-        // if (data_.length != 224) revert OZError39(data_); <--- new length
+        // if (data_.length != 224) revert OZError39(data_); <--- new length must be added
 
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
@@ -229,7 +229,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         if (isETH_) if (amts.amountInETH != msg.value) revert OZError43();
 
         console.log('value: ', msg.value);
-        revert('here'); //<----- continue here ********
+        console.log('amountInStable: ', amts.amountInStable);
+        console.log('minAmountOutRETH: ', amts.minAmountOutRETH);
+        revert('here'); 
 
         if (amts.amountInStable == 0 || amts.amountInETH == 0) revert OZError37();
         if (owner_ == address(0) || receiver == address(0)) revert OZError38();

@@ -61,7 +61,7 @@ contract ozLoupe is DiamondLoupeFacet {
         ozIDiamond OZ = ozIDiamond(address(this));
 
         uint amountInETH = amountInStable_.mulDivDown(1 ether, OZ.ETH_USD());
-        uint expectedOutRETH = amountInETH.mulDivDown(Helpers.rETH_ETH(OZ), 1 ether);
+        uint expectedOutRETH = amountInETH.mulDivDown(1 ether, Helpers.rETH_ETH(OZ));
         uint minAmountOutRETH = expectedOutRETH - expectedOutRETH.mulDivDown(uint(slippage_), 10_000);
 
         return AmountsIn(amountInStable_, amountInETH, minAmountOutRETH);
