@@ -29,20 +29,14 @@ contract Mint_Unit_Fuzz_tes is SharedConditions {
         _mintOzTokens(ozERC20, alice, underlying, amountIn);
 
         assertTrue(_checkPercentageDiff(amountIn, ozERC20.balanceOf(alice), 2));
-        console.log(4);
         //------
 
-        bytes memory evilData = OZ.getMintData(amountIn_, slippage_, receiver_);
-        console.log(5);
+        bytes memory evilData = OZ.getMintData(amountIn_, slippage_, receiver_, address(ozERC20));
 
         IERC20(underlying).approve(address(OZ), amountIn_);
 
-        console.log(6);
-
         vm.expectRevert();
         ozERC20.mint(evilData, receiver_);
-
-        console.log(7);
 
         assertEq(ozERC20.balanceOf(alice) + ozERC20.balanceOf(bob), ozERC20.totalSupply());
     }

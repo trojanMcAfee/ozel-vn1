@@ -28,4 +28,7 @@ interface IAave {
       uint256 ltv,
       uint256 healthFactor
     );
+
+
+    function getPool() external view returns(address);
 }

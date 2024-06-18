@@ -104,7 +104,7 @@ contract Setup is MockStorage, Test {
     address internal uniFactory;
     address internal protocolGuildSplit;
     address internal rethWethUniPool;
-    address internal poolAave;
+    address internal poolProviderAave;
 
     address internal testToken;
     address internal secondTestToken;
@@ -235,7 +235,7 @@ contract Setup is MockStorage, Test {
             weETHUSDredStone = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
             rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-            poolAave = 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2;
+            poolProviderAave = 0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e;
             // rEthWethPoolUni = 
 
             network = "ethereum";
@@ -264,7 +264,7 @@ contract Setup is MockStorage, Test {
             weETHUSDredStone = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
             rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
-            poolAave = 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2;
+            poolProviderAave = 0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e;
 
             network = "ethereum-mocks";
             mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
@@ -320,7 +320,7 @@ contract Setup is MockStorage, Test {
 
     function _runSetup(Network n_) internal {
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
-        testToken = daiAddr;
+        testToken = usdcAddr;
         secondTestToken = testToken == daiAddr ? usdcAddr : daiAddr;
         thirdTestToken = usdtAddr;
         //*** SETS UP THE ERC20 TOKEN TO TEST WITH ****/
@@ -419,7 +419,7 @@ contract Setup is MockStorage, Test {
             swapRouterUni: swapRouterUni,
             vaultBalancer: vaultBalancer,
             rEthWethPoolBalancer: rEthWethPoolBalancer,
-            poolAave: poolAave
+            poolProviderAave: poolProviderAave
         });
 
         Oracles memory oracles = Oracles({

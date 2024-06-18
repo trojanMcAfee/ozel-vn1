@@ -26,9 +26,9 @@ contract BalancerPathTest is TestMethods {
 
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
-        bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+        bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice, address(ozERC20));
         (AmountsIn memory amts,) = abi.decode(mintData, (AmountsIn, address));
-        console.log('amountInETH: ', amts.amountInETH);
+        console.log('amountInETH in test_x: ', amts.amountInETH);
 
         payable(alice).transfer(1000 ether);
 

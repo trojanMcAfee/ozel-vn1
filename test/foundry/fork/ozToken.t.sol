@@ -634,7 +634,7 @@ contract ozERC20TokenTest is TestMethods {
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false); 
         uint amountIn = (rawAmount / 3) * 10 ** IERC20Permit(testToken).decimals();
 
-        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice, address(ozERC20));
 
         uint shares = 33000000;
         uint assets = 33000000;

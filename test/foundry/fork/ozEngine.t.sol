@@ -20,7 +20,7 @@ contract ozEngineTest is Setup {
             abi.encodeWithSelector(OZError13.selector, alice)
         );
         vm.prank(alice);
-        ozIDiamond(address(engine)).useUnderlying(address(0), address(0), amts);
+        ozIDiamond(address(engine)).useUnderlying(address(0), address(0), amts, false);
     }
 
     /**
@@ -31,7 +31,7 @@ contract ozEngineTest is Setup {
             abi.encodeWithSelector(OZError13.selector, alice)
         );
         vm.prank(alice);
-        OZ.useUnderlying(address(0), address(0), amts);
+        OZ.useUnderlying(address(0), address(0), amts, false);
     }
 
 

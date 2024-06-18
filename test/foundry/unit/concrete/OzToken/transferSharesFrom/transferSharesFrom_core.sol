@@ -24,7 +24,8 @@ contract TransferSharesFrom_Core is SharedConditions {
         bytes memory data = OZ.getMintData(
             amountIn,
             OZ.getDefaultSlippage(),
-            alice
+            alice,
+            address(ozERC20)
         );
 
         vm.startPrank(alice);
@@ -65,7 +66,8 @@ contract TransferSharesFrom_Core is SharedConditions {
         bytes memory data = OZ.getMintData(
             amountIn,
             OZ.getDefaultSlippage(),
-            alice
+            alice,
+            address(ozERC20)
         );
 
         vm.startPrank(alice);
@@ -96,7 +98,8 @@ contract TransferSharesFrom_Core is SharedConditions {
         bytes memory data = OZ.getMintData(
             amountIn,
             OZ.getDefaultSlippage(),
-            alice
+            alice,
+            address(ozERC20)
         );
 
         vm.startPrank(alice);

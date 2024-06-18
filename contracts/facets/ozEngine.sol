@@ -66,65 +66,85 @@ contract ozEngine is Modifiers {
 
 
     function useUnderlying( 
-        address underlying_, 
+        address stable_, 
         address owner_,
-        AmountsIn memory amounts_
-    ) external onlyOzToken returns(uint) { 
-        uint amountIn = amounts_.amountInStable;
+        AmountsIn memory amts_,
+        bool isETH_
+    ) external payable onlyOzToken returns(uint) { 
+        uint amountInStable = amts_.amountInStable;
 
         /**
          * minAmountsOut[0] - minWethOut
          * minAmountsOut[1] - minRethOut
          */
-        uint[] memory minAmountsOut;
-        // uint[] memory minAmountsOut = amounts_.minAmountsOutRETH;
+        // uint[] memory minAmountsOut;
+        // uint[] memory minAmountsOut = amts_.minAmountsOutRETH;
         
-        IERC20(underlying_).safeTransferFrom(owner_, address(this), amountIn);
+        IERC20(stable_).safeTransferFrom(owner_, address(this), amountInStable);
 
         //Swaps underlying to WETH in Uniswap
-        uint amountOut = _swapUni(
-            underlying_, 
-            s.WETH, 
-            address(this),
-            amountIn, 
-            minAmountsOut[0]
-        );
+        // uint amountOut = _swapUni(
+        //     underlying_, 
+        //     s.WETH, 
+        //     address(this),
+        //     amountIn, 
+        //     minAmountsOut[0]
+        // );
 
-        if (_checkRocketCapacity(amountOut)) {
-            IWETH(s.WETH).withdraw(amountOut);
+        if (isETH_) IWETH(s.WETH).deposit{value: msg.value}();
+        uint amountInWETH = IWETH(s.WETH).balanceOf(address(this));
+        console.log('amoutnInETH: ', amts_.amountInETH);
+        console.log('amoutnInWETH: ', amountInWETH);
+
+
+        if (_checkRocketCapacity(amountInWETH)) { //haven't done this for ETH = true / _checkRocketCapacity(amountOut)
+            IWETH(s.WETH).withdraw(amountInWETH);
             address rocketDepositPool = IRocketStorage(s.rocketPoolStorage).getAddress(s.rocketDepositPoolID); //Try here to store the depositPool with SSTORE2-3 (if it's cheaper in terms of gas) ***
             
             //Simplify this
             uint preBalance = IERC20(s.rETH).balanceOf(address(this));
-            IRocketDepositPool(rocketDepositPool).deposit{value: amountOut}();
+            IRocketDepositPool(rocketDepositPool).deposit{value: amountInWETH}();
             uint postBalance = IERC20(s.rETH).balanceOf(address(this));
 
             return postBalance - preBalance;
         
         } else {
-            uint amountRethOut = _checkPauseAndSwap(
+            uint amountRethOut = _checkPauseAndSwap2(
                 s.WETH, 
                 s.rETH, 
                 address(this),
-                amountOut,
-                minAmountsOut,
+                amountInWETH,
+                amts_.minAmountOutRETH,
                 Action.OZ_IN
             );
-
             // _hedgeLST(amountRethOut);
-
-
-            return amountRethOut;
+            // return amountRethOut;
         }
+
+        _lendToAave(amountInStable, stable_);
     }
 
     //--------------
+    function _lendToAave(uint amountInStable_, address stable_) private {
+        address poolAave = IAave(s.poolProviderAave).getPool();
+        IERC20(stable_).approve(poolAave, amountInStable_);
+
+        IAave(poolAave).supply(stable_, amountInStable_, address(this), 0);
+
+        uint x = IERC20(0x9bA00D6856a4eDF4665BcA2C2309936572473B7E).balanceOf(address(this));
+        console.log('aUSDC: ', x);
+
+        revert('here2');
+
+    }
+
+
     // function _hedgeLST(uint amountInLst_) private {
     //     //deposit LST in aave
     //     IERC20(s.rETH).approve(s.poolAave, amountInLst_);
     //     IAave(s.poolAave).supply(s.rETH, amountInLst_, address(this), 0);
 
-    //     uint x = IERC20(0xCc9EE9483f662091a1de4795249E24aC0aC2630f).balanceOf(address(this));
+        // uint x = IERC20(0xCc9EE9483f662091a1de4795249E24aC0aC2630f).balanceOf(address(this));
 
     //     console.log('amountInLst_: ', amountInLst_);
     //     console.log('arETH bal this: ', x);
@@ -257,6 +277,54 @@ contract ozEngine is Modifiers {
                     receiver_,
                     amountOut,
                     minAmountsOut_[1]
+                );
+            }
+        }
+    }
+
+
+    function _checkPauseAndSwap2(
+        address tokenIn_,
+        address tokenOut_,
+        address receiver_,
+        uint amountIn_,
+        uint minAmountOut_,
+        Action type_
+    ) private returns(uint amountOut) {
+
+        // (address tokenOutInternal, uint minAmountOutFirstLeg) = 
+        //     _triageInternalVars(type_, minAmountsOut_, tokenOut_);
+
+        (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
+
+        if (paused) {
+            amountOut = _swapUni(
+                tokenIn_,
+                tokenOut_,
+                address(this),
+                amountIn_,
+                minAmountOut_
+            );
+        } else {   
+            amountOut = _swapBalancer(
+                tokenIn_,
+                tokenOut_,
+                amountIn_,
+                minAmountOut_
+            );
+        }
+
+        if (type_ == Action.OZL_IN) {
+            if (tokenOut_ == s.WETH) { 
+                IERC20(s.WETH).safeTransfer(receiver_, amountOut);
+            } else {
+                amountOut = _swapUni(
+                    s.WETH,
+                    tokenOut_,
+                    receiver_,
+                    amountOut,
+                    minAmountOut_
+                    // minAmountsOut_[1]
                 );
             }
         }

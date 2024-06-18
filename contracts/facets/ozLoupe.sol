@@ -56,11 +56,13 @@ contract ozLoupe is DiamondLoupeFacet {
     //----------------------
     function quoteAmountsIn(
         uint amountInStable_,
-        uint16 slippage_
+        uint16 slippage_,
+        address stable_
     ) public view returns(AmountsIn memory) {
         ozIDiamond OZ = ozIDiamond(address(this));
+        uint decimals = IERC20(stable_).decimals() == 18 ? 1 : 10 ** 12;
 
-        uint amountInETH = amountInStable_.mulDivDown(1 ether, OZ.ETH_USD());
+        uint amountInETH = (amountInStable_ * decimals).mulDivDown(1 ether, OZ.ETH_USD());
         uint expectedOutRETH = amountInETH.mulDivDown(1 ether, Helpers.rETH_ETH(OZ));
         uint minAmountOutRETH = expectedOutRETH - expectedOutRETH.mulDivDown(uint(slippage_), 10_000);
 
@@ -137,9 +139,10 @@ contract ozLoupe is DiamondLoupeFacet {
     function getMintData(
         uint amountInStable_,
         uint16 slippage_,
-        address receiver_
+        address receiver_,
+        address ozERC20_ //could be wozERC20
     ) external view returns(bytes memory) {
-        AmountsIn memory amts = quoteAmountsIn(amountInStable_, slippage_);
+        AmountsIn memory amts = quoteAmountsIn(amountInStable_, slippage_, ozIToken(ozERC20_).asset());
         return abi.encode(amts, receiver_);
     }
 

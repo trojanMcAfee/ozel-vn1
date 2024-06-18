@@ -12,6 +12,7 @@ import {
     NewToken,
     Dir
 } from "../AppStorage.sol";
+import {ozIToken} from "./ozIToken.sol";
 
 
 interface ozIDiamond {
@@ -28,8 +29,9 @@ interface ozIDiamond {
     function useUnderlying( 
         address underlying_, 
         address owner_, 
-        AmountsIn memory amounts_
-    ) external returns(uint);
+        AmountsIn memory amounts_,
+        bool isETH_
+    ) external payable returns(uint);
 
 
     function useOzTokens(
@@ -109,7 +111,8 @@ interface ozIDiamond {
     function getMintData(
         uint amountIn_,
         uint16 slippage_,
-        address receiver_
+        address receiver_,
+        address ozERC20_
     ) external view returns(bytes memory);
 
     // function getMintData(

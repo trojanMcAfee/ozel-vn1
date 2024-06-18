@@ -22,7 +22,8 @@ contract Dummy1 {
         bytes memory mintData = OZ.getMintData(
             amountIn_,
             OZ.getDefaultSlippage(),
-            msg.sender
+            msg.sender,
+            address(ozERC20)
         );
 
         uint shares = ozERC20.mint(mintData, msg.sender);

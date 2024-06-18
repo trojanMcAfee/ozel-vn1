@@ -640,7 +640,8 @@ contract OZLtokenTest is TestMethods {
         bytes memory data = OZ.getMintData(
             amountIn, 
             OZ.getDefaultSlippage(),
-            bob
+            bob,
+            address(ozERC20)
         );
 
         vm.startPrank(alice);

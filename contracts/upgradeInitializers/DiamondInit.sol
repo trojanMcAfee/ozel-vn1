@@ -57,7 +57,7 @@ contract DiamondInit {
         s.swapRouterUni = dexes_.swapRouterUni;
         s.vaultBalancer = dexes_.vaultBalancer;
         s.rEthWethPoolBalancer = dexes_.rEthWethPoolBalancer;
-        s.poolAave = dexes_.poolAave;
+        s.poolProviderAave = dexes_.poolProviderAave;
 
         //Oracles
         s.ethUsdChainlink = oracles_.ethUsdChainlink;
@@ -118,7 +118,7 @@ contract DiamondInit {
 
         s.deviation = 100; //<---- put this in Setup.sol
 
-        IAave(s.poolAave).setUserEMode(1);
+        // IAave(s.poolProviderAave).setUserEMode(1);
     }
 
 

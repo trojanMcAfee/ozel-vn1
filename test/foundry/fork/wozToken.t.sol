@@ -148,7 +148,8 @@ contract wozTokenTest is TestMethods {
         bytes memory data = OZ.getMintData(
             amountIn, 
             OZ.getDefaultSlippage(), 
-            alice
+            alice,
+            address(ozERC20)
         );
 
         //Action
@@ -174,7 +175,8 @@ contract wozTokenTest is TestMethods {
         bytes memory data = OZ.getMintData(
             amountIn, 
             OZ.getDefaultSlippage(), 
-            alice
+            alice,
+            address(wozERC20)
         );
 
         wozERC20.mintAndWrap(data, alice);

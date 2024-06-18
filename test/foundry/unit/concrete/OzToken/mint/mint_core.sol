@@ -47,7 +47,8 @@ contract Mint_Core is SharedConditions {
         bytes memory data = OZ.getMintData(
             amountIn,
             OZ.getDefaultSlippage(), 
-            receiver
+            receiver,
+            address(ozERC20)
         );
 
         vm.startPrank(alice);
@@ -66,7 +67,7 @@ contract Mint_Core is SharedConditions {
         assertEq(IERC20(underlying).decimals(), decimals_);
         
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
-        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice, address(ozERC20));
 
         vm.startPrank(alice);
         IERC20(underlying).approve(address(OZ), amountIn);
@@ -120,7 +121,7 @@ contract Mint_Core is SharedConditions {
         assertEq(IERC20(underlying).balanceOf(alice), 0);
         
         uint amountIn = (rawAmount / 3) * 10 ** IERC20(underlying).decimals();
-        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice);
+        bytes memory data = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice, address(ozERC20));
 
         //Action + Post-condtion
         IERC20(underlying).approve(address(OZ), amountIn);
