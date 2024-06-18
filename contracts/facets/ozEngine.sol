@@ -129,9 +129,21 @@ contract ozEngine is Modifiers {
         address poolAave = IAave(s.poolProviderAave).getPool();
         IERC20(stable_).approve(poolAave, amountInStable_);
 
+        console.log('bal pre: ', IERC20(stable_).balanceOf(address(this)));
+
         IAave(poolAave).supply(stable_, amountInStable_, address(this), 0);
 
-        uint x = IERC20(0x9bA00D6856a4eDF4665BcA2C2309936572473B7E).balanceOf(address(this));
+        console.log('bal post: ', IERC20(stable_).balanceOf(address(this)));
+
+        // (uint a, uint b, uint c, uint d, uint e, uint f) = IAave(poolAave).getUserAccountData(address(this));
+        // console.log('a: ', a);
+        // console.log('b: ', b);
+        // console.log('c: ', c);
+        // console.log('d: ', d);
+        // console.log('e: ', e);
+        // console.log('f: ', f);
+
+        uint x = IERC20(0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c).balanceOf(address(this));
         console.log('aUSDC: ', x);
 
         revert('here2');
