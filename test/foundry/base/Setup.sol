@@ -80,6 +80,7 @@ contract Setup is MockStorage, Test {
     address internal rEthAddr;
     address internal fraxAddr;
     address internal daiAddr;
+    address internal aUsdcAddr;
 
     //For debugging purposes
     address internal usdcAddrImpl;
@@ -236,6 +237,7 @@ contract Setup is MockStorage, Test {
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
             rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
             poolProviderAave = 0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e;
+            aUsdcAddr = 0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c;
             // rEthWethPoolUni = 
 
             network = "ethereum";
@@ -265,6 +267,7 @@ contract Setup is MockStorage, Test {
             protocolGuildSplit = 0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1;
             rethWethUniPool = 0xa4e0faA58465A2D369aa21B3e42d43374c6F9613;
             poolProviderAave = 0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e;
+            aUsdcAddr = 0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c;
 
             network = "ethereum-mocks";
             mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
@@ -412,7 +415,8 @@ contract Setup is MockStorage, Test {
             weth: wethAddr,
             reth: rEthAddr,
             usdc: usdcAddr,
-            usdt: usdtAddr
+            usdt: usdtAddr,
+            ausdc: aUsdcAddr
         });
 
         Dexes memory dexes = Dexes({
@@ -691,5 +695,6 @@ contract Setup is MockStorage, Test {
         vm.label(address(mockETH), 'mockETH');
         vm.label(address(mockRouter), 'mockRouter');
         vm.label(address(mockVault), 'mockVault');
+        vm.label(aUsdcAddr, 'aUSDC');
     }
 }

@@ -86,6 +86,7 @@ struct AppStorage {
     address pendingOwner;
 
     address poolProviderAave;
+    address aUSDC;
 }
 
 
@@ -143,6 +144,7 @@ struct Tokens {
     address reth;
     address usdc;
     address usdt;
+    address ausdc;
 }
 
 struct Dexes { //change this name to MoneyMarkets

@@ -82,6 +82,7 @@ contract DiamondInit {
         s.USDC = tokens_.usdc;
         s.USDT = tokens_.usdt;
         s.rETH = tokens_.reth;
+        s.aUSDC = tokens_.ausdc;
 
         //LSDs + WETH
         s.LSDs.push(s.rETH);
