@@ -245,6 +245,8 @@ contract ozOracle {
             s.valuePerOzToken2[ozToken_][s.rETH] -= amountOutRETH_;
             s.valuePerOzToken2[ozToken_][s.aUSDC] -= amountOutAUSDC_;
         }
+
+        //do the swapping of the ETH rewards into the ozBalance *****
     }
 
     

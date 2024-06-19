@@ -130,10 +130,6 @@ contract ozEngine is Modifiers {
 
         IAave(poolAave).supply(stable_, amountInStable_, address(this), 0);
 
-        // uint x = IERC20(s.aUSDC).balanceOf(address(this));
-        // console.log('aUSDC: ', x);
-
-
         return amountInStable_;
     }
 
