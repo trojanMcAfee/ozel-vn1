@@ -66,6 +66,17 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     mapping(address => CountersUpgradeable.Counter) private _nonces;
     mapping(address => mapping(address => uint256)) private _allowances;
 
+    //********/
+    // struct Deposit {
+    //     uint amountETH;
+    //     uint amountStable;
+    //     uint timestamp;
+    // }
+
+    // mapping(address receiver => Deposit deposit) public deposits;
+    // address[] receivers;
+    //********/
+
     string private _name;
     string private _symbol;
 
@@ -223,7 +234,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     ) external payable lock(TRANSIENT_SLOT) updateReward(owner_, _ozDiamond) returns(uint) {
         // if (data_.length != 224) revert OZError39(data_); <--- new length must be added
 
-        _computeRebase();
+        _executeRebaseSwap();
 
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
@@ -242,6 +253,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             uint shares = assets;
 
             _setAssetsAndShares(assets, shares, true);
+            _recordDeposit(receiver, amts.amountInETH, amts.amountInStable);
 
             unchecked {
                 _shares[receiver] += shares;
@@ -257,10 +269,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         }
     }
     //-------------
+    // s.rewardsStartTime
+    function _recordDeposit(address receiver_, uint amountETH_, uint amountStable_) private {
+        ozIDiamond(_ozDiamond).recordDeposit(receiver_, amountETH_, amountStable_);
+    } //<---- add this to ozIDiamond and Setup.sol, then continue with executeRebaseSwap() and the notebook formula
 
-    function _computeRebase() private {
-        ozIDiamond(_ozDiamond).computeRebase();
-    }
 
     // function _setValuePerOzToken(uint amountOut_, bool addOrSub_) private {
     //     ozIDiamond(_ozDiamond).setValuePerOzToken(address(this), amountOut_, addOrSub_);
@@ -375,6 +388,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             _shares[sender_] = senderShares - sharesAmount_;
             _shares[recipient_] += sharesAmount_;
         }
+    }
+
+    
+    function _executeRebaseSwap() private {
+        ozIDiamond(_ozDiamond).executeRebaseSwap();
     }
 
 

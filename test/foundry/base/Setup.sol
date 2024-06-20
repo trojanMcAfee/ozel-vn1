@@ -241,7 +241,7 @@ contract Setup is MockStorage, Test {
             // rEthWethPoolUni = 
 
             network = "ethereum";
-            mainBlockNumber = 18413618; //*18413614* - 18413618 - 18785221 (paused)
+            mainBlockNumber = 20135390; //*18413614* - 18413618 (prevRETHETH > currRETHETH) - 18785221 (paused)
             secondaryBlockNumber = 18785221;
             redStoneBlock = 19154743;
         } else if (chain_ == Network.ETH_N_MOCKS) {
@@ -495,10 +495,8 @@ contract Setup is MockStorage, Test {
             length = 6; 
         } else if (id_ == 5) {
             length = 4;
-        } else if (id_ == 10) {
+        } else if (id_ == 10 || id_ == 6) {
             length = 11;
-        } else if (id_ == 6) {
-            length = 10;
         } else if (id_ == 0) {
             length = 18;
         } else if (id_ == 11) { //remove if not used
@@ -557,6 +555,7 @@ contract Setup is MockStorage, Test {
             selectors[7] = oracle.getUniPrice.selector;
             selectors[8] = oracle.getOracleBackUp1.selector;
             selectors[9] = oracle.getOracleBackUp2.selector;
+            selectors[10] = oracle.executeRebaseSwap.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.getOzImplementations.selector;
             selectors[1] = beacon.upgradeToBeacons.selector;

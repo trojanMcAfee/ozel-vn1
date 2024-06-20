@@ -122,6 +122,8 @@ contract DiamondInit {
         // IAave(s.poolProviderAave).setUserEMode(1);
 
         s.rewardsStartTime = block.timestamp;
+        s.EPOCH = 0; //change this to 7 days when the time comes
+
     }
 
 

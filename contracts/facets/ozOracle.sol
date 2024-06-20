@@ -71,6 +71,33 @@ contract ozOracle {
         return (rETH_ETH() * ETH_USD()) / 1 ether;
     }
 
+    function executeRebaseSwap() external {
+        if (s.rewardsStartTime < s.EPOCH) return;
+
+        uint ozDiamondBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
+        uint currPrice = getUniPrice(0, Dir.UP);
+        uint prevPrice = getUniPrice(0, Dir.DOWN);
+
+        uint dailyIncrease = (currPrice - prevPrice) / 7 days;
+
+        for (uint i=0; i < )
+
+        console.log('--- ** ---');
+        console.log('ozDiamondBalanceRETH: ', ozDiamondBalanceRETH);
+        console.log('currPrice: ', currPrice);
+        console.log('prevPrice: ', prevPrice);
+
+        revert('here3');
+
+
+        s.rewardsStartTime = block.timestamp;
+    }
+
+    function recordDeposit(address receiver_, uint amountETH_, uint amountStable_) external {
+        s.deposits[receiver_] = Deposit(amountETH_, amountStable_, block.timestamp);
+        s.receivers.push(receiver_);
+    }
+
 
     //----------
     function _useLinkInterface(address priceFeed_, bool isLink_) private view returns(bool, uint) {
@@ -131,13 +158,13 @@ contract ozOracle {
      //It worth mentioning that this won't be a problem until trading on this pool considerably rises. 
      //.
      //.
-     //This function will return values with 27 deciamls *** IMPORTANT ***
+     //This function will return values with 27 decimals *** IMPORTANT ***
     function getUniPrice(uint tokenPair_, Dir side_) public view returns(uint) {
         (address token0, address token1, uint24 fee) = _triagePair(tokenPair_);
 
         address pool = IUniswapV3Factory(s.uniFactory).getPool(token0, token1, fee);
 
-        uint32 secsAgo = side_ == Dir.UP ? 1800 : 86400;
+        uint32 secsAgo = side_ == Dir.UP ? 1800 : 7 days; //86400 = 1 day
         //^ check the values I used for calculatin past rewards
         //check for Dir.DOWN also
 
@@ -246,14 +273,6 @@ contract ozOracle {
             s.valuePerOzToken2[ozToken_][s.aUSDC] -= amountOutAUSDC_;
         }
 
-    }
-
-    function computeRebase() external {
-        if (block.timestamp - s.rewardsStartTime < 7 days) return;
-
-        
-
-        s.rewardsStartTime = block.timestamp;
     }
 
     

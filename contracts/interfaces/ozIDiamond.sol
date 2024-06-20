@@ -168,4 +168,6 @@ interface ozIDiamond {
     function changeOzTokenImplementations(address[] memory newImplementations_) external;
     
     function getOzImplementations() external view returns (address[] memory);
+
+    function executeRebaseSwap() external;
 }

@@ -90,8 +90,17 @@ struct AppStorage {
     address aUSDC;
 
     uint rewardsStartTime; //timestamp for when the weekly calculation starts for the rebasing event
+    uint EPOCH;
+    mapping(address receiver => Deposit deposit) public deposits;
+    address[] receivers;
 }
 
+
+struct Deposit {
+    uint amountETH;
+    uint amountStable;
+    uint timestamp;
+}
 
 struct Pair {
     address base;
