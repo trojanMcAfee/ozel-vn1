@@ -1,0 +1,45 @@
+SYSTEM:
+exchange_rate = 1.10
+totalPrincipal = 0
+days = 7 * y
+
+USER_A:
+principal_a = 0.5
+
+gross_profits = 0.55 * (x * days) = principal_a * exchange_rate
+gross_profits_daily = 0.07857 = gross_profits / days
+net_profits = 0.05 = gross_profits - principal_a
+net_profits_daily = 0.00714286 = (gross_profits - principal_a) / days
+
+USER_B:
+principal_b = 0.4
+
+gross_profits = 0.44 * (x * days) = principal_b * exchange_rate
+gross_profits_daily = 0.062857 = gross_profits / days
+net_profits = 0.04 = gross_profits - principal_b
+net_profits_daily = 0.0057142 = (gross_profits - principal_b) / days
+
+
+diff_gross_profits = 0.55 - 0.44 ==> 0.11 = gross_profits_user_a - gross_profits_user_b
+diff_index = 0.11 * x
+
+user_a_balance_oz = diff_index * principal_a
+user_b_balance_oz = diff_index * principal_b
+
+
+------------------------------------------
+------------------------------------------
+------------------------------------------
+
+SYSTEM:
+exchange_rate = 1.24
+yield_token_balance = 0.40 = totalPrincipal / exchange_rate
+
+>>after 7 days, user_a gets 0.05 in net profits because they left their principal for the full 7 days
+
+USER_B:
+principal = 0.4
+time_elapsed = 3 days
+
+gross_profits = x = principal * exchange_rate
+  

@@ -120,6 +120,8 @@ contract DiamondInit {
         s.deviation = 100; //<---- put this in Setup.sol
 
         // IAave(s.poolProviderAave).setUserEMode(1);
+
+        s.rewardsStartTime = block.timestamp;
     }
 
 

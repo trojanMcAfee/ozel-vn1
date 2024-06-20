@@ -246,7 +246,14 @@ contract ozOracle {
             s.valuePerOzToken2[ozToken_][s.aUSDC] -= amountOutAUSDC_;
         }
 
-        //do the swapping of the ETH rewards into the ozBalance *****
+    }
+
+    function computeRebase() external {
+        if (block.timestamp - s.rewardsStartTime < 7 days) return;
+
+        
+
+        s.rewardsStartTime = block.timestamp;
     }
 
     

@@ -88,6 +88,8 @@ struct AppStorage {
 
     address poolProviderAave;
     address aUSDC;
+
+    uint rewardsStartTime; //timestamp for when the weekly calculation starts for the rebasing event
 }
 
 
