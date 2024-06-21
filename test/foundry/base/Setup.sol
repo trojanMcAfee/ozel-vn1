@@ -494,8 +494,8 @@ contract Setup is MockStorage, Test {
         } else if (id_ == 9) {
             length = 6; 
         } else if (id_ == 5) {
-            length = 4;
-        } else if (id_ == 10) {
+            length = 5;
+        } else if (id_ == 10 || id_ == 6) {
             length = 11;
         } else if (id_ == 0) {
             length = 18;
@@ -505,8 +505,6 @@ contract Setup is MockStorage, Test {
             length = 9;
         } else if (id_ == 1) {
             length = 6;
-        } else if (id_ == 6) {
-            length = 12;
         }
 
         bytes4[] memory selectors = new bytes4[](length);
@@ -546,6 +544,7 @@ contract Setup is MockStorage, Test {
             selectors[1] = engine.useOzTokens.selector;
             selectors[2] = engine.useOZL.selector;
             selectors[3] = engine.recicleOZL.selector;
+            selectors[4] = engine.executeRebaseSwap.selector;
         } else if (id_ == 6) {
             selectors[0] = oracle.rETH_ETH.selector;
             selectors[1] = oracle.getUnderlyingValue.selector;
@@ -557,8 +556,7 @@ contract Setup is MockStorage, Test {
             selectors[7] = oracle.getUniPrice.selector;
             selectors[8] = oracle.getOracleBackUp1.selector;
             selectors[9] = oracle.getOracleBackUp2.selector;
-            selectors[10] = oracle.executeRebaseSwap.selector;
-            selectors[11] = oracle.recordDeposit.selector;
+            selectors[10] = oracle.recordDeposit.selector;
         } else if (id_ == 7) {
             selectors[0] = beacon.getOzImplementations.selector;
             selectors[1] = beacon.upgradeToBeacons.selector;

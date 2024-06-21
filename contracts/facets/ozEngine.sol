@@ -108,13 +108,18 @@ contract ozEngine is Modifiers {
             amountOutRETH = postBalance - preBalance;
         
         } else {
+            //*********/
+            uint[] memory minAmountsOut = new uint[](2);
+            minAmountsOut[0] = amts_.minAmountOutRETH;
+            //*********/ <--- put this later on the offchain call's data to mint()
+
             amountOutRETH = _checkPauseAndSwap2(
                 s.WETH, 
                 s.rETH, 
                 address(this),
                 amountInWETH,
-                amts_.minAmountOutRETH,
-                Action.OZ_IN
+                minAmountsOut,
+                Action.OZ_IN //put an action that represents indifference, cross-check against _checkPauseAndSwap2() def
             );
         }
 
@@ -283,33 +288,33 @@ contract ozEngine is Modifiers {
         address tokenOut_,
         address receiver_,
         uint amountIn_,
-        uint minAmountOut_,
+        uint[] memory minAmountsOut_,
         Action type_
     ) private returns(uint amountOut) {
 
-        // (address tokenOutInternal, uint minAmountOutFirstLeg) = 
-        //     _triageInternalVars(type_, minAmountsOut_, tokenOut_);
+        (address tokenOutInternal, uint minAmountOutFirstLeg) = 
+            _triageInternalVars(type_, minAmountsOut_, tokenOut_);
 
         (bool paused,,) = IPool(s.rEthWethPoolBalancer).getPausedState(); 
 
         if (paused) {
             amountOut = _swapUni(
                 tokenIn_,
-                tokenOut_,
+                tokenOutInternal, //tokenOut_
                 address(this),
                 amountIn_,
-                minAmountOut_
+                minAmountOutFirstLeg
             );
         } else {   
             amountOut = _swapBalancer(
                 tokenIn_,
-                tokenOut_,
+                tokenOutInternal, //tokenOut_
                 amountIn_,
-                minAmountOut_
+                minAmountOutFirstLeg
             );
         }
 
-        if (type_ == Action.OZL_IN) {
+        if (type_ == Action.OZL_IN || type_ == Action.REBASE) {
             if (tokenOut_ == s.WETH) { 
                 IERC20(s.WETH).safeTransfer(receiver_, amountOut);
             } else {
@@ -318,8 +323,8 @@ contract ozEngine is Modifiers {
                     tokenOut_,
                     receiver_,
                     amountOut,
-                    minAmountOut_
-                    // minAmountsOut_[1]
+                    // minAmountOut_
+                    minAmountsOut_[1]
                 );
             }
         }
@@ -381,6 +386,7 @@ contract ozEngine is Modifiers {
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
     }
+    
 
 
     function _executeSwap(
@@ -403,6 +409,61 @@ contract ozEngine is Modifiers {
     }
 
 
+    function executeRebaseSwap() external returns(bool) { //onlyAuth
+        //put the 7 days check
+        if (s.rewardsStartTime + s.EPOCH < block.timestamp) return false;
+
+        uint rateRETHETH = Helpers.rETH_ETH(ozIDiamond(address(this)));
+        console.log('rateRETHETH: ', rateRETHETH);
+        if (rateRETHETH <= s.lastRebasePriceRETHETH) return false;
+
+        uint sysBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
+        console.log('sysBalanceRETH - pre swap: ', sysBalanceRETH);
+
+        uint sysBalanceConvertedETH = sysBalanceRETH.mulDivDown(rateRETHETH, 1 ether);
+        console.log(1);
+        console.log('sysBalanceConvertedETH: ', sysBalanceConvertedETH);
+        console.log('s.sysBalanceETH: ', s.sysBalanceETH);
+        uint rewardsETH = sysBalanceConvertedETH - s.sysBalanceETH;
+        console.log('rewardsETH: ', rewardsETH);
+
+        uint amountToSwapRETH = rewardsETH.mulDivDown(1 ether, rateRETHETH);
+        console.log('amountToSwapRETH: ', amountToSwapRETH);
+
+        //******/
+        uint[] memory minAmountsOut = new uint[](2); //<--- given by a keeper
+        //******/
+
+        console.log('USDC bal diamond - pre swap: ', IERC20Permit(s.USDC).balanceOf(address(this)));
+
+        console.log('');
+        console.log('**** SWAP ****');
+        console.log('');
+
+        uint amountOutUSDC =_checkPauseAndSwap2(
+            s.rETH,
+            s.USDC,
+            address(this),
+            amountToSwapRETH,
+            minAmountsOut, //<----- has to be given by a keeper (one for rETH<>WETH - other WETH<>USDC)
+            Action.REBASE 
+        );
+
+        s.stakingRewardsUSDC += amountOutUSDC;
+        s.lastRebasePriceRETHETH = rateRETHETH;
+        s.rewardsStartTime = block.timestamp;
+
+        console.log('stakingRewardsUSDC: ', s.stakingRewardsUSDC);
+        console.log('lastRebasePriceRETHETH: ', s.lastRebasePriceRETHETH);
+        console.log('sysBalanceRETH - post swap: ', IERC20Permit(s.rETH).balanceOf(address(this)));
+        console.log('USDC bal diamond - post swap: ', IERC20Permit(s.USDC).balanceOf(address(this)));
+
+        return true;
+
+        //emit rebase event here
+    }
+
+
     function _checkRocketCapacity(uint amountIn_) private view returns(bool) {
         uint poolBalance = IRocketVault(s.rocketVault).balanceOf('rocketDepositPool');
         uint capacityNeeded = poolBalance + amountIn_;
@@ -414,6 +475,18 @@ contract ozEngine is Modifiers {
     }   
 
 
+    // function _triageTokenOut(
+    //     Action type_, 
+    //     address tokenOut_
+    // ) private view returns(address tokenOutInternal) {
+    //     if (tokenOut_ == s.USDC) {
+    //         tokenOutInternal = s.WETH;
+    //     } else if (tokenOut_ == s.rETH) {
+    //         tokenOutInternal = s.rETH;
+    //     }
+    // }
+
+
     function _triageInternalVars(
         Action type_, 
         uint[] memory minAmountsOut_,
@@ -422,15 +495,15 @@ contract ozEngine is Modifiers {
         address tokenOutInternal, 
         uint minAmountOutFirstLeg
     ) {
-        if (type_ == Action.OZL_IN) {
+        if (type_ == Action.OZL_IN || type_ == Action.REBASE) {
             tokenOutInternal = s.WETH;
             minAmountOutFirstLeg = minAmountsOut_[0];
         } else if (type_ == Action.OZ_IN) {
             tokenOutInternal = tokenOut_;
-            minAmountOutFirstLeg = minAmountsOut_[1];
+            minAmountOutFirstLeg = minAmountsOut_[0]; //fix this since no sense all minAmountsOut[0]
         } else if (type_ == Action.OZ_OUT) {
             tokenOutInternal = tokenOut_;
-            minAmountOutFirstLeg = minAmountsOut_[0];
-        }
+            minAmountOutFirstLeg = minAmountsOut_[0]; //minAmountsOut arr is used by keepers call only so far
+        } 
     }
 }

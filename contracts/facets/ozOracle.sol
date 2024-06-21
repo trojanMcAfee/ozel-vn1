@@ -3,7 +3,7 @@ pragma solidity 0.8.24;
 
 
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import {AppStorage, LastRewards, Dir, Pair} from "../AppStorage.sol";
+import {AppStorage, LastRewards, Dir, Pair, Deposit} from "../AppStorage.sol";
 import {IPool} from "../interfaces/IBalancer.sol";
 import {IERC20Permit} from "../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "../../contracts/interfaces/ozIToken.sol";
@@ -72,59 +72,35 @@ contract ozOracle {
     }
 
 
-    function executeRebaseSwap() external { //onlyAuth
-        uint rateRETHETH = rETH_ETH()
-        uint sysBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
+    // function executeRebaseSwap2() external {
+    //     if (s.rewardsStartTime < s.EPOCH) return;
 
-        uint sysBalanceConvertedETH = sysBalanceRETH.mulDivDown(rateRETHETH, 1 ether);
-        uint rewardsETH = sysBalanceConvertedETH - s.sysBalanceETH;
-        uint amountToSwapRETH = rewardsETH.mulDivDown(1 ether, rateRETHETH);
+    //     uint ozDiamondBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
+    //     uint currPrice = getUniPrice(0, Dir.UP);
+    //     uint prevPrice = getUniPrice(0, Dir.DOWN);
 
-        uint amountOutUSDC =_checkPauseAndSwap2(
-            s.rETH,
-            s.USDC,
-            address(this),
-            amountToSwapRETH,
-            0, //<----- so far, given by a keeper
-            Action.OZ_IN //put an action that represents indifference, use it also in useUnderlying()
-        );
+    //     uint dailyIncrease = (currPrice - prevPrice) / 7 days;
 
-        s.stakingRewardsUSDC += amountOutUSDC;
-        s.lastRebasePriceRETHETH = rateRETHETH;
+    //     for (uint i=0; i < s.receivers.length; i++) {
+    //         address user = s.receivers[i];
+    //         Deposit[] memory deposits = s.deposits[user];
 
-        //emit rebase event here
-    }
+    //         for (uint j=0; j < deposits.length; j++) {
+    //             Deposit memory deposit = deposits[j];
+    //         }
+    //     }
 
+    //     console.log('--- ** ---');
+    //     console.log('ozDiamondBalanceRETH: ', ozDiamondBalanceRETH);
+    //     console.log('dailyIncrease: ', dailyIncrease);
+    //     console.log('currPrice: ', currPrice);
+    //     console.log('prevPrice: ', prevPrice);
 
-    function executeRebaseSwap2() external {
-        if (s.rewardsStartTime < s.EPOCH) return;
-
-        uint ozDiamondBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
-        uint currPrice = getUniPrice(0, Dir.UP);
-        uint prevPrice = getUniPrice(0, Dir.DOWN);
-
-        uint dailyIncrease = (currPrice - prevPrice) / 7 days;
-
-        for (uint i=0; i < s.receivers.length; i++) {
-            address user = s.receivers[i];
-            Deposit[] memory deposits = s.deposits[user];
-
-            for (uint j=0; j < deposits.length; j++) {
-                Deposit memory deposit = deposits[j];
-            }
-        }
-
-        console.log('--- ** ---');
-        console.log('ozDiamondBalanceRETH: ', ozDiamondBalanceRETH);
-        console.log('dailyIncrease: ', dailyIncrease);
-        console.log('currPrice: ', currPrice);
-        console.log('prevPrice: ', prevPrice);
-
-        revert('here3');
+    //     revert('here3');
 
 
-        s.rewardsStartTime = block.timestamp;
-    }
+    //     s.rewardsStartTime = block.timestamp;
+    // }
 
     function recordDeposit(address receiver_, uint amountETH_, uint amountStable_) external {
         s.deposits[receiver_].push(Deposit(amountETH_, amountStable_, block.timestamp));

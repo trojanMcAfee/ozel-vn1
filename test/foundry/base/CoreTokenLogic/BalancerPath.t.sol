@@ -25,7 +25,7 @@ contract BalancerPathTest is TestMethods {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
         uint amountIn = rawAmount * 10 ** IERC20Permit(testToken).decimals();   
-        console.log('amountIn: ', amountIn);
+        console.log('amountInStable in test: ', amountIn);
 
         (ozIToken ozERC20,) = _createOzTokens(testToken, "1");
 
@@ -41,7 +41,10 @@ contract BalancerPathTest is TestMethods {
 
         vm.stopPrank();
 
-        console.log('oz bal alice: ', ozERC20.balanceOf(alice));
+        bool success = OZ.executeRebaseSwap();
+        console.log('success - true: ', success);
+
+        // console.log('oz bal alice: ', ozERC20.balanceOf(alice));
     }
 
    

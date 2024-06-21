@@ -96,7 +96,7 @@ struct AppStorage {
     uint sysBalanceETH; //how much ETH has been deposited for minting ozTokens
     uint stakingRewardsUSDC; //rebase comes from this value. When user redeems, they get their share of this
 
-    uint lastRebasePriceRETHETH; //not used so far
+    uint lastRebasePriceRETHETH; 
 }
 
 
@@ -130,7 +130,8 @@ struct PauseContracts {
 enum Action {
     OZL_IN,
     OZ_IN,
-    OZ_OUT
+    OZ_OUT,
+    REBASE
 }
 
 //uint amountIn - amount of underlying in
