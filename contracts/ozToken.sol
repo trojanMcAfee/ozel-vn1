@@ -234,7 +234,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     ) external payable lock(TRANSIENT_SLOT) updateReward(owner_, _ozDiamond) returns(uint) {
         // if (data_.length != 224) revert OZError39(data_); <--- new length must be added
 
-        _executeRebaseSwap();
+        // _executeRebaseSwap();
 
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
@@ -272,7 +272,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     // s.rewardsStartTime
     function _recordDeposit(address receiver_, uint amountETH_, uint amountStable_) private {
         ozIDiamond(_ozDiamond).recordDeposit(receiver_, amountETH_, amountStable_);
-    } //<---- add this to ozIDiamond and Setup.sol, then continue with executeRebaseSwap() and the notebook formula
+    } 
 
 
     // function _setValuePerOzToken(uint amountOut_, bool addOrSub_) private {
@@ -391,9 +391,9 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     
-    function _executeRebaseSwap() private {
-        ozIDiamond(_ozDiamond).executeRebaseSwap();
-    }
+    // function _executeRebaseSwap() private {
+    //     ozIDiamond(_ozDiamond).executeRebaseSwap();
+    // }
 
 
     //change all the unit256 to uint ***

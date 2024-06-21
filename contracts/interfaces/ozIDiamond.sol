@@ -170,4 +170,5 @@ interface ozIDiamond {
     function getOzImplementations() external view returns (address[] memory);
 
     function executeRebaseSwap() external;
+    function recordDeposit(address receiver_, uint amountETH_, uint amountStable_) external;
 }

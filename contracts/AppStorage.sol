@@ -91,8 +91,19 @@ struct AppStorage {
 
     uint rewardsStartTime; //timestamp for when the weekly calculation starts for the rebasing event
     uint EPOCH;
-    mapping(address receiver => Deposit deposit) public deposits;
-    address[] receivers;
+    mapping(address receiver => Deposit[] deposit) deposits;
+    address[] receivers; 
+    uint sysBalanceETH; //how much ETH has been deposited for minting ozTokens
+    uint stakingRewardsUSDC; //rebase comes from this value. When user redeems, they get their share of this
+
+    uint lastRebasePriceRETHETH; //not used so far
+}
+
+
+struct Rebases { //not used so far
+    uint sysBalanceETH;
+    uint recordedETHSUD;
+    uint timestamp;
 }
 
 

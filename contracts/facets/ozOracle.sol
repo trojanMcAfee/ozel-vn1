@@ -71,7 +71,32 @@ contract ozOracle {
         return (rETH_ETH() * ETH_USD()) / 1 ether;
     }
 
-    function executeRebaseSwap() external {
+
+    function executeRebaseSwap() external { //onlyAuth
+        uint rateRETHETH = rETH_ETH()
+        uint sysBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
+
+        uint sysBalanceConvertedETH = sysBalanceRETH.mulDivDown(rateRETHETH, 1 ether);
+        uint rewardsETH = sysBalanceConvertedETH - s.sysBalanceETH;
+        uint amountToSwapRETH = rewardsETH.mulDivDown(1 ether, rateRETHETH);
+
+        uint amountOutUSDC =_checkPauseAndSwap2(
+            s.rETH,
+            s.USDC,
+            address(this),
+            amountToSwapRETH,
+            0, //<----- so far, given by a keeper
+            Action.OZ_IN //put an action that represents indifference, use it also in useUnderlying()
+        );
+
+        s.stakingRewardsUSDC += amountOutUSDC;
+        s.lastRebasePriceRETHETH = rateRETHETH;
+
+        //emit rebase event here
+    }
+
+
+    function executeRebaseSwap2() external {
         if (s.rewardsStartTime < s.EPOCH) return;
 
         uint ozDiamondBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
@@ -80,10 +105,18 @@ contract ozOracle {
 
         uint dailyIncrease = (currPrice - prevPrice) / 7 days;
 
-        for (uint i=0; i < )
+        for (uint i=0; i < s.receivers.length; i++) {
+            address user = s.receivers[i];
+            Deposit[] memory deposits = s.deposits[user];
+
+            for (uint j=0; j < deposits.length; j++) {
+                Deposit memory deposit = deposits[j];
+            }
+        }
 
         console.log('--- ** ---');
         console.log('ozDiamondBalanceRETH: ', ozDiamondBalanceRETH);
+        console.log('dailyIncrease: ', dailyIncrease);
         console.log('currPrice: ', currPrice);
         console.log('prevPrice: ', prevPrice);
 
@@ -94,8 +127,9 @@ contract ozOracle {
     }
 
     function recordDeposit(address receiver_, uint amountETH_, uint amountStable_) external {
-        s.deposits[receiver_] = Deposit(amountETH_, amountStable_, block.timestamp);
+        s.deposits[receiver_].push(Deposit(amountETH_, amountStable_, block.timestamp));
         s.receivers.push(receiver_);
+        s.sysBalanceETH += amountETH_;
     }
 
 
