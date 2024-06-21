@@ -26,6 +26,29 @@ diff_index = 0.11 * x
 user_a_balance_oz = diff_index * principal_a
 user_b_balance_oz = diff_index * principal_b
 
+------------------------------------------
+------------------------------------------
+------------------------------------------
+
+start_rate = 1
+end_rate = 1.10
+total_rewards = 0.1
+epoch = 7 days
+daily_rewards = total_rewards / epoch = 0.1 / 7 = 0.01428571 rewards per day
+base = 1
+
+user_a_not_interacting_7_days = principal_a * end_rate = 0.5 * 1.10 = 0.55
+user_b_not_interaction_7_days = principal_b * end_rate = 0.4 * 1.10 = 0.44
+
+user_a = principal_a * [(daily_rewards * time_spent) + base]
+user_a = 0.5 * [(0.01428571 * 7) + 1]
+user_a = 0.5 * 1.09999
+user_a = 0.5499995
+
+user_b = principal_b * [(daily_rewards * time_spent) + base]
+user_b = 0.4 * [(0.01428571 * 3) + 1]
+user_b = 0.4 * 1.04285713
+user_b = 0.41714
 
 ------------------------------------------
 ------------------------------------------
