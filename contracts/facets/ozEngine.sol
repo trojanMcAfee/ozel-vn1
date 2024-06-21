@@ -421,9 +421,9 @@ contract ozEngine is Modifiers {
         console.log('sysBalanceRETH - pre swap: ', sysBalanceRETH);
 
         uint sysBalanceConvertedETH = sysBalanceRETH.mulDivDown(rateRETHETH, 1 ether);
-        console.log(1);
         console.log('sysBalanceConvertedETH: ', sysBalanceConvertedETH);
         console.log('s.sysBalanceETH: ', s.sysBalanceETH);
+
         uint rewardsETH = sysBalanceConvertedETH - s.sysBalanceETH;
         console.log('rewardsETH: ', rewardsETH);
 
@@ -434,6 +434,7 @@ contract ozEngine is Modifiers {
         uint[] memory minAmountsOut = new uint[](2); //<--- given by a keeper
         //******/
 
+        console.log('');
         console.log('USDC bal diamond - pre swap: ', IERC20Permit(s.USDC).balanceOf(address(this)));
 
         console.log('');

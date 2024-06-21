@@ -240,7 +240,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
             abi.decode(data_, (AmountsIn, address));
 
         if (isETH_) if (amts.amountInETH != msg.value) revert OZError43();
-
         if (amts.amountInStable == 0 || amts.amountInETH == 0) revert OZError37();
         if (owner_ == address(0) || receiver == address(0)) revert OZError38();
 

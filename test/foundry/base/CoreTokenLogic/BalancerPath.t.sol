@@ -21,6 +21,31 @@ contract BalancerPathTest is TestMethods {
     using FixedPointMathLib for uint;
 
 
+    function _constructBalancerSwap() private returns(
+        IVault.SingleSwap memory, 
+        IVault.FundManagement memory
+    ) {
+
+        IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
+            poolId: IPool(rEthWethPoolBalancer).getPoolId(),
+            kind: IVault.SwapKind.GIVEN_IN,
+            assetIn: IAsset(rEthAddr),
+            assetOut: IAsset(wethAddr),
+            amount: 946135001651163,
+            userData: new bytes(0)
+        });
+
+        IVault.FundManagement memory funds = IVault.FundManagement({
+            sender: address(OZ),
+            fromInternalBalance: false, 
+            recipient: payable(address(OZ)),
+            toInternalBalance: false
+        });
+
+        return (singleSwap, funds);
+    }
+
+
     function test_strategy_new() public {
         //Pre-condition
         (uint rawAmount,,) = _dealUnderlying(Quantity.SMALL, false);
@@ -41,14 +66,42 @@ contract BalancerPathTest is TestMethods {
 
         vm.stopPrank();
 
+        console.log('rETH_ETH - pre epoch: ', OZ.rETH_ETH());
+        console.log('aUSDC bal in test - diamond - pre warp: ', IERC20Permit(aUsdcAddr).balanceOf(address(OZ)));
+
+        /*** simulates time for staking rewards accrual ***/
+        uint blockAccrual = mainBlockNumber + 7 days;
+        console.log('blockAccrual - 20740190: ', blockAccrual);
+        vm.warp(blockAccrual);
+
+        console.log('');
+        console.log('*** MOCK ***');
+        console.log('');
+
+        _mock_rETH_ETH_diamond();
+        
+        (
+            IVault.SingleSwap memory singleSwap, 
+            IVault.FundManagement memory funds
+        ) = _constructBalancerSwap();
+
+        vm.mockCall(
+            abi.encodeWithSelector(IVault.swap.selector, singleSwap, funds, 0, blockAccrual),
+            abi.encode() //<---- continue here *** put the WETH output with mocked rETH/ETH
+        );
+
+        console.log('rETH_ETH - post epoch: ', OZ.rETH_ETH());
+        /*******/
+
         bool success = OZ.executeRebaseSwap();
         console.log('success - true: ', success);
 
         // console.log('oz bal alice: ', ozERC20.balanceOf(alice));
     }
-
    
-   //------------
+   //----------------
+
+
     function test_minting_approve_smallMint_balancer() public {
         _minting_approve_smallMint();
     }

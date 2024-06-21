@@ -462,6 +462,17 @@ contract BaseMethods is Setup {
         }
     }
 
+    function _mock_rETH_ETH_diamond() internal {
+        uint bpsIncrease = 400; //92 - 400
+        uint rETHETHmock = OZ.rETH_ETH() + bpsIncrease.mulDivDown(OZ.rETH_ETH(), 10_000);
+
+        vm.mockCall( 
+            address(OZ),
+            abi.encodeWithSignature('rETH_ETH()'),
+            abi.encode(rETHETHmock)
+        ); 
+    }
+
     
     function _mock_rETH_ETH() internal { //might not be used anymore
         uint bpsIncrease = 400; //92 - 400
