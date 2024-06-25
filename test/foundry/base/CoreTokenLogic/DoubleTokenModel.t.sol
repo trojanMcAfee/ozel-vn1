@@ -119,9 +119,12 @@ contract DoubleTokenModelTest is TestMethods {
         console.log('aUSDC bal in test - diamond - pre warp: ', IERC20Permit(aUsdcAddr).balanceOf(address(OZ)));
 
         /*** simulates time for staking rewards accrual ***/
-        // uint halfAccrual = 
+        uint halfAccrual = mainBlockNumber + 3 days;
+        vm.warp(blockAccrual);
 
-        uint blockAccrual = mainBlockNumber + 7 days;
+        _bobDeposit(ozERC20, amountIn);
+
+        uint blockAccrual = halfAccrual + 7 days;
         vm.warp(blockAccrual);
 
         console.log('');
@@ -153,10 +156,18 @@ contract DoubleTokenModelTest is TestMethods {
     }
 
 
-    function _secondUser(ozIToken ozERC20_) private {
+    function _bobDeposit(ozIToken ozERC20, uint amountIn_) private {
+        bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), bob, address(ozERC20));
+        (AmountsIn memory amts,) = abi.decode(mintData, (AmountsIn, address));
 
+        payable(bob).transfer(500 ether);
 
+        vm.startPrank(bob);
 
+        IERC20(testToken).approve(address(OZ), amountIn);
+        ozERC20.mint2{value: amts.amountInETH}(mintData, bob, true);
+
+        vm.stopPrank();
     }
 
 
