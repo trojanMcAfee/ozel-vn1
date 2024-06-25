@@ -318,8 +318,6 @@ contract ozEngine is Modifiers {
             if (tokenOut_ == s.WETH) { 
                 IERC20(s.WETH).safeTransfer(receiver_, amountOut);
             } else {
-                console.log('should log');
-
                 amountOut = _swapUni(
                     s.WETH,
                     tokenOut_,
@@ -460,7 +458,6 @@ contract ozEngine is Modifiers {
 
         console.log('stakingRewardsUSDC: ', s.stakingRewardsUSDC);
         console.log('lastRebasePriceRETHETH: ', s.lastRebasePriceRETHETH);
-        console.log('sysBalanceRETH - post swap: ', IERC20Permit(s.rETH).balanceOf(address(this)));
         console.log('USDC bal diamond - post swap: ', IERC20Permit(s.USDC).balanceOf(address(this)));
 
         //emit rebase event here

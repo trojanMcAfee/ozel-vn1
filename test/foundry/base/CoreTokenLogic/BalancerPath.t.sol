@@ -134,6 +134,10 @@ contract BalancerPathTest is TestMethods {
         bool success = OZ.executeRebaseSwap();
         console.log('success - true: ', success);
 
+        deal(rEthAddr, address(OZ), IERC20(rEthAddr).balanceOf(address(OZ)) - amountToSwapRETH);
+
+        console.log('sysBalanceRETH - post swap: ', IERC20Permit(rEthAddr).balanceOf(address(OZ)));
+
         // console.log('oz bal alice: ', ozERC20.balanceOf(alice));
     }
    
