@@ -9,6 +9,7 @@ import {FixedPointMathLib} from "../../../../contracts/libraries/FixedPointMathL
 import {IERC20Permit} from "./../../../../contracts/interfaces/IERC20Permit.sol";
 import {ozIToken} from "./../../../../contracts/interfaces/ozIToken.sol";
 import {IAave} from "./../../../../contracts/interfaces/IAave.sol";
+import {IVault, IPool, IAsset} from "./../../../../contracts/interfaces/IBalancer.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {AmountsIn} from "./../../../../contracts/AppStorage.sol";
 
@@ -21,7 +22,7 @@ contract BalancerPathTest is TestMethods {
     using FixedPointMathLib for uint;
 
 
-    function _constructBalancerSwap() private returns(
+    function _constructBalancerSwap() private view returns(
         IVault.SingleSwap memory, 
         IVault.FundManagement memory
     ) {
@@ -85,9 +86,15 @@ contract BalancerPathTest is TestMethods {
             IVault.FundManagement memory funds
         ) = _constructBalancerSwap();
 
+        uint rateRETHETH = 1154401364401861932;
+        uint amountToSwapRETH = 946135001651163;
+        uint swappedAmountWETH = rateRETHETH.mulDivDown(amountToSwapRETH, 1 ether);
+        console.log('swappedAmountWETH in test: ', swappedAmountWETH);
+        
         vm.mockCall(
+            vaultBalancer,
             abi.encodeWithSelector(IVault.swap.selector, singleSwap, funds, 0, blockAccrual),
-            abi.encode() //<---- continue here *** put the WETH output with mocked rETH/ETH
+            abi.encode(swappedAmountWETH)
         );
 
         console.log('rETH_ETH - post epoch: ', OZ.rETH_ETH());

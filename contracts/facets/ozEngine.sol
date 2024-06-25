@@ -385,6 +385,8 @@ contract ozEngine is Modifiers {
 
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
+        console.log('amountOut weth: ', amountOut);
+        revert('here5');
     }
     
 
@@ -424,7 +426,7 @@ contract ozEngine is Modifiers {
         console.log('sysBalanceConvertedETH: ', sysBalanceConvertedETH);
         console.log('s.sysBalanceETH: ', s.sysBalanceETH);
 
-        uint rewardsETH = sysBalanceConvertedETH - s.sysBalanceETH;
+        uint rewardsETH = sysBalanceConvertedETH - s.sysBalanceETH; //rETH rewards that'll be swapped for USDC
         console.log('rewardsETH: ', rewardsETH);
 
         uint amountToSwapRETH = rewardsETH.mulDivDown(1 ether, rateRETHETH);
@@ -449,6 +451,7 @@ contract ozEngine is Modifiers {
             minAmountsOut, //<----- has to be given by a keeper (one for rETH<>WETH - other WETH<>USDC)
             Action.REBASE 
         );
+        console.log(2);
 
         s.stakingRewardsUSDC += amountOutUSDC;
         s.lastRebasePriceRETHETH = rateRETHETH;
@@ -459,9 +462,10 @@ contract ozEngine is Modifiers {
         console.log('sysBalanceRETH - post swap: ', IERC20Permit(s.rETH).balanceOf(address(this)));
         console.log('USDC bal diamond - post swap: ', IERC20Permit(s.USDC).balanceOf(address(this)));
 
+        //emit rebase event here
+
         return true;
 
-        //emit rebase event here
     }
 
 
