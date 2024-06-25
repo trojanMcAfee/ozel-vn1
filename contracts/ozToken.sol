@@ -10,7 +10,7 @@ import {
 } from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable-4.7.3/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import {ozIDiamond} from "./interfaces/ozIDiamond.sol";
-import {AmountsIn, AmountsOut, Asset} from "./AppStorage.sol";
+import {AmountsIn, AmountsOut, Asset, AppStorage, Deposit} from "./AppStorage.sol";
 import {IERC20Permit} from "./interfaces/IERC20Permit.sol";
 // import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -217,9 +217,30 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return _underlying;
     }
 
-    function balanceOf(address account_) public view returns(uint) {
+    //**********/
+    function balanceOf2(address account_) public view returns(uint) {
         return convertToOzTokens(sharesOf(account_), account_).unray();
     }
+
+    function balanceOf(address account_) public view returns(uint) {
+        uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC() / 7 days; // / s.EPOCH
+
+        Deposit[] memory deposits = _OZ().getDeposits(account_);
+        Deposit memory deposit = deposits[0];
+
+        console.log('');
+        console.log('stamp deposit: ', deposit.timestamp);
+        console.log('secondlyRewardsUSDC: ', secondlyRewardsUSDC);
+        console.log('current stamp: ', block.timestamp);
+        console.log('last rebase swap: ', _OZ().getRewardsStartTime());
+        console.log('7 days: ', 7 days);
+
+        int timeSpent = int(block.timestamp) - int(deposit.timestamp);
+
+        return _assets[account_] * ((secondlyRewardsUSDC * uint(timeSpent)) + 1 ether);
+    }
+
+    //**********/
 
     function mint(
         bytes memory data_, 
@@ -231,7 +252,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         bytes memory data_, 
         address owner_,
         bool isETH_
-    ) external payable lock(TRANSIENT_SLOT) updateReward(owner_, _ozDiamond) returns(uint) {
+    ) external payable lock(TRANSIENT_SLOT) returns(uint) { //updateReward(owner_, _ozDiamond)
         // if (data_.length != 224) revert OZError39(data_); <--- new length must be added
 
         // _executeRebaseSwap();

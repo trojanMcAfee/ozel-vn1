@@ -3,7 +3,7 @@ pragma solidity 0.8.24;
 
 
 import {DiamondLoupeFacet} from "./DiamondLoupeFacet.sol";
-import {AppStorage, Asset, OZLrewards, AmountsIn, AmountsOut} from "../AppStorage.sol";
+import {AppStorage, Asset, OZLrewards, AmountsIn, AmountsOut, Deposit} from "../AppStorage.sol";
 import {ozIDiamond} from "../interfaces/ozIDiamond.sol";
 import {IERC20Permit} from "../interfaces/IERC20Permit.sol";
 import {ozIToken} from "../interfaces/ozIToken.sol";
@@ -188,6 +188,19 @@ contract ozLoupe is DiamondLoupeFacet {
     */
     function getAPR() external view returns(uint) {
         return (s.prevAPR + s.currAPR) / 2;
+    }
+
+    //unity all AppStorage queries in one function
+    function getStakingRewardsUSDC() external view returns(uint) {
+        return s.stakingRewardsUSDC;
+    }
+
+    function getDeposits(address account_) external view returns(Deposit[] memory) {
+        return s.deposits[account_];
+    }
+
+    function getRewardsStartTime() external view returns(uint) {
+        return s.rewardsStartTime;
     }
    
 }

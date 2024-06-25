@@ -119,12 +119,13 @@ contract DoubleTokenModelTest is TestMethods {
         console.log('aUSDC bal in test - diamond - pre warp: ', IERC20Permit(aUsdcAddr).balanceOf(address(OZ)));
 
         /*** simulates time for staking rewards accrual ***/
-        uint halfAccrual = mainBlockNumber + 3 days;
+        uint halfAccrual = block.timestamp + 3 days;
         vm.warp(halfAccrual);
 
         // _bobDeposit(ozERC20, amountIn);
 
-        uint blockAccrual = halfAccrual + 7 days;
+        uint blockAccrual = halfAccrual + 4 days;
+        console.log('blockAccrual: ', blockAccrual);
         vm.warp(blockAccrual);
 
         console.log('');
@@ -152,6 +153,8 @@ contract DoubleTokenModelTest is TestMethods {
 
         console.log('sysBalanceRETH - post swap: ', newBalanceRETH);
         //**************** */
+
+        console.log('bal alice oz: ', ozERC20.balanceOf(alice));
 
     }
 

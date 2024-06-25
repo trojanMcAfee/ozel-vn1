@@ -10,7 +10,8 @@ import {
     LastRewards,
     OZLrewards,
     NewToken,
-    Dir
+    Dir,
+    Deposit
 } from "../AppStorage.sol";
 import {ozIToken} from "./ozIToken.sol";
 
@@ -171,4 +172,7 @@ interface ozIDiamond {
 
     function executeRebaseSwap() external returns(bool);
     function recordDeposit(address receiver_, uint amountETH_, uint amountStable_) external;
+    function getStakingRewardsUSDC() external view returns(uint);
+    function getDeposits(address account_) external view returns(Deposit[] memory);
+    function getRewardsStartTime() external view returns(uint);
 }
