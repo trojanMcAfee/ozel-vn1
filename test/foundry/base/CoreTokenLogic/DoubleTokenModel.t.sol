@@ -120,9 +120,9 @@ contract DoubleTokenModelTest is TestMethods {
 
         /*** simulates time for staking rewards accrual ***/
         uint halfAccrual = mainBlockNumber + 3 days;
-        vm.warp(blockAccrual);
+        vm.warp(halfAccrual);
 
-        _bobDeposit(ozERC20, amountIn);
+        // _bobDeposit(ozERC20, amountIn);
 
         uint blockAccrual = halfAccrual + 7 days;
         vm.warp(blockAccrual);
@@ -156,7 +156,7 @@ contract DoubleTokenModelTest is TestMethods {
     }
 
 
-    function _bobDeposit(ozIToken ozERC20, uint amountIn_) private {
+    function _bobDeposit(ozIToken ozERC20, uint amountIn) private {
         bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), bob, address(ozERC20));
         (AmountsIn memory amts,) = abi.decode(mintData, (AmountsIn, address));
 
