@@ -318,6 +318,8 @@ contract ozEngine is Modifiers {
             if (tokenOut_ == s.WETH) { 
                 IERC20(s.WETH).safeTransfer(receiver_, amountOut);
             } else {
+                console.log('should log');
+
                 amountOut = _swapUni(
                     s.WETH,
                     tokenOut_,
@@ -385,8 +387,8 @@ contract ozEngine is Modifiers {
 
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
-        console.log('amountOut weth: ', amountOut);
-        revert('here5');
+        console.log('amountOut weth - swappedAmountWETH: ', amountOut);
+        console.log('weth bal oz post mock: ', IERC20Permit(s.WETH).balanceOf(address(this)));
     }
     
 
@@ -451,7 +453,6 @@ contract ozEngine is Modifiers {
             minAmountsOut, //<----- has to be given by a keeper (one for rETH<>WETH - other WETH<>USDC)
             Action.REBASE 
         );
-        console.log(2);
 
         s.stakingRewardsUSDC += amountOutUSDC;
         s.lastRebasePriceRETHETH = rateRETHETH;

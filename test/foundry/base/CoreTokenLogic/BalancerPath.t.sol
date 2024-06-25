@@ -4,6 +4,7 @@ pragma solidity 0.8.24;
 
 import {TestMethods} from "../TestMethods.sol";
 import {FixedPointMathLib} from "../../../../contracts/libraries/FixedPointMathLib.sol";
+import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
 //--------
 import {IERC20Permit} from "./../../../../contracts/interfaces/IERC20Permit.sol";
@@ -20,6 +21,20 @@ import "forge-std/console.sol";
 contract BalancerPathTest is TestMethods {
 
     using FixedPointMathLib for uint;
+
+
+    function _constructUniSwap(uint amountIn_) private view returns(ISwapRouter.ExactInputSingleParams memory) {
+        return ISwapRouter.ExactInputSingleParams({ 
+                tokenIn: wethAddr,
+                tokenOut: testToken, 
+                fee: uniPoolFee, 
+                recipient: address(OZ),
+                deadline: block.timestamp,
+                amountIn: amountIn_,
+                amountOutMinimum: 0,
+                sqrtPriceLimitX96: 0
+            });
+    }
 
 
     function _constructBalancerSwap() private view returns(
@@ -81,6 +96,7 @@ contract BalancerPathTest is TestMethods {
 
         _mock_rETH_ETH_diamond();
         
+        //---- mock BALANCER rETH<>WETH swap ----
         (
             IVault.SingleSwap memory singleSwap, 
             IVault.FundManagement memory funds
@@ -90,13 +106,28 @@ contract BalancerPathTest is TestMethods {
         uint amountToSwapRETH = 946135001651163;
         uint swappedAmountWETH = rateRETHETH.mulDivDown(amountToSwapRETH, 1 ether);
         console.log('swappedAmountWETH in test: ', swappedAmountWETH);
+        console.log('');
+
+        console.log('weth bal oz pre mock: ', IERC20(wethAddr).balanceOf(address(OZ)));
         
         vm.mockCall(
             vaultBalancer,
             abi.encodeWithSelector(IVault.swap.selector, singleSwap, funds, 0, blockAccrual),
             abi.encode(swappedAmountWETH)
         );
+        deal(wethAddr, address(OZ), swappedAmountWETH);
 
+        //---- mock UNISWAP WETH<>USDC swap (not need for now since ETHUSD hasn't chan ged)----
+        // ISwapRouter.ExactInputSingleParams memory params = _constructUniSwap(swappedAmountWETH);
+
+        // vm.mockCall(
+        //     swapRouterUni,
+        //     abi.encodeWithSelector(ISwapRouter.exactInputSingle.selector, params),
+        //     abi.encode()
+        // );
+
+
+        //--------------------------------------
         console.log('rETH_ETH - post epoch: ', OZ.rETH_ETH());
         /*******/
 
