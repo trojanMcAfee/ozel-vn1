@@ -385,8 +385,6 @@ contract ozEngine is Modifiers {
 
         IERC20(tokenIn_).safeApprove(s.vaultBalancer, singleSwap.amount);
         amountOut = _executeSwap(singleSwap, funds, minAmountOut_, block.timestamp);
-        console.log('amountOut weth - swappedAmountWETH: ', amountOut);
-        console.log('weth bal oz post mock: ', IERC20Permit(s.WETH).balanceOf(address(this)));
     }
     
 
@@ -416,7 +414,6 @@ contract ozEngine is Modifiers {
         if (s.rewardsStartTime + s.EPOCH < block.timestamp) return false;
 
         uint rateRETHETH = Helpers.rETH_ETH(ozIDiamond(address(this)));
-        console.log('rateRETHETH: ', rateRETHETH);
         if (rateRETHETH <= s.lastRebasePriceRETHETH) return false;
 
         uint sysBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
@@ -424,6 +421,7 @@ contract ozEngine is Modifiers {
 
         uint sysBalanceConvertedETH = sysBalanceRETH.mulDivDown(rateRETHETH, 1 ether);
         console.log('sysBalanceConvertedETH: ', sysBalanceConvertedETH);
+        console.log('');
         console.log('s.sysBalanceETH: ', s.sysBalanceETH);
 
         uint rewardsETH = sysBalanceConvertedETH - s.sysBalanceETH; //rETH rewards that'll be swapped for USDC
@@ -456,7 +454,6 @@ contract ozEngine is Modifiers {
         s.lastRebasePriceRETHETH = rateRETHETH;
         s.rewardsStartTime = block.timestamp;
 
-        console.log('stakingRewardsUSDC: ', s.stakingRewardsUSDC);
         console.log('lastRebasePriceRETHETH: ', s.lastRebasePriceRETHETH);
         console.log('USDC bal diamond - post swap: ', IERC20Permit(s.USDC).balanceOf(address(this)));
 
