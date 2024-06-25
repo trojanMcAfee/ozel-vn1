@@ -84,7 +84,15 @@ contract DoubleTokenModelTest is TestMethods {
         return amountToSwapRETH;
     }
 
-    
+      //---- mock UNISWAP WETH<>USDC swap (not need for now since ETHUSD hasn't chan ged)----
+        // ISwapRouter.ExactInputSingleParams memory params = _constructUniSwap(swappedAmountWETH);
+
+        // vm.mockCall(
+        //     swapRouterUni,
+        //     abi.encodeWithSelector(ISwapRouter.exactInputSingle.selector, params),
+        //     abi.encode()
+        // );
+
 
     function test_strategy_new() public {
         //Pre-condition
@@ -111,6 +119,8 @@ contract DoubleTokenModelTest is TestMethods {
         console.log('aUSDC bal in test - diamond - pre warp: ', IERC20Permit(aUsdcAddr).balanceOf(address(OZ)));
 
         /*** simulates time for staking rewards accrual ***/
+        // uint halfAccrual = 
+
         uint blockAccrual = mainBlockNumber + 7 days;
         vm.warp(blockAccrual);
 
@@ -123,18 +133,7 @@ contract DoubleTokenModelTest is TestMethods {
         assertTrue(oldRateRETH < OZ.rETH_ETH());
         
         //---- mock BALANCER rETH<>WETH swap ----
-
-        uint amountToSwapRETH =_balancerPart(blockAccrual);
-
-        //---- mock UNISWAP WETH<>USDC swap (not need for now since ETHUSD hasn't chan ged)----
-        // ISwapRouter.ExactInputSingleParams memory params = _constructUniSwap(swappedAmountWETH);
-
-        // vm.mockCall(
-        //     swapRouterUni,
-        //     abi.encodeWithSelector(ISwapRouter.exactInputSingle.selector, params),
-        //     abi.encode()
-        // );
-
+        uint amountToSwapRETH = _balancerPart(blockAccrual);
 
         //--------------------------------------
         console.log('rETH_ETH - post epoch: ', OZ.rETH_ETH());
@@ -149,6 +148,14 @@ contract DoubleTokenModelTest is TestMethods {
         assertTrue(oldBalanceRETH > newBalanceRETH);
 
         console.log('sysBalanceRETH - post swap: ', newBalanceRETH);
+        //**************** */
+
+    }
+
+
+    function _secondUser(ozIToken ozERC20_) private {
+
+
 
     }
 
