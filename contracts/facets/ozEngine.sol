@@ -414,6 +414,7 @@ contract ozEngine is Modifiers {
         if (s.rewardsStartTime + s.EPOCH < block.timestamp) return false;
 
         uint rateRETHETH = Helpers.rETH_ETH(ozIDiamond(address(this)));
+        console.log('rateRETHETH: ', rateRETHETH);
         if (rateRETHETH <= s.lastRebasePriceRETHETH) return false;
 
         uint sysBalanceRETH = IERC20Permit(s.rETH).balanceOf(address(this));
@@ -449,6 +450,7 @@ contract ozEngine is Modifiers {
             minAmountsOut, //<----- has to be given by a keeper (one for rETH<>WETH - other WETH<>USDC)
             Action.REBASE 
         );
+        if (amountOutUSDC == 0) return false;
 
         s.stakingRewardsUSDC += amountOutUSDC;
         s.lastRebasePriceRETHETH = rateRETHETH;

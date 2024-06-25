@@ -61,6 +61,30 @@ contract DoubleTokenModelTest is TestMethods {
         return (singleSwap, funds);
     }
 
+    function _balancerPart(uint blockAccrual) private returns(uint) {
+        (
+            IVault.SingleSwap memory singleSwap, 
+            IVault.FundManagement memory funds
+        ) = _constructBalancerSwap();
+
+        uint rateRETHETH = 1154401364401861932;
+        uint amountToSwapRETH = 946135001651163;
+        uint swappedAmountWETH = rateRETHETH.mulDivDown(amountToSwapRETH, 1 ether);
+        uint oldAmountWETH = IERC20(wethAddr).balanceOf(address(this));
+        console.log('');
+        
+        vm.mockCall(
+            vaultBalancer,
+            abi.encodeWithSelector(IVault.swap.selector, singleSwap, funds, 0, blockAccrual),
+            abi.encode(swappedAmountWETH)
+        );
+        deal(wethAddr, address(OZ), swappedAmountWETH);
+        assertTrue(oldAmountWETH < IERC20(wethAddr).balanceOf(address(OZ)));
+
+        return amountToSwapRETH;
+    }
+
+    
 
     function test_strategy_new() public {
         //Pre-condition
@@ -99,24 +123,8 @@ contract DoubleTokenModelTest is TestMethods {
         assertTrue(oldRateRETH < OZ.rETH_ETH());
         
         //---- mock BALANCER rETH<>WETH swap ----
-        (
-            IVault.SingleSwap memory singleSwap, 
-            IVault.FundManagement memory funds
-        ) = _constructBalancerSwap();
 
-        uint rateRETHETH = 1154401364401861932;
-        uint amountToSwapRETH = 946135001651163;
-        uint swappedAmountWETH = rateRETHETH.mulDivDown(amountToSwapRETH, 1 ether);
-        uint oldAmountWETH = IERC20(wethAddr).balanceOf(address(this));
-        console.log('');
-        
-        vm.mockCall(
-            vaultBalancer,
-            abi.encodeWithSelector(IVault.swap.selector, singleSwap, funds, 0, blockAccrual),
-            abi.encode(swappedAmountWETH)
-        );
-        deal(wethAddr, address(OZ), swappedAmountWETH);
-        assertTrue(oldAmountWETH < IERC20(wethAddr).balanceOf(address(OZ)));
+        uint amountToSwapRETH =_balancerPart(blockAccrual);
 
         //---- mock UNISWAP WETH<>USDC swap (not need for now since ETHUSD hasn't chan ged)----
         // ISwapRouter.ExactInputSingleParams memory params = _constructUniSwap(swappedAmountWETH);
