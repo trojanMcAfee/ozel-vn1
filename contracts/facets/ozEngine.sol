@@ -112,7 +112,7 @@ contract ozEngine is Modifiers {
             minAmountsOut[0] = amts_.minAmountOutRETH;
             //*********/ <--- put this later on the offchain call's data to mint()
 
-            console.log('amountInWETH ******: ', amountInWETH);
+            // console.log('amountInWETH ******: ', amountInWETH);
 
             amountOutRETH = _checkPauseAndSwap2(
                 s.WETH, 
@@ -313,7 +313,7 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
-            console.log('amountOut - swappedAmount: ', amountOut);
+            // console.log('amountOut - swappedAmount: ', amountOut);
         }
 
         if (type_ == Action.OZL_IN || type_ == Action.REBASE) {

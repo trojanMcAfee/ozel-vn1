@@ -76,7 +76,7 @@ contract DoubleTokenModelTest is TestMethods {
             rateRETHETH.mulDivDown(amountToSwap, 1 ether) :
             amountToSwap.mulDivDown(1 ether, rateRETHETH);
 
-        console.log('amountToSwap: ', amountToSwap);
+        // console.log('amountToSwap: ', amountToSwap);
 
         uint oldAmountWETH = IERC20(wethAddr).balanceOf(address(this));
         // address tokenToSend = isRebase_ ? wethAddr : rEthAddr;
@@ -121,7 +121,7 @@ contract DoubleTokenModelTest is TestMethods {
 
         bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice, address(ozERC20));
         (AmountsIn memory amts,) = abi.decode(mintData, (AmountsIn, address));
-        console.log('amts.amountInETH alice ^^^^^^: ', amts.amountInETH);
+        // console.log('amts.amountInETH alice ^^^^^^: ', amts.amountInETH);
 
         payable(alice).transfer(1000 ether);
 
@@ -146,7 +146,6 @@ contract DoubleTokenModelTest is TestMethods {
         //total rETH that'll be swapped, representing the staking rewards earned
         uint amountToSwapRETH = _balancerPart(halfAccrual, false);
         _bobDeposit(ozERC20, amountIn);
-
         //---------------------
 
         uint blockAccrual = halfAccrual + 4 days;
@@ -185,6 +184,7 @@ contract DoubleTokenModelTest is TestMethods {
 
         console.log('');
         console.log('bal alice oz: ', ozERC20.balanceOf(alice));
+        console.log('bal bob oz: ', ozERC20.balanceOf(bob));
 
     }
 
