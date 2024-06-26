@@ -225,6 +225,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     function balanceOf(address account_) public view returns(uint) {
         // uint secondlyRewardsUSDC = (_OZ().getStakingRewardsUSDC() / 7 days) * 1 ether; // / s.EPOCH instead of 7 days
         uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
+        uint assetsUser = _assets[account_];
 
         Deposit[] memory deposits = _OZ().getDeposits(account_);
         Deposit memory deposit = deposits[0];
@@ -240,12 +241,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         int timeSpent = int(block.timestamp) - int(deposit.timestamp);
 
         console.log('stakingRewardsUSDC: ', _OZ().getStakingRewardsUSDC());
-        console.log('_assets[account_]: ', _assets[account_]);
+        console.log('assetsUser: ', assetsUser);
         console.log('secondlyRewardsUSDC: ', secondlyRewardsUSDC);
         console.log('uint(timeSpent): ', uint(timeSpent));
-        console.log('is2: ', _assets[account_] * (secondlyRewardsUSDC * uint(timeSpent)));
+        console.log('is2: ', assetsUser * (secondlyRewardsUSDC * uint(timeSpent)));
 
-        return _assets[account_] * (((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether) + 1e12);
+        return assetsUser + ((assetsUser * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
     }
 
     //**********/
