@@ -223,7 +223,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC() / 7 days; // / s.EPOCH
+        // uint secondlyRewardsUSDC = (_OZ().getStakingRewardsUSDC() / 7 days) * 1 ether; // / s.EPOCH instead of 7 days
+        uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
 
         Deposit[] memory deposits = _OZ().getDeposits(account_);
         Deposit memory deposit = deposits[0];
@@ -244,7 +245,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('uint(timeSpent): ', uint(timeSpent));
         console.log('is2: ', _assets[account_] * (secondlyRewardsUSDC * uint(timeSpent)));
 
-        return _assets[account_] * ((secondlyRewardsUSDC * uint(timeSpent)) + 1e12);
+        return _assets[account_] * (((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether) + 1e12);
     }
 
     //**********/
