@@ -37,17 +37,20 @@ contract DoubleTokenModelTest is TestMethods {
     }
 
 
-    function _constructBalancerSwap() private view returns(
+    function _constructBalancerSwap(bool isRebase_) private view returns(
         IVault.SingleSwap memory, 
         IVault.FundManagement memory
     ) {
+        IAsset tokenIn = IAsset(isRebase_ ? rEthAddr : wethAddr);
+        IAsset tokenOut = IAsset(isRebase_ ? wethAddr : rEthAddr);
+        uint amountIn = isRebase_ ? 946135001651163 : 28398352812392632;
 
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             poolId: IPool(rEthWethPoolBalancer).getPoolId(),
             kind: IVault.SwapKind.GIVEN_IN,
-            assetIn: IAsset(rEthAddr),
-            assetOut: IAsset(wethAddr),
-            amount: 946135001651163,
+            assetIn: tokenIn,
+            assetOut: tokenOut,
+            amount: amountIn,
             userData: new bytes(0)
         });
 
@@ -61,27 +64,31 @@ contract DoubleTokenModelTest is TestMethods {
         return (singleSwap, funds);
     }
 
-    function _balancerPart(uint blockAccrual) private returns(uint) {
+    function _balancerPart(uint blockAccrual, bool isRebase_) private returns(uint) {
         (
             IVault.SingleSwap memory singleSwap, 
             IVault.FundManagement memory funds
-        ) = _constructBalancerSwap();
+        ) = _constructBalancerSwap(isRebase_);
 
-        uint rateRETHETH = 1154401364401861932;
-        uint amountToSwapRETH = 946135001651163;
-        uint swappedAmountWETH = rateRETHETH.mulDivDown(amountToSwapRETH, 1 ether);
+        uint rateRETHETH = isRebase_ ? 1154401364401861932 : 1111038024285138135;
+        uint amountToSwap = isRebase_ ? 946135001651163 : 28398352812392632;
+        uint swappedAmount = isRebase_ ? 
+            rateRETHETH.mulDivDown(amountToSwap, 1 ether) :
+            amountToSwap.mulDivDown(1 ether, rateRETHETH);
+
         uint oldAmountWETH = IERC20(wethAddr).balanceOf(address(this));
+        // address tokenToSend = isRebase_ ? wethAddr : rEthAddr;
         console.log('');
         
         vm.mockCall(
             vaultBalancer,
             abi.encodeWithSelector(IVault.swap.selector, singleSwap, funds, 0, blockAccrual),
-            abi.encode(swappedAmountWETH)
+            abi.encode(swappedAmount)
         );
-        deal(wethAddr, address(OZ), swappedAmountWETH);
-        assertTrue(oldAmountWETH < IERC20(wethAddr).balanceOf(address(OZ)));
+        deal(isRebase_ ? wethAddr : rEthAddr, address(OZ), swappedAmount);
+        // assertTrue(oldAmountWETH < IERC20(wethAddr).balanceOf(address(OZ)));
 
-        return amountToSwapRETH;
+        return amountToSwap;
     }
 
       //---- mock UNISWAP WETH<>USDC swap (not need for now since ETHUSD hasn't chan ged)----
@@ -104,11 +111,13 @@ contract DoubleTokenModelTest is TestMethods {
 
         bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice, address(ozERC20));
         (AmountsIn memory amts,) = abi.decode(mintData, (AmountsIn, address));
+        console.log('amts.amountInETH alice ^^^^^^: ', amts.amountInETH);
 
         payable(alice).transfer(1000 ether);
 
         vm.startPrank(alice);
 
+        //Alice mints ozERC20
         IERC20(testToken).approve(address(OZ), amountIn);
         ozERC20.mint2{value: amts.amountInETH}(mintData, alice, true);
 
@@ -122,7 +131,13 @@ contract DoubleTokenModelTest is TestMethods {
         uint halfAccrual = block.timestamp + 3 days;
         vm.warp(halfAccrual);
 
-        // _bobDeposit(ozERC20, amountIn);
+        //---- mock BALANCER WETH > rETH swap ----
+        //Has to be a mock because balancer fails when swapping after warp
+        uint amountToSwapRETH = _balancerPart(halfAccrual, false);
+        _bobDeposit(ozERC20, amountIn);
+
+        //^^^ continue here with the accounting for rebase swap
+        //---------------------
 
         uint blockAccrual = halfAccrual + 4 days;
         console.log('blockAccrual: ', blockAccrual);
@@ -136,17 +151,16 @@ contract DoubleTokenModelTest is TestMethods {
 
         assertTrue(oldRateRETH < OZ.rETH_ETH());
         
-        //---- mock BALANCER rETH<>WETH swap ----
-        uint amountToSwapRETH = _balancerPart(blockAccrual);
+        //---- mock BALANCER rETH > WETH swap ----
+        amountToSwapRETH = _balancerPart(blockAccrual, true);
 
         //--------------------------------------
         console.log('rETH_ETH - post epoch: ', OZ.rETH_ETH());
         uint oldBalanceRETH = IERC20(rEthAddr).balanceOf(address(OZ));
 
-        bool success = OZ.executeRebaseSwap();
-        assertTrue(success);
+        assertTrue(OZ.executeRebaseSwap());
 
-        deal(rEthAddr, address(OZ), IERC20(rEthAddr).balanceOf(address(OZ)) - amountToSwapRETH);
+        deal(rEthAddr, address(OZ), IERC20(rEthAddr).balanceOf(address(OZ)) - amountToSwapRETH); //add both deposits here
         
         uint newBalanceRETH = IERC20Permit(rEthAddr).balanceOf(address(OZ));
         assertTrue(oldBalanceRETH > newBalanceRETH);
@@ -162,6 +176,7 @@ contract DoubleTokenModelTest is TestMethods {
     function _bobDeposit(ozIToken ozERC20, uint amountIn) private {
         bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), bob, address(ozERC20));
         (AmountsIn memory amts,) = abi.decode(mintData, (AmountsIn, address));
+        console.log('amts.amountInETH bob ^^^^^^: ', amts.amountInETH);
 
         payable(bob).transfer(500 ether);
 

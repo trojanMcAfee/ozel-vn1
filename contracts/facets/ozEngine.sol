@@ -92,8 +92,14 @@ contract ozEngine is Modifiers {
         //     minAmountsOut[0]
         // );
 
+        console.log('');
+        console.log('weth bal pre deposit oz ^^^^^^^: ', IWETH(s.WETH).balanceOf(address(this)));
+
         if (isETH_) IWETH(s.WETH).deposit{value: msg.value}();
         uint amountInWETH = IWETH(s.WETH).balanceOf(address(this));
+
+        console.log('weth bal post deposit oz ^^^^^^^: ', amountInWETH);
+        console.log('');
 
 
         if (_checkRocketCapacity(amountInWETH)) { //haven't done this for ETH = true / _checkRocketCapacity(amountOut)
@@ -112,6 +118,8 @@ contract ozEngine is Modifiers {
             uint[] memory minAmountsOut = new uint[](2);
             minAmountsOut[0] = amts_.minAmountOutRETH;
             //*********/ <--- put this later on the offchain call's data to mint()
+
+            console.log('amountInWETH ******: ', amountInWETH);
 
             amountOutRETH = _checkPauseAndSwap2(
                 s.WETH, 
@@ -396,6 +404,9 @@ contract ozEngine is Modifiers {
         uint blockStamp_
     ) private returns(uint) 
     {
+        console.log('blockStamp_ *******: ', blockStamp_);
+        console.log('minAmountOut_: ', minAmountOut_);
+
         try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
             if (amountOut == 0) revert OZError02();
             return amountOut;
