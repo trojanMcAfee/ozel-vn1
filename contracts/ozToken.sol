@@ -234,10 +234,17 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('current stamp: ', block.timestamp);
         console.log('last rebase swap: ', _OZ().getRewardsStartTime());
         console.log('7 days: ', 7 days);
+        console.log('');
 
         int timeSpent = int(block.timestamp) - int(deposit.timestamp);
 
-        return _assets[account_] * ((secondlyRewardsUSDC * uint(timeSpent)) + 1 ether);
+        console.log('stakingRewardsUSDC: ', _OZ().getStakingRewardsUSDC());
+        console.log('_assets[account_]: ', _assets[account_]);
+        console.log('secondlyRewardsUSDC: ', secondlyRewardsUSDC);
+        console.log('uint(timeSpent): ', uint(timeSpent));
+        console.log('is2: ', _assets[account_] * (secondlyRewardsUSDC * uint(timeSpent)));
+
+        return _assets[account_] * ((secondlyRewardsUSDC * uint(timeSpent)) + 1e12);
     }
 
     //**********/
