@@ -92,15 +92,8 @@ contract ozEngine is Modifiers {
         //     minAmountsOut[0]
         // );
 
-        console.log('');
-        console.log('weth bal pre deposit oz ^^^^^^^: ', IWETH(s.WETH).balanceOf(address(this)));
-
         if (isETH_) IWETH(s.WETH).deposit{value: msg.value}();
         uint amountInWETH = IWETH(s.WETH).balanceOf(address(this));
-
-        console.log('weth bal post deposit oz ^^^^^^^: ', amountInWETH);
-        console.log('');
-
 
         if (_checkRocketCapacity(amountInWETH)) { //haven't done this for ETH = true / _checkRocketCapacity(amountOut)
             IWETH(s.WETH).withdraw(amountInWETH);
@@ -320,6 +313,7 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
+            console.log('amountOut - swappedAmount: ', amountOut);
         }
 
         if (type_ == Action.OZL_IN || type_ == Action.REBASE) {
@@ -334,6 +328,9 @@ contract ozEngine is Modifiers {
                     // minAmountOut_
                     minAmountsOut_[1]
                 );
+
+                console.log('minAmountsOut_[1] - swapUni: ', minAmountsOut_[1]);
+                console.log('amountOut: ', amountOut);
             }
         }
     }
@@ -404,11 +401,19 @@ contract ozEngine is Modifiers {
         uint blockStamp_
     ) private returns(uint) 
     {
-        console.log('blockStamp_ *******: ', blockStamp_);
-        console.log('minAmountOut_: ', minAmountOut_);
+        // console.log('');
+        // console.log('--- in ozEngine ---');
+        // console.log('amountIn: ', singleSwap_.amount);
+        // console.log('assetIn: ', address(singleSwap_.assetIn));
+        // console.log('assetOut: ', address(singleSwap_.assetOut));
+        
 
         try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
             if (amountOut == 0) revert OZError02();
+
+            // console.log('amountOut: ', amountOut);
+            // console.log('');
+
             return amountOut;
         } catch Error(string memory reason) {
             if (Helpers.compareStrings(reason, 'BAL#507')) {
@@ -447,13 +452,10 @@ contract ozEngine is Modifiers {
         //******/
 
         console.log('');
-        console.log('USDC bal diamond - pre swap: ', IERC20Permit(s.USDC).balanceOf(address(this)));
-
-        console.log('');
         console.log('**** SWAP ****');
         console.log('');
 
-        uint amountOutUSDC =_checkPauseAndSwap2(
+        uint amountOutUSDC = _checkPauseAndSwap2(
             s.rETH,
             s.USDC,
             address(this),
@@ -462,6 +464,7 @@ contract ozEngine is Modifiers {
             Action.REBASE 
         );
         if (amountOutUSDC == 0) return false;
+        console.log('amountOutUSDC ******: ', amountOutUSDC);
 
         s.stakingRewardsUSDC += amountOutUSDC;
         s.lastRebasePriceRETHETH = rateRETHETH;
