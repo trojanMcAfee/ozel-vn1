@@ -40,15 +40,31 @@ base = 1
 
 user_a_not_interacting_7_days = principal_a * end_rate = 0.5 * 1.10 = 0.55
 user_b_not_interaction_7_days = principal_b * end_rate = 0.4 * 1.10 = 0.44
+TOTAL = 0.55 + 0.44 = 0.99
+
+user_a_balance_start = principal_a * start_rate = 0.5 * 1 = 0.5
+user_b_balance_start = principal_b * start_rate = 0.4 * 1 = 0.4
+TOTAL = 0.9
+
+SUBPROFITS = 0.99 - 0.9 = 0.09
 
 user_a = principal_a * [(daily_rewards * time_spent) + base]
 user_a = 0.5 * [(0.01428571 * 7) + 1]
 user_a = 0.5 * 1.09999
 user_a = 0.5499995
 
-user_a = principal_a * [(secondly_rewards * time_spent) + base]
-user_a = 0.5 * [(1.6534391534391535e-7 * 604800) + 1]
+-----------------
+user_a = principal_a * [(secondly_rewards * time_spent)]
+user_a = 0.5 * [(1.6534391534391535e-7 * 604800)]
 user_a = 0.55
+
+user_b = principal_b * [(secondly_rewards * time_spent)]
+user_b = 0.4 * [(1.6534391534391535e-7 * 259200)]
+user_b = 0.4 * 0.042857142857143
+user_b = 0.4428571428571429
+
+user_a + user_b == total_rewards
+-----------------
 
 7 days = 604800 secs 
 

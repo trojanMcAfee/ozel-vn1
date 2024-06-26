@@ -226,12 +226,22 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
         uint assetsUser = _assets[account_];
 
+        console.log('');
+        console.log('_OZ().getStakingRewardsUSDC(): ', _OZ().getStakingRewardsUSDC());
+        console.log('secondlyRewardsUSDC: ', secondlyRewardsUSDC);
+
         Deposit[] memory deposits = _OZ().getDeposits(account_);
         Deposit memory deposit = deposits[0];
 
-        int timeSpent = int(block.timestamp) - int(deposit.timestamp);
+        console.log('block.timestamp in balanceOf ******: ', block.timestamp);
+
+        int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
+        timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
+        console.log('timeSpent: ', uint(timeSpent));
+        console.log('assetsUser: ', assetsUser);
 
         return assetsUser + ((assetsUser * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
+        //^^ try the normalization theory from chatGPT here <---------------
     }
 
     //**********/
