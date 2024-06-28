@@ -237,11 +237,12 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
         timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
+        
         console.log('timeSpent: ', uint(timeSpent));
         console.log('assetsUser: ', assetsUser);
 
+        // return ((assetsUser * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
         return assetsUser + ((assetsUser * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
-        //^^ try the normalization theory from chatGPT here <---------------
     }
 
     //**********/
