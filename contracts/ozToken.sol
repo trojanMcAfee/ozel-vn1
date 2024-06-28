@@ -222,6 +222,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return convertToOzTokens(sharesOf(account_), account_).unray();
     }
 
+    uint total
+
     function balanceOf(address account_) public view returns(uint) {
         uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
         uint assetsUser = _assets[account_];
@@ -237,7 +239,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
         int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
         timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
-        
+
         console.log('timeSpent: ', uint(timeSpent));
         console.log('assetsUser: ', assetsUser);
 
