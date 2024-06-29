@@ -484,6 +484,8 @@ contract ozEngine is Modifiers {
             Deposit memory deposit = s.depositsBuffer[i];
             address user = deposit.receiver;
             uint index = s.users[user].index;
+            //this ^ index is not being set, so all users end up with the same index (0 or 1)
+            //check where it has to be set up. Perhaps in ozToken - mint2()
 
 
             int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
@@ -492,11 +494,16 @@ contract ozEngine is Modifiers {
 
             uint contributionFactor = deposit.amountETH * uint(timeSpent);
             
-            // factorTree.updateFactor(user, index, contributionFactor);
             // tree.updateFactor(user, index, contributionFactor); //<--- this is the call made below
+            console.log('');
+            console.log('user: ', user);
+            console.log('index: ', index);
+            console.log('contributionFactor: ', contributionFactor);
+            console.log(1);
             address(this).functionCall(
                 abi.encodeWithSelector(ozIDiamond.updateFactor.selector, user, index, contributionFactor)
             );
+            console.log(2);
             // depositTree.update(s.depositIndex, contributionFactor);
 
             s.deposits[user].push(deposit); //this var might not be used/useful anymore

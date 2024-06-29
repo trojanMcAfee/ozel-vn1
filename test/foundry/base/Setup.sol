@@ -708,5 +708,6 @@ contract Setup is MockStorage, Test {
         vm.label(address(mockRouter), 'mockRouter');
         vm.label(address(mockVault), 'mockVault');
         vm.label(aUsdcAddr, 'aUSDC');
+        vm.label(address(tree), 'ozFenwickTree');
     }
 }
