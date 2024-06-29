@@ -252,18 +252,19 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
 
     }
 
-    function balanceOf4(address account_) public view returns(uint) {
+    function balanceOf(address account_) public view returns(uint) {
         uint maxIndex = s.users[account_].index;
-        uint contributionFactor = factorTree.queryFactor(account_, maxIndex);
+        uint contributionFactor = _OZ().queryFactor(account_, maxIndex);
 
-        uint totalContributions = depositTree.queryDeposit(s.depositIndex);
+        uint totalContributions = _OZ().queryDeposit(s.depositIndex);
         uint share = contributionFactor / totalContributions;
-        share * s.stakingRewardsUSDC
-        //^^ create a 3rd tree for raw_total_rewards
-
+        uint userRewards = share * s.stakingRewardsUSDC;
+        
+        console.log('userRewards: ', userRewards);
+        return userRewards;
     }
 
-    function balanceOf(address account_) public view returns(uint) {
+    function balanceOf4(address account_) public view returns(uint) {
         uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
         uint assetsUser = _assets[account_];
 

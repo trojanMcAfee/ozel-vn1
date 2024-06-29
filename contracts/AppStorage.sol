@@ -102,9 +102,12 @@ struct AppStorage {
     uint depositIndex;
     uint factorIndex;
     // mapping(address receiver => uint factor) contributionFactors;
-    mapping(address receiver => mapping(uint index => uint depositFactor)) contributionFactors;
+    mapping(address receiver => mapping(uint index => uint depositFactor)) contributionFactors; //change this to factorTree
     mapping(uint index => uint depositFactor) depositTree;
     mapping(address addr => User user) users;
+    uint size; //change this to treeSize and in ozFenwickTree and DiamondInit
+
+
     //when making a deposit, put the deposit in this buffer, which adds to the real db when doing the rebaseSwap()
     //so you'll end up with two dbs  for deposit: a buffer and a permanent one. 
     //buffer gets cleared after each rebase

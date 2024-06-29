@@ -175,4 +175,9 @@ interface ozIDiamond {
     function getStakingRewardsUSDC() external view returns(uint);
     function getDeposits(address account_) external view returns(Deposit[] memory);
     function getRewardsStartTime() external view returns(uint);
+
+    function queryDeposit(uint index_) external view returns (uint sum);
+    function queryFactor(address user_, uint index_) external view returns (uint sum);
+    function updateFactor(address user, uint256 index, uint256 value) external;
+    function updateDeposit(uint256 index, uint256 value) external;
 }

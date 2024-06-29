@@ -15,6 +15,7 @@ import {IDiamondCut} from "../../../contracts/interfaces/IDiamondCut.sol";
 import {ozOracle} from "../../../contracts/facets/ozOracle.sol"; 
 import {ozBeacon} from "../../../contracts/facets/ozBeacon.sol";
 import {ozLoupe} from "../../../contracts/facets/ozLoupe.sol";
+import {ozFenwickTree} from "../../../contracts/facets/ozFenwickTree.sol";
 import {ozToken} from "../../../contracts/ozToken.sol";
 import {wozToken} from "../../../contracts/wozToken.sol";
 import {
@@ -133,6 +134,7 @@ contract Setup is MockStorage, Test {
     ozOracle internal oracle;
     ozLoupe internal loupe;
     ozCut internal cutOz;
+    ozFenwickTree internal tree; 
 
     ozIDiamond internal OZ;
 
@@ -386,6 +388,7 @@ contract Setup is MockStorage, Test {
         factory = new ozTokenFactory();
         engine = new ozEngine();
         oracle = new ozOracle();
+        tree = new ozFenwickTree();
 
         address[] memory ozImplementations = new address[](2);
         ozImplementations[0] = address(tokenOz);
@@ -399,7 +402,7 @@ contract Setup is MockStorage, Test {
         _initOZLtokenPt1();
 
         //Create initial FacetCuts
-        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](9);
+        IDiamondCut.FacetCut[] memory cuts = new IDiamondCut.FacetCut[](10);
         cuts[0] = _createCut(address(loupe), 0);
         cuts[1] = _createCut(address(ownership), 1);
         cuts[2] = _createCut(address(factory), 3);
@@ -409,6 +412,7 @@ contract Setup is MockStorage, Test {
         cuts[6] = _createCut(address(cutOz), 8);
         cuts[7] = _createCut(address(ozlAdmin), 9);
         cuts[8] = _createCut(address(rewardsContract), 10);
+        cuts[9] = _createCut(address(tree), 11);
 
         //Create init vars
         Tokens memory tokens = Tokens({
@@ -499,8 +503,8 @@ contract Setup is MockStorage, Test {
             length = 11;
         } else if (id_ == 0) {
             length = 21;
-        } else if (id_ == 11) { //remove if not used
-            length = 1;
+        } else if (id_ == 11) { 
+            length = 4;
         } else if (id_ == 8) {
             length = 9;
         } else if (id_ == 1) {
@@ -592,7 +596,12 @@ contract Setup is MockStorage, Test {
             selectors[8] = rewardsContract.setRewardsDataExternally.selector;
             selectors[9] = rewardsContract.getRewardsData.selector;
             selectors[10] = rewardsContract.addToCirculatingSupply.selector;
-        } 
+        } else if (id_ == 11) {
+            selectors[0] = tree.updateDeposit.selector;
+            selectors[1] = tree.updateFactor.selector;
+            selectors[2] = tree.queryDeposit.selector;
+            selectors[3] = tree.queryFactor.selector;
+        }
 
         cut = IDiamondCut.FacetCut({
             facetAddress: contractAddr_,

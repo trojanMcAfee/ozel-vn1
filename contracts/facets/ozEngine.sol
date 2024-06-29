@@ -10,7 +10,8 @@ import {
     AmountsIn, 
     AmountsOut, 
     Asset,
-    Action
+    Action,
+    Deposit
 } from "../AppStorage.sol";
 import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
 import {IWETH} from "../interfaces/IWETH.sol";
@@ -31,6 +32,7 @@ import "../Errors.sol";
 import {Modifiers} from "../Modifiers.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IAave} from "../interfaces/IAave.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -42,8 +44,9 @@ contract ozEngine is Modifiers {
 
     using TransferHelper for address;
     using FixedPointMathLib for uint;
-    using Helpers for uint;
+    using Helpers for *;
     using SafeERC20 for IERC20;
+    using Address for address;
     
 
     //----------
@@ -475,47 +478,64 @@ contract ozEngine is Modifiers {
 
         //emit rebase event here
 
-        if (s.depositIndex =< 0) return false;
+        if (s.depositIndex <= 0) return false;
 
-        for (uint i=0; i < s.depositBuffer.length; i++) {
-            Deposit memory deposit = s.depositBuffer[i];
+        for (uint i=0; i < s.depositsBuffer.length; i++) {
+            Deposit memory deposit = s.depositsBuffer[i];
             address user = deposit.receiver;
-            address index = users[user].index;
+            uint index = s.users[user].index;
+
 
             int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
             timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
+            //this ^ pattern is repeated in balanceOf() - ozToken
 
-            uint contributionFactor = deposit.amountETH * timeSpent;
+            uint contributionFactor = deposit.amountETH * uint(timeSpent);
             
             // factorTree.updateFactor(user, index, contributionFactor);
-            tree.updateFactor(user, index, contributionFactor);
-            // depositTree.update(s.depositIndex, contributionFactor); //<------
+            // tree.updateFactor(user, index, contributionFactor); //<--- this is the call made below
+            address(this).functionCall(
+                abi.encodeWithSelector(ozIDiamond.updateFactor.selector, user, index, contributionFactor)
+            );
+            // depositTree.update(s.depositIndex, contributionFactor);
 
-            deposits[receiver].push(deposit);
+            s.deposits[user].push(deposit); //this var might not be used/useful anymore
 
             // s.depositIndex++;
             // s.factorIndex++;
             index++;
 
-            if (i == s.depositBuffer.length - 1) delete s.depositBuffer;
+            if (i == s.depositsBuffer.length - 1) delete s.depositsBuffer;
         }
 
-        for (uint i=0 i < s.depositsBuffer.length; i++) {
-            address user = s.depositsBuffer[i].receiver;
-            uint index = users[user].index;
-            address[s.depositsBuffer.length] memory checkedUsers;
+        uint length = s.depositsBuffer.length;
+        address[] memory checkedUsers = new address[](length);
 
-            if (contributionFactors[user] != 0 && checkedUsers.indexOf(user) < 0) {
-                uint userFactor = tree.queryFactor(user, index);
-                tree.updateDeposit(s.depositIndex, userFactor);
-                checkedUsers.push(user);
+        for (uint i=0; i < length; i++) {
+            address user = s.depositsBuffer[i].receiver;
+            uint index = s.users[user].index;
+
+            if (s.contributionFactors[user][index] != 0 && checkedUsers.indexOf(user) < 0) {
+                bytes memory returnData = address(this).functionCall(
+                    abi.encodeWithSelector(ozIDiamond.queryFactor.selector, user, index)
+                );
+                uint userFactor = abi.decode(returnData, (uint));
+                // uint userFactor = tree.queryFactor(user, index);
+
+                address(this).functionCall(
+                    abi.encodeWithSelector(ozIDiamond.updateDeposit.selector, s.depositIndex, userFactor)
+                );
+                // tree.updateDeposit(s.depositIndex, userFactor);
+
+                // checkedUsers.push(user);
+                checkedUsers[checkedUsers.length] = user;
                 s.depositIndex++;
             }
 
         }
 
         // tree.query(s.index, )
-        tree.update();
+        // tree.update();
 
         return true;
 

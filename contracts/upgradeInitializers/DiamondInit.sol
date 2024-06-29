@@ -128,6 +128,8 @@ contract DiamondInit {
         s.depositIndex = 1;
         s.factorIndex = 1;
 
+        s.size = 1_000_000; //try here with type(uint).max later on
+
     }
 
 

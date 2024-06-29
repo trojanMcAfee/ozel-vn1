@@ -9,7 +9,7 @@ import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {AmountsIn} from "./../../../../contracts/AppStorage.sol";
 import {HelpersLogic} from "./helpers/HelpersLogic.sol";
 
-import {ozFenwickTree} from "./../../../../contracts/ozFenwickTree.sol";
+import {ozFenwickTree} from "./../../../../contracts/facets/ozFenwickTree.sol";
 
 
 import "forge-std/console.sol";
@@ -100,32 +100,32 @@ contract DoubleTokenModelTest is HelpersLogic {
     }
 
 
-    function test_ozFenwickTree() public {
-        uint treeCapacity = 1_000_000_000; //1_000_000_000
-        uint treeSize = treeCapacity; 
-        uint sum;
+    // function test_ozFenwickTree() public {
+    //     uint treeCapacity = 1_000_000_000; //1_000_000_000
+    //     uint treeSize = treeCapacity; 
+    //     uint sum;
 
-        ozFenwickTree tree = new ozFenwickTree(treeSize);
+    //     ozFenwickTree tree = new ozFenwickTree(treeSize);
 
-        //-----------
-        // tree.addNumbers(treeSize);
+    //     //-----------
+    //     // tree.addNumbers(treeSize);
 
-        //sum = tree.sumFrom1ToMax(treeSize);
-        // console.log('sum: ', sum);
-        //----------------
+    //     //sum = tree.sumFrom1ToMax(treeSize);
+    //     // console.log('sum: ', sum);
+    //     //----------------
     
-        tree.update(1, 1);
-        tree.update(2, 2);
+    //     tree.update(1, 1);
+    //     tree.update(2, 2);
 
-        tree.query(treeSize);
-        sum = tree.query(treeSize);
-        console.log('sum31: ', sum);
+    //     tree.query(treeSize);
+    //     sum = tree.query(treeSize);
+    //     console.log('sum31: ', sum);
 
-        tree.update(3, 3);
-        sum = tree.query(treeSize);
-        console.log('sum4: ', sum);
+    //     tree.update(3, 3);
+    //     sum = tree.query(treeSize);
+    //     console.log('sum4: ', sum);
 
-    }
+    // }
 
 
 
