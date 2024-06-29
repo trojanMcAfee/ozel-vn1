@@ -103,7 +103,10 @@ contract ozOracle {
     // }
 
     function recordDeposit(address receiver_, uint amountETH_, uint amountStable_) external {
-        s.deposits[receiver_].push(Deposit(amountETH_, amountStable_, block.timestamp));
+        Deposit memory deposit = Deposit(amountETH_, amountStable_, block.timestamp, receiver_);
+        s.deposits[receiver_].push(deposit);
+        s.depositsBuffer.push(deposit);
+
         s.receivers.push(receiver_);
         s.sysBalanceETH += amountETH_;
     }

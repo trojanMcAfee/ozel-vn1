@@ -9,7 +9,7 @@ import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {AmountsIn} from "./../../../../contracts/AppStorage.sol";
 import {HelpersLogic} from "./helpers/HelpersLogic.sol";
 
-import {FenwickTree} from "./../../../../contracts/FenwickTree.sol";
+import {ozFenwickTree} from "./../../../../contracts/ozFenwickTree.sol";
 
 
 import "forge-std/console.sol";
@@ -100,12 +100,12 @@ contract DoubleTokenModelTest is HelpersLogic {
     }
 
 
-    function test_fenwickTree() public {
+    function test_ozFenwickTree() public {
         uint treeCapacity = 1_000_000_000; //1_000_000_000
         uint treeSize = treeCapacity; 
         uint sum;
 
-        FenwickTree tree = new FenwickTree(treeSize);
+        ozFenwickTree tree = new ozFenwickTree(treeSize);
 
         //-----------
         // tree.addNumbers(treeSize);

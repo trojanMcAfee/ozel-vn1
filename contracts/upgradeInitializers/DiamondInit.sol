@@ -124,6 +124,10 @@ contract DiamondInit {
         s.rewardsStartTime = block.timestamp;
         s.EPOCH = 7 days; 
 
+        //indexes for the fenwick trees 
+        s.depositIndex = 1;
+        s.factorIndex = 1;
+
     }
 
 

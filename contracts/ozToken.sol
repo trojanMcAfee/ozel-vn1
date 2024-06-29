@@ -222,7 +222,46 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         return convertToOzTokens(sharesOf(account_), account_).unray();
     }
 
-    uint total
+    function balanceOf3(address account_) public view returns(uint) {
+        uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
+        uint assets = _assets[account_];
+
+        console.log('');
+        console.log('_OZ().getStakingRewardsUSDC(): ', _OZ().getStakingRewardsUSDC());
+        console.log('secondlyRewardsUSDC: ', secondlyRewardsUSDC);
+
+        Deposit[] memory deposits = _OZ().getDeposits(account_);
+        Deposit memory deposit = deposits[0];
+
+        console.log('block.timestamp in balanceOf ******: ', block.timestamp);
+
+        int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
+        timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
+
+        console.log('timeSpent: ', uint(timeSpent));
+        console.log('assets: ', assets);
+
+
+
+        // return ((assets * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
+        // return assets + ((assets * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
+
+        uint contributionFactor = assets * uint(timeSpent);
+        console.log('contributionFactor: ', contributionFactor);
+
+
+    }
+
+    function balanceOf4(address account_) public view returns(uint) {
+        uint maxIndex = s.users[account_].index;
+        uint contributionFactor = factorTree.queryFactor(account_, maxIndex);
+
+        uint totalContributions = depositTree.queryDeposit(s.depositIndex);
+        uint share = contributionFactor / totalContributions;
+        share * s.stakingRewardsUSDC
+        //^^ create a 3rd tree for raw_total_rewards
+
+    }
 
     function balanceOf(address account_) public view returns(uint) {
         uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
@@ -286,6 +325,8 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _shares[receiver] += shares;
                 _assets[receiver] += assets;
             }
+
+
 
             emit OzTokenMinted(owner_, shares, assets);
 

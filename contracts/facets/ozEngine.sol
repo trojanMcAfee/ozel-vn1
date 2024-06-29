@@ -475,6 +475,48 @@ contract ozEngine is Modifiers {
 
         //emit rebase event here
 
+        if (s.depositIndex =< 0) return false;
+
+        for (uint i=0; i < s.depositBuffer.length; i++) {
+            Deposit memory deposit = s.depositBuffer[i];
+            address user = deposit.receiver;
+            address index = users[user].index;
+
+            int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
+            timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
+
+            uint contributionFactor = deposit.amountETH * timeSpent;
+            
+            // factorTree.updateFactor(user, index, contributionFactor);
+            tree.updateFactor(user, index, contributionFactor);
+            // depositTree.update(s.depositIndex, contributionFactor); //<------
+
+            deposits[receiver].push(deposit);
+
+            // s.depositIndex++;
+            // s.factorIndex++;
+            index++;
+
+            if (i == s.depositBuffer.length - 1) delete s.depositBuffer;
+        }
+
+        for (uint i=0 i < s.depositsBuffer.length; i++) {
+            address user = s.depositsBuffer[i].receiver;
+            uint index = users[user].index;
+            address[s.depositsBuffer.length] memory checkedUsers;
+
+            if (contributionFactors[user] != 0 && checkedUsers.indexOf(user) < 0) {
+                uint userFactor = tree.queryFactor(user, index);
+                tree.updateDeposit(s.depositIndex, userFactor);
+                checkedUsers.push(user);
+                s.depositIndex++;
+            }
+
+        }
+
+        // tree.query(s.index, )
+        tree.update();
+
         return true;
 
     }

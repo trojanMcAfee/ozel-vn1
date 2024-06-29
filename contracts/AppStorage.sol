@@ -97,6 +97,17 @@ struct AppStorage {
     uint stakingRewardsUSDC; //rebase comes from this value. When user redeems, they get their share of this
 
     uint lastRebasePriceRETHETH; 
+
+    Deposit[] depositsBuffer;
+    uint depositIndex;
+    uint factorIndex;
+    // mapping(address receiver => uint factor) contributionFactors;
+    mapping(address receiver => mapping(uint index => uint depositFactor)) contributionFactors;
+    mapping(uint index => uint depositFactor) depositTree;
+    mapping(address addr => User user) users;
+    //when making a deposit, put the deposit in this buffer, which adds to the real db when doing the rebaseSwap()
+    //so you'll end up with two dbs  for deposit: a buffer and a permanent one. 
+    //buffer gets cleared after each rebase
 }
 
 
@@ -111,6 +122,14 @@ struct Deposit {
     uint amountETH;
     uint amountStable;
     uint timestamp;
+    address receiver;
+}
+
+//for the contributionIndex in the tree
+struct User {
+    uint index;
+    uint factor;
+    // address addr;
 }
 
 struct Pair {
@@ -136,7 +155,7 @@ enum Action {
 
 //uint amountIn - amount of underlying in
 //uint[] minAmountsOut - weth, reth
-// struct AmountsIn {
+// struct AmountsIn { //319
 //     uint amountIn;
 //     uint[] minAmountsOut;
 // }
