@@ -484,9 +484,6 @@ contract ozEngine is Modifiers {
             Deposit memory deposit = s.depositsBuffer[i];
             address user = deposit.receiver;
             uint index = s.users[user].index;
-            //this ^ index is not being set, so all users end up with the same index (0 or 1)
-            //check where it has to be set up. Perhaps in ozToken - mint2()
-
 
             int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
             timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;

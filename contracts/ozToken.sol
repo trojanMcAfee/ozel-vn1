@@ -253,6 +253,7 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
+        // console.log(3);
         uint maxIndex = s.users[account_].index;
         uint contributionFactor = _OZ().queryFactor(account_, maxIndex);
 
