@@ -210,5 +210,12 @@ contract ozLoupe is DiamondLoupeFacet {
     function getDepositIndex() external view returns(uint) {
         return s.depositIndex;
     }
+
+    function getTotalStables() external view returns(uint sum) {
+        for (uint i=0; i < s.ozTokenRegistry.length; i++) {
+            ozIToken ozERC20 = ozIToken(s.ozTokenRegistry[i].ozToken);
+            sum += ozERC20.totalAssets();
+        }
+    }
    
 }

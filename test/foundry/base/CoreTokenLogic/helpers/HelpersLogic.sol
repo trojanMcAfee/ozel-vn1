@@ -104,4 +104,16 @@ contract HelpersLogic is TestMethods {
         vm.stopPrank();
     }
 
+
+    function _mock_aUSDC() internal {
+        uint amountToMock = IERC20(aUsdcAddr).balanceOf(address(OZ)).mulDivDown(800, 10_000);
+        console.log('amountToMock *******: ', amountToMock);
+
+        vm.mockCall( 
+            aUsdcAddr,
+            abi.encodeWithSignature('balanceOf(address)', address(OZ)),
+            abi.encode(amountToMock)
+        ); 
+    }
+
 }

@@ -29,7 +29,6 @@ contract DoubleTokenModelTest is HelpersLogic {
 
         bytes memory mintData = OZ.getMintData(amountIn, OZ.getDefaultSlippage(), alice, address(ozERC20));
         (AmountsIn memory amts,) = abi.decode(mintData, (AmountsIn, address));
-        // console.log('amts.amountInETH alice ^^^^^^: ', amts.amountInETH);
 
         payable(alice).transfer(1000 ether);
 

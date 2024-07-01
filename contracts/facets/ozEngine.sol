@@ -419,6 +419,8 @@ contract ozEngine is Modifiers {
         //put the 7 days check
         if (s.rewardsStartTime + s.EPOCH < block.timestamp) return false;
 
+        //---- START of STAKING calcs ----
+
         uint rateRETHETH = Helpers.rETH_ETH(ozIDiamond(address(this)));
         console.log('rateRETHETH: ', rateRETHETH);
         if (rateRETHETH <= s.lastRebasePriceRETHETH) return false;
@@ -455,9 +457,21 @@ contract ozEngine is Modifiers {
         );
         if (amountOutUSDC == 0) return false;
 
-        s.stakingRewardsUSDC += amountOutUSDC;
+        //---- START of LENDING calcs ----
+
+        uint totalAssets = _totalStables();
+        uint totalAtokens = IERC20(s.aUSDC).balanceOf(address(this));
+        uint lendingRewards = totalAtokens - totalAssets;
+
+        console.log('amountOutUSDC: ', amountOutUSDC);
+        console.log('lendingRewards: ', lendingRewards);
+
+        //---------------------------------
+        s.stakingRewardsUSDC += amountOutUSDC + lendingRewards;
         s.lastRebasePriceRETHETH = rateRETHETH;
         s.rewardsStartTime = block.timestamp;
+
+        console.log('s.stakingRewardsUSDC *****: ', s.stakingRewardsUSDC);
 
         //emit rebase event here
 
@@ -519,6 +533,13 @@ contract ozEngine is Modifiers {
         address(this).functionCall(
             abi.encodeWithSelector(ozIDiamond.updateFactor.selector, user_, index_, value_)
         );
+    }
+
+    function _totalStables() private returns(uint) {
+        bytes memory data = address(this).functionCall(
+            abi.encodeWithSelector(ozIDiamond.getTotalStables.selector)
+        );
+        return abi.decode(data, (uint));
     }
 
     function _updateDeposit(uint index_, uint value_) private {

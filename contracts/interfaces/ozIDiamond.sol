@@ -182,4 +182,6 @@ interface ozIDiamond {
     function updateDeposit(uint256 index, uint256 value) external;
     function getUserIndex(address account_) external view returns(uint);
     function getDepositIndex() external view returns(uint);
+
+    function getTotalStables() external view returns(uint sum);
 }
