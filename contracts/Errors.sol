@@ -31,6 +31,7 @@ error OZError11(address token); //createOzToken - can't be 0 address
 error OZError12(address token); //createOzToken - TokenAlreadyInRegistry
 error OZError13(address caller); //onlyOzToken & changeAdminFeeRecipient - Not authorized
 error OZError14(uint blockNumber); //_applyFee - blockNum is equal or less than last rewards update
+error OZError44(); //all in ozFenwickTree - Index out of bounds
 
 //--- ozToken errors
 error OZError03(); //decreaseAllowance - decreased allowance below zero
