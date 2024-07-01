@@ -332,7 +332,6 @@ contract ozEngine is Modifiers {
                     minAmountsOut_[1]
                 );
 
-                console.log('minAmountsOut_[1] - swapUni: ', minAmountsOut_[1]);
                 console.log('amountOut: ', amountOut);
             }
         }
@@ -467,14 +466,10 @@ contract ozEngine is Modifiers {
             Action.REBASE 
         );
         if (amountOutUSDC == 0) return false;
-        console.log('amountOutUSDC ******: ', amountOutUSDC);
 
         s.stakingRewardsUSDC += amountOutUSDC;
         s.lastRebasePriceRETHETH = rateRETHETH;
         s.rewardsStartTime = block.timestamp;
-
-        console.log('lastRebasePriceRETHETH: ', s.lastRebasePriceRETHETH);
-        console.log('USDC bal diamond - post swap: ', IERC20Permit(s.USDC).balanceOf(address(this)));
 
         //emit rebase event here
 
@@ -493,26 +488,12 @@ contract ozEngine is Modifiers {
             uint contributionFactor = deposit.amountETH * uint(timeSpent);
             
             // tree.updateFactor(user, index, contributionFactor); //<--- this is the call made below
-            console.log('');
-            console.log('user: ', user);
-            console.log('index: ', index);
-            console.log('contributionFactor: ', contributionFactor);
-            console.log(1);
             address(this).functionCall(
                 abi.encodeWithSelector(ozIDiamond.updateFactor.selector, user, index, contributionFactor)
             );
-            console.log(2);
-            // depositTree.update(s.depositIndex, contributionFactor);
 
             s.deposits[user].push(deposit); //this var might not be used/useful anymore
-
-            // s.depositIndex++;
-            // s.factorIndex++;
             s.users[user].index++;
-            console.log('s.users[user].index - 1: ', s.users[user].index);
-            console.log('');
-
-            // if (i == s.depositsBuffer.length - 1) delete s.depositsBuffer;
         }
 
         uint length = s.depositsBuffer.length;
@@ -528,27 +509,18 @@ contract ozEngine is Modifiers {
                     abi.encodeWithSelector(ozIDiamond.queryFactor.selector, user, index)
                 );
                 uint userFactor = abi.decode(returnData, (uint));
-                // uint userFactor = tree.queryFactor(user, index);
 
                 address(this).functionCall(
                     abi.encodeWithSelector(ozIDiamond.updateDeposit.selector, s.depositIndex, userFactor)
                 );
-                // tree.updateDeposit(s.depositIndex, userFactor);
 
-                // checkedUsers.push(user);
-                console.log('checkedUsers.length: ', checkedUsers.length);
-                uint z = checkedUsers.length - checked_length;
-                console.log('checked index: ', z);
-                checkedUsers[z] = user;
-
+                checkedUsers[checkedUsers.length - checked_length] = user;
                 s.depositIndex++;
                 checked_length--;
             }
         }
-        
         delete s.depositsBuffer;
         return true;
-
     }
 
 

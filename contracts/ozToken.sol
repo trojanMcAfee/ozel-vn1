@@ -218,84 +218,19 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     //**********/
-    function balanceOf2(address account_) public view returns(uint) {
-        return convertToOzTokens(sharesOf(account_), account_).unray();
-    }
-
-    function balanceOf3(address account_) public view returns(uint) {
-        uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
-        uint assets = _assets[account_];
-
-        console.log('');
-        console.log('_OZ().getStakingRewardsUSDC(): ', _OZ().getStakingRewardsUSDC());
-        console.log('secondlyRewardsUSDC: ', secondlyRewardsUSDC);
-
-        Deposit[] memory deposits = _OZ().getDeposits(account_);
-        Deposit memory deposit = deposits[0];
-
-        console.log('block.timestamp in balanceOf ******: ', block.timestamp);
-
-        int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
-        timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
-
-        console.log('timeSpent: ', uint(timeSpent));
-        console.log('assets: ', assets);
-
-
-
-        // return ((assets * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
-        // return assets + ((assets * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
-
-        uint contributionFactor = assets * uint(timeSpent);
-        console.log('contributionFactor: ', contributionFactor);
-
-
-    }
-
+    
     function balanceOf(address account_) public view returns(uint) {
-        uint maxIndex = _OZ().getUserIndex(account_);
+        uint index = _OZ().getUserIndex(account_);
 
-        console.log('maxIndex: ', maxIndex);
-
-        uint contributionFactor = _OZ().queryFactor(account_, maxIndex);
-        console.log(4);
-        console.log('depositIndex: ', _OZ().getDepositIndex());
-
+        uint contributionFactor = _OZ().queryFactor(account_, index);
         uint totalContributions = _OZ().queryDeposit(_OZ().getDepositIndex());
-        console.log(5);
-        console.log('totalContributions: ', totalContributions);
-        console.log('contributionFactor: ', contributionFactor);
+
         uint share = (contributionFactor * 1 ether) / totalContributions;
-        console.log(6);
         uint userRewards = (share * _OZ().getStakingRewardsUSDC()) * 1e12;
         
-        console.log('userRewards: ', userRewards / 1 ether);
-        console.log('assets ********: ', _assets[account_]);
         return (_assets[account_] * 1e12) + (userRewards / 1 ether);
     }
 
-    function balanceOf4(address account_) public view returns(uint) {
-        uint secondlyRewardsUSDC = _OZ().getStakingRewardsUSDC().mulDivDown(1 ether, 7 days); // / s.EPOCH instead of 7 days
-        uint assetsUser = _assets[account_];
-
-        console.log('');
-        console.log('_OZ().getStakingRewardsUSDC(): ', _OZ().getStakingRewardsUSDC());
-        console.log('secondlyRewardsUSDC: ', secondlyRewardsUSDC);
-
-        Deposit[] memory deposits = _OZ().getDeposits(account_);
-        Deposit memory deposit = deposits[0];
-
-        console.log('block.timestamp in balanceOf ******: ', block.timestamp);
-
-        int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
-        timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
-
-        console.log('timeSpent: ', uint(timeSpent));
-        console.log('assetsUser: ', assetsUser);
-
-        // return ((assetsUser * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
-        return assetsUser + ((assetsUser * ((secondlyRewardsUSDC * uint(timeSpent)) / 1 ether)) / 1e8);
-    }
 
     //**********/
 
@@ -311,8 +246,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         bool isETH_
     ) external payable lock(TRANSIENT_SLOT) returns(uint) { //updateReward(owner_, _ozDiamond)
         // if (data_.length != 224) revert OZError39(data_); <--- new length must be added
-
-        // _executeRebaseSwap();
 
         (AmountsIn memory amts, address receiver) = 
             abi.decode(data_, (AmountsIn, address));
@@ -336,8 +269,6 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
                 _shares[receiver] += shares;
                 _assets[receiver] += assets;
             }
-
-
 
             emit OzTokenMinted(owner_, shares, assets);
 

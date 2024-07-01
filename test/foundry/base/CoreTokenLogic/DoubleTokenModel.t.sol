@@ -47,8 +47,6 @@ contract DoubleTokenModelTest is HelpersLogic {
 
         /*** simulates time for staking rewards accrual ***/
         uint halfAccrual = block.timestamp + 3 days;
-        console.log('block.timestamp  in test: ', block.timestamp);
-        console.log('halfAccrual - 3 days: ', halfAccrual);
         vm.warp(halfAccrual);
 
         //---- mock BALANCER WETH > rETH swap ----
@@ -59,12 +57,10 @@ contract DoubleTokenModelTest is HelpersLogic {
         //---------------------
 
         uint blockAccrual = halfAccrual + 4 days;
-        console.log('blockAccrual - 7 days: ', blockAccrual);
         vm.warp(blockAccrual);
 
         console.log('');
         console.log('*** MOCK ***');
-        console.log('');
 
         _mock_rETH_ETH_diamond();
 
