@@ -267,10 +267,11 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         console.log('contributionFactor: ', contributionFactor);
         uint share = (contributionFactor * 1 ether) / totalContributions;
         console.log(6);
-        uint userRewards = share * _OZ().getStakingRewardsUSDC();
+        uint userRewards = (share * _OZ().getStakingRewardsUSDC()) * 1e12;
         
-        console.log('userRewards: ', userRewards);
-        return userRewards;
+        console.log('userRewards: ', userRewards / 1 ether);
+        console.log('assets ********: ', _assets[account_]);
+        return (_assets[account_] * 1e12) + (userRewards / 1 ether);
     }
 
     function balanceOf4(address account_) public view returns(uint) {
@@ -320,13 +321,13 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
         if (amts.amountInStable == 0 || amts.amountInETH == 0) revert OZError37();
         if (owner_ == address(0) || receiver == address(0)) revert OZError38();
 
-        uint assets = amts.amountInStable.format(FORMAT_DECIMALS); 
+        uint assets = amts.amountInStable.format(FORMAT_DECIMALS); //check if this format needs to be to 1e18 instead of 1e6
 
         try ozIDiamond(_ozDiamond).useUnderlying{value: msg.value}(asset(), owner_, amts, isETH_) returns(uint amountOutRETH, uint amountOutAUSDC) {
             // _setValuePerOzToken(amountOutRETH, true);
             _setValuePerOzToken(amountOutRETH, amountOutAUSDC, true);
 
-            uint shares = assets;
+            uint shares = assets; //check if it's still necessary to have both shares and assets
 
             _setAssetsAndShares(assets, shares, true);
             _recordDeposit(receiver, amts.amountInETH, amts.amountInStable);
