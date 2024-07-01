@@ -78,6 +78,8 @@ contract DoubleTokenModelTest is HelpersLogic {
         console.log('--------------------');
         console.log('');
 
+        _mock_aUSDC(); //<----- trying to set up this, but it's over/under flowing (terminal)
+
         assertTrue(OZ.executeRebaseSwap());
 
         deal(rEthAddr, address(OZ), IERC20(rEthAddr).balanceOf(address(OZ)) - amountToSwapRETH); //add both deposits here

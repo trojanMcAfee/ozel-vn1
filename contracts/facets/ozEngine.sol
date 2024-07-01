@@ -465,6 +465,9 @@ contract ozEngine is Modifiers {
 
         console.log('amountOutUSDC: ', amountOutUSDC);
         console.log('lendingRewards: ', lendingRewards);
+        console.log('totalAtokens: ', totalAtokens);
+        console.log('totalAssets: ', totalAssets);
+        console.log('');
 
         //---------------------------------
         s.stakingRewardsUSDC += amountOutUSDC + lendingRewards;
