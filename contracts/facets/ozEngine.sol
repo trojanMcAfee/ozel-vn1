@@ -316,7 +316,6 @@ contract ozEngine is Modifiers {
                 amountIn_,
                 minAmountOutFirstLeg
             );
-            // console.log('amountOut - swappedAmount: ', amountOut);
         }
 
         if (type_ == Action.OZL_IN || type_ == Action.REBASE) {
@@ -328,7 +327,6 @@ contract ozEngine is Modifiers {
                     tokenOut_,
                     receiver_,
                     amountOut,
-                    // minAmountOut_
                     minAmountsOut_[1]
                 );
 
@@ -403,19 +401,9 @@ contract ozEngine is Modifiers {
         uint blockStamp_
     ) private returns(uint) 
     {
-        // console.log('');
-        // console.log('--- in ozEngine ---');
-        // console.log('amountIn: ', singleSwap_.amount);
-        // console.log('assetIn: ', address(singleSwap_.assetIn));
-        // console.log('assetOut: ', address(singleSwap_.assetOut));
         
-
         try IVault(s.vaultBalancer).swap(singleSwap_, funds_, minAmountOut_, blockStamp_) returns(uint amountOut) {
             if (amountOut == 0) revert OZError02();
-
-            // console.log('amountOut: ', amountOut);
-            // console.log('');
-
             return amountOut;
         } catch Error(string memory reason) {
             if (Helpers.compareStrings(reason, 'BAL#507')) {
@@ -480,16 +468,10 @@ contract ozEngine is Modifiers {
             address user = deposit.receiver;
             uint index = s.users[user].index + 1;
 
-            int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
-            timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
-            //this ^ pattern is repeated in balanceOf() - ozToken
-
+            int timeSpent = _triageTime(deposit.timestamp);
             uint contributionFactor = deposit.amountETH * uint(timeSpent);
-            
-            // tree.updateFactor(user, index, contributionFactor); //<--- this is the call made below
-            address(this).functionCall(
-                abi.encodeWithSelector(ozIDiamond.updateFactor.selector, user, index, contributionFactor)
-            );
+
+            _updateFactor(user, index, contributionFactor);
 
             s.deposits[user].push(deposit); //this var might not be used/useful anymore
             s.users[user].index++;
@@ -504,14 +486,8 @@ contract ozEngine is Modifiers {
             uint index = s.users[user].index;
 
             if (s.contributionFactors[user][index] != 0 && checkedUsers.indexOf(user) < 0) {
-                bytes memory returnData = address(this).functionCall(
-                    abi.encodeWithSelector(ozIDiamond.queryFactor.selector, user, index)
-                );
-                uint userFactor = abi.decode(returnData, (uint));
-
-                address(this).functionCall(
-                    abi.encodeWithSelector(ozIDiamond.updateDeposit.selector, s.depositIndex, userFactor)
-                );
+                uint userFactor = _queryFactor(user, index);
+                _updateDeposit(s.depositIndex, userFactor);
 
                 checkedUsers[checkedUsers.length - checked_length] = user;
                 s.depositIndex++;
@@ -532,6 +508,31 @@ contract ozEngine is Modifiers {
 
         return capacityNeeded < maxDepositSize;
     }   
+
+    function _triageTime(uint depositStamp_) private view returns(int) {
+        int timeSpent = int(s.EPOCH) - (int(block.timestamp) - int(depositStamp_));
+        timeSpent = timeSpent == 0 ? int(s.EPOCH) : timeSpent;
+        return timeSpent;
+    }
+
+    function _updateFactor(address user_, uint index_, uint value_) private {
+        address(this).functionCall(
+            abi.encodeWithSelector(ozIDiamond.updateFactor.selector, user_, index_, value_)
+        );
+    }
+
+    function _updateDeposit(uint index_, uint value_) private {
+        address(this).functionCall(
+            abi.encodeWithSelector(ozIDiamond.updateDeposit.selector, index_, value_)
+        );
+    }
+
+    function _queryFactor(address user_, uint index_) private returns(uint) {
+        bytes memory returnData = address(this).functionCall(
+            abi.encodeWithSelector(ozIDiamond.queryFactor.selector, user_, index_)
+        );
+        return abi.decode(returnData, (uint));
+    }
 
 
     // function _triageTokenOut(
