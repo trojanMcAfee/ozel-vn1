@@ -478,7 +478,6 @@ contract ozEngine is Modifiers {
         for (uint i=0; i < s.depositsBuffer.length; i++) {
             Deposit memory deposit = s.depositsBuffer[i];
             address user = deposit.receiver;
-            uint newIndex;
             uint index = s.users[user].index + 1;
 
             int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));

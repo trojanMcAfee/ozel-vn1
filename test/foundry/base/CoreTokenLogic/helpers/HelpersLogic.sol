@@ -70,20 +70,6 @@ contract HelpersLogic is TestMethods {
         uint swappedAmount = isRebase_ ? 
             rateRETHETH.mulDivDown(amountToSwap, 1 ether) :
             amountToSwap.mulDivDown(1 ether, rateRETHETH);
-
-        // console.log('amountToSwap: ', amountToSwap);
-
-        uint oldAmountWETH = IERC20(wethAddr).balanceOf(address(this));
-        // address tokenToSend = isRebase_ ? wethAddr : rEthAddr;
-        console.log('');
-
-        // console.log('');
-        // console.log('--- in balancerPart ---');
-        // console.log('amountIn: ', singleSwap.amount);
-        // console.log('assetIn: ', address((singleSwap.assetIn)));
-        // console.log('assetOut: ', address(singleSwap.assetOut));
-        // console.log('amountOut: ', swappedAmount);
-        // console.log('');
         
         vm.mockCall(
             vaultBalancer,
@@ -91,7 +77,6 @@ contract HelpersLogic is TestMethods {
             abi.encode(swappedAmount)
         );
         deal(isRebase_ ? wethAddr : rEthAddr, address(OZ), swappedAmount);
-        // assertTrue(oldAmountWETH < IERC20(wethAddr).balanceOf(address(OZ)));
 
         return amountToSwap;
     }
