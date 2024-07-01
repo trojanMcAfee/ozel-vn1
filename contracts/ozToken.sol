@@ -253,13 +253,21 @@ contract ozToken is Modifiers, IERC20MetadataUpgradeable, IERC20PermitUpgradeabl
     }
 
     function balanceOf(address account_) public view returns(uint) {
-        // console.log(3);
-        uint maxIndex = s.users[account_].index;
-        uint contributionFactor = _OZ().queryFactor(account_, maxIndex);
+        uint maxIndex = _OZ().getUserIndex(account_);
 
-        uint totalContributions = _OZ().queryDeposit(s.depositIndex);
-        uint share = contributionFactor / totalContributions;
-        uint userRewards = share * s.stakingRewardsUSDC;
+        console.log('maxIndex: ', maxIndex);
+
+        uint contributionFactor = _OZ().queryFactor(account_, maxIndex);
+        console.log(4);
+        console.log('depositIndex: ', _OZ().getDepositIndex());
+
+        uint totalContributions = _OZ().queryDeposit(_OZ().getDepositIndex());
+        console.log(5);
+        console.log('totalContributions: ', totalContributions);
+        console.log('contributionFactor: ', contributionFactor);
+        uint share = (contributionFactor * 1 ether) / totalContributions;
+        console.log(6);
+        uint userRewards = share * _OZ().getStakingRewardsUSDC();
         
         console.log('userRewards: ', userRewards);
         return userRewards;

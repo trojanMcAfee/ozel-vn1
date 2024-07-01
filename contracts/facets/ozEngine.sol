@@ -483,7 +483,8 @@ contract ozEngine is Modifiers {
         for (uint i=0; i < s.depositsBuffer.length; i++) {
             Deposit memory deposit = s.depositsBuffer[i];
             address user = deposit.receiver;
-            uint index = s.users[user].index;
+            uint newIndex;
+            uint index = s.users[user].index + 1;
 
             int timeSpent = 7 days - (int(block.timestamp) - int(deposit.timestamp));
             timeSpent = timeSpent == 0 ? int(7 days) : timeSpent;
@@ -507,13 +508,16 @@ contract ozEngine is Modifiers {
 
             // s.depositIndex++;
             // s.factorIndex++;
-            index++;
+            s.users[user].index++;
+            console.log('s.users[user].index - 1: ', s.users[user].index);
+            console.log('');
 
-            if (i == s.depositsBuffer.length - 1) delete s.depositsBuffer;
+            // if (i == s.depositsBuffer.length - 1) delete s.depositsBuffer;
         }
 
         uint length = s.depositsBuffer.length;
         address[] memory checkedUsers = new address[](length);
+        uint checked_length = checkedUsers.length;
 
         for (uint i=0; i < length; i++) {
             address user = s.depositsBuffer[i].receiver;
@@ -532,15 +536,17 @@ contract ozEngine is Modifiers {
                 // tree.updateDeposit(s.depositIndex, userFactor);
 
                 // checkedUsers.push(user);
-                checkedUsers[checkedUsers.length] = user;
+                console.log('checkedUsers.length: ', checkedUsers.length);
+                uint z = checkedUsers.length - checked_length;
+                console.log('checked index: ', z);
+                checkedUsers[z] = user;
+
                 s.depositIndex++;
+                checked_length--;
             }
-
         }
-
-        // tree.query(s.index, )
-        // tree.update();
-
+        
+        delete s.depositsBuffer;
         return true;
 
     }

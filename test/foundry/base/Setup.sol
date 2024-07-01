@@ -502,7 +502,7 @@ contract Setup is MockStorage, Test {
         } else if (id_ == 10 || id_ == 6) {
             length = 11;
         } else if (id_ == 0) {
-            length = 21;
+            length = 23;
         } else if (id_ == 11) { 
             length = 4;
         } else if (id_ == 8) {
@@ -535,6 +535,8 @@ contract Setup is MockStorage, Test {
             selectors[18] = loupe.getStakingRewardsUSDC.selector;
             selectors[19] = loupe.getDeposits.selector;
             selectors[20] = loupe.getRewardsStartTime.selector;
+            selectors[21] = loupe.getUserIndex.selector;
+            selectors[22] = loupe.getDepositIndex.selector;
         } else if (id_ == 1) {
             selectors[0] = ownership.transferOwnershipDiamond.selector;
             selectors[1] = ownership.ownerDiamond.selector;

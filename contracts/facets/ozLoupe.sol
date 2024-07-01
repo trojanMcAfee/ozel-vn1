@@ -190,7 +190,7 @@ contract ozLoupe is DiamondLoupeFacet {
         return (s.prevAPR + s.currAPR) / 2;
     }
 
-    //unity all AppStorage queries in one function
+    //unite all AppStorage queries in one function
     function getStakingRewardsUSDC() external view returns(uint) {
         return s.stakingRewardsUSDC;
     }
@@ -201,6 +201,14 @@ contract ozLoupe is DiamondLoupeFacet {
 
     function getRewardsStartTime() external view returns(uint) {
         return s.rewardsStartTime;
+    }
+
+    function getUserIndex(address account_) external view returns(uint) {
+        return s.users[account_].index;
+    }
+
+    function getDepositIndex() external view returns(uint) {
+        return s.depositIndex;
     }
    
 }

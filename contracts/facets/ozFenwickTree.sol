@@ -42,6 +42,14 @@ contract ozFenwickTree {
             s.depositTree[localIndex] += value;
             localIndex += localIndex & (~localIndex + 1); // Move to the next index
         }
+
+        console.log('');
+        console.log('--- in updateDeposit ---');
+        console.log('s.depositTree[index]: ', s.depositTree[index]);
+        console.log('s.depositTree[localIndex]: ', s.depositTree[localIndex]);
+        console.log('index: ', index);
+        console.log('localIndex: ', localIndex);
+        console.log('');
     }
 
     //Fix sintax in all of these functions
@@ -55,6 +63,7 @@ contract ozFenwickTree {
             // tree[localIndex] += value;
             localIndex += localIndex & (~localIndex + 1); // Move to the next index
         }
+        // console.log('contributionFactor[user] in updateFactor ********: ', s.contributionFactors[user][index]);
     }
 
 
@@ -66,6 +75,9 @@ contract ozFenwickTree {
             sum += s.contributionFactors[user][localIndex];
             localIndex -= localIndex & (~localIndex + 1); // Move to the parent index
         }
+
+        // console.log('contributionFactor[user] in queryFactor ********: ', s.contributionFactors[user][index]);
+        // console.log('sum: ', sum);
     }
 
 
@@ -77,6 +89,14 @@ contract ozFenwickTree {
             sum += s.depositTree[localIndex];
             localIndex -= localIndex & (~localIndex + 1); // Move to the parent index
         }
+
+        console.log('');
+        console.log('--- in queryDeposit ---');
+        console.log('s.depositTree[index]: ', s.depositTree[index]);
+        console.log('s.depositTree[localIndex]: ', s.depositTree[localIndex]);
+        console.log('index: ', index);
+        console.log('localIndex: ', localIndex);
+        console.log('');
     }
 
     // function query(uint256 index) public view returns (uint256 sum) {
